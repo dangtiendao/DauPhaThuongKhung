@@ -100,6 +100,6 @@ Toàn bộ chiêu thức, kỹ năng cơ động, đan dược và 8 bảng hệ
 
 * `docs/` — **25 Tài liệu Thiết kế Game (GDD) & Tiến Độ** chia chi tiết 11 Chương (4 Quyển), 23 Dị Hỏa, 12 Cảnh giới, Đấu Kỹ, Luyện Đan, Quái & 25 Boss, kèm bảng theo dõi tiến độ & lộ trình phát triển tại [`docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md`](docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md).
 * `data/` — **8 Cơ sở dữ liệu JSON** (`maps.json` 11 map, `quests_ch01.json` 21 mốc, `enemies.json` 20 quái/Boss, `realms.json`, `flames.json`, `skills.json`, `alchemy_items.json`, `equipment.json`).
-* `assets/sprites/` — Bộ tài nguyên **32-bit HD Pixel Art** (nhân vật, 4 bộ attack strip liền thân, 6 bộ hoạt ảnh Boss 4 khung hình mượt 60 FPS, 15 NPC cốt truyện, 20 quái & Boss, 26 icon MOBA chiêu thức/đan dược/trang bị, gạch lát nền & kiến trúc 3 chương).
+* `assets/sprites/` — Bộ tài nguyên **32-bit HD Pixel Art** (nhân vật, 4 bộ attack strip liền thân, **trọn bộ 12/12 Boss có hoạt ảnh 4 khung hình mượt 60 FPS**, 15 NPC cốt truyện, 20 quái & Boss, 26 icon MOBA chiêu thức/đan dược/trang bị, gạch lát nền & kiến trúc 3 chương).
 * `assets/shaders/di_hoa_palette.gdshader` — Shader nhuộm 3 tầng màu lửa cho 23 Dị Hỏa.
 * `scripts/` & `scenes/` — Mã nguồn GDScript sạch, chú thích tiếng Việt rõ ràng.

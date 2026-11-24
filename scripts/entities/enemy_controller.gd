@@ -30,6 +30,20 @@ var drop_table: Array = []
 var boss_phase: int = 1
 var boss_bar_shown: bool = false
 var wave_aim_dir: Vector2 = Vector2.RIGHT
+var boss_special_cd: float = 2.4
+var boss_shield_hp: float = 0.0
+var boss_shield_timer: float = 0.0
+var boss_combo_dashes_left: int = 0
+var strafe_sign: float = 1.0
+var spiral_angle_offset: float = 0.0
+
+# Trạng thái bất lợi từ 28 Dị Hỏa (Làm chậm, Phá Giáp, Nổ Độc Dây Chuyền)
+var slow_timer: float = 0.0
+var slow_ratio: float = 0.0
+var def_shred_timer: float = 0.0
+var def_shred_ratio: float = 0.0
+var poison_detonate_timer: float = 0.0
+var poison_detonate_dmg: float = 0.0
 
 # Động học mượt 60 FPS & Bộ điều khiển Sprite 4 khung hình
 var has_anim_sheet: bool = false
@@ -120,7 +134,12 @@ func _load_from_db() -> void:
 	allowed_rarities = edef.get("allowed_rarities", [])
 	is_boss_unit = bool(edef.get("is_boss", false))
 	drop_table = edef.get("drops", [])
-	is_floating_unit = (enemy_id == "hai_ba_dong_boss" or enemy_id == "co_ha_boss" or enemy_id == "tieu_tu_tinh_su_boss")
+	is_floating_unit = (enemy_id == "hai_ba_dong_boss" or enemy_id == "co_ha_boss" or enemy_id == "tieu_tu_tinh_su_boss" or enemy_id == "lieu_tich_boss")
+	boss_special_cd = 2.2
+	boss_shield_hp = 0.0
+	boss_shield_timer = 0.0
+	boss_combo_dashes_left = 0
+	strafe_sign = 1.0 if randf() < 0.5 else -1.0
 
 	base_scale_val = 1.18 if is_boss_unit else 1.0
 	visual_scale = Vector2(base_scale_val, base_scale_val)
@@ -194,8 +213,24 @@ func _physics_process(delta: float) -> void:
 		hit_squash = maxf(0.0, hit_squash - delta * 6.5)
 	if attack_cd > 0.0:
 		attack_cd -= delta
+	if boss_special_cd > 0.0:
+		boss_special_cd -= delta
+	if boss_shield_timer > 0.0:
+		boss_shield_timer -= delta
+		if boss_shield_timer <= 0.0:
+			boss_shield_hp = 0.0
 	if stun_timer > 0.0:
 		stun_timer -= delta
+	if slow_timer > 0.0:
+		slow_timer -= delta
+		if slow_timer <= 0.0:
+			slow_ratio = 0.0
+	if def_shred_timer > 0.0:
+		def_shred_timer -= delta
+		if def_shred_timer <= 0.0:
+			def_shred_ratio = 0.0
+	if poison_detonate_timer > 0.0:
+		poison_detonate_timer -= delta
 	if strike_hold_timer > 0.0:
 		strike_hold_timer -= delta
 	if strike_vfx_timer > 0.0:
@@ -238,7 +273,7 @@ func _update_smooth_animation(delta: float) -> void:
 	var target_off := Vector2.ZERO
 	var target_frame: int = 0
 
-	var is_winding: bool = (state_phase == "windup" or state_phase == "boss_nova" or state_phase == "boss_wave_windup")
+	var is_winding: bool = (state_phase == "windup" or state_phase == "boss_nova" or state_phase == "boss_wave_windup" or state_phase == "boss_sig_windup")
 
 	if strike_hold_timer > 0.0:
 		# Pha TUNG ĐÒN: Khung hình 3 + Nhào người (Overshoot) + Giãn ngang sắc bén!
@@ -443,9 +478,11 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 	if absf(to_player.x) > 14.0 and state_phase == "idle":
 		body_sprite.flip_h = to_player.x < 0.0
 
+	var slow_m: float = (1.0 - clampf(slow_ratio, 0.0, 0.60)) if slow_timer > 0.0 else 1.0
+
 	if ai_mode == "chaser":
 		if dist <= detect_radius and dist > 44.0:
-			return to_player.normalized() * move_spd
+			return to_player.normalized() * (move_spd * slow_m)
 		elif dist <= 56.0 and attack_cd <= 0.0:
 			_deal_melee_hit(player_node, 1.0)
 			attack_cd = 1.15
@@ -462,7 +499,7 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 					body_sprite.flip_h = charge_dir.x < 0.0
 				return Vector2.ZERO
 			elif dist <= detect_radius:
-				return to_player.normalized() * move_spd
+				return to_player.normalized() * (move_spd * slow_m)
 		elif state_phase == "windup":
 			state_timer -= delta
 			if state_timer <= 0.0:
@@ -479,40 +516,64 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 			if state_timer <= 0.0:
 				state_phase = "idle"
 				attack_cd = maxf(attack_cd, 1.6)
-			return charge_dir * (move_spd * 3.1)
+			return charge_dir * (move_spd * 3.1 * slow_m)
 
 	elif ai_mode == "boss_duelist":
-		var p2_spd: float = 1.22 if boss_phase >= 2 else 1.0
+		var p2_spd: float = (1.22 if boss_phase >= 2 else 1.0) * slow_m
 		var p2_cd_mult: float = 0.78 if boss_phase >= 2 else 1.0
+		var is_kiter_boss: bool = (enemy_id == "lieu_tich_boss" or enemy_id == "co_ha_boss" or enemy_id == "hai_ba_dong_boss")
+		var is_agile_boss: bool = (enemy_id == "tieu_ngoc_boss" or enemy_id == "tieu_ninh_boss" or enemy_id == "mac_ba_tu_boss")
+
 		if state_phase == "idle":
-			if boss_phase >= 2 and dist <= 420.0 and dist > 125.0 and attack_cd <= 0.0 and randf() < 0.55:
-				state_phase = "boss_wave_windup"
-				state_duration = 0.58
+			# 1. Chiêu Đặc Thù Riêng Của Từng Boss (Signature Skill — 12 Boss 12 phong cách!)
+			if boss_special_cd <= 0.0 and dist <= detect_radius * 1.05:
+				state_phase = "boss_sig_windup"
+				state_duration = 0.56 if boss_phase >= 2 else 0.66
 				state_timer = state_duration
-				wave_aim_dir = to_player.normalized()
+				wave_aim_dir = to_player.normalized() if dist > 2.0 else Vector2.RIGHT
 				if absf(wave_aim_dir.x) > 0.08:
 					body_sprite.flip_h = wave_aim_dir.x < 0.0
 				return Vector2.ZERO
+			# 2. Chiêu sóng / đạn cơ bản (P2 hoặc Boss đánh xa)
+			elif (boss_phase >= 2 or is_kiter_boss) and dist <= 430.0 and dist > 115.0 and attack_cd <= 0.0 and randf() < 0.52:
+				state_phase = "boss_wave_windup"
+				state_duration = 0.54
+				state_timer = state_duration
+				wave_aim_dir = to_player.normalized() if dist > 2.0 else Vector2.RIGHT
+				if absf(wave_aim_dir.x) > 0.08:
+					body_sprite.flip_h = wave_aim_dir.x < 0.0
+				return Vector2.ZERO
+			# 3. Nova cận chiến
 			elif dist <= 122.0 and attack_cd <= 0.0:
 				state_phase = "boss_nova"
-				state_duration = 0.56 if boss_phase >= 2 else 0.64
+				state_duration = 0.54 if boss_phase >= 2 else 0.64
 				state_timer = state_duration
 				return Vector2.ZERO
-			elif dist <= attack_radius and dist > 122.0 and attack_cd <= 0.0:
+			# 4. Lao húc (không ưu tiên nếu là Boss đánh xa như Cổ Hà / Liễu Tịch)
+			elif not is_kiter_boss and dist <= attack_radius and dist > 122.0 and attack_cd <= 0.0:
 				state_phase = "windup"
-				state_duration = 0.46 if boss_phase >= 2 else 0.54
+				state_duration = 0.44 if boss_phase >= 2 else 0.54
 				state_timer = state_duration
-				charge_dir = to_player.normalized()
+				boss_combo_dashes_left = 1 if (boss_phase >= 2 and (enemy_id == "tieu_ninh_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "muc_xa_boss")) else 0
+				charge_dir = to_player.normalized() if dist > 2.0 else Vector2.RIGHT
 				if absf(charge_dir.x) > 0.08:
 					body_sprite.flip_h = charge_dir.x < 0.0
 				return Vector2.ZERO
 			elif dist <= detect_radius:
-				return to_player.normalized() * (move_spd * p2_spd)
+				# Di chuyển theo phong cách: Boss đánh xa giữ khoảng cách, Boss linh hoạt đảo vòng, Boss cận chiến áp sát!
+				var dir_n: Vector2 = to_player.normalized() if dist > 2.0 else Vector2.RIGHT
+				if is_kiter_boss and dist < 175.0:
+					var strafe_v: Vector2 = Vector2(-dir_n.y, dir_n.x) * strafe_sign
+					return (-dir_n * 0.78 + strafe_v * 0.62).normalized() * (move_spd * p2_spd)
+				elif is_agile_boss and dist < 240.0:
+					var strafe_v: Vector2 = Vector2(-dir_n.y, dir_n.x) * strafe_sign
+					return (dir_n * 0.55 + strafe_v * 0.85).normalized() * (move_spd * p2_spd * 1.12)
+				return dir_n * (move_spd * p2_spd)
 		elif state_phase == "windup":
 			state_timer -= delta
 			if state_timer <= 0.0:
 				state_phase = "charging"
-				state_duration = 0.36
+				state_duration = 0.34
 				state_timer = state_duration
 				afterimage_timer = 0.0
 			return Vector2.ZERO
@@ -520,15 +581,27 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 			state_timer -= delta
 			if dist <= 64.0 and attack_cd <= 0.0:
 				_deal_melee_hit(player_node, 1.40 if boss_phase >= 2 else 1.30)
-				attack_cd = 1.35 * p2_cd_mult
+				attack_cd = 0.85 * p2_cd_mult
 			if state_timer <= 0.0:
-				state_phase = "idle"
-				attack_cd = 1.35 * p2_cd_mult
+				if boss_combo_dashes_left > 0:
+					boss_combo_dashes_left -= 1
+					strafe_sign = -strafe_sign
+					state_phase = "windup"
+					state_duration = 0.24
+					state_timer = state_duration
+					charge_dir = (player_node.global_position - global_position).normalized()
+					if enemy_id == "mac_ba_tu_boss":
+						charge_dir = charge_dir.rotated(strafe_sign * 0.22)
+					if absf(charge_dir.x) > 0.08:
+						body_sprite.flip_h = charge_dir.x < 0.0
+				else:
+					state_phase = "idle"
+					attack_cd = 1.30 * p2_cd_mult
 			return charge_dir * (move_spd * 3.0 * p2_spd)
 		elif state_phase == "boss_nova":
 			state_timer -= delta
 			if state_timer <= 0.0:
-				var nova_r: float = 152.0 if boss_phase >= 2 else 135.0
+				var nova_r: float = 156.0 if boss_phase >= 2 else 135.0
 				strike_hold_timer = 0.30
 				strike_dir = to_player.normalized() if dist > 4.0 else Vector2.RIGHT
 				strike_vfx_timer = 0.28
@@ -536,11 +609,13 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 				strike_vfx_is_nova = true
 				strike_vfx_color = _get_signature_color()
 				if dist <= nova_r:
+					if enemy_id == "hai_ba_dong_boss":
+						PlayerData.apply_player_slow(0.35, 2.0)
 					_deal_melee_hit(player_node, 1.65 if boss_phase >= 2 else 1.50, false)
 				EventBus.audio_sfx_requested.emit("skill_burst")
 				EventBus.screen_shake_requested.emit(7.5, 0.22)
 				state_phase = "idle"
-				attack_cd = 1.85 * p2_cd_mult
+				attack_cd = 1.80 * p2_cd_mult
 			return Vector2.ZERO
 		elif state_phase == "boss_wave_windup":
 			state_timer -= delta
@@ -553,25 +628,214 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 				strike_vfx_is_nova = false
 				strike_vfx_color = _get_signature_color()
 				state_phase = "idle"
-				attack_cd = 2.1 * p2_cd_mult
+				attack_cd = 2.05 * p2_cd_mult
+			return Vector2.ZERO
+		elif state_phase == "boss_sig_windup":
+			state_timer -= delta
+			if state_timer <= 0.0:
+				_execute_boss_signature_skill(player_node)
+				strike_hold_timer = 0.32
+				strike_dir = wave_aim_dir
+				strike_vfx_timer = 0.28
+				strike_vfx_radius = 120.0
+				strike_vfx_is_nova = true
+				strike_vfx_color = _get_signature_color()
+				state_phase = "idle"
+				boss_special_cd = (3.4 if boss_phase >= 2 else 4.6)
+				attack_cd = maxf(attack_cd, 1.15 * p2_cd_mult)
+				strafe_sign = -strafe_sign
 			return Vector2.ZERO
 
 	return Vector2.ZERO
 
 
-func _fire_boss_triple_wave() -> void:
+func _spawn_boss_projectile(origin: Vector2, dir: Vector2, spd: float, dmg: float, col: Color, style: String = "wave", slow_r: float = 0.0, slow_d: float = 0.0, homing: float = 0.0) -> void:
 	var packed: PackedScene = load(ENEMY_PROJ_SCENE_PATH)
 	if packed == null or get_parent() == null:
 		return
+	var proj: Area2D = packed.instantiate() as Area2D
+	get_parent().add_child(proj)
+	if proj.has_method("configure_projectile"):
+		proj.configure_projectile(origin, dir, spd, dmg, realm_idx, col, style, slow_r, slow_d, homing)
+
+
+func _spawn_boss_hazard(pos: Vector2, mode_str: String, rad: float, tele_s: float, act_s: float, dmg: float, col: Color, slow_r: float = 0.0, slow_d: float = 0.0, pull_s: float = 0.0) -> void:
+	if get_parent() == null:
+		return
+	var hz := BossHazardZone.new()
+	get_parent().add_child(hz)
+	hz.configure_hazard(pos, mode_str, rad, tele_s, act_s, dmg, realm_idx, col, slow_r, slow_d, pull_s)
+
+
+func _activate_boss_shield(hp_ratio: float, dur: float, label_txt: String, col: Color) -> void:
+	boss_shield_hp = max_hp * hp_ratio
+	boss_shield_timer = dur
+	EventBus.audio_sfx_requested.emit("level_up")
+	EventBus.floating_text_requested.emit(global_position + Vector2(0, -104), label_txt, col)
+
+
+func _execute_boss_signature_skill(player_node: Node2D) -> void:
+	var sig_col: Color = _get_signature_color()
+	var origin: Vector2 = global_position + Vector2(0, -20)
+	var to_p: Vector2 = (player_node.global_position - global_position).normalized()
+	if to_p == Vector2.ZERO:
+		to_p = Vector2.RIGHT
+	var p2: bool = (boss_phase >= 2)
+
+	if enemy_id == "tieu_ninh_boss":
+		# PHONG QUYỂN TÀN VÂN: Lốc gió kéo nhẹ + 4 tia phong nhận xoay!
+		EventBus.audio_sfx_requested.emit("dash_whoosh")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "PHONG QUYỂN TÀN VÂN!", sig_col)
+		_spawn_boss_hazard(player_node.global_position, "vortex", 84.0, 0.55, 1.8, atk_stat * 0.95, sig_col, 0.0, 0.0, 95.0)
+		var cnt: int = 5 if p2 else 3
+		for i in range(cnt):
+			var off: float = (float(i) - float(cnt - 1) * 0.5) * 0.24
+			_spawn_boss_projectile(origin, to_p.rotated(off), 385.0, atk_stat * 1.05, sig_col, "wave")
+
+	elif enemy_id == "tieu_ngoc_boss":
+		# SONG TIÊN LIÊN KÍCH: Đánh roi tốc độ cực cao + nhảy né vòng!
+		EventBus.audio_sfx_requested.emit("swing_blade")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "SONG TIÊN PHÁ PHONG!", Color("#FF4D6D"))
+		var whip_cnt: int = 4 if p2 else 2
+		for i in range(whip_cnt):
+			var off: float = (float(i) - float(whip_cnt - 1) * 0.5) * 0.20
+			_spawn_boss_projectile(origin, to_p.rotated(off), 430.0, atk_stat * 1.0, Color("#FF4D6D"), "spear")
+		knockback_vel = Vector2(-to_p.y, to_p.x) * strafe_sign * 260.0
+
+	elif enemy_id == "lieu_tich_boss":
+		# ĐỘC HỎA DƯỢC ĐỈNH: Ném 2-3 vũng độc hỏa xanh cháy lâu trên sàn!
+		EventBus.audio_sfx_requested.emit("skill_fire")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "ĐỘC HỎA ĐỈNH TRÌ!", Color("#52B788"))
+		_spawn_boss_hazard(player_node.global_position, "pool", 78.0, 0.65, 3.6, atk_stat * 1.15, Color("#52B788"))
+		if p2:
+			_spawn_boss_hazard(player_node.global_position + Vector2(110, 0).rotated(randf() * TAU), "pool", 72.0, 0.72, 3.6, atk_stat * 1.10, Color("#52B788"))
+			for i in range(4):
+				var ang: float = to_p.angle() + (float(i) - 1.5) * 0.24
+				_spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 330.0, atk_stat * 1.0, Color("#52B788"), "orb")
+
+	elif enemy_id == "gia_liet_ao_boss":
+		# HUYẾT CHIẾN THẬP TỰ ĐAO: Phóng đao khí chữ thập 4 hướng (8 hướng ở Phase 2)!
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "HUYẾT ĐAO THẬP TỰ TRẢM!", Color("#FF4D6D"))
+		var rays: int = 8 if p2 else 4
+		spiral_angle_offset += 0.39
+		for i in range(rays):
+			var ang: float = spiral_angle_offset + float(i) * (TAU / float(rays))
+			_spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 360.0, atk_stat * 1.18, Color("#FF4D6D"), "wave")
+
+	elif enemy_id == "thach_khoi_boss":
+		# THẠCH GIÁP HỘ THUẪN + ĐỊA CHẤN ĐÁ LĂN!
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		if boss_shield_hp <= 0.0:
+			_activate_boss_shield(0.18, 6.5, "THẠCH GIÁP HỘ THUẪN!", Color("#4CC9F0"))
+		else:
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "ĐỊA CHẤN THẠCH BẠO!", Color("#4CC9F0"))
+		var stones: int = 8 if p2 else 6
+		for i in range(stones):
+			var ang: float = float(i) * (TAU / float(stones)) + to_p.angle()
+			_spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 290.0, atk_stat * 1.15, Color("#4CC9F0"), "boulder")
+
+	elif enemy_id == "tieu_tu_tinh_su_boss":
+		# TỬ TINH HỎA CẦU (RƯỢT NHẸ) + SƯ VƯƠNG CUỒNG HỐNG!
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "TỬ TINH HỎA CẦU!", Color("#C77DFF"))
+		var orbs: int = 4 if p2 else 3
+		for i in range(orbs):
+			var off: float = (float(i) - float(orbs - 1) * 0.5) * 0.42
+			_spawn_boss_projectile(origin, to_p.rotated(off), 275.0, atk_stat * 1.15, Color("#C77DFF"), "orb", 0.0, 0.0, 2.2)
+		if p2:
+			_spawn_boss_hazard(player_node.global_position, "pillar", 96.0, 0.78, 0.45, atk_stat * 1.40, Color("#C77DFF"))
+
+	elif enemy_id == "muc_luc_boss":
+		# LANG NHA LIÊN THƯƠNG: Loạt thương khí sắc bén lao cực nhanh!
+		EventBus.audio_sfx_requested.emit("swing_blade")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "LANG NHA LIÊN THƯƠNG!", Color("#FF758F"))
+		var sp_cnt: int = 5 if p2 else 3
+		for i in range(sp_cnt):
+			var off: float = (float(i) - float(sp_cnt - 1) * 0.5) * 0.16
+			_spawn_boss_projectile(origin, to_p.rotated(off), 455.0, atk_stat * 1.12, Color("#FF758F"), "spear")
+
+	elif enemy_id == "muc_xa_boss":
+		# LANG ĐẦU ĐẠI TRẬN: Quạt 5 tia + 2 trụ xung kích khóa góc (Phase 2 nổ 8 tia xoắn ốc)!
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "LANG ĐẦU ĐẠI TRẬN!", Color("#C77DFF"))
+		var fan: int = 7 if p2 else 5
+		for i in range(fan):
+			var off: float = (float(i) - float(fan - 1) * 0.5) * 0.22
+			_spawn_boss_projectile(origin, to_p.rotated(off), 375.0, atk_stat * 1.15, Color("#C77DFF"), "wave")
+		_spawn_boss_hazard(player_node.global_position, "pillar", 86.0, 0.80, 0.40, atk_stat * 1.35, Color("#C77DFF"))
+		if p2:
+			_spawn_boss_hazard(player_node.global_position + to_p * 95.0, "pillar", 82.0, 0.95, 0.40, atk_stat * 1.35, Color("#FF4D6D"))
+
+	elif enemy_id == "hai_ba_dong_boss":
+		# HÀN BĂNG NGƯNG LONG: Khiên Hàn Băng + Băng Tiễn Làm Chậm + 2-3 Băng Trụ!
+		EventBus.audio_sfx_requested.emit("skill_stun")
+		if boss_shield_hp <= 0.0 and randf() < 0.55:
+			_activate_boss_shield(0.16, 6.0, "HÀN BĂNG HỘ THUẪN!", Color("#70D6FF"))
+		else:
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "HÀN BĂNG NGƯNG LONG!", Color("#70D6FF"))
+		var ice_cnt: int = 6 if p2 else 4
+		spiral_angle_offset += 0.45
+		for i in range(ice_cnt):
+			var ang: float = to_p.angle() + (float(i) - float(ice_cnt - 1) * 0.5) * 0.28 if not p2 else spiral_angle_offset + float(i) * (TAU / 6.0)
+			_spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 350.0, atk_stat * 1.12, Color("#70D6FF"), "spear", 0.38, 2.2)
+		var pillar_cnt: int = 3 if p2 else 2
+		for pi in range(pillar_cnt):
+			var offset_p: Vector2 = Vector2.ZERO if pi == 0 else Vector2(randf_range(-115, 115), randf_range(-95, 95))
+			_spawn_boss_hazard(player_node.global_position + offset_p, "pillar", 78.0, 0.82 + float(pi) * 0.14, 0.45, atk_stat * 1.25, Color("#70D6FF"), 0.42, 2.4)
+
+	elif enemy_id == "hoa_linh_xa_boss":
+		# SONG ĐẦU DUNG NHAM: Phóng song tuyến nham thạch từ 2 đầu rắn + tạo Hồ Dung Nham!
+		EventBus.audio_sfx_requested.emit("skill_fire")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "SONG ĐẦU PHUN DUNG NHAM!", Color("#FF7B00"))
+		var perp: Vector2 = Vector2(-to_p.y, to_p.x)
+		for side in [-1.0, 1.0]:
+			var head_pos: Vector2 = origin + perp * (side * 28.0)
+			_spawn_boss_projectile(head_pos, to_p.rotated(-side * 0.08), 385.0, atk_stat * 1.15, Color("#FF7B00"), "orb")
+			_spawn_boss_projectile(head_pos, to_p.rotated(side * 0.22), 340.0, atk_stat * 1.08, Color("#FF4D6D"), "orb")
+		_spawn_boss_hazard(player_node.global_position, "pool", 92.0, 0.70, 4.0, atk_stat * 1.25, Color("#FF7B00"))
+		if p2:
+			for k in range(8):
+				var ang: float = float(k) * (TAU / 8.0)
+				_spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 310.0, atk_stat * 1.10, Color("#FF7B00"), "orb")
+
+	elif enemy_id == "mac_ba_tu_boss":
+		# XÀ NHÂN BÃO CÁT & ĐỘC MÂU: Lốc cát hút tâm + 5 mũi độc mâu!
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "BÃO CÁT XÀ VỰC & ĐỘC MÂU!", Color("#52B788"))
+		_spawn_boss_hazard(player_node.global_position, "vortex", 104.0, 0.60, 2.8, atk_stat * 1.15, Color("#FFD166"), 0.0, 0.0, 125.0)
+		var spears: int = 5 if p2 else 3
+		for i in range(spears):
+			var off: float = (float(i) - float(spears - 1) * 0.5) * 0.18
+			_spawn_boss_projectile(origin, to_p.rotated(off), 430.0, atk_stat * 1.12, Color("#52B788"), "spear")
+
+	elif enemy_id == "co_ha_boss":
+		# LỤC PHẨM ĐAN VƯƠNG HỎA: Khiên Đan Hỏa + 3-4 Cột Thiên Hỏa Đan Lô + Vòng 8 Cầu Lửa ở Phase 2!
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		if boss_shield_hp <= 0.0 and randf() < 0.50:
+			_activate_boss_shield(0.18, 6.0, "LỤC PHẨM HỎA THUẪN!", Color("#FFD166"))
+		else:
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -98), "ĐAN VƯƠNG THIÊN HỎA TRỤ!", Color("#FF9F1C"))
+		var pillars: int = 4 if p2 else 3
+		for pi in range(pillars):
+			var spread_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(float(pi) * 2.1), sin(float(pi) * 2.1)) * 105.0
+			_spawn_boss_hazard(player_node.global_position + spread_off, "pillar", 86.0, 0.80 + float(pi) * 0.16, 0.45, atk_stat * 1.35, Color("#FF9F1C"))
+		if p2:
+			spiral_angle_offset += 0.32
+			for k in range(8):
+				var ang: float = spiral_angle_offset + float(k) * (TAU / 8.0)
+				_spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 325.0, atk_stat * 1.12, Color("#FFD166"), "orb")
+
+
+func _fire_boss_triple_wave() -> void:
 	EventBus.audio_sfx_requested.emit("skill_fire")
 	var wave_col: Color = _get_signature_color()
+	var style_s: String = "orb" if (enemy_id == "co_ha_boss" or enemy_id == "lieu_tich_boss" or enemy_id == "hoa_linh_xa_boss" or enemy_id == "tieu_tu_tinh_su_boss") else ("spear" if (enemy_id == "muc_luc_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "hai_ba_dong_boss") else "wave")
+	var slow_r: float = 0.35 if enemy_id == "hai_ba_dong_boss" else 0.0
+	var slow_d: float = 2.0 if enemy_id == "hai_ba_dong_boss" else 0.0
 	var angles: Array = [-0.28, 0.0, 0.28]
 	for ang_off in angles:
-		var proj: Area2D = packed.instantiate() as Area2D
-		get_parent().add_child(proj)
-		var dir_v: Vector2 = wave_aim_dir.rotated(float(ang_off))
-		if proj.has_method("configure_projectile"):
-			proj.configure_projectile(global_position + Vector2(0, -20), dir_v, 360.0, atk_stat * 1.15, realm_idx, wave_col)
+		_spawn_boss_projectile(global_position + Vector2(0, -20), wave_aim_dir.rotated(float(ang_off)), 360.0, atk_stat * 1.15, wave_col, style_s, slow_r, slow_d)
 
 
 func _deal_melee_hit(player_node: Node2D, mult: float, trigger_slash_vfx: bool = true) -> void:
@@ -599,15 +863,60 @@ func apply_stun(duration: float) -> void:
 	EventBus.floating_text_requested.emit(global_position + Vector2(0, -86), "CHOÁNG!", Color("#FFD166"))
 
 
-func receive_hit(raw_atk_dmg: float, kb_vec: Vector2, skill_realm_pen: float = 0.0, apply_burn_dps: float = 0.0) -> void:
+func apply_slow(ratio: float, duration: float) -> void:
+	if ai_mode == "dummy" or is_dying:
+		return
+	slow_ratio = maxf(slow_ratio, clampf(ratio, 0.1, 0.60))
+	slow_timer = maxf(slow_timer, duration)
+	EventBus.floating_text_requested.emit(global_position + Vector2(0, -76), "LÀM CHẬM!", Color("#A8DADC"))
+
+
+func apply_def_shred(ratio: float, duration: float) -> void:
+	if is_dying:
+		return
+	def_shred_ratio = maxf(def_shred_ratio, clampf(ratio, 0.05, 0.65))
+	def_shred_timer = maxf(def_shred_timer, duration)
+	EventBus.floating_text_requested.emit(global_position + Vector2(0, -78), "PHÁ GIÁP -%d%%!" % int(round(def_shred_ratio * 100.0)), Color("#52B788"))
+
+
+func apply_poison_detonate(dmg: float, duration: float) -> void:
+	if is_dying:
+		return
+	poison_detonate_dmg = maxf(poison_detonate_dmg, dmg)
+	poison_detonate_timer = maxf(poison_detonate_timer, duration)
+
+
+func break_boss_shield() -> void:
+	if boss_shield_hp > 0.0:
+		boss_shield_hp = 0.0
+		boss_shield_timer = 0.0
+		EventBus.audio_sfx_requested.emit("hit_crit")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -110), "VỠ KHIÊN BOSS!", Color("#FFD166"))
+
+
+func receive_hit(raw_atk_dmg: float, kb_vec: Vector2, skill_realm_pen: float = 0.0, apply_burn_dps: float = 0.0, ignore_def_ratio: float = 0.0, force_crit_mult: float = 1.0) -> void:
 	if is_dying:
 		return
 	var realm_mult: float = PlayerData.compute_realm_damage_multiplier_against(realm_idx, skill_realm_pen)
-	var reduced: float = maxf(1.0, (raw_atk_dmg - def_stat * 0.45) * realm_mult)
+	var eff_def: float = def_stat * (1.0 - (def_shred_ratio if def_shred_timer > 0.0 else 0.0)) * (1.0 - clampf(ignore_def_ratio, 0.0, 1.0))
+	var reduced: float = maxf(1.0, (raw_atk_dmg - eff_def * 0.45) * realm_mult)
 
-	var is_crit: bool = randf() < PlayerData.get_crit_chance()
+	var is_crit: bool = (force_crit_mult > 1.0) or (randf() < PlayerData.get_crit_chance())
 	if is_crit:
-		reduced *= 1.65
+		reduced *= (1.65 * maxf(1.0, force_crit_mult))
+
+	if boss_shield_hp > 0.0:
+		var abs_sh: float = minf(boss_shield_hp, reduced)
+		boss_shield_hp -= abs_sh
+		reduced -= abs_sh
+		if boss_shield_hp <= 0.0:
+			boss_shield_timer = 0.0
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -104), "VỠ KHIÊN!", Color("#FFD166"))
+		if reduced <= 0.5:
+			hit_flash_timer = 0.08
+			EventBus.audio_sfx_requested.emit("hit_impact")
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -68), "KHIÊN -%d" % int(round(abs_sh)), Color("#70D6FF"))
+			return
 
 	cur_hp -= reduced
 	PlayerData.heal_from_lifesteal(reduced)
@@ -712,7 +1021,7 @@ func _die() -> void:
 				g_orb.setup_gold_drop(gold_reward)
 			get_parent().call_deferred("add_child", g_orb)
 
-		if gear_pool.size() > 0 and randf() <= gear_drop_chance:
+		if gear_pool.size() > 0 and randf() <= minf(1.0, gear_drop_chance + PlayerData.get_gear_drop_bonus_chance()):
 			var pick_tpl: String = str(gear_pool[randi() % gear_pool.size()])
 			var forced_rar: String = ""
 			if allowed_rarities.size() > 0:
@@ -736,6 +1045,15 @@ func _die() -> void:
 					get_parent().call_deferred("add_child", drop_node)
 
 	EventBus.enemy_killed.emit(enemy_id, is_boss_unit)
+
+	# Hiệu ứng #20 U Minh Độc Hỏa: nổ dây chuyền sương độc sang quái xung quanh khi chết!
+	if poison_detonate_timer > 0.0 and poison_detonate_dmg > 0.0:
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -76), "ĐỘC HỎA NỔ DÂY CHUYỀN!", Color("#52B788"))
+		for near_en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(near_en) and near_en is Node2D and near_en != self:
+				var en2: Node2D = near_en as Node2D
+				if global_position.distance_to(en2.global_position) <= 185.0 and en2.has_method("receive_hit"):
+					en2.receive_hit(poison_detonate_dmg, (en2.global_position - global_position).normalized() * 190.0, 0.25, 0.0)
 
 	# Hoạt ảnh tan biến mượt (kéo giãn & mờ dần) thay vì biến mất cứng trong 1 frame!
 	var tw := create_tween()
@@ -769,6 +1087,14 @@ func _draw() -> void:
 		var pulse_r: float = 42.0 + sin(float(Time.get_ticks_msec()) * 0.008) * 3.5
 		draw_arc(Vector2(0, 12), pulse_r, 0.0, TAU, 36, Color(1.0, 0.22, 0.38, 0.65), 3.0)
 
+	if boss_shield_hp > 0.0:
+		var sh_col: Color = _get_signature_color()
+		draw_arc(Vector2(0, -26), 54.0, 0.0, TAU, 36, Color(sh_col.r, sh_col.g, sh_col.b, 0.85), 4.0)
+		draw_circle(Vector2(0, -26), 52.0, Color(sh_col.r, sh_col.g, sh_col.b, 0.14))
+
+	if slow_timer > 0.0:
+		draw_arc(Vector2(0, 12), 34.0, 0.0, TAU, 24, Color("#A8DADC"), 2.8)
+
 	if stun_timer > 0.0:
 		var ang: float = float(Time.get_ticks_msec()) * 0.008
 		draw_arc(Vector2(0, -82), 16.0, ang, ang + TAU * 0.72, 18, Color("#FFD166"), 3.0)
@@ -786,6 +1112,11 @@ func _draw() -> void:
 		var sig: Color = _get_signature_color()
 		for ang_off in [-0.28, 0.0, 0.28]:
 			draw_line(Vector2(0, -16), wave_aim_dir.rotated(float(ang_off)) * 215.0, Color(sig.r, sig.g, sig.b, 0.82), 4.0)
+	elif state_phase == "boss_sig_windup":
+		var sig: Color = _get_signature_color()
+		var p: float = 1.0 - clampf(state_timer / maxf(0.1, state_duration), 0.0, 1.0)
+		draw_arc(Vector2(0, -24), 48.0 + 32.0 * (1.0 - p), 0.0, TAU, 36, Color(sig.r, sig.g, sig.b, 0.90), 4.2)
+		draw_line(Vector2(0, -18), wave_aim_dir * (160.0 + 90.0 * p), Color(1.0, 0.92, 0.65, 0.80), 3.6)
 
 	# Hiệu ứng Vệt Chém / Sóng Xung Kích khi Boss & Quái tung đòn!
 	if strike_vfx_timer > 0.0:

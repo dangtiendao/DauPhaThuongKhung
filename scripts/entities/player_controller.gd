@@ -480,12 +480,9 @@ func trigger_ui_skill(slot_key: String) -> void:
 func trigger_ui_use_pill(slot_num: int) -> void:
 	if input_blocked_by_ui:
 		return
-	if slot_num == 1:
-		PlayerData.use_consumable("pill_ngung_huyet_tan", global_position + Vector2(0, -45))
-	elif slot_num == 2:
-		PlayerData.use_consumable("pill_hoi_khi_dan", global_position + Vector2(0, -45))
-	elif slot_num == 3:
-		PlayerData.use_consumable("pill_truc_co_linh_dich", global_position + Vector2(0, -45))
+	var pill_id: String = PlayerData.get_effective_quick_pill(slot_num)
+	if pill_id != "":
+		PlayerData.use_consumable(pill_id, global_position + Vector2(0, -45))
 
 
 func _try_cast_slot(slot_key: String, lock_hint: String) -> void:
@@ -653,7 +650,10 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 	if sdef.is_empty():
 		return
 
+	var behavior: String = str(sdef.get("behavior", "melee_burst"))
 	var qi_cost: float = float(sdef.get("qi_cost", 15.0))
+	if behavior == "fire_lotus_ult":
+		qi_cost *= PlayerData.get_lotus_qi_cost_multiplier()
 	if PlayerData.current_qi < qi_cost:
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -64), "Không đủ Đấu Khí!", Color("#4CC9F0"))
 		return
@@ -665,8 +665,6 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 	skill_cooldowns[slot_key] = cd_total
 	skill_cooldown_totals[slot_key] = cd_total
 	EventBus.skill_cooldown_updated.emit(slot_key, cd_total, cd_total)
-
-	var behavior: String = str(sdef.get("behavior", "melee_burst"))
 	var dmg: float = (PlayerData.get_atk() * float(sdef.get("atk_ratio", 1.5)) + float(PlayerData.get_soul()) * float(sdef.get("soul_ratio", 0.2))) * PlayerData.get_flame_dmg_multiplier()
 	var rad_px: float = float(sdef.get("radius_px", 110.0))
 	var kb: float = float(sdef.get("knockback", 320.0))
@@ -824,9 +822,12 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 			get_parent().add_child(proj)
 			var spd: float = float(sdef.get("projectile_speed", 460.0))
 			var use_flame: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("pham_hoa")
-			var fusion_bonus: float = 1.0 + float(max(0, PlayerData.lotus_fusion_flames.size() - 1)) * 0.28 if behavior == "fire_lotus_ult" else 1.0
+			var fusion_list: Array = PlayerData.lotus_fusion_flames.duplicate()
+			if behavior == "fire_lotus_ult" and fusion_list.is_empty():
+				fusion_list = [str(use_flame.get("id", "pham_hoa"))]
+			var fusion_bonus: float = (1.0 + float(max(0, fusion_list.size() - 1)) * 0.28) * PlayerData.get_lotus_affection_dmg_mult() if behavior == "fire_lotus_ult" else 1.0
 			if proj.has_method("configure_skill"):
-				proj.configure_skill(behavior, global_position + aim_dir * 36.0 + Vector2(0, -24), aim_target, dmg * fusion_bonus, kb, r_pen, rad_px, spd, use_flame)
+				proj.configure_skill(behavior, global_position + aim_dir * 36.0 + Vector2(0, -24), aim_target, dmg * fusion_bonus, kb, r_pen, rad_px, spd, use_flame, fusion_list)
 
 
 func _activate_duoc_lao_assist() -> void:
@@ -853,11 +854,25 @@ func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector
 	if invuln_timer > 0.0:
 		return
 	var realm_diff: int = max(0, attacker_realm_idx - PlayerData.realm_index)
-	var suppression_bonus: float = 1.0 + float(realm_diff) * 0.25
+	var taken_per_realm: float = float(GameDatabase.suppression_rules.get("damage_taken_bonus_per_major_realm", 0.30))
+	var suppression_bonus: float = 1.0 + float(realm_diff) * taken_per_realm
 	var raw_after_def: float = maxf(1.0, (raw_dmg * suppression_bonus) - PlayerData.get_def() * 0.45)
 	# Đấu Khí Sa Y của Đấu Sư (realm >= 3): giảm 18% sát thương khi còn > 25% Đấu Khí!
 	var sa_y_mult: float = 0.82 if (PlayerData.realm_index >= 3 and PlayerData.current_qi > PlayerData.get_max_qi() * 0.25) else 1.0
-	var final_dmg: float = maxf(1.0, raw_after_def * sa_y_mult)
+	# Giảm 30% sát thương nhận vào trong 4s từ #13 Quy Linh Địa Hỏa!
+	var quy_linh_mult: float = 0.70 if PlayerData.lotus_dmg_red_timer > 0.0 else 1.0
+	var final_dmg: float = maxf(1.0, raw_after_def * sa_y_mult * quy_linh_mult)
+
+	# Khiên đất Huyền Hoàng (#23) hấp thụ sát thương trước HP!
+	if PlayerData.lotus_shield_hp > 0.0:
+		var absorbed: float = minf(PlayerData.lotus_shield_hp, final_dmg)
+		PlayerData.lotus_shield_hp -= absorbed
+		final_dmg -= absorbed
+		if final_dmg <= 0.5:
+			invuln_timer = 0.25
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -68), "KHIÊN CHẮN -%d" % int(round(absorbed)), Color("#D4A373"))
+			EventBus.stats_changed.emit()
+			return
 
 	PlayerData.current_hp = maxf(0.0, PlayerData.current_hp - final_dmg)
 	invuln_timer = 0.35
@@ -895,6 +910,14 @@ func _draw() -> void:
 	if PlayerData.realm_index >= 3:
 		var sy_col: Color = Color(0.78, 0.48, 1.0, 0.42)
 		draw_arc(Vector2(0, -24), 34.0, 0.0, TAU, 36, sy_col, 2.2)
+	# Vòng Khiên Đất Huyền Hoàng (#23) hoặc Khiên Quy Linh (#13)
+	if PlayerData.lotus_shield_hp > 1.0:
+		draw_arc(Vector2(0, -24), 40.0, 0.0, TAU, 40, Color(0.85, 0.65, 0.42, 0.78), 3.2)
+	if PlayerData.lotus_dmg_red_timer > 0.0:
+		draw_arc(Vector2(0, -24), 44.0, 0.0, TAU, 40, Color(0.74, 0.42, 0.15, 0.58), 2.4)
+	# Vòng Hàn Băng làm chậm (khi bị Băng Hoàng Hải Ba Đông đóng băng!)
+	if PlayerData.player_slow_timer > 0.0:
+		draw_arc(Vector2(0, 10), 30.0, 0.0, TAU, 28, Color(0.44, 0.84, 1.0, 0.80), 3.0)
 
 	if burst_ring_timer > 0.0:
 		var ring_c: Color = burst_ring_color

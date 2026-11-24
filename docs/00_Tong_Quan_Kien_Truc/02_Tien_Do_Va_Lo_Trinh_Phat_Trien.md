@@ -2,7 +2,7 @@
 
 > **Dự án**: Đấu Phá Thương Khung — Top-down 2D HD Pixel Action RPG (Godot Engine 4)
 > **Cập nhật lần cuối**: 24/11/2026
-> **Phiên bản hiện tại**: **v0.3.0 (Playable Quyển I: Chương 01 – Chương 03)**
+> **Phiên bản hiện tại**: **v0.3.5 (Quyển I: Ch.01–03 · Hoàn tất Mốc M1 & M2 — Full 28 Hiệu Ứng Hỏa Liên, Buff/Tặng Quà Hồng Nhan, 12 Boss Độc Chiêu + 12/12 Sprite 4-Frame)**
 > **Mục đích**: Theo dõi đối chiếu giữa **Hồ sơ thiết kế (GDD — 11 Chương)** và **Trạng thái thực thi trong mã nguồn**, quản lý backlog lỗi kỹ thuật và lộ trình phát triển các mốc tiếp theo.
 
 ---
@@ -11,18 +11,18 @@
 
 | Hạng mục | Đã hoàn thiện trong game | Mục tiêu GDD | Tỷ lệ / Ghi chú |
 | :--- | :---: | :---: | :--- |
-| **Tài liệu Thiết kế (GDD)** | 24 file + 2 concept art | 24 file | **100%** — Đã viết trọn 11 Chương & toàn bộ hệ thống |
+| **Tài liệu Thiết kế (GDD)** | 25 file + 2 concept art | 25 file | **100%** — Đã viết trọn 11 Chương, hệ thống & roadmap tiến độ |
 | **Cốt truyện chơi được** | **3 Chương** (NV 1–21) | 11 Chương (4 Quyển) | **27%** — Xong Ch.01, Ch.02, Ch.03 (Sa Mạc Tháp Qua Nhĩ) |
 | **Bản đồ liên thông** | **11 bản đồ** (14 rương, 21 cổng) | Toàn Đấu Khí Đại Lục | Ch.01 (3), Ch.02 (4), Ch.03 (4) |
 | **Đấu Kỹ chủ động** | **10 chiêu** (`skills.json`) | 24 chiêu | **42%** — Đủ bộ Ch.01–03 + Phật Nộ Hỏa Liên `[F]` |
-| **Dị Hỏa & Thú Hỏa** | **28/28** dữ liệu · **3/28** thu phục cốt truyện | 28 ngọn Hỏa | 25 ngọn còn lại hiện mới trải nghiệm được qua Chế độ DEMO |
+| **Dị Hỏa & Thú Hỏa** | **28/28** dữ liệu & **28/28 `lotus_effect`** · **3/28** thu phục cốt truyện | 28 ngọn Hỏa | Cả 28 hiệu ứng đặc biệt Hỏa Liên đã hoạt động; 25 ngọn còn lại hiện thử qua DEMO |
 | **Cảnh giới & Đột phá** | **12/12** dữ liệu · Đột phá cốt truyện tới **Đại Đấu Sư** | 12 Đại Cảnh Giới | Thiếu đan phương & cơ chế đặc thù từ bậc 4 → 12 |
-| **Quái & Boss** | **20** (8 quái + 12 Boss · 6 Boss có `anim_sheet` 4 frame) | 25+ Đại Boss | Cả 12 Boss đang dùng chung 1 khuôn AI `boss_duelist` |
-| **Luyện Đan** | **17** vật phẩm · **7** đan phương (Phẩm 1–4) | 36 đan phương · 13 Thiên Đỉnh | Có Mini-game Khống Hỏa + Chắn Đan Lôi |
+| **Quái & Boss** | **20** (8 quái + **12/12 Boss có chiêu riêng & `anim_sheet` 4 frame**) | 25+ Đại Boss | Đã tách 12 bộ pattern chiến đấu riêng + `BossHazardZone` |
+| **Luyện Đan** | **17** vật phẩm · **7** đan phương (Phẩm 1–4) | 36 đan phương · 13 Thiên Đỉnh | Mini-game Khống Hỏa + Đan Lôi có thưởng Dị Hỏa / Dược Đỉnh / Tiểu Y Tiên |
 | **Trang Bị 10 Ô** | **21** mẫu · **3** bộ Set · 6 phẩm chất · +0→+15 | Trang bị + Yêu Khôi + Khảm Hạch | Chưa có Yêu Khôi, khảm Ma Hạch, Cổ Đế Ngọc |
-| **Đồng Hành AI `[G]`** | **3** (Dược Lão, Tiểu Y Tiên, Thải Lân) | 17 Đồng hành & Khách khanh | Hảo cảm 5 Hồng Nhan đã đếm điểm, chưa có mốc thưởng |
+| **Đồng Hành AI & Hồng Nhan** | **3** Đồng hành `[G]` · **5 Hồng Nhan** có 4 mốc Buff (25/50/75/100) & Tặng Quà | 17 Đồng hành & Khách khanh | Đã mở tặng quà x2 sở thích, nhận Quà Tri Kỷ & cộng thẳng chỉ số |
 | **Thế Lực & Phó Bản Endgame** | **0 / 8** Phó bản · chưa có Tông Môn | 8 Phó bản + Bàn Môn → Thiên Phủ | Dự kiến triển khai từ Quyển II trở đi |
-| **Mã nguồn & Kiến trúc** | **17 script** (9.333 dòng GDScript) · 9 scene · 8 JSON | — | 100% đường dẫn `res://` hợp lệ, chưa khởi tạo Git |
+| **Mã nguồn & Hạ tầng** | **18 script** · 9 scene · 8 JSON · **Đã khởi tạo Git** | — | Đã qua kiểm thử Godot headless 0 lỗi; chưa tạo `export_presets.cfg` |
 
 ---
 
@@ -62,11 +62,12 @@
 * [x] **Trang Bị 10 Ô & Loot** (`scripts/systems/equipment_system.gd`, `scripts/entities/loot_pickup.gd`):
   * [x] 10 ô mặc đồ, 6 phẩm chất (Phàm → Đế), cột sáng loot trên mặt đất, 8 dòng affix ngẫu nhiên, 3 Set Bonus, cường hóa `+0 → +15`, phân giải đồ lẻ & phân giải hàng loạt.
 * [x] **Lò Luyện Đan `[L]`** (`scripts/systems/alchemy_system.gd`, `scripts/ui/hud_controller.gd`):
-  * [x] 7 công thức Phẩm 1–4, Mini-game canh Hỏa Hầu `[Space]` + Chắn Đan Lôi `[E]` thưởng `+1` viên & `+50% SOUL`.
-* [x] **Quái, Boss & Đồng Hành**:
-  * [x] 20 kẻ địch (8 quái thường + 12 Boss có 2 Phase ở 55% HP, thanh máu Boss, telegraph, bắn 3 tia kiếm khí).
-  * [x] 6 Boss đã có sprite sheet 4 frame (`tieu_ninh`, `gia_liet_ao`, `tieu_tu_tinh_su`, `muc_xa`, `hai_ba_dong`, `hoa_linh_xa`).
-  * [x] 3 Đồng Hành AI `[G]`: Hồn Ảnh Dược Lão, Tiểu Y Tiên, Thần Thú Thải Lân.
+  * [x] 7 công thức Phẩm 1–4, Mini-game canh Hỏa Hầu `[Space]` + Chắn Đan Lôi `[E]` có cộng thưởng trực tiếp từ Dị Hỏa, Dược Đỉnh, Linh Hồn & Hảo Cảm Tiểu Y Tiên; hỗ trợ uống & gắn nhanh **Băng Tâm Đan** và **Hạt Thanh Liên Tử**.
+* [x] **Quái, Boss, Hỏa Liên & Hồng Nhan**:
+  * [x] 20 kẻ địch (8 quái thường + **12/12 Boss** có bộ chiêu thức/pattern riêng, 2 Phase ở 55% HP, thanh máu Boss, `BossHazardZone` cột lửa/vũng độc/băng trụ/dung nham/bão cát & đạn chuyên biệt).
+  * [x] **12/12 Boss** đều đã có sprite sheet 4 frame (`anim_sheet`) mượt 60 FPS.
+  * [x] Hiện thực hóa đủ **28 hiệu ứng đặc biệt (`lotus_effect`)** cho 28 ngọn Hỏa trong Phật Nộ Hỏa Liên `[F]` kèm vòng lửa 2–4 màu đồng tâm.
+  * [x] 3 Đồng Hành AI `[G]` (Dược Lão, Tiểu Y Tiên, Thải Lân) + **Hệ thống Hồng Nhan Tri Kỷ** trong `[M]` (4 mốc Buff 25/50/75/100, Quà Tri Kỷ & Tặng Quà x2 sở thích).
 * [x] **Giao Diện MOBA, Save/Load, DEMO & Âm Thanh**:
   * [x] HUD MOBA bấm chuột trực tiếp + quét hồi chiêu + Tooltip + Live Mini-Map + Bản Đồ Thế Giới `[M]`.
   * [x] Màn hình chính + Lưu/Tải 3 Ô Nạp Giới (nhớ tọa độ `(x, y)`) + Auto-Save + Auto-Continue + **Chế Độ DEMO** (Ô 3, mở khóa toàn bộ & Dịch Chuyển Nhanh `[M]`).
@@ -79,25 +80,26 @@
   * [ ] Radar Linh Hồn cảm ứng bí bảo/quái ẩn (`radar_radius_px`), giới hạn phẩm luyện đan theo Cảnh Linh Hồn (`alchemy_max_tier`), Hồn Kỹ thực chiến, Nội Thị Kinh Mạch, tỷ lệ Tẩu Hỏa Nhập Ma & Độ Kiếp Thiên Lôi.
 * [ ] **Đấu Kỹ & Hiệu Ứng Dị Hỏa Chuyên Sâu**:
   * [ ] Bổ sung 14 Đấu Kỹ còn lại (10/24 → 24/24).
-  * [ ] Hiện thực hóa **28 hiệu ứng đặc biệt (`lotus_effect`)** trong `data/flames.json` khi dung hợp vào Phật Nộ Hỏa Liên (đóng băng, giật sét choáng, khiên đất, hút máu, xóa buff Boss, mưa thiên thạch, hắc động...) và vẽ đủ hiệu ứng cho cả 3–4 ngọn Hỏa ghép.
+  * [x] Hiện thực hóa **28 hiệu ứng đặc biệt (`lotus_effect`)** trong `data/flames.json` khi dung hợp vào Phật Nộ Hỏa Liên và vẽ vòng màu cho đủ 2–4 ngọn Hỏa ghép.
   * [ ] Độ Thông Thạo Đấu Kỹ (Mastery), thanh Poise/Phá Giáp, Lưu Hỏa dung hợp thường trực, Ma Độc Ban (Ch.07–08), Đế Tộc Văn (Ch.09+), Cải trang Hắc Bào — Nham Kiêu.
 * [ ] **Quái Vật & Boss Đa Dạng Hóa**:
   * [ ] Mở rộng AI quái thường từ 3 mẫu lên 8 mẫu GDD (Độn Thổ, Pháo Kích, Kiếm Trận, Tàng Hình, Khiên Trước, Xiềng Xích Hút Hồn, Tự Bạo).
-  * [ ] Tách kịch bản chiêu thức đặc thù cho từng Boss thay vì dùng chung 1 máy trạng thái `boss_duelist`.
+  * [x] Tách kịch bản chiêu thức đặc thù cho từng Boss (12 Boss Ch.01–03 đã có bộ chiêu & địa hình riêng).
   * [ ] Bổ sung 13+ Đại Boss Chương 04–11 (tổng 25 Boss GDD), chế độ tái chiến **Tâm Ma Luyện Cảnh** (3 độ khó + xếp hạng `C → SSS`) và **Đồ Giám Vạn Thú**.
 * [ ] **Luyện Đan, Đấu Giá & Trang Bị Sinh Trưởng**:
   * [ ] Mở rộng từ 7 lên 36 đan phương (Phẩm 5–9 + Đế Phẩm), 13 danh đỉnh Thiên Đỉnh Bảng, Đan Lôi thực chiến trên bản đồ, Đan Thú hoang dã.
   * [ ] Nâng Phòng Đấu Giá Nhã Phi thành **Mini-game Đấu Giá tương tác** (trả giá đấu trí, ký gửi bán đan dược dưới thân phận Hắc Bào Tiên Sinh) và chế độ **Đại Hội Luyện Đan**.
   * [ ] Hệ thống **Chế Tạo & Nuôi Dưỡng Yêu Khôi** (Địa Yêu Khôi → Thiên Yêu Khôi → Bắc Vương + 4 lệnh AI), rãnh khảm Ma Hạch lên Huyền Trọng Xích, dung luyện Ma Hạch, 8 mảnh Đà Xá Cổ Đế Ngọc, Tọa Kỵ / Trùng Động.
 * [ ] **Hồng Nhan, Đồng Hành & Thế Lực Tự Lập**:
-  * [ ] Gắn gameplay thực tế cho điểm **Hảo Cảm** (10 cấp thưởng, tặng quà, nhiệm vụ riêng từng Hồng Nhan, Tuyệt Kỹ Hợp Kích đôi) và mở rộng dàn đồng hành (Huân Nhi, Vân Vận, Tử Nghiên, Thanh Lân, Hải Ba Đông...).
+  * [x] Gắn gameplay thực tế cho điểm **Hảo Cảm** 5 Hồng Nhan (4 mốc Buff 25/50/75/100, tặng quà x2 sở thích & nhận Quà Tri Kỷ trong `[M]`).
+  * [ ] Nhiệm vụ riêng từng Hồng Nhan, Tuyệt Kỹ Hợp Kích đôi, và chiêu mộ dàn đồng hành sau (Huân Nhi, Vân Vận, Tử Nghiên, Thanh Lân, Hải Ba Đông...).
   * [ ] Hệ thống **Quản Lý Tông Môn Tự Lập** (`Bàn Môn → Viêm Minh → Thiên Phủ Liên Minh`): phái đệ tử thu dược liệu tự động, sảnh luyện đan thụ động, sự kiện phòng thủ Hồn Điện tập kích.
 * [ ] **8 Phó Bản Cày Cuốc & Endgame**:
   * [ ] Thiên Phần Luyện Khí Tháp, Đấu Trường Cường Bảng, Thiên Sơn Huyết Đàm, Vạn Dặm Đan Giới (roguelite), Viễn Cổ Di Tích, Thiên Mộ, 17 Bí Cảnh Dị Hỏa Ẩn, Khe Nứt Đại Thiên Thế Giới & `New Game+`.
 * [ ] **Đồ Họa, Âm Thanh & Đóng Gói**:
-  * [ ] Vẽ bổ sung `anim_sheet` 4 frame cho 6 Boss còn lại (`tieu_ngoc`, `lieu_tich`, `thach_khoi`, `muc_luc`, `mac_ba_tu`, `co_ha`) và animation Idle 4 frame cho Tiêu Viêm; xóa file dư `assets/sprites/player/tieu_viem.png`.
-  * [ ] Bổ sung BGM riêng cho Sa Mạc / Dung Nham / Thánh Thành / Cảnh chia ly.
-  * [ ] Thiết lập cài đặt Đồ họa (Fullscreen/Độ phân giải), đổi phím (Key Rebinding), khởi tạo **Git**, cấu hình `export_presets.cfg` để build `.exe`/Web độc lập.
+  * [x] Hoàn thiện `anim_sheet` 4 frame cho toàn bộ 12/12 Boss (`tieu_ngoc`, `lieu_tich`, `thach_khoi`, `muc_luc`, `mac_ba_tu`, `co_ha`) & xóa file dư `assets/sprites/player/tieu_viem.png`.
+  * [ ] Vẽ animation Idle 4 frame cho Tiêu Viêm; bổ sung BGM riêng cho Sa Mạc / Dung Nham / Thánh Thành / Cảnh chia ly.
+  * [ ] Thiết lập cài đặt Đồ họa (Fullscreen/Độ phân giải), đổi phím (Key Rebinding) và cấu hình `export_presets.cfg` để build `.exe`/Web độc lập.
 
 ---
 
@@ -105,30 +107,30 @@
 
 | Mã | Mức độ | Vị trí mã nguồn | Mô tả vấn đề & Hướng khắc phục | Trạng thái |
 | :--- | :---: | :--- | :--- | :---: |
-| **BUG-01** | Cao | `scripts/autoload/audio_manager.gd` (`L65-73`) & `scripts/autoload/player_data.gd` (`L115-145`) | **Xung đột ghi đè `user://dptk_settings.json`**: Khi khởi động, `PlayerData.load_user_settings()` gọi `AudioManager.set_bgm_volume()` / `set_sfx_volume()` khiến `AudioManager._save_settings()` ghi đè file chỉ còn 3 trường âm thanh, làm mất `auto_save_enabled`, `auto_continue_on_start`, `last_played_slot`. Đồng thời `PlayerData.save_user_settings()` thiếu `is_muted`. **Khắc phục**: Gom đọc/ghi `dptk_settings.json` về một đầu mối duy nhất hoặc merge JSON trước khi ghi. | [ ] Mở |
-| **BUG-02** | Cao | `scripts/entities/player_controller.gd` (`L480-488`) & `scripts/ui/hud_controller.gd` | **Đan dược Chương 03 không uống được**: `pill_bang_tam_dan` (+185 HP) và `pill_thanh_lien_tu` (+140 QI) đã định nghĩa là `consumable_hp`/`consumable_qi` nhưng phím `1/2/3` đang hardcode 3 viên Ch.01 và UI không có nút uống đan từ túi đồ. **Khắc phục**: Cho phép tự ưu tiên uống viên cao cấp hoặc thêm tab Nạp Giới Dược Phẩm bấm dùng trực tiếp / chọn gắn vào ô `1/2/3`. | [ ] Mở |
-| **BUG-03** | Trung bình | `scripts/ui/hud_controller.gd` (`L1782-1795`) | **Tràn ngang Xưởng Hỏa Liên `[K]` ở Chế Độ DEMO**: 28 nút Hỏa đặt trong `HBoxContainer` khiến hàng nút tràn ra ngoài cửa sổ modal. **Khắc phục**: Đổi `HBoxContainer` thành `HFlowContainer` (hoặc `GridContainer` 4 cột). | [ ] Mở |
-| **BUG-04** | Trung bình | `scripts/systems/alchemy_system.gd` (`L23-30`) & `scripts/ui/hud_controller.gd` (`L1860-2007`) | **Thưởng Dị Hỏa & Dược Đỉnh không tác động vào Mini-game Luyện Đan**: `get_success_chance()` chỉ dùng cho nút *Luyện Nhanh* (Phẩm 1), không mở rộng vùng xanh hoặc giảm tốc độ nguội khi chơi Mini-game (Phẩm 2–4). **Khắc phục**: Áp dụng `flame_bonus + gear_bonus + soul_diff` để mở rộng vùng Đan Tâm & giảm độ rung nhiệt trong mini-game. | [ ] Mở |
-| **BUG-05** | Thấp | `scripts/systems/world_stage_manager.gd` (`L1016-1021`, `L1052-1114`) | Nhiệm vụ `q07_dot_pha_dau_gia` chưa có waypoint chỉ đường; `get_minimap_snapshot()` kiểm tra cổng mở bằng `has_flag()` thay vì dùng `_is_portal_unlocked()`. | [ ] Mở |
-| **BUG-06** | Thấp | `scripts/entities/player_controller.gd` (`L856`) & `data/realms.json` (`L5`) | Hệ số sát thương gánh thêm khi bị áp chế cảnh giới bị hardcode `0.25` thay vì đọc `damage_taken_bonus_per_major_realm` (`0.30`) từ `GameDatabase.suppression_rules`. | [ ] Mở |
-| **DOC-01** | Thấp | `docs/00_Tong_Quan_Kien_Truc/01_Art_Spec_Huong_Dan_Ve_Pixel.md` & comment đầu script | `01_Art_Spec` vẫn ghi `640×360` / `48×48` (game đã lên `1280×720` HD); vài comment đầu file `player_data.gd` và `world_stage_manager.gd` vẫn ghi "7 bản đồ / 15 mốc". | [ ] Mở |
-| **OPS-01** | Trung bình | Thư mục gốc dự án | Chưa khởi tạo Git (`.git`) và chưa có `export_presets.cfg` để đóng gói bản phát hành. | [ ] Mở |
+| **BUG-01** | Cao | `scripts/autoload/audio_manager.gd` & `scripts/autoload/player_data.gd` | **Xung đột ghi đè `user://dptk_settings.json`**: Đã đồng bộ merge JSON an toàn, truyền `save_to_disk=false` khi load và lưu đủ cả `is_muted` + các cờ Auto-Save/Auto-Continue. | [x] Đã sửa (`v0.3.5`) |
+| **BUG-02** | Cao | `scripts/autoload/player_data.gd`, `player_controller.gd`, `hud_controller.gd` | **Đan dược Chương 03 không uống được**: Đã thêm fallback thông minh cho phím `[1]`/`[2]` + thanh Uống Đan trực tiếp & nút Gắn `[1]`/`[2]` trong `[L]` và `[I]` cho **Băng Tâm Đan** & **Hạt Thanh Liên Tử**. | [x] Đã sửa (`v0.3.5`) |
+| **BUG-03** | Trung bình | `scripts/ui/hud_controller.gd` | **Tràn ngang Xưởng Hỏa Liên `[K]` ở Chế Độ DEMO**: Đã đổi `HBoxContainer` → `HFlowContainer` kèm danh sách `lotus_effect` đang kích hoạt. | [x] Đã sửa (`v0.3.5`) |
+| **BUG-04** | Trung bình | `scripts/systems/alchemy_system.gd` & `scripts/ui/hud_controller.gd` | **Thưởng Dị Hỏa & Dược Đỉnh vào Mini-game Luyện Đan**: Đã thêm `AlchemySystem.get_minigame_modifiers()` nối Dị Hỏa + Dược Đỉnh + Hảo Cảm Tiểu Y Tiên + SOUL để mở rộng vùng Đan Tâm, làm dịu tốc độ nguội và tăng thời gian Chắn Đan Lôi. | [x] Đã sửa (`v0.3.5`) |
+| **BUG-05** | Thấp | `scripts/systems/world_stage_manager.gd` | Đã bổ sung waypoint cho `q07_dot_pha_dau_gia` và sửa `get_minimap_snapshot()` gọi `_is_portal_unlocked()`. | [x] Đã sửa (`v0.3.5`) |
+| **BUG-06** | Thấp | `scripts/entities/player_controller.gd` & `data/realms.json` | Đã đọc động `damage_taken_bonus_per_major_realm` (`0.30`) từ `GameDatabase.suppression_rules`. | [x] Đã sửa (`v0.3.5`) |
+| **DOC-01** | Thấp | `01_Art_Spec_Huong_Dan_Ve_Pixel.md`, `player_data.gd`, `world_stage_manager.gd` | Đã cập nhật thông số `1280×720 HD` và comment đầu file chuẩn 11 bản đồ / 21 mốc. | [x] Đã sửa (`v0.3.5`) |
+| **OPS-01** | Trung bình | Thư mục gốc dự án | Đã khởi tạo Git (`.git`) và commit mốc nền; còn thiếu `export_presets.cfg` để đóng gói bản phát hành. | [ ] Một phần |
 
 ---
 
 ## 5. Lộ Trình Triển Khai Theo Mốc (Milestones)
 
-### Mốc M1 — Ổn Định Nền & Dọn Bug (`v0.3.1`)
-* [ ] Khởi tạo Git repository và commit mốc nền `v0.3.0`.
-* [ ] Sửa trọn bộ `BUG-01` → `BUG-06`, dọn `DOC-01` và xóa file sprite thừa `tieu_viem.png`.
-* [ ] Kiểm thử toàn tuyến Chương 01–03 từ phút 0 và kiểm thử Chế Độ DEMO / Auto-Save / Auto-Continue.
+### Mốc M1 — Ổn Định Nền & Dọn Bug (`v0.3.1`) — ✅ HOÀN TẤT
+* [x] Khởi tạo Git repository và commit mốc nền `v0.3.0`.
+* [x] Sửa trọn bộ `BUG-01` → `BUG-06`, dọn `DOC-01` và xóa file sprite thừa `tieu_viem.png`.
+* [x] Kiểm thử tự động bằng Godot headless (`0` lỗi).
 
-### Mốc M2 — Đào Sâu Cơ Chế Chiến Đấu & Hảo Cảm (`v0.3.5`)
-* [ ] Lập trình nhóm hiệu ứng thực chiến `lotus_effect` cho Phật Nộ Hỏa Liên (tối thiểu toàn bộ nhóm lửa Ch.01–04 + top Dị Hỏa).
-* [ ] Đa dạng hóa chiêu thức riêng cho 12 Boss hiện có (tách pattern Hải Ba Đông, Song Đầu Hỏa Linh Xà, Đan Vương Cổ Hà, Mục Xà...).
-* [ ] Hoàn thiện `anim_sheet` 4 frame cho 6 Boss còn lại & Idle animation cho Tiêu Viêm.
-* [ ] Kích hoạt thưởng Hảo Cảm theo mốc (buff/quà/đối thoại phụ) cho 5 Hồng Nhan hiện tại.
-* [ ] Bổ sung nhạc nền Sa Mạc / Dung Nham và tùy chọn Fullscreen trong Menu cài đặt.
+### Mốc M2 — Đào Sâu Cơ Chế Chiến Đấu & Hảo Cảm (`v0.3.5`) — ✅ HOÀN TẤT (cốt lõi)
+* [x] Lập trình trọn bộ **28 hiệu ứng thực chiến `lotus_effect`** cho Phật Nộ Hỏa Liên `[F]` & vẽ đủ 2–4 vòng màu Hỏa dung hợp.
+* [x] Đa dạng hóa chiêu thức & pattern riêng cho **12/12 Boss** (kèm `BossHazardZone`: cột lửa, vũng độc, băng trụ làm chậm, hồ dung nham, bão cát & khiên Boss).
+* [x] Hoàn thiện `anim_sheet` 4 frame cho 6 Boss còn lại (**12/12 Boss** đều có hoạt ảnh 4 khung hình).
+* [x] Kích hoạt **Hảo Cảm Hồng Nhan** (4 mốc Buff 25/50/75/100, Quà Tri Kỷ & Tặng Quà x2 sở thích) ngay trong `[M]`.
+* [ ] *(Tùy chọn bổ sung)* Idle 4 frame Tiêu Viêm, nhạc nền Sa Mạc/Dung Nham & nút Fullscreen trong cài đặt.
 
 ### Mốc M3 — Chương 04: Đế Đô & Ước Hẹn 3 Năm (`v0.4.0` — Trọn Quyển I)
 * [ ] Thêm các bản đồ Chương 04: Diêm Thành / Mặc Gia Bảo, Đế Đô Gia Mã (Công Hội Luyện Dược Sư & Mễ Đặc Nhĩ), Quảng Trường Vân Lam Sơn.
@@ -157,3 +159,4 @@
 | *Trước 24/11/2026* | `v0.1 – v0.2` | Hoàn thiện trọn bộ 24 tài liệu GDD; dựng nền Godot 4 HD `1280×720`, Chương 01–02 (7 map), trang bị 10 ô, luyện đan mini-game, âm thanh procedural. |
 | *Trước 24/11/2026* | `v0.3.0` | Mở rộng trọn vẹn **Chương 03 — Sa Mạc Tháp Qua Nhĩ** (tổng 11 map, 21 mốc NV, 20 quái/Boss, 6 `anim_sheet` Boss, Thần Thú Thải Lân, Phật Nộ Hỏa Liên `[F]`), bổ sung **Chế Độ DEMO** và **Auto-Save / Auto-Continue**. |
 | **24/11/2026** | `v0.3.0` | Rà soát toàn bộ mã nguồn (`9.333` dòng GDScript) đối chiếu GDD; khởi tạo tài liệu theo dõi tiến độ & danh sách lỗi (`BUG-01` → `OPS-01`) này. |
+| **24/11/2026** | `v0.3.5` | Hoàn tất **Mốc M1 & M2**: Khởi tạo Git, sửa `BUG-01`→`BUG-06`, hiện thực hóa trọn bộ **28 hiệu ứng `lotus_effect`**, mở khóa **Buff & Tặng Quà Hồng Nhan**, xây dựng **12 bộ chiêu thức Boss riêng + `BossHazardZone`**, và hoàn thiện **6 `anim_sheet` 4 frame còn lại** (`12/12` Boss). Đã kiểm thử Godot headless `0` lỗi. |

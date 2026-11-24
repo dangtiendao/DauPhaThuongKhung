@@ -104,9 +104,10 @@ func _collect(collect_pos: Vector2) -> void:
 		PlayerData.add_exp(amount, collect_pos + Vector2(0, -40))
 	elif pickup_kind == "gold":
 		EventBus.audio_sfx_requested.emit("loot_pickup")
-		PlayerData.gold += amount
+		var final_g: int = maxi(1, int(round(float(amount) * PlayerData.get_gold_reward_mult())))
+		PlayerData.gold += final_g
 		EventBus.stats_changed.emit()
-		EventBus.floating_text_requested.emit(collect_pos + Vector2(0, -48), "+%d Kim Tệ" % amount, Color("#FFD166"))
+		EventBus.floating_text_requested.emit(collect_pos + Vector2(0, -48), "+%d Kim Tệ" % final_g, Color("#FFD166"))
 	elif pickup_kind == "gear":
 		EventBus.audio_sfx_requested.emit("loot_rare")
 		PlayerData.add_gear_to_bag(gear_instance)
@@ -116,11 +117,14 @@ func _collect(collect_pos: Vector2) -> void:
 		EventBus.floating_text_requested.emit(collect_pos + Vector2(0, -70), "NHẶT: %s%s" % [title, suffix], rarity_col)
 	else:
 		EventBus.audio_sfx_requested.emit("loot_pickup")
-		PlayerData.add_item(item_id, amount)
 		var idef: Dictionary = GameDatabase.get_item_def(item_id)
+		var final_cnt: int = amount
+		if str(idef.get("type", "")) == "herb" and PlayerData.lotus_double_herb_timer > 0.0:
+			final_cnt *= 2
+		PlayerData.add_item(item_id, final_cnt)
 		var iname: String = str(idef.get("name", item_id))
 		var hex_col: String = str(idef.get("color_hex", "#FFE599"))
-		EventBus.floating_text_requested.emit(collect_pos + Vector2(0, -56), "+%d %s" % [amount, iname], Color(hex_col))
+		EventBus.floating_text_requested.emit(collect_pos + Vector2(0, -56), "+%d %s" % [final_cnt, iname], Color(hex_col))
 	queue_free()
 
 

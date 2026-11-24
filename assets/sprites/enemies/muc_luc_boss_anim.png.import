@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dawicqa1isesv"
-path="res://.godot/imported/tieu_viem.png-4a2ec1eb04c93959de4b144297089aac.ctex"
+uid="uid://bm37tc3wwx484"
+path="res://.godot/imported/muc_luc_boss_anim.png-660e6e92b0894293a507d756473974cb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/tieu_viem.png"
-dest_files=["res://.godot/imported/tieu_viem.png-4a2ec1eb04c93959de4b144297089aac.ctex"]
+source_file="res://assets/sprites/enemies/muc_luc_boss_anim.png"
+dest_files=["res://.godot/imported/muc_luc_boss_anim.png-660e6e92b0894293a507d756473974cb.ctex"]
 
 [params]
 

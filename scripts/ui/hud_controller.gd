@@ -75,13 +75,19 @@ var dialogue_index: int = 0
 var dialogue_finish_action: String = ""
 var dialogue_choices: Array = []
 
-# Mini-Game Lò Luyện Đan (Khống Hỏa + Đón Đan Lôi)
+# Mini-Game Lò Luyện Đan (Khống Hỏa + Đón Đan Lôi — có thưởng Dị Hỏa, Dược Đỉnh, SOUL & Tiểu Y Tiên!)
 var alc_active: bool = false
 var alc_recipe: Dictionary = {}
 var alc_time_left: float = 0.0
 var alc_duration: float = 5.0
 var alc_heat: float = 52.0
 var alc_in_zone_sec: float = 0.0
+var alc_zone_min: float = 38.0
+var alc_zone_max: float = 66.0
+var alc_cool_mult: float = 1.0
+var alc_perfect_req: float = 0.62
+var alc_pass_req: float = 0.28
+var alc_bonus_summary: String = ""
 var alc_lightning_pending: bool = false
 var alc_lightning_triggered: bool = false
 var alc_lightning_window: float = 0.0
@@ -91,6 +97,9 @@ var alc_progress_bar: ProgressBar
 var alc_info_lbl: Label
 var alc_lightning_btn: Button
 var alc_pulse_btn: Button
+
+var world_map_tab: String = "maps" # "maps" hoặc "heroines"
+var selected_gift_heroine: String = "huan_nhi"
 
 var interact_poll_accum: float = 0.0
 var last_nearby_interact: String = "__init__"
@@ -1028,22 +1037,38 @@ func _refresh_moba_dock() -> void:
 		c_col
 	)
 
-	# 7. 3 Ô Đan Dược Bấm Uống Ngay [1] [2] [3]
-	var pill_defs: Array = [
-		{ "id": "pill_ngung_huyet_tan", "icon": "res://assets/sprites/icons/pill_hp_red.png", "title": "[1] Ngưng Huyết Tán", "sub": "Hồi ngay +75 HP", "desc": "Bấm trực tiếp ô này hoặc phím [1] để uống phục hồi sinh lực trong chiến đấu.", "col": Color("#EF476F") },
-		{ "id": "pill_hoi_khi_dan", "icon": "res://assets/sprites/icons/pill_qi_blue.png", "title": "[2] Hồi Khí Đan", "sub": "Hồi ngay +55 Đấu Khí (QI)", "desc": "Bấm trực tiếp ô này hoặc phím [2] để bổ sung Đấu Khí tung chiêu liên tục.", "col": Color("#38BDF8") },
-		{ "id": "pill_truc_co_linh_dich", "icon": "res://assets/sprites/icons/pill_exp_jade.png", "title": "[3] Trúc Cơ Linh Dịch", "sub": "Nhận ngay +240 EXP Đấu Khí", "desc": "Dược dịch ngọc bích Dược Lão dạy luyện đầu đời — bấm để uống tăng tốc đột phá!", "col": Color("#06D6A0") }
-	]
+	# 7. 3 Ô Đan Dược Bấm Uống Ngay [1] [2] [3] (hỗ trợ cả Băng Tâm Đan & Hạt Thanh Liên Tử!)
+	var pill_visual_meta: Dictionary = {
+		"pill_ngung_huyet_tan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Hồi ngay +%d HP", "col": Color("#EF476F") },
+		"pill_bang_tam_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Tứ Phẩm · Hồi ngay +%d HP!", "col": Color("#70D6FF") },
+		"pill_hoi_khi_dan": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Hồi ngay +%d Đấu Khí (QI)", "col": Color("#38BDF8") },
+		"pill_thanh_lien_tu": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Kỳ Bảo · Hồi ngay +%d Đấu Khí!", "col": Color("#2EC4B6") },
+		"pill_truc_co_linh_dich": { "icon": "res://assets/sprites/icons/pill_exp_jade.png", "sub": "Nhận ngay +%d EXP Đấu Khí", "col": Color("#06D6A0") }
+	}
 	for pi in range(3):
-		var pd_info: Dictionary = pill_defs[pi]
-		var cnt: int = PlayerData.get_item_count(str(pd_info["id"]))
+		var slot_n: int = pi + 1
+		var pid: String = PlayerData.get_effective_quick_pill(slot_n)
+		var idef: Dictionary = GameDatabase.get_item_def(pid)
+		var pmeta: Dictionary = pill_visual_meta.get(pid, { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Đan dược", "col": Color("#FFE599") })
+		var cnt: int = PlayerData.get_item_count(pid)
 		var pb: MobaSlotButton = pill_slots[pi]
-		pb.set_slot_visual(load(str(pd_info["icon"])), "x%d" % cnt, false, false, cnt <= 0, Color("#FFFFFF") if cnt > 0 else Color("#6C757D"))
+		var badge_col: Color = Color("#72EFDD") if (pid == "pill_bang_tam_dan" or pid == "pill_thanh_lien_tu") and cnt > 0 else (Color("#FFFFFF") if cnt > 0 else Color("#6C757D"))
+		pb.set_slot_visual(load(str(pmeta["icon"])), "x%d" % cnt, false, false, cnt <= 0, badge_col)
+
+		var eff_amt: int = 0
+		var itype: String = str(idef.get("type", ""))
+		if itype == "consumable_hp":
+			eff_amt = int(round(float(idef.get("heal_hp", 75.0)) * PlayerData.get_heal_effectiveness_mult()))
+		elif itype == "consumable_qi":
+			eff_amt = int(round(float(idef.get("restore_qi", 55.0))))
+		elif itype == "consumable_exp":
+			eff_amt = int(idef.get("grant_exp", 240))
+		var sub_str: String = (str(pmeta["sub"]) % eff_amt) if str(pmeta["sub"]).find("%d") != -1 else str(pmeta["sub"])
 		pb.set_tooltip_info(
-			str(pd_info["title"]) + " (Đang có: %d)" % cnt,
-			str(pd_info["sub"]),
-			str(pd_info["desc"]),
-			pd_info["col"] as Color
+			"[%d] %s (Đang có: %d)" % [slot_n, str(idef.get("name", pid)), cnt],
+			sub_str,
+			str(idef.get("description", "")) + "\n(Tự động chuyển sang Băng Tâm Đan / Hạt Thanh Liên Tử khi hết đan sơ cấp — hoặc đổi trực tiếp trong [L] / [I]!)",
+			pmeta["col"] as Color
 		)
 
 	# 8. 8 Nút Hệ Thống góc trái dưới
@@ -1305,7 +1330,8 @@ func _refresh_stats() -> void:
 
 	hp_bar.max_value = m_hp
 	target_hp_val = PlayerData.current_hp
-	hp_val_lbl.text = "HP  %d / %d" % [int(PlayerData.current_hp), int(m_hp)]
+	var sh_txt: String = "  (+%d Khiên)" % int(round(PlayerData.lotus_shield_hp)) if PlayerData.lotus_shield_hp > 1.0 else ""
+	hp_val_lbl.text = "HP  %d / %d%s" % [int(PlayerData.current_hp), int(m_hp), sh_txt]
 
 	qi_bar.max_value = m_qi
 	target_qi_val = PlayerData.current_qi
@@ -1615,20 +1641,62 @@ func _build_pause_menu_content(vbox: VBoxContainer) -> void:
 
 
 # =========================================================
-# [M] BẢN ĐỒ THẾ GIỚI (7 BẢN ĐỒ CHƯƠNG 01-02) + HẢO CẢM & KỲ VẬT
+# [M] BẢN ĐỒ THẾ GIỚI (11 BẢN ĐỒ CH.01–03) & HỒNG NHAN (BUFF · TẶNG QUÀ)
 # =========================================================
 func _build_world_map_content(vbox: VBoxContainer) -> void:
-	modal_title_lbl.text = "[M] BẢN ĐỒ THẾ GIỚI (11 KHU VỰC · CH.01–03) • HẢO CẢM HỒNG NHAN & KỲ VẬT"
-	vbox.add_theme_constant_override("separation", 5)
+	modal_title_lbl.text = "[M] BẢN ĐỒ THẾ GIỚI (11 KHU VỰC) • HỒNG NHAN (BUFF & TẶNG QUÀ) • KỲ VẬT"
+	vbox.add_theme_constant_override("separation", 6)
 
-	# 1. Hảo Cảm 5 Hồng Nhan & Kỳ Vật Cốt Truyện
+	# Thanh chuyển tab gọn gàng giữa Bản Đồ Thế Giới & Hồng Nhan Tri Kỷ
+	var tab_row := HBoxContainer.new()
+	tab_row.add_theme_constant_override("separation", 8)
+	vbox.add_child(tab_row)
+
+	var unclaimed_gifts: int = 0
+	for prof in PlayerData.get_heroine_profiles():
+		var hk: String = str(prof.get("key", ""))
+		var cur_a: int = PlayerData.get_affection(hk)
+		for ms in prof.get("milestones", []):
+			var req_v: int = int(ms.get("req", 999))
+			if ms.has("gift_items") and cur_a >= req_v and not PlayerData.is_affection_milestone_claimed(hk, req_v):
+				unclaimed_gifts += 1
+
+	var tab_maps_btn := Button.new()
+	tab_maps_btn.text = "★ Bản Đồ Thế Giới (11 Khu Vực)" if world_map_tab == "maps" else "Bản Đồ Thế Giới (11 Khu Vực)"
+	tab_maps_btn.disabled = (world_map_tab == "maps")
+	tab_maps_btn.add_theme_font_size_override("font_size", 13)
+	tab_maps_btn.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		world_map_tab = "maps"
+		_populate_modal()
+	)
+	tab_row.add_child(tab_maps_btn)
+
+	var gift_badge: String = "  [%d QUÀ MỚI!]" % unclaimed_gifts if unclaimed_gifts > 0 else ""
+	var tab_her_btn := Button.new()
+	tab_her_btn.text = ("★ " if world_map_tab == "heroines" else "") + "Hồng Nhan — Buff Hảo Cảm & Tặng Quà" + gift_badge
+	tab_her_btn.disabled = (world_map_tab == "heroines")
+	tab_her_btn.add_theme_font_size_override("font_size", 13)
+	tab_her_btn.add_theme_color_override("font_color", Color("#FFD166") if unclaimed_gifts > 0 else Color("#E0AAFF"))
+	tab_her_btn.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		world_map_tab = "heroines"
+		_populate_modal()
+	)
+	tab_row.add_child(tab_her_btn)
+
+	if world_map_tab == "heroines":
+		_build_heroines_affection_tab(vbox)
+		return
+
+	# 1. Tóm tắt Buff Hồng Nhan & Kỳ Vật Cốt Truyện
 	var lore_card := _make_styled_panel(Color(0.11, 0.08, 0.16, 0.94), Color("#E0AAFF"), 1, 7)
 	vbox.add_child(lore_card)
 	var lv := VBoxContainer.new()
-	lv.add_theme_constant_override("separation", 2)
+	lv.add_theme_constant_override("separation", 3)
 	lore_card.add_child(lv)
 	lv.add_child(_make_label(
-		"HỒNG NHAN:  Huân Nhi %d  |  Tiểu Y Tiên %d  |  Vân Chi %d  |  Thanh Lân %d  |  Thải Lân (Mỹ Đỗ Toa) %d" % [
+		"HỒNG NHAN:  Huân Nhi %d  |  Tiểu Y Tiên %d  |  Vân Chi %d  |  Thanh Lân %d  |  Thải Lân %d" % [
 			PlayerData.get_affection("huan_nhi"),
 			PlayerData.get_affection("tieu_y_tien"),
 			PlayerData.get_affection("van_chi"),
@@ -1638,6 +1706,9 @@ func _build_world_map_content(vbox: VBoxContainer) -> void:
 		12,
 		Color("#FFD166")
 	))
+	var buff_l := _make_label("Buff Hảo Cảm Đang Kích Hoạt: " + PlayerData.get_active_affection_summary_text(), 11, Color("#80ED99"))
+	buff_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lv.add_child(buff_l)
 	var relic_txt: String = " · ".join(PlayerData.story_relics) if not PlayerData.story_relics.is_empty() else "(Chưa thu thập — Hãy hoàn thành các mốc cốt truyện & kỳ ngộ ẩn!)"
 	var rl := _make_label("Kỳ Vật & Danh Hiệu Đã Đạt (%d): %s" % [PlayerData.story_relics.size(), relic_txt], 11, Color("#A8DADC"))
 	rl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -1703,6 +1774,139 @@ func _build_world_map_content(vbox: VBoxContainer) -> void:
 					w.load_map(target_mid, Vector2.ZERO, true)
 			)
 			row_m.add_child(tp_btn)
+
+
+func _build_heroines_affection_tab(vbox: VBoxContainer) -> void:
+	var sum_card := _make_styled_panel(Color(0.11, 0.08, 0.17, 0.95), Color("#FFD166"), 1, 8)
+	vbox.add_child(sum_card)
+	var sum_v := VBoxContainer.new()
+	sum_v.add_theme_constant_override("separation", 3)
+	sum_card.add_child(sum_v)
+	sum_v.add_child(_make_label("TỔNG BUFF HẢO CẢM HỒNG NHAN ĐANG KÍCH HOẠT (CỘNG THẲNG VÀO CHỈ SỐ TIÊU VIÊM):", 12, Color("#FFD166")))
+	var s_lbl := _make_label(PlayerData.get_active_affection_summary_text(), 12, Color("#80ED99"))
+	s_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sum_v.add_child(s_lbl)
+
+	# Khu vực Tặng Quà cho Hồng Nhan đang chọn
+	var gift_card := _make_styled_panel(Color(0.08, 0.11, 0.17, 0.94), Color("#2EC4B6"), 1, 8)
+	vbox.add_child(gift_card)
+	var gv := VBoxContainer.new()
+	gv.add_theme_constant_override("separation", 5)
+	gift_card.add_child(gv)
+
+	var sel_name: String = selected_gift_heroine
+	var sel_favs: Array = []
+	var sel_fav_hint: String = ""
+	for p in PlayerData.get_heroine_profiles():
+		if str(p.get("key", "")) == selected_gift_heroine:
+			sel_name = str(p.get("name", ""))
+			sel_favs = p.get("favorite_items", [])
+			sel_fav_hint = str(p.get("fav_hint", ""))
+			break
+	gv.add_child(_make_label("TẶNG QUÀ TĂNG HẢO CẢM -> Đang chọn: %s (%d/100)  |  Sở thích (x2 điểm): %s" % [
+		sel_name, PlayerData.get_affection(selected_gift_heroine), sel_fav_hint
+	], 12, Color("#72EFDD")))
+
+	var gift_flow := HFlowContainer.new()
+	gift_flow.add_theme_constant_override("h_separation", 6)
+	gift_flow.add_theme_constant_override("v_separation", 5)
+	gv.add_child(gift_flow)
+
+	var any_gift: bool = false
+	for iid in PlayerData.inventory.keys():
+		var cnt: int = int(PlayerData.inventory[iid])
+		if cnt <= 0:
+			continue
+		var idef: Dictionary = GameDatabase.get_item_def(str(iid))
+		if str(idef.get("type", "")) == "breakthrough":
+			continue
+		any_gift = true
+		var is_fav: bool = sel_favs.has(str(iid))
+		var item_key: String = str(iid)
+		var gb := Button.new()
+		gb.text = "%s%s (x%d)" % ["★ " if is_fav else "", str(idef.get("name", item_key)), cnt]
+		gb.add_theme_font_size_override("font_size", 11)
+		if is_fav:
+			gb.add_theme_color_override("font_color", Color("#FFD166"))
+		gb.pressed.connect(func() -> void:
+			var res: Dictionary = PlayerData.give_gift_to_heroine(selected_gift_heroine, item_key)
+			modal_status_lbl.text = str(res.get("msg", ""))
+			_populate_modal()
+		)
+		gift_flow.add_child(gb)
+	if not any_gift:
+		gv.add_child(_make_label("(Nạp Giới chưa có thảo dược / ma hạch / đan dược nào để tặng — hãy đánh quái hoặc mua tại Nhã Phi!)", 11, Color("#ADB5BD")))
+
+	# 5 Thẻ Hồng Nhan chi tiết: thanh tiến độ, 4 mốc 25/50/75/100, nút Chọn Tặng Quà & Nhận Quà Tri Kỷ
+	for prof in PlayerData.get_heroine_profiles():
+		var hk: String = str(prof.get("key", ""))
+		var col := Color(str(prof.get("color", "#FFD166")))
+		var cur_a: int = PlayerData.get_affection(hk)
+		var is_sel: bool = (hk == selected_gift_heroine)
+		var card := _make_styled_panel(Color(0.09, 0.10, 0.17, 0.95), col if is_sel else Color("#3A4760"), 2 if is_sel else 1, 7)
+		vbox.add_child(card)
+
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		card.add_child(row)
+
+		row.add_child(_make_icon_box(str(prof.get("sprite", "res://assets/sprites/npcs/npc_huan_nhi.png")), col, 52))
+
+		var info_v := VBoxContainer.new()
+		info_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info_v.add_theme_constant_override("separation", 3)
+		row.add_child(info_v)
+
+		var hdr := HBoxContainer.new()
+		hdr.add_theme_constant_override("separation", 8)
+		info_v.add_child(hdr)
+
+		var nm_l := _make_label("%s  <%s>  —  Hảo Cảm: %d / 100" % [str(prof.get("name", "")), str(prof.get("title", "")), cur_a], 13, col)
+		nm_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		hdr.add_child(nm_l)
+
+		var sel_b := Button.new()
+		sel_b.text = "Đang Chọn Tặng Quà" if is_sel else "Chọn Tặng Quà"
+		sel_b.disabled = is_sel
+		sel_b.add_theme_font_size_override("font_size", 11)
+		sel_b.pressed.connect(func() -> void:
+			AudioManager.play_sfx("ui_click")
+			selected_gift_heroine = hk
+			_populate_modal()
+		)
+		hdr.add_child(sel_b)
+
+		var pbar := _make_bar(col, 9, 400)
+		pbar.max_value = 100.0
+		pbar.value = float(cur_a)
+		info_v.add_child(pbar)
+
+		var ms_flow := HFlowContainer.new()
+		ms_flow.add_theme_constant_override("h_separation", 8)
+		ms_flow.add_theme_constant_override("v_separation", 4)
+		info_v.add_child(ms_flow)
+
+		for ms in prof.get("milestones", []):
+			var req_v: int = int(ms.get("req", 25))
+			var reached: bool = (cur_a >= req_v)
+			var desc_m: String = str(ms.get("desc", ""))
+			var m_lbl := _make_label("%s [%d]: %s" % ["✓" if reached else "○", req_v, desc_m], 11, Color("#80ED99") if reached else Color("#868E96"))
+			ms_flow.add_child(m_lbl)
+
+			if ms.has("gift_items") and reached:
+				var claimed: bool = PlayerData.is_affection_milestone_claimed(hk, req_v)
+				var cb := Button.new()
+				cb.text = "Đã nhận quà %d" % req_v if claimed else "★ Nhận Quà Mốc %d!" % req_v
+				cb.disabled = claimed
+				cb.add_theme_font_size_override("font_size", 11)
+				if not claimed:
+					cb.add_theme_color_override("font_color", Color("#FFD166"))
+				cb.pressed.connect(func() -> void:
+					var res: Dictionary = PlayerData.claim_affection_milestone(hk, req_v)
+					modal_status_lbl.text = str(res.get("msg", ""))
+					_populate_modal()
+				)
+				ms_flow.add_child(cb)
 
 
 # =========================================================
@@ -1775,24 +1979,38 @@ func _build_skills_codex_content(vbox: VBoxContainer) -> void:
 	lotus_card.add_child(lv)
 
 	var bonus_pct: int = max(0, PlayerData.lotus_fusion_flames.size() - 1) * 28
-	lv.add_child(_make_label("XƯỞNG DUNG HỢP PHẬT NỘ HỎA LIÊN (%d/4 Hỏa đã ghép — Uy lực +%d%%)" % [PlayerData.lotus_fusion_flames.size(), bonus_pct], 14, Color("#E0AAFF")))
+	lv.add_child(_make_label("XƯỞNG DUNG HỢP PHẬT NỘ HỎA LIÊN (%d/4 Hỏa đã ghép — Uy lực +%d%% + Hiệu ứng riêng từng Hỏa!)" % [PlayerData.lotus_fusion_flames.size(), bonus_pct], 14, Color("#E0AAFF")))
 	if PlayerData.unlocked_flames.is_empty():
 		lv.add_child(_make_label("Chưa thu phục ngọn Hỏa nào! Hãy bái sư Dược Lão (Phàm Hỏa) -> Hạ Mục Xà (Tử Hỏa) -> Sa Mạc Chương 03 (Thanh Liên Địa Tâm Hỏa).", 12, Color("#ADB5BD")))
 	else:
-		var f_row := HBoxContainer.new()
-		f_row.add_theme_constant_override("separation", 8)
-		lv.add_child(f_row)
+		# Đổi sang HFlowContainer để tự xuống dòng gọn gàng kể cả khi mở đủ 28 Hỏa trong Chế Độ DEMO!
+		var f_flow := HFlowContainer.new()
+		f_flow.add_theme_constant_override("h_separation", 6)
+		f_flow.add_theme_constant_override("v_separation", 6)
+		lv.add_child(f_flow)
 		for fid in PlayerData.unlocked_flames:
 			var f_str: String = str(fid)
 			var fdef: Dictionary = GameDatabase.get_flame_def(f_str)
 			var in_lotus: bool = PlayerData.lotus_fusion_flames.has(f_str)
 			var fb := Button.new()
 			fb.text = ("★ " if in_lotus else "+ ") + str(fdef.get("name", f_str))
-			fb.add_theme_font_size_override("font_size", 12)
+			fb.tooltip_text = "Hiệu ứng Hỏa Liên: " + str(fdef.get("lotus_effect", ""))
+			fb.add_theme_font_size_override("font_size", 11)
+			if in_lotus:
+				fb.add_theme_color_override("font_color", Color(str(fdef.get("mid_hex", "#FFD166"))).lightened(0.28))
 			fb.pressed.connect(func() -> void:
 				modal_status_lbl.text = PlayerData.toggle_lotus_fusion_flame(f_str)
 			)
-			f_row.add_child(fb)
+			f_flow.add_child(fb)
+
+		if not PlayerData.lotus_fusion_flames.is_empty():
+			var eff_lines: Array = []
+			for lf in PlayerData.lotus_fusion_flames:
+				var ldef: Dictionary = GameDatabase.get_flame_def(str(lf))
+				eff_lines.append("• %s: %s" % [str(ldef.get("name", lf)), str(ldef.get("lotus_effect", ""))])
+			var eff_lbl := _make_label("Hiệu ứng Đang Kích Hoạt trong [F] Phật Nộ Hỏa Liên:\n" + "\n".join(eff_lines), 11, Color("#80ED99"))
+			eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			lv.add_child(eff_lbl)
 
 
 # =========================================================
@@ -1819,7 +2037,71 @@ func _build_alchemy_content(vbox: VBoxContainer) -> void:
 	inv_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(inv_lbl)
 
-	var tip := _make_label("Mẹo Đan Đạo: Chọn [Khai Lò Khống Hỏa] để tự canh thanh Hỏa Hầu trong vùng xanh (38–66) & Chắn Đan Lôi nhận Đan Văn Hoàn Mỹ (+1 viên & +50% SOUL)!", 12, Color("#80ED99"))
+	# Khung Đan Dược Sử Dụng Trực Tiếp (cho phép uống Băng Tâm Đan, Hạt Thanh Liên Tử & chọn gắn lên phím [1]/[2]!)
+	var pill_card := _make_styled_panel(Color(0.08, 0.11, 0.17, 0.94), Color("#70D6FF"), 1, 7)
+	vbox.add_child(pill_card)
+	var pv := VBoxContainer.new()
+	pv.add_theme_constant_override("separation", 4)
+	pill_card.add_child(pv)
+	pv.add_child(_make_label("ĐAN DƯỢC HỒI PHỤC TRONG NẠP GIỚI (Bấm Uống trực tiếp hoặc Gắn vào ô [1] / [2]):", 12, Color("#70D6FF")))
+	var p_flow := HFlowContainer.new()
+	p_flow.add_theme_constant_override("h_separation", 6)
+	p_flow.add_theme_constant_override("v_separation", 5)
+	pv.add_child(p_flow)
+	for c_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich"]:
+		var cid_s: String = str(c_id)
+		var owned_p: int = PlayerData.get_item_count(cid_s)
+		var cdef: Dictionary = GameDatabase.get_item_def(cid_s)
+		var ctype: String = str(cdef.get("type", ""))
+		var p_box := HBoxContainer.new()
+		p_box.add_theme_constant_override("separation", 3)
+		p_flow.add_child(p_box)
+
+		var drink_b := Button.new()
+		drink_b.text = "Uống %s (x%d)" % [str(cdef.get("name", cid_s)), owned_p]
+		drink_b.disabled = (owned_p <= 0)
+		drink_b.add_theme_font_size_override("font_size", 11)
+		drink_b.add_theme_color_override("font_color", Color(str(cdef.get("color_hex", "#FFE599"))) if owned_p > 0 else Color("#6C757D"))
+		drink_b.pressed.connect(func() -> void:
+			var p_nd: Node = _find_player()
+			var wp: Vector2 = (p_nd as Node2D).global_position + Vector2(0, -45) if (p_nd != null and p_nd is Node2D) else Vector2.ZERO
+			if PlayerData.use_consumable(cid_s, wp):
+				modal_status_lbl.text = "Đã uống [%s] thành công!" % str(cdef.get("name", cid_s))
+				_populate_modal()
+			else:
+				modal_status_lbl.text = "HP / Đấu Khí đã đầy hoặc đã hết đan dược này!"
+		)
+		p_box.add_child(drink_b)
+
+		if ctype == "consumable_hp" or ctype == "consumable_qi":
+			var slot_n: int = 1 if ctype == "consumable_hp" else 2
+			var is_assigned: bool = (PlayerData.quick_hp_pill_id == cid_s) if slot_n == 1 else (PlayerData.quick_qi_pill_id == cid_s)
+			var pin_b := Button.new()
+			pin_b.text = "★[%d]" % slot_n if is_assigned else "Gắn[%d]" % slot_n
+			pin_b.disabled = is_assigned
+			pin_b.add_theme_font_size_override("font_size", 10)
+			pin_b.pressed.connect(func() -> void:
+				PlayerData.set_quick_pill_slot(slot_n, cid_s)
+				modal_status_lbl.text = "Đã gắn [%s] làm đan ưu tiên cho phím [%d]!" % [str(cdef.get("name", cid_s)), slot_n]
+				_populate_modal()
+			)
+			p_box.add_child(pin_b)
+
+	var sample_rec: Dictionary = GameDatabase.recipes_list[0] if not GameDatabase.recipes_list.is_empty() else {}
+	var preview_mods: Dictionary = AlchemySystem.get_minigame_modifiers(sample_rec)
+	var tip := _make_label(
+		"Thưởng Khống Hỏa Hiện Tại (+%d%% = Dị Hỏa +%d%% · Dược Đỉnh +%d%% · Tiểu Y Tiên +%d%% · Linh Hồn +%d%%) -> Vùng Đan Tâm mở rộng: [%d – %d]!" % [
+			int(preview_mods.get("total_pct", 0)),
+			int(preview_mods.get("flame_pct", 0)),
+			int(preview_mods.get("gear_pct", 0)),
+			int(preview_mods.get("aff_pct", 0)),
+			int(preview_mods.get("soul_pct", 0)),
+			int(round(float(preview_mods.get("zone_min", 38.0)))),
+			int(round(float(preview_mods.get("zone_max", 66.0))))
+		],
+		12,
+		Color("#80ED99")
+	)
 	tip.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(tip)
 
@@ -1877,18 +2159,29 @@ func _start_alchemy_minigame(recipe: Dictionary) -> void:
 		return
 
 	AlchemySystem.consume_ingredients(recipe)
+	var mods: Dictionary = AlchemySystem.get_minigame_modifiers(recipe)
+	alc_zone_min = float(mods.get("zone_min", 38.0))
+	alc_zone_max = float(mods.get("zone_max", 66.0))
+	alc_cool_mult = float(mods.get("cool_mult", 1.0))
+	alc_perfect_req = float(mods.get("perfect_ratio_req", 0.62))
+	alc_pass_req = float(mods.get("pass_ratio_req", 0.28))
+	alc_bonus_summary = "Thưởng Dị Hỏa +%d%% · Dược Đỉnh +%d%% · Hồng Nhan +%d%% · Linh Hồn +%d%% (Vùng xanh %d–%d · Nguội x%.2f)" % [
+		int(mods.get("flame_pct", 0)), int(mods.get("gear_pct", 0)),
+		int(mods.get("aff_pct", 0)), int(mods.get("soul_pct", 0)),
+		int(round(alc_zone_min)), int(round(alc_zone_max)), alc_cool_mult
+	]
 	alc_active = true
 	alc_recipe = recipe
 	alc_duration = 4.8 if int(recipe.get("tier", 1)) >= 2 else 3.8
 	alc_time_left = alc_duration
-	alc_heat = 52.0
+	alc_heat = (alc_zone_min + alc_zone_max) * 0.5
 	alc_in_zone_sec = 0.0
 	alc_lightning_pending = (int(recipe.get("tier", 1)) >= 2)
 	alc_lightning_triggered = false
 	alc_lightning_window = 0.0
 	alc_lightning_blocked = false
 	AudioManager.play_sfx("skill_fire")
-	modal_status_lbl.text = "ĐANG NUNG LÒ! Giữ Hỏa Hầu trong vùng [38–66] bằng phím [Space] hoặc nút [THÚC HỎA]!"
+	modal_status_lbl.text = "ĐANG NUNG LÒ! Giữ Hỏa Hầu trong vùng [%d–%d] bằng phím [Space] hoặc nút [THÚC HỎA]!" % [int(round(alc_zone_min)), int(round(alc_zone_max))]
 	_populate_modal()
 
 
@@ -1897,12 +2190,15 @@ func _build_alchemy_minigame_view(vbox: VBoxContainer) -> void:
 	var card := _make_styled_panel(Color(0.11, 0.07, 0.09, 0.96), Color("#FF9F1C"), 2, 16)
 	vbox.add_child(card)
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 12)
+	v.add_theme_constant_override("separation", 10)
 	card.add_child(v)
 
 	v.add_child(_make_label("ĐANG LUYỆN CHẾ: %s  (Phẩm %d)" % [str(out_def.get("name", "")), int(alc_recipe.get("tier", 1))], 18, Color("#FFD166")))
+	var b_lbl := _make_label(alc_bonus_summary, 12, Color("#72EFDD"))
+	b_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(b_lbl)
 
-	alc_info_lbl = _make_label("Hỏa Hầu: 52 / 100  (Vùng Đan Tâm chuẩn: 38 — 66)", 14, Color("#80ED99"))
+	alc_info_lbl = _make_label("Hỏa Hầu: 52 / 100  (Vùng Đan Tâm chuẩn: %d — %d)" % [int(round(alc_zone_min)), int(round(alc_zone_max))], 14, Color("#80ED99"))
 	v.add_child(alc_info_lbl)
 
 	alc_heat_bar = _make_bar(Color("#FF9F1C"), 26, 920)
@@ -1958,16 +2254,17 @@ func _alchemy_block_lightning() -> void:
 func _tick_alchemy_minigame(delta: float) -> void:
 	alc_time_left -= delta
 	var tier_f: float = float(alc_recipe.get("tier", 1))
-	var cool_rate: float = 20.0 + tier_f * 4.5 + sin(alc_time_left * 5.0) * 6.0
+	var cool_rate: float = (20.0 + tier_f * 4.5 + sin(alc_time_left * 5.0) * 6.0) * alc_cool_mult
 	alc_heat = clampf(alc_heat - cool_rate * delta, 0.0, 100.0)
 
-	var in_sweet: bool = (alc_heat >= 38.0 and alc_heat <= 66.0)
+	var in_sweet: bool = (alc_heat >= alc_zone_min and alc_heat <= alc_zone_max)
 	if in_sweet:
 		alc_in_zone_sec += delta
 
 	if alc_lightning_pending and not alc_lightning_triggered and alc_time_left <= alc_duration * 0.52:
 		alc_lightning_triggered = true
-		alc_lightning_window = 1.85
+		var mods: Dictionary = AlchemySystem.get_minigame_modifiers(alc_recipe)
+		alc_lightning_window = 1.85 + float(mods.get("lightning_extra_sec", 0.0))
 		AudioManager.play_sfx("boss_roar")
 		modal_status_lbl.text = "CẢNH BÁO ĐAN LÔI GIÁNG XUỐNG! Bấm ngay nút [CHẮN ĐAN LÔI] hoặc phím [E]!"
 
@@ -1987,16 +2284,18 @@ func _tick_alchemy_minigame(delta: float) -> void:
 	if alc_progress_bar != null and is_instance_valid(alc_progress_bar):
 		alc_progress_bar.value = alc_duration - maxf(0.0, alc_time_left)
 	if alc_info_lbl != null and is_instance_valid(alc_info_lbl):
-		var z_txt: String = "ĐÚNG ĐAN TÂM" if in_sweet else ("HỎA QUÁ MẠNH!" if alc_heat > 66.0 else "HỎA YẾU — THÚC HỎA!")
-		alc_info_lbl.text = "Hỏa Hầu: %d / 100  (Chuẩn: 38–66)  ->  %s   |   Còn %.1fs" % [int(round(alc_heat)), z_txt, maxf(0.0, alc_time_left)]
+		var z_txt: String = "ĐÚNG ĐAN TÂM" if in_sweet else ("HỎA QUÁ MẠNH!" if alc_heat > alc_zone_max else "HỎA YẾU — THÚC HỎA!")
+		alc_info_lbl.text = "Hỏa Hầu: %d / 100  (Chuẩn: %d–%d)  ->  %s   |   Còn %.1fs" % [
+			int(round(alc_heat)), int(round(alc_zone_min)), int(round(alc_zone_max)), z_txt, maxf(0.0, alc_time_left)
+		]
 		alc_info_lbl.add_theme_color_override("font_color", Color("#80ED99") if in_sweet else Color("#FF758F"))
 
 	if alc_time_left <= 0.0:
 		var ratio_ok: float = alc_in_zone_sec / maxf(0.1, alc_duration)
 		var q_tier: int = 0
-		if ratio_ok >= 0.62:
+		if ratio_ok >= alc_perfect_req:
 			q_tier = 2
-		elif ratio_ok >= 0.28:
+		elif ratio_ok >= alc_pass_req:
 			q_tier = 1
 		var finished_rec: Dictionary = alc_recipe
 		var blocked_l: bool = alc_lightning_blocked
@@ -2287,6 +2586,32 @@ func _build_equipment_modal() -> void:
 	)
 	bag_hdr.add_child(bulk_salvage_btn)
 
+	# Thanh uống đan nhanh ngay trong Nạp Giới [I] (tiện uống Băng Tâm Đan / Hạt Thanh Liên Tử bất kỳ lúc nào!)
+	var quick_pill_flow := HFlowContainer.new()
+	quick_pill_flow.add_theme_constant_override("h_separation", 4)
+	quick_pill_flow.add_theme_constant_override("v_separation", 4)
+	right_col.add_child(quick_pill_flow)
+	for cid in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich"]:
+		var cid_s: String = str(cid)
+		var p_cnt: int = PlayerData.get_item_count(cid_s)
+		if p_cnt <= 0:
+			continue
+		var cdef: Dictionary = GameDatabase.get_item_def(cid_s)
+		var ub := Button.new()
+		ub.text = "Uống %s (x%d)" % [str(cdef.get("name", cid_s)), p_cnt]
+		ub.add_theme_font_size_override("font_size", 10)
+		ub.add_theme_color_override("font_color", Color(str(cdef.get("color_hex", "#FFE599"))))
+		ub.pressed.connect(func() -> void:
+			var p_nd: Node = _find_player()
+			var wp: Vector2 = (p_nd as Node2D).global_position + Vector2(0, -45) if (p_nd != null and p_nd is Node2D) else Vector2.ZERO
+			if PlayerData.use_consumable(cid_s, wp):
+				modal_status_lbl.text = "Đã uống [%s]!" % str(cdef.get("name", cid_s))
+				_populate_modal()
+			else:
+				modal_status_lbl.text = "HP / Đấu Khí hiện đã đầy!"
+		)
+		quick_pill_flow.add_child(ub)
+
 	var right_scroll := ScrollContainer.new()
 	right_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	right_col.add_child(right_scroll)
@@ -2416,13 +2741,17 @@ func _build_flames_content(vbox: VBoxContainer) -> void:
 		var txt_str: String = ""
 		var txt_col: Color = Color("#6C757D")
 		if is_unlocked:
-			txt_str = " %s  |  Phần Quyết: %s  |  ATK x%.2f  |  +%d%% EXP" % [fname, pq, atk_m, int(exp_b)]
+			var leff: String = str(f_dict.get("lotus_effect", ""))
+			txt_str = " %s  |  Phần Quyết: %s  |  ATK x%.2f  |  +%d%% EXP  |  Luyện Đan +%d%%\n    ✦ Hỏa Liên: %s" % [
+				fname, pq, atk_m, int(exp_b), int(float(f_dict.get("alchemy_bonus_pct", 0.0))), leff
+			]
 			txt_col = Color("#FFD166") if is_cur else Color("#F8F9FA")
 		else:
 			txt_str = " ???  [Chưa thu phục — %s]" % ch_src
 			txt_col = Color("#6C757D")
 
-		var lbl := _make_label(txt_str, 13, txt_col)
+		var lbl := _make_label(txt_str, 12, txt_col)
+		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(lbl)
 

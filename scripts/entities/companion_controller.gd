@@ -106,7 +106,7 @@ func _physics_process(delta: float) -> void:
 		heal_timer -= delta
 		if heal_timer <= 0.0 and PlayerData.current_hp < PlayerData.get_max_hp() * 0.92:
 			heal_timer = 7.5
-			var heal_amt: float = maxf(24.0, PlayerData.get_max_hp() * 0.12)
+			var heal_amt: float = maxf(24.0, PlayerData.get_max_hp() * 0.12) * PlayerData.get_heal_effectiveness_mult()
 			PlayerData.current_hp = minf(PlayerData.get_max_hp(), PlayerData.current_hp + heal_amt)
 			EventBus.stats_changed.emit()
 			EventBus.audio_sfx_requested.emit("loot_pickup")

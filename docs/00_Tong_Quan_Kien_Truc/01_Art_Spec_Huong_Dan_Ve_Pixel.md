@@ -1,14 +1,16 @@
-# QUY CHUẨN KỸ THUẬT TỰ VẼ PIXEL ART (CHUẨN TIÊN HIỆP 48x48 CHO ASEPRITE / LIBRESPRITE)
+# QUY CHUẨN KỸ THUẬT TỰ VẼ PIXEL ART (CHUẨN TIÊN HIỆP 32-BIT HD 1280×720)
 
-Tài liệu này chốt bộ thông số kỹ thuật chuẩn đã cấu hình sẵn trong `project.godot` và toàn bộ các script Godot 4 để bạn tự thiết kế đồ họa Pixel đẹp ngang tầm game Indie (*Sea of Stars / Eastward / Octopath-lite*).
+Tài liệu này chốt bộ thông số kỹ thuật chuẩn đã cấu hình sẵn trong `project.godot` và toàn bộ các script Godot 4 để bạn tự thiết kế đồ họa HD Pixel Art đẹp ngang tầm game Indie (*Sea of Stars / Eastward / Octopath-lite*).
 
 ---
 
 ## 1. Năm Quy Chuẩn Vàng Đã Nâng Cấp
 
-1. **Độ phân giải gốc khung hình (Base Viewport)**: `640 x 360 px` (`16:9` — phóng nét nguyên lần lên `1280x720` và Full HD `1920x1080`).
-2. **Kích thước ô bản đồ (TileMap Grid)**: `16 x 16 px`.
-3. **Khung vẽ Nhân vật & Quái thường**: **`48 x 48 px`** *(thân người cao `36–42 px`, tỷ lệ 2.5–3 đầu — đủ rộng để vẽ rõ tóc bay, nếp gấp Hắc Bào, đai đỏ, ánh mắt sắc lạnh mà vẫn vẽ nhanh animation 4–6 frames!)*.
+1. **Độ phân giải gốc khung hình (Base Viewport)**: `1280 × 720 px` (`16:9` HD Pixel Art, chế độ co giãn `canvas_items / expand`, bộ lọc ảnh `Nearest` giữ nét sắc sảo).
+2. **Kích thước ô bản đồ (Tile Texture)**: `64 × 64 px` / `128 × 128 px` lát liền mạch (`STRETCH_TILE`).
+3. **Khung vẽ Nhân vật & Boss**:
+   * **Tiêu Viêm & NPC**: `96 × 96 px` (idle/NPC), `384 × 96 px` (run 4 frame), `768 × 152 px` (attack liền thân vũ khí 4 frame).
+   * **Boss 4 khung hình (`*_boss_anim.png`)**: `544 × 124 px` đến `640 × 132 px` (`hframes = 4`: `0: Idle`, `1: Stride/Dash`, `2: Windup`, `3: Strike/Cast`).
 4. **Bảng màu Cổ Phong 48 Màu (Hue-Shifted)**:
    * File bảng màu đã tạo sẵn tại `assets/palettes/dptk_xianxia_48.gpl`.
    * Trong **Aseprite / LibreSprite**: Chọn `Palette Options -> Load Palette -> dptk_xianxia_48.gpl`.

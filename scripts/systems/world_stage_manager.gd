@@ -1,8 +1,9 @@
 extends Node2D
-## Hệ thống Quản lý Đa Bản Đồ (7 Bản Đồ Chương 01 & Chương 02 Đầy Đủ):
+## Hệ thống Quản lý Đa Bản Đồ (11 Bản Đồ Quyển I: Chương 01 -> Chương 03 Đầy Đủ):
 ## - Chương 01 (3 map): Quảng Trường Tiêu Gia, Rừng Trúc Hậu Sơn, Phố Chợ Ô Thản Thành & Biệt Viện Gia Liệt Gia.
 ## - Chương 02 (4 map): Thanh Sơn Trấn & Ngoại Vi, Huyền Nhai Sơn Động (3 Thạch Thất), Bờ Suối Trăng Bạc & Hang Sư Vương, Thác Nước Nghìn Trượng & Thung Lũng U Lan.
-## - Tương tác Ma Thạch Bi [V], 10 NPC cốt truyện & kỳ ngộ ẩn, Đối thoại Chọn Nhánh tăng Hảo Cảm Hồng Nhan, 8 Bảo Rương & 15 mốc Nhiệm Vụ!
+## - Chương 03 (4 map): Thạch Mạc Thành & Mạc Thiết Đoàn, Địa Huyệt Sông Dung Nham, Thánh Thành Xà Nhân & Thánh Trì, Ốc Đảo Diêm Lệ.
+## - Tương tác Ma Thạch Bi [V], 15 NPC cốt truyện & kỳ ngộ ẩn, Đối thoại Chọn Nhánh tăng Hảo Cảm Hồng Nhan, 14 Bảo Rương & 21 mốc Nhiệm Vụ!
 
 const ENEMY_SCENE_PATH: String = "res://scenes/entities/enemy_base.tscn"
 const COMPANION_SCENE_PATH: String = "res://scenes/entities/companion.tscn"
@@ -1017,7 +1018,7 @@ func get_minimap_snapshot() -> Dictionary:
 		var rf: String = str(pt.get("require_flag", ""))
 		portals_out.append({
 			"pos": pt.get("pos", Vector2.ZERO),
-			"unlocked": (rf == "" or PlayerData.has_flag(rf))
+			"unlocked": _is_portal_unlocked(rf)
 		})
 
 	var chests_out: Array = []
@@ -1069,6 +1070,10 @@ func get_quest_waypoint_world_pos() -> Vector2:
 		if not PlayerData.has_flag("unlocked_bat_cuc_bang"):
 			return _find_boss_pos_or_portal("tieu_ninh_boss", "ch01_tieu_gia")
 		return _find_npc_pos_or_portal("story_nhuoc_lam", "ch01_tieu_gia")
+	elif qid == "q07_dot_pha_dau_gia":
+		if PlayerData.is_at_bottleneck() and PlayerData.get_item_count("pill_tu_khi_tan") > 0:
+			return Vector2.ZERO # Sẵn sàng bấm [B] đột phá ngay tại chỗ!
+		return Vector2(1420, 560) if current_map_id == "ch01_hau_son" else _find_portal_towards("ch01_hau_son")
 	elif qid == "q08_am_sat_lieu_tich":
 		return _find_boss_pos_or_portal("lieu_tich_boss", "ch01_o_than_thanh")
 	elif qid == "q09_diet_gia_liet_ao":

@@ -1,7 +1,7 @@
 extends Node
-## Lưu trữ toàn bộ trạng thái tu luyện Chuẩn Cốt Truyện 100% — Chương 01 & Chương 02 Đầy Đủ:
+## Lưu trữ toàn bộ trạng thái tu luyện Chuẩn Cốt Truyện 100% — Chương 01 -> Chương 03 (Quyển I):
 ## - Khởi đầu phút 0: Đấu Chi Khí 3 Đoạn, TAY KHÔNG, chưa có Dược Lão, chưa có vũ khí, chưa có Đấu Kỹ, chưa có Hỏa Liên!
-## - Hỗ trợ Save 3 Ô, 10 Ô Trang Bị, 10 Đấu Kỹ tự lắp, 7 Bản Đồ, Hảo Cảm Hồng Nhan & Kỳ Vật Cốt Truyện!
+## - Hỗ trợ Save 3 Ô, Auto-Save/Auto-Continue, Chế Độ DEMO, 10 Ô Trang Bị, 10 Đấu Kỹ, 11 Bản Đồ, 21 Mốc Cốt Truyện, Hảo Cảm Hồng Nhan (Buff & Tặng Quà) & Kỳ Vật!
 
 const LEGACY_SAVE_PATH: String = "user://dptk_savegame.json"
 const SETTINGS_PATH: String = "user://dptk_settings.json"
@@ -45,6 +45,8 @@ var affection: Dictionary = {
 	"my_do_toa": 0
 }
 var story_relics: Array = []
+var claimed_affection_milestones: Dictionary = {}
+var cached_affection_bonuses: Dictionary = {}
 
 # Trang bị 10 Ô & Túi đồ
 var equipped_gear: Dictionary = {}
@@ -59,6 +61,14 @@ var equipped_flame_id: String = ""
 var unlocked_flames: Array = []
 var lotus_fusion_flames: Array = []
 
+# Trạng thái chiến đấu tạm thời từ Dị Hỏa (Phật Nộ Hỏa Liên) & Boss
+var enemies_killed_total: int = 0
+var lotus_shield_hp: float = 0.0
+var lotus_dmg_red_timer: float = 0.0
+var lotus_double_herb_timer: float = 0.0
+var player_slow_timer: float = 0.0
+var player_slow_ratio: float = 0.0
+
 # Kho Đấu Kỹ đã học & Tùy biến gắn phím Q / E / R / F / T
 var unlocked_skills: Array = []
 var slot_q_skill: String = ""
@@ -71,10 +81,12 @@ var duoc_lao_assist_unlocked: bool = false
 var unlocked_companions: Array = []
 var active_companion_id: String = ""
 
-# Túi Nạp Giới
+# Túi Nạp Giới & Đan dược gắn nhanh phím [1] [2] [3]
 var inventory: Dictionary = {
 	"pill_ngung_huyet_tan": 1
 }
+var quick_hp_pill_id: String = "pill_ngung_huyet_tan"
+var quick_qi_pill_id: String = "pill_hoi_khi_dan"
 
 var active_quest_idx: int = 0
 var quest_progress: int = 0
@@ -85,6 +97,7 @@ func _ready() -> void:
 	load_user_settings()
 	_init_canon_starter_state()
 	_rebuild_gear_cache()
+	_rebuild_affection_cache()
 	recalculate_and_clamp(true)
 	EventBus.enemy_killed.connect(_on_enemy_killed)
 
@@ -101,6 +114,14 @@ func _process(delta: float) -> void:
 		auto_save_cooldown = maxf(0.0, auto_save_cooldown - delta)
 	if not get_tree().paused:
 		playtime_sec += delta
+		if lotus_dmg_red_timer > 0.0:
+			lotus_dmg_red_timer = maxf(0.0, lotus_dmg_red_timer - delta)
+		if lotus_double_herb_timer > 0.0:
+			lotus_double_herb_timer = maxf(0.0, lotus_double_herb_timer - delta)
+		if player_slow_timer > 0.0:
+			player_slow_timer = maxf(0.0, player_slow_timer - delta)
+			if player_slow_timer <= 0.0:
+				player_slow_ratio = 0.0
 		if auto_save_enabled and is_in_gameplay_session():
 			auto_save_timer += delta
 			if auto_save_timer >= 30.0:
@@ -125,20 +146,29 @@ func load_user_settings() -> void:
 	auto_save_enabled = bool(d.get("auto_save_enabled", true))
 	auto_continue_on_start = bool(d.get("auto_continue_on_start", false))
 	last_played_slot = clampi(int(d.get("last_played_slot", 1)), 1, MAX_SAVE_SLOTS)
+	# Truyền save_to_disk = false để không ghi đè mất file settings trong lúc đang đọc!
 	if d.has("bgm_volume"):
-		AudioManager.set_bgm_volume(float(d.get("bgm_volume", 0.36)))
+		AudioManager.set_bgm_volume(float(d.get("bgm_volume", 0.65)), false)
 	if d.has("sfx_volume"):
-		AudioManager.set_sfx_volume(float(d.get("sfx_volume", 0.52)))
+		AudioManager.set_sfx_volume(float(d.get("sfx_volume", 0.80)), false)
+	if d.has("is_muted"):
+		AudioManager.set_muted(bool(d.get("is_muted", false)), false)
 
 
 func save_user_settings() -> void:
-	var payload: Dictionary = {
-		"auto_save_enabled": auto_save_enabled,
-		"auto_continue_on_start": auto_continue_on_start,
-		"last_played_slot": last_played_slot,
-		"bgm_volume": AudioManager.bgm_volume,
-		"sfx_volume": AudioManager.sfx_volume
-	}
+	var payload: Dictionary = {}
+	if FileAccess.file_exists(SETTINGS_PATH):
+		var rf := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
+		if rf != null:
+			var parsed: Variant = JSON.parse_string(rf.get_as_text())
+			if parsed is Dictionary:
+				payload = parsed
+	payload["auto_save_enabled"] = auto_save_enabled
+	payload["auto_continue_on_start"] = auto_continue_on_start
+	payload["last_played_slot"] = last_played_slot
+	payload["bgm_volume"] = AudioManager.bgm_volume
+	payload["sfx_volume"] = AudioManager.sfx_volume
+	payload["is_muted"] = AudioManager.is_muted
 	var f := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
 	if f != null:
 		f.store_string(JSON.stringify(payload, "\t"))
@@ -197,8 +227,12 @@ func reset_for_new_game(slot_idx: int = 1) -> void:
 	quest_progress = 0
 	all_quests_done = false
 	inventory = { "pill_ngung_huyet_tan": 1 }
+	quick_hp_pill_id = "pill_ngung_huyet_tan"
+	quick_qi_pill_id = "pill_hoi_khi_dan"
+	enemies_killed_total = 0
 	_init_canon_starter_state()
 	_rebuild_gear_cache()
+	_rebuild_affection_cache()
 	recalculate_and_clamp(true)
 	save_user_settings()
 	EventBus.equipment_changed.emit()
@@ -314,12 +348,17 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	inventory = {}
 	for iid in GameDatabase.items_by_id.keys():
 		inventory[str(iid)] = 20
+	quick_hp_pill_id = "pill_bang_tam_dan"
+	quick_qi_pill_id = "pill_thanh_lien_tu"
+	enemies_killed_total = 40
+	claimed_affection_milestones = {}
 
 	active_quest_idx = GameDatabase.quests_ch01.size()
 	quest_progress = 0
 	all_quests_done = true
 
 	_rebuild_gear_cache()
+	_rebuild_affection_cache()
 	current_exp = get_required_exp()
 	recalculate_and_clamp(true)
 	save_user_settings()
@@ -351,6 +390,12 @@ func _init_canon_starter_state() -> void:
 	opened_chests = {}
 	affection = { "huan_nhi": 20, "tieu_y_tien": 0, "van_chi": 0, "thanh_lan": 0, "my_do_toa": 0 }
 	story_relics = []
+	claimed_affection_milestones = {}
+	lotus_shield_hp = 0.0
+	lotus_dmg_red_timer = 0.0
+	lotus_double_herb_timer = 0.0
+	player_slow_timer = 0.0
+	player_slow_ratio = 0.0
 	unlocked_flames = []
 	lotus_fusion_flames = []
 	equipped_flame_id = ""
@@ -378,11 +423,277 @@ func trigger_initial_quest_banter() -> void:
 		EventBus.quest_updated.emit()
 
 
-# --- HẢO CẢM HỒNG NHAN & KỲ VẬT CỐT TRUYỆN ---
+# --- HẢO CẢM HỒNG NHAN (MỐC THƯỞNG BUFF, TẶNG QUÀ & QUÀ TRI KỶ) ---
+func get_heroine_profiles() -> Array:
+	return [
+		{
+			"key": "huan_nhi",
+			"name": "Tiêu Huân Nhi",
+			"title": "Cổ Tộc Thánh Nữ · Kim Đế Phần Thiên",
+			"sprite": "res://assets/sprites/npcs/npc_huan_nhi.png",
+			"color": "#FFD166",
+			"favorite_items": ["pill_truc_co_linh_dich", "herb_tu_diep_lan", "pill_thanh_lien_tu"],
+			"fav_hint": "Trúc Cơ Linh Dịch, Tử Diệp Lan Thảo, Hạt Thanh Liên Tử",
+			"milestones": [
+				{ "req": 25, "desc": "+5% Công Kích (ATK)" },
+				{ "req": 50, "desc": "+8% EXP Đấu Khí + Quà Tri Kỷ (Trúc Cơ Linh Dịch x2, Đá CH x4)", "gift_items": { "pill_truc_co_linh_dich": 2 }, "gift_stones": 4, "gift_gold": 120 },
+				{ "req": 75, "desc": "+10% Sát thương Hỏa" },
+				{ "req": 100, "desc": "Kim Đế Chúc Phúc: +12% ATK & +12 SOUL + Quà (Đá CH x8, 400V)", "gift_items": { "pill_bang_tam_dan": 1 }, "gift_stones": 8, "gift_gold": 400 }
+			]
+		},
+		{
+			"key": "tieu_y_tien",
+			"name": "Tiểu Y Tiên",
+			"title": "Vạn Dược Trai · Ách Nan Độc Thể",
+			"sprite": "res://assets/sprites/npcs/npc_tieu_y_tien.png",
+			"color": "#80ED99",
+			"favorite_items": ["herb_ngung_huyet_thao", "herb_tay_cot_hoa", "herb_sa_chi_man_da_la"],
+			"fav_hint": "Ngưng Huyết Thảo, Tẩy Cốt Hoa, Sa Chi Mạn Đà La",
+			"milestones": [
+				{ "req": 25, "desc": "+8% Sinh Lực Tối Đa (HP)" },
+				{ "req": 50, "desc": "+20% Hiệu quả Hồi Máu + Quà Tri Kỷ (Ngưng Huyết Tán x4, Đá CH x4)", "gift_items": { "pill_ngung_huyet_tan": 4, "herb_sa_chi_man_da_la": 2 }, "gift_stones": 4, "gift_gold": 150 },
+				{ "req": 75, "desc": "+12% Tỷ lệ & Vùng Đan Tâm Luyện Đan" },
+				{ "req": 100, "desc": "Độc Tôn Hộ Thể: +15% Max HP & +5% Hút máu + Quà (Băng Tâm Đan x2)", "gift_items": { "pill_bang_tam_dan": 2 }, "gift_stones": 8, "gift_gold": 420 }
+			]
+		},
+		{
+			"key": "van_chi",
+			"name": "Vân Chi (Vân Vận)",
+			"title": "Đấu Hoàng Phong Hệ · Tông Chủ Vân Lam",
+			"sprite": "res://assets/sprites/npcs/npc_van_chi.png",
+			"color": "#70D6FF",
+			"favorite_items": ["herb_hoat_khi_qua", "pill_hoi_khi_dan", "core_moc_2"],
+			"fav_hint": "Hoạt Khí Quả, Hồi Khí Đan, Mộc Ma Hạch (Cấp 2)",
+			"milestones": [
+				{ "req": 25, "desc": "+6% Tốc Độ Di Chuyển (SPD)" },
+				{ "req": 50, "desc": "-8% Hồi chiêu Đấu Kỹ + Quà Tri Kỷ (Hồi Khí Đan x4, Đá CH x5)", "gift_items": { "pill_hoi_khi_dan": 4 }, "gift_stones": 5, "gift_gold": 180 },
+				{ "req": 75, "desc": "+8% Tỷ lệ Chí Mạng (Crit)" },
+				{ "req": 100, "desc": "Phong Chi Cực Kiếm Ý: -10% CD & +8% SPD + Quà (Hạt Thanh Liên Tử x2)", "gift_items": { "pill_thanh_lien_tu": 2 }, "gift_stones": 8, "gift_gold": 480 }
+			]
+		},
+		{
+			"key": "thanh_lan",
+			"name": "Thanh Lân",
+			"title": "Bích Xà Tam Hoa Đồng · Muội Muội Tiêu Gia",
+			"sprite": "res://assets/sprites/npcs/npc_thanh_lan.png",
+			"color": "#2EC4B6",
+			"favorite_items": ["core_hoa_1", "core_hoa_3", "pill_thanh_lien_tu"],
+			"fav_hint": "Hỏa Ma Hạch, Viêm Xà Ma Hạch, Hạt Thanh Liên Tử",
+			"milestones": [
+				{ "req": 25, "desc": "+55px Tầm Hút Vật Phẩm" },
+				{ "req": 50, "desc": "+10% EXP & +15% Kim Tệ rơi + Quà Tri Kỷ (Viêm Xà Hạch x2, Liên Tử x2)", "gift_items": { "core_hoa_3": 2, "pill_thanh_lien_tu": 2 }, "gift_stones": 5, "gift_gold": 220 },
+				{ "req": 75, "desc": "+12 Linh Hồn Lực (SOUL)" },
+				{ "req": 100, "desc": "Bích Xà Đồng Cảm: +15% Sát thương Hỏa & +12% Rớt đồ hiếm", "gift_items": { "pill_pha_chuong_dan": 1 }, "gift_stones": 9, "gift_gold": 520 }
+			]
+		},
+		{
+			"key": "my_do_toa",
+			"name": "Thải Lân (Mỹ Đỗ Toa)",
+			"title": "Nữ Vương Xà Nhân · Thất Thải Thôn Thiên Mãng",
+			"sprite": "res://assets/sprites/npcs/npc_my_do_toa.png",
+			"color": "#E0AAFF",
+			"favorite_items": ["core_hoa_3", "pill_bang_tam_dan", "pill_thanh_lien_tu"],
+			"fav_hint": "Viêm Xà Ma Hạch, Băng Tâm Đan, Hạt Thanh Liên Tử",
+			"milestones": [
+				{ "req": 25, "desc": "+8% Tỷ lệ Chí Mạng (Crit)" },
+				{ "req": 50, "desc": "+12% Xuyên Áp Chế Cảnh Giới + Quà Tri Kỷ (Băng Tâm Đan x2, Đá CH x6)", "gift_items": { "pill_bang_tam_dan": 2 }, "gift_stones": 6, "gift_gold": 280 },
+				{ "req": 75, "desc": "+18% Uy lực Phật Nộ Hỏa Liên" },
+				{ "req": 100, "desc": "Nữ Vương Long Uy: +15% ATK & +15% DEF + Quà (Phá Chướng Đan x1, Đá CH x10)", "gift_items": { "pill_pha_chuong_dan": 1 }, "gift_stones": 10, "gift_gold": 650 }
+			]
+		}
+	]
+
+
+func _rebuild_affection_cache() -> void:
+	var b: Dictionary = {
+		"atk_pct": 0.0,
+		"hp_pct": 0.0,
+		"def_pct": 0.0,
+		"spd_pct": 0.0,
+		"exp_bonus": 0.0,
+		"flame_dmg": 0.0,
+		"lotus_dmg_pct": 0.0,
+		"soul": 0.0,
+		"heal_pct": 0.0,
+		"alchemy_bonus": 0.0,
+		"lifesteal": 0.0,
+		"cooldown_red": 0.0,
+		"crit_chance": 0.0,
+		"loot_magnet": 0.0,
+		"gold_pct": 0.0,
+		"gear_drop_pct": 0.0,
+		"realm_pen": 0.0
+	}
+	var hn: int = get_affection("huan_nhi")
+	if hn >= 25:
+		b["atk_pct"] += 5.0
+	if hn >= 50:
+		b["exp_bonus"] += 8.0
+	if hn >= 75:
+		b["flame_dmg"] += 10.0
+	if hn >= 100:
+		b["atk_pct"] += 12.0
+		b["soul"] += 12.0
+
+	var yt: int = get_affection("tieu_y_tien")
+	if yt >= 25:
+		b["hp_pct"] += 8.0
+	if yt >= 50:
+		b["heal_pct"] += 20.0
+	if yt >= 75:
+		b["alchemy_bonus"] += 12.0
+	if yt >= 100:
+		b["hp_pct"] += 15.0
+		b["lifesteal"] += 5.0
+
+	var vc: int = get_affection("van_chi")
+	if vc >= 25:
+		b["spd_pct"] += 6.0
+	if vc >= 50:
+		b["cooldown_red"] += 8.0
+	if vc >= 75:
+		b["crit_chance"] += 8.0
+	if vc >= 100:
+		b["cooldown_red"] += 10.0
+		b["spd_pct"] += 8.0
+
+	var tl: int = get_affection("thanh_lan")
+	if tl >= 25:
+		b["loot_magnet"] += 55.0
+	if tl >= 50:
+		b["exp_bonus"] += 10.0
+		b["gold_pct"] += 15.0
+	if tl >= 75:
+		b["soul"] += 12.0
+	if tl >= 100:
+		b["flame_dmg"] += 15.0
+		b["gear_drop_pct"] += 12.0
+
+	var md: int = get_affection("my_do_toa")
+	if md >= 25:
+		b["crit_chance"] += 8.0
+	if md >= 50:
+		b["realm_pen"] += 12.0
+	if md >= 75:
+		b["lotus_dmg_pct"] += 18.0
+	if md >= 100:
+		b["atk_pct"] += 15.0
+		b["def_pct"] += 15.0
+
+	cached_affection_bonuses = b
+
+
+func get_affection_bonus(stat_key: String) -> float:
+	if cached_affection_bonuses.is_empty():
+		_rebuild_affection_cache()
+	return float(cached_affection_bonuses.get(stat_key, 0.0))
+
+
+func is_affection_milestone_claimed(heroine_key: String, req_pts: int) -> bool:
+	return bool(claimed_affection_milestones.get("%s_%d" % [heroine_key, req_pts], false))
+
+
+func claim_affection_milestone(heroine_key: String, req_pts: int) -> Dictionary:
+	var key_id: String = "%s_%d" % [heroine_key, req_pts]
+	if is_affection_milestone_claimed(heroine_key, req_pts):
+		return { "ok": false, "msg": "Quà Tri Kỷ mốc này đã nhận rồi!" }
+	if get_affection(heroine_key) < req_pts:
+		return { "ok": false, "msg": "Chưa đạt %d điểm Hảo Cảm!" % req_pts }
+
+	for prof in get_heroine_profiles():
+		if str(prof.get("key", "")) != heroine_key:
+			continue
+		for ms in prof.get("milestones", []):
+			if int(ms.get("req", 0)) == req_pts:
+				claimed_affection_milestones[key_id] = true
+				var parts: Array = []
+				var g_gold: int = int(ms.get("gift_gold", 0))
+				if g_gold > 0:
+					gold += g_gold
+					parts.append("+%d Kim Tệ" % g_gold)
+				var g_st: int = int(ms.get("gift_stones", 0))
+				if g_st > 0:
+					enhance_stones += g_st
+					parts.append("+%d Đá CH" % g_st)
+				var g_items: Dictionary = ms.get("gift_items", {})
+				for iid in g_items.keys():
+					var cnt: int = int(g_items[iid])
+					add_item(str(iid), cnt)
+					var idef: Dictionary = GameDatabase.get_item_def(str(iid))
+					parts.append("%s x%d" % [str(idef.get("name", iid)), cnt])
+				EventBus.audio_sfx_requested.emit("chest_open")
+				EventBus.stats_changed.emit()
+				trigger_auto_save("nhận quà hồng nhan")
+				return {
+					"ok": true,
+					"msg": "NHẬN QUÀ TRI KỶ (%s · Mốc %d): %s!" % [str(prof.get("name", "")), req_pts, ", ".join(parts)]
+				}
+	return { "ok": false, "msg": "Không tìm thấy mốc quà!" }
+
+
+func give_gift_to_heroine(heroine_key: String, item_id: String) -> Dictionary:
+	if get_item_count(item_id) <= 0:
+		return { "ok": false, "msg": "Trong Nạp Giới không có vật phẩm này!" }
+	if get_affection(heroine_key) >= 100:
+		return { "ok": false, "msg": "Hảo Cảm đã đạt cực hạn 100/100 (Tri Kỷ Trọn Đời)!" }
+	var idef: Dictionary = GameDatabase.get_item_def(item_id)
+	var itype: String = str(idef.get("type", ""))
+	if itype == "breakthrough":
+		return { "ok": false, "msg": "Không nên tặng Đan Đột Phá quý hiếm!" }
+
+	var is_fav: bool = false
+	var h_name: String = heroine_key
+	for prof in get_heroine_profiles():
+		if str(prof.get("key", "")) == heroine_key:
+			h_name = str(prof.get("name", heroine_key))
+			is_fav = (prof.get("favorite_items", []) as Array).has(item_id)
+			break
+
+	remove_item(item_id, 1)
+	var tier_v: int = maxi(1, int(idef.get("tier", 1)))
+	var gain: int = (8 + tier_v * 4) if is_fav else (4 + tier_v * 2)
+	add_affection(heroine_key, gain)
+	EventBus.audio_sfx_requested.emit("loot_rare" if is_fav else "loot_pickup")
+	var fav_tag: String = " [ĐÚNG SỞ THÍCH x2!]" if is_fav else ""
+	return {
+		"ok": true,
+		"msg": "Đã tặng [%s] cho %s -> +%d Hảo Cảm%s (%d/100)!" % [
+			str(idef.get("name", item_id)), h_name, gain, fav_tag, get_affection(heroine_key)
+		]
+	}
+
+
+func get_active_affection_summary_text() -> String:
+	if cached_affection_bonuses.is_empty():
+		_rebuild_affection_cache()
+	var parts: Array = []
+	var labels: Array = [
+		["atk_pct", "ATK +%d%%"], ["hp_pct", "HP +%d%%"], ["def_pct", "DEF +%d%%"],
+		["spd_pct", "SPD +%d%%"], ["exp_bonus", "EXP +%d%%"], ["flame_dmg", "Hỏa +%d%%"],
+		["lotus_dmg_pct", "Hỏa Liên +%d%%"], ["crit_chance", "Crit +%d%%"],
+		["cooldown_red", "Giảm CD %d%%"], ["alchemy_bonus", "Đan Đạo +%d%%"],
+		["heal_pct", "Hồi Máu +%d%%"], ["lifesteal", "Hút Máu +%d%%"],
+		["realm_pen", "Xuyên Áp Chế +%d%%"], ["soul", "SOUL +%d"],
+		["loot_magnet", "Hút Đồ +%dpx"], ["gold_pct", "Kim Tệ +%d%%"], ["gear_drop_pct", "Rớt Đồ +%d%%"]
+	]
+	for pair in labels:
+		var v: int = int(round(float(cached_affection_bonuses.get(str(pair[0]), 0.0))))
+		if v > 0:
+			parts.append(str(pair[1]) % v)
+	return " · ".join(parts) if not parts.is_empty() else "Chưa kích hoạt (Đạt >= 25 Hảo Cảm với bất kỳ Hồng Nhan nào!)"
+
+
 func add_affection(npc_key: String, delta_pts: int) -> void:
 	if npc_key == "" or delta_pts == 0:
 		return
-	affection[npc_key] = clampi(int(affection.get(npc_key, 0)) + delta_pts, 0, 100)
+	var prev_v: int = int(affection.get(npc_key, 0))
+	var next_v: int = clampi(prev_v + delta_pts, 0, 100)
+	affection[npc_key] = next_v
+	_rebuild_affection_cache()
+	recalculate_and_clamp(false)
+	for m in [25, 50, 75, 100]:
+		if prev_v < m and next_v >= m:
+			EventBus.banter_triggered.emit("HỒNG NHAN THĂNG CẤP! Hảo cảm đạt mốc %d/100 — Mở khóa Buff mới (bấm [M] nhận Quà Tri Kỷ)!" % m)
 	EventBus.stats_changed.emit()
 
 
@@ -699,7 +1010,7 @@ func get_skill_in_slot(slot_key: String) -> String:
 	return ""
 
 
-# --- 6 CHỈ SỐ CỐT LÕI + TRANG BỊ 10 Ô + KỲ VẬT ---
+# --- 6 CHỈ SỐ CỐT LÕI + TRANG BỊ 10 Ô + KỲ VẬT + HẢO CẢM HỒNG NHAN ---
 func get_gear_bonus(stat_key: String) -> float:
 	return float(cached_gear_bonuses.get(stat_key, 0.0))
 
@@ -711,6 +1022,7 @@ func get_max_hp() -> float:
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
 		var stages_cnt: int = int(r_def.get("max_stage", 9)) if r_idx < realm_index else stage
 		total += float(st_dict.get("hp", 20.0)) * float(stages_cnt)
+	total *= (1.0 + get_affection_bonus("hp_pct") / 100.0)
 	return total
 
 
@@ -733,6 +1045,7 @@ func get_atk() -> float:
 		base_atk += float(st_dict.get("atk", 4.0)) * float(stages_cnt)
 	var f_def: Dictionary = get_active_flame_def()
 	var mult: float = float(f_def.get("atk_mult", 1.0)) if not f_def.is_empty() else 1.0
+	mult *= (1.0 + get_affection_bonus("atk_pct") / 100.0)
 	if has_flag("tu_hon_done"):
 		mult *= 1.05 # Ấn Ký Tôn Nghiêm!
 	if is_duoc_lao_active:
@@ -749,6 +1062,7 @@ func get_def() -> float:
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
 		var stages_cnt: int = int(r_def.get("max_stage", 9)) if r_idx < realm_index else stage
 		total += float(st_dict.get("def", 2.0)) * float(stages_cnt)
+	total *= (1.0 + get_affection_bonus("def_pct") / 100.0)
 	if realm_index >= 3:
 		total *= 1.18 # Đấu Khí Sa Y của Đấu Sư!
 	return total
@@ -762,6 +1076,7 @@ func get_move_speed() -> float:
 		var stages_cnt: int = int(r_def.get("max_stage", 9)) if r_idx < realm_index else stage
 		base_spd += float(st_dict.get("spd", 2.0)) * float(stages_cnt) * 1.15
 	base_spd = minf(base_spd, 450.0)
+	base_spd *= (1.0 + get_affection_bonus("spd_pct") / 100.0)
 	if has_flag("secret_lang_anh_done"):
 		base_spd *= 1.08 # Hắc Ảnh Phù!
 	if is_ruler_sealed and has_huyen_trong_xich_equipped():
@@ -770,11 +1085,13 @@ func get_move_speed() -> float:
 		base_spd *= 1.35
 	if is_flame_buff_active:
 		base_spd *= 1.20
+	if player_slow_timer > 0.0:
+		base_spd *= (1.0 - clampf(player_slow_ratio, 0.0, 0.55))
 	return base_spd
 
 
 func get_soul() -> int:
-	var total: int = 5 + bonus_soul + int(round(get_gear_bonus("soul")))
+	var total: int = 5 + bonus_soul + int(round(get_gear_bonus("soul") + get_affection_bonus("soul")))
 	for r_idx in range(1, realm_index + 1):
 		var r_def: Dictionary = GameDatabase.get_realm_def(r_idx)
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
@@ -784,20 +1101,20 @@ func get_soul() -> int:
 
 
 func get_crit_chance() -> float:
-	return clampf(0.12 + get_gear_bonus("crit_chance") / 100.0, 0.05, 0.85)
+	return clampf(0.12 + (get_gear_bonus("crit_chance") + get_affection_bonus("crit_chance")) / 100.0, 0.05, 0.90)
 
 
 func get_lifesteal_ratio() -> float:
-	return clampf(get_gear_bonus("lifesteal") / 100.0, 0.0, 0.35)
+	return clampf((get_gear_bonus("lifesteal") + get_affection_bonus("lifesteal")) / 100.0, 0.0, 0.40)
 
 
 func get_cooldown_multiplier() -> float:
-	var cdr: float = clampf(get_gear_bonus("cooldown_red") / 100.0, 0.0, 0.55)
+	var cdr: float = clampf((get_gear_bonus("cooldown_red") + get_affection_bonus("cooldown_red")) / 100.0, 0.0, 0.60)
 	return 1.0 - cdr
 
 
 func get_flame_dmg_multiplier() -> float:
-	return 1.0 + get_gear_bonus("flame_dmg") / 100.0
+	return 1.0 + (get_gear_bonus("flame_dmg") + get_affection_bonus("flame_dmg")) / 100.0
 
 
 func get_alchemy_equipment_bonus() -> float:
@@ -805,7 +1122,32 @@ func get_alchemy_equipment_bonus() -> float:
 
 
 func get_loot_magnet_radius() -> float:
-	return 175.0 + get_gear_bonus("loot_magnet")
+	return 175.0 + get_gear_bonus("loot_magnet") + get_affection_bonus("loot_magnet")
+
+
+func get_heal_effectiveness_mult() -> float:
+	return 1.0 + get_affection_bonus("heal_pct") / 100.0
+
+
+func get_gold_reward_mult() -> float:
+	return 1.0 + get_affection_bonus("gold_pct") / 100.0
+
+
+func get_gear_drop_bonus_chance() -> float:
+	return get_affection_bonus("gear_drop_pct") / 100.0
+
+
+func get_lotus_qi_cost_multiplier() -> float:
+	return 0.80 if lotus_fusion_flames.has("hoa_sinh_hoa") else 1.0
+
+
+func get_lotus_affection_dmg_mult() -> float:
+	return 1.0 + get_affection_bonus("lotus_dmg_pct") / 100.0
+
+
+func apply_player_slow(ratio: float, duration: float) -> void:
+	player_slow_ratio = maxf(player_slow_ratio, clampf(ratio, 0.1, 0.55))
+	player_slow_timer = maxf(player_slow_timer, duration)
 
 
 func get_equipped_weapon_sprite_path() -> String:
@@ -877,7 +1219,7 @@ func is_at_bottleneck() -> bool:
 
 
 func get_exp_multiplier() -> float:
-	var mult: float = 1.0 + get_gear_bonus("exp_bonus") / 100.0
+	var mult: float = 1.0 + (get_gear_bonus("exp_bonus") + get_affection_bonus("exp_bonus")) / 100.0
 	if is_ruler_sealed and has_huyen_trong_xich_equipped():
 		mult += 0.30
 	if has_flag("got_thanh_lien_dai"):
@@ -1077,7 +1419,8 @@ func compute_realm_damage_multiplier_against(target_realm_idx: int, skill_realm_
 		return 1.0 + float(-diff) * 0.12
 	var f_def: Dictionary = get_active_flame_def()
 	var f_pen: float = float(f_def.get("realm_penetration", 0.0)) if not f_def.is_empty() else 0.0
-	var total_pen: float = clampf(f_pen + skill_realm_pen, 0.0, 1.0)
+	var aff_pen: float = get_affection_bonus("realm_pen") / 100.0
+	var total_pen: float = clampf(f_pen + skill_realm_pen + aff_pen, 0.0, 1.0)
 	var penalty_per: float = float(GameDatabase.suppression_rules.get("damage_penalty_per_major_realm", 0.38))
 	var raw_penalty: float = float(diff) * penalty_per * (1.0 - total_pen)
 	var min_mult: float = float(GameDatabase.suppression_rules.get("min_damage_multiplier", 0.10))
@@ -1153,6 +1496,33 @@ func remove_item(item_id: String, amount: int = 1) -> bool:
 	return true
 
 
+func get_effective_quick_pill(slot_num: int) -> String:
+	if slot_num == 1:
+		if get_item_count(quick_hp_pill_id) > 0:
+			return quick_hp_pill_id
+		var alt_hp: String = "pill_bang_tam_dan" if quick_hp_pill_id == "pill_ngung_huyet_tan" else "pill_ngung_huyet_tan"
+		if get_item_count(alt_hp) > 0:
+			return alt_hp
+		return quick_hp_pill_id
+	elif slot_num == 2:
+		if get_item_count(quick_qi_pill_id) > 0:
+			return quick_qi_pill_id
+		var alt_qi: String = "pill_thanh_lien_tu" if quick_qi_pill_id == "pill_hoi_khi_dan" else "pill_hoi_khi_dan"
+		if get_item_count(alt_qi) > 0:
+			return alt_qi
+		return quick_qi_pill_id
+	return "pill_truc_co_linh_dich"
+
+
+func set_quick_pill_slot(slot_num: int, item_id: String) -> void:
+	if slot_num == 1 and (item_id == "pill_ngung_huyet_tan" or item_id == "pill_bang_tam_dan"):
+		quick_hp_pill_id = item_id
+	elif slot_num == 2 and (item_id == "pill_hoi_khi_dan" or item_id == "pill_thanh_lien_tu"):
+		quick_qi_pill_id = item_id
+	EventBus.audio_sfx_requested.emit("ui_click")
+	EventBus.inventory_changed.emit()
+
+
 func use_consumable(item_id: String, world_pos: Vector2 = Vector2.ZERO) -> bool:
 	if get_item_count(item_id) <= 0:
 		return false
@@ -1162,11 +1532,11 @@ func use_consumable(item_id: String, world_pos: Vector2 = Vector2.ZERO) -> bool:
 		if current_hp >= get_max_hp():
 			return false
 		remove_item(item_id, 1)
-		var heal: float = float(idef.get("heal_hp", 60.0))
+		var heal: float = float(idef.get("heal_hp", 60.0)) * get_heal_effectiveness_mult()
 		current_hp = minf(get_max_hp(), current_hp + heal)
 		EventBus.audio_sfx_requested.emit("loot_pickup")
 		if world_pos != Vector2.ZERO:
-			EventBus.floating_text_requested.emit(world_pos, "+%d HP" % int(heal), Color("#52B788"))
+			EventBus.floating_text_requested.emit(world_pos, "+%d HP" % int(round(heal)), Color("#52B788"))
 		EventBus.stats_changed.emit()
 		return true
 	elif itype == "consumable_qi":
@@ -1177,7 +1547,7 @@ func use_consumable(item_id: String, world_pos: Vector2 = Vector2.ZERO) -> bool:
 		current_qi = minf(get_max_qi(), current_qi + rest)
 		EventBus.audio_sfx_requested.emit("loot_pickup")
 		if world_pos != Vector2.ZERO:
-			EventBus.floating_text_requested.emit(world_pos, "+%d Đấu Khí" % int(rest), Color("#4CC9F0"))
+			EventBus.floating_text_requested.emit(world_pos, "+%d Đấu Khí" % int(round(rest)), Color("#4CC9F0"))
 		EventBus.stats_changed.emit()
 		return true
 	elif itype == "consumable_exp":
@@ -1218,6 +1588,7 @@ func _check_quest_flag(flag_name: String) -> void:
 
 
 func _on_enemy_killed(enemy_id: String, _is_boss: bool) -> void:
+	enemies_killed_total += 1
 	if enemy_id == "tieu_ninh_boss":
 		set_story_flag("unlocked_bat_cuc_bang")
 	elif enemy_id == "lieu_tich_boss":
@@ -1371,6 +1742,10 @@ func save_game(slot_idx: int = -1, silent: bool = false) -> bool:
 		"opened_chests": opened_chests,
 		"affection": affection,
 		"story_relics": story_relics,
+		"claimed_affection_milestones": claimed_affection_milestones,
+		"enemies_killed_total": enemies_killed_total,
+		"quick_hp_pill_id": quick_hp_pill_id,
+		"quick_qi_pill_id": quick_qi_pill_id,
 		"equipped_gear": equipped_gear,
 		"gear_bag": gear_bag,
 		"is_ruler_sealed": is_ruler_sealed,
@@ -1442,6 +1817,18 @@ func load_game(slot_idx: int = -1) -> bool:
 		story_relics = d["story_relics"]
 	else:
 		story_relics = []
+	if d.has("claimed_affection_milestones") and d["claimed_affection_milestones"] is Dictionary:
+		claimed_affection_milestones = d["claimed_affection_milestones"]
+	else:
+		claimed_affection_milestones = {}
+	enemies_killed_total = int(d.get("enemies_killed_total", 0))
+	quick_hp_pill_id = str(d.get("quick_hp_pill_id", "pill_ngung_huyet_tan"))
+	quick_qi_pill_id = str(d.get("quick_qi_pill_id", "pill_hoi_khi_dan"))
+	lotus_shield_hp = 0.0
+	lotus_dmg_red_timer = 0.0
+	lotus_double_herb_timer = 0.0
+	player_slow_timer = 0.0
+	player_slow_ratio = 0.0
 	if d.has("equipped_gear") and d["equipped_gear"] is Dictionary:
 		equipped_gear = d["equipped_gear"]
 	if d.has("gear_bag") and d["gear_bag"] is Array:
@@ -1468,6 +1855,7 @@ func load_game(slot_idx: int = -1) -> bool:
 	quest_progress = int(d.get("quest_progress", 0))
 	all_quests_done = bool(d.get("all_quests_done", false))
 	_rebuild_gear_cache()
+	_rebuild_affection_cache()
 	recalculate_and_clamp(true)
 	save_user_settings()
 	EventBus.equipment_changed.emit()

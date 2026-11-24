@@ -42,16 +42,25 @@ func _ready() -> void:
 	EventBus.bgm_requested.connect(play_bgm)
 
 
-func set_bgm_volume(val: float) -> void:
+func set_bgm_volume(val: float, save_to_disk: bool = true) -> void:
 	bgm_volume = clampf(val, 0.0, 1.0)
 	_apply_volumes()
-	_save_settings()
+	if save_to_disk:
+		_save_settings()
 
 
-func set_sfx_volume(val: float) -> void:
+func set_sfx_volume(val: float, save_to_disk: bool = true) -> void:
 	sfx_volume = clampf(val, 0.0, 1.0)
 	_apply_volumes()
-	_save_settings()
+	if save_to_disk:
+		_save_settings()
+
+
+func set_muted(muted: bool, save_to_disk: bool = true) -> void:
+	is_muted = muted
+	_apply_volumes()
+	if save_to_disk:
+		_save_settings()
 
 
 func _apply_volumes() -> void:
@@ -63,14 +72,21 @@ func _apply_volumes() -> void:
 
 
 func _save_settings() -> void:
+	# Đọc và gộp (merge) các khóa hiện có để không bao giờ ghi đè cài đặt Auto-Save của PlayerData!
+	var merged: Dictionary = {}
+	if FileAccess.file_exists(SETTINGS_PATH):
+		var rf := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
+		if rf != null:
+			var parsed: Variant = JSON.parse_string(rf.get_as_text())
+			if parsed is Dictionary:
+				merged = parsed
+	merged["bgm_volume"] = bgm_volume
+	merged["sfx_volume"] = sfx_volume
+	merged["is_muted"] = is_muted
 	var f := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
 	if f == null:
 		return
-	f.store_string(JSON.stringify({
-		"bgm_volume": bgm_volume,
-		"sfx_volume": sfx_volume,
-		"is_muted": is_muted
-	}))
+	f.store_string(JSON.stringify(merged, "\t"))
 
 
 func _load_settings() -> void:
