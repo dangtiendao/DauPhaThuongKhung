@@ -61,6 +61,7 @@ func _run_all_suites() -> void:
 	_suite_06_demo_mode()
 	_suite_07_systems_integration()
 	await _suite_08_live_scene_and_panels()
+	_suite_09_8frame_spritesheets()
 
 	_restore_user_settings()
 
@@ -490,3 +491,49 @@ func _suite_08_live_scene_and_panels() -> void:
 
 	inst.queue_free()
 	await get_tree().process_frame
+
+
+# =========================================================
+# SUITE 9: 8-FRAME DEFAULT SPRITESHEET VERIFICATION (20 SHEETS)
+# =========================================================
+func _suite_09_8frame_spritesheets() -> void:
+	print("[Suite 9] 8-Frame Default Spritesheet Verification (8 Player + 12 Boss)...")
+	var player_sheets: Array = [
+		{ "p": "res://assets/sprites/player/tieu_viem_idle.png", "kind": "square", "fh": 4, "fv": 2 },
+		{ "p": "res://assets/sprites/player/tieu_viem_run.png", "kind": "square", "fh": 4, "fv": 2 },
+		{ "p": "res://assets/sprites/player/tieu_viem_cast.png", "kind": "square", "fh": 8, "fv": 1 },
+		{ "p": "res://assets/sprites/player/tieu_viem_dash.png", "kind": "square", "fh": 8, "fv": 1 },
+		{ "p": "res://assets/sprites/player/tieu_viem_attack_unarmed.png", "kind": "player_attack", "fh": 4, "fv": 2 },
+		{ "p": "res://assets/sprites/player/tieu_viem_attack_sword.png", "kind": "player_attack", "fh": 4, "fv": 2 },
+		{ "p": "res://assets/sprites/player/tieu_viem_attack_sabre.png", "kind": "player_attack", "fh": 4, "fv": 2 },
+		{ "p": "res://assets/sprites/player/tieu_viem_attack_ruler.png", "kind": "player_attack", "fh": 4, "fv": 2 }
+	]
+	for spec in player_sheets:
+		var tex: Texture2D = load(str(spec["p"]))
+		_assert(tex != null, "Player sheet loads: " + str(spec["p"]))
+		var meta: Dictionary = SpriteAnimHelper.inspect_sheet(tex, str(spec["kind"]), int(spec["fh"]), int(spec["fv"]))
+		_assert(int(meta.get("total_frames", 0)) == 8, "Player sheet is 8 frames: " + str(spec["p"]), "got %s" % str(meta))
+		if str(spec["kind"]) == "player_attack":
+			var c1: PackedInt32Array = SpriteAnimHelper.get_player_attack_frames(meta, 1, false)
+			var c2: PackedInt32Array = SpriteAnimHelper.get_player_attack_frames(meta, 2, false)
+			var c3: PackedInt32Array = SpriteAnimHelper.get_player_attack_frames(meta, 3, false)
+			_assert(c1.size() == 4 and c2.size() == 4 and c3.size() == 7, "8-frame attack combo mapping valid")
+
+	var checked_boss_sheets: Dictionary = {}
+	for eid in GameDatabase.enemies_by_id.keys():
+		var ed: Dictionary = GameDatabase.enemies_by_id[eid]
+		if not bool(ed.get("is_boss", false)):
+			continue
+		var ap: String = str(ed.get("anim_sheet", ""))
+		if ap == "" or checked_boss_sheets.has(ap):
+			continue
+		checked_boss_sheets[ap] = true
+		var btex: Texture2D = load(ap)
+		_assert(btex != null, "Boss anim sheet loads: " + ap)
+		var bmeta: Dictionary = SpriteAnimHelper.inspect_sheet(btex, "enemy_anim", 4, 2)
+		_assert(int(bmeta.get("hframes", 0)) == 4 and int(bmeta.get("vframes", 0)) == 2 and int(bmeta.get("total_frames", 0)) == 8, "Boss sheet is 4x2 (8 frames): " + ap, "got %s" % str(bmeta))
+		for st in ["idle", "move", "windup", "strike"]:
+			var st_arr: PackedInt32Array = SpriteAnimHelper.get_enemy_state_frames(bmeta, st)
+			_assert(st_arr.size() == 2, "Boss 8f state has 2 crisp frames (%s): %s" % [st, ap], "got %s" % str(st_arr))
+	_assert(checked_boss_sheets.size() == 12, "Verified all 12 unique boss anim sheets are 8 frames", "got %d" % checked_boss_sheets.size())
+

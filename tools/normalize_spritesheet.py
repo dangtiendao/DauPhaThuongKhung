@@ -18,6 +18,9 @@ Ví dụ sử dụng:
 
   5) Trích xuất 1 frame mẫu phóng to làm ảnh Reference gửi cho AI:
      python tools/normalize_spritesheet.py extract-ref assets/sprites/player/tieu_viem_attack_unarmed.png -o ref_tieu_viem.png --cols 4 --frame 0 --scale 5
+
+  6) Nâng cấp chuẩn mặc định 4 frame -> 8 frame sắc nét (giữ 100% tạo hình & bảng màu pixel gốc, khóa bàn chân):
+     python tools/normalize_spritesheet.py upgrade-8f assets/sprites/enemies/gia_liet_ao_boss_anim.png -o assets/sprites/enemies/gia_liet_ao_boss_anim.png --mode boss
 """
 
 import argparse
@@ -812,6 +815,204 @@ def cmd_extract_ref(args):
     print(f"Extracted reference frame {args.frame} -> {args.output} ({nw}x{nh})")
 
 
+# =====================================================================
+# NÂNG CẤP 4 FRAME -> 8 FRAME SẮC NÉT (FOOT-ANCHORED NEAREST-NEIGHBOR)
+# =====================================================================
+def deform_cell_pixel_crisp(
+    cell: bytearray,
+    cw: int,
+    ch: int,
+    scale_x: float = 1.0,
+    scale_y: float = 1.0,
+    shear_x: float = 0.0,
+    dx_shift: float = 0.0,
+    dy_shift: float = 0.0,
+    sway_x: float = 0.0,
+    glow_boost: float = 0.0,
+    wake_px: int = 0,
+) -> bytearray:
+    """
+    Biến dạng cơ sinh học neo chặt bàn chân bằng lấy mẫu Nearest-Neighbor thuần túy:
+    - Giữ nguyên 100% bảng màu & viền sắc nét của pixel art (không pha mờ ghosting).
+    - Chân tại y = foot_y được khóa cứng (t = 0) tránh trượt/nhảy khung hình.
+    - Tự bảo vệ không cắt lẹm đỉnh đầu hoặc mép trái/phải của ô.
+    """
+    info = get_bbox_and_body_cx(cell, cw, ch)
+    if info is None:
+        return bytearray(cell)
+    x0, y0, x1, y1, body_cx = info
+    foot_y = float(y1)
+    body_h = float(max(12, y1 - y0))
+
+    # Tự điều chỉnh dy_shift & dx_shift nếu đầu hoặc mũi vũ khí gần sát mép ô (tránh cắt lẹm pixel!)
+    eff_dy = dy_shift
+    projected_top = foot_y + (float(y0) - foot_y) * scale_y + eff_dy
+    if projected_top < 1.0:
+        eff_dy += (1.0 - projected_top)
+
+    eff_dx = dx_shift
+    max_extra_x = max(0.0, shear_x) + max(0.0, sway_x)
+    min_extra_x = min(0.0, shear_x) + min(0.0, sway_x)
+    projected_right = body_cx + (float(x1) - body_cx) * scale_x + eff_dx + max_extra_x
+    if projected_right > float(cw - 2):
+        eff_dx -= (projected_right - float(cw - 2))
+    projected_left = body_cx + (float(x0) - body_cx) * scale_x + eff_dx + min_extra_x
+    if projected_left < 1.0:
+        eff_dx += (1.0 - projected_left)
+
+    out = bytearray(cw * ch * 4)
+    inv_sx = 1.0 / max(0.5, scale_x)
+    inv_sy = 1.0 / max(0.5, scale_y)
+
+    for dy in range(ch):
+        t = (foot_y - float(dy - eff_dy)) / body_h
+        if t < 0.0:
+            t = 0.0
+        elif t > 1.35:
+            t = 1.35
+        top_t = 0.0 if t <= 0.55 else ((t - 0.55) / 0.45)
+
+        sy = foot_y + (float(dy) - eff_dy - foot_y) * inv_sy
+        isy = int(round(sy))
+        if isy < 0 or isy >= ch:
+            continue
+        row_off_src = isy * cw
+        row_off_dst = dy * cw
+        x_bias = eff_dx + shear_x * t + sway_x * top_t
+
+        for dx in range(cw):
+            sx = body_cx + (float(dx) - x_bias - body_cx) * inv_sx
+            isx = int(round(sx))
+            if isx < 0 or isx >= cw:
+                continue
+            si = (row_off_src + isx) * 4
+            a = cell[si + 3]
+            if a < 16:
+                continue
+            r, g, b = cell[si], cell[si + 1], cell[si + 2]
+            if glow_boost > 0.0:
+                hi = max(r, g, b)
+                lo = min(r, g, b)
+                # Chỉ tăng độ rực sáng cho điểm sáng lửa / năng lượng (giữ nguyên quần áo tối & viền đen)
+                if hi >= 165 and (hi - lo) >= 55:
+                    r = min(255, int(round(r + (255 - r) * glow_boost)))
+                    g = min(255, int(round(g + (255 - g) * glow_boost * 0.85)))
+                    b = min(255, int(round(b + (255 - b) * glow_boost * 0.60)))
+            di = (row_off_dst + dx) * 4
+            out[di] = r
+            out[di + 1] = g
+            out[di + 2] = b
+            out[di + 3] = a
+
+    # Tùy chọn thêm 1–2 pixel vệt gió sắc nét phía sau khi Dash tốc độ cao
+    if wake_px > 0:
+        for dy in range(max(2, y0 + 6), min(ch - 4, y1 - 6), 5):
+            # Tìm pixel biên trái nhất của nhân vật trên dòng dy
+            left_x = -1
+            row_off = dy * cw
+            for dx in range(cw):
+                if out[(row_off + dx) * 4 + 3] >= 128:
+                    left_x = dx
+                    break
+            if left_x >= wake_px + 2:
+                si = (row_off + left_x + 1) * 4
+                sr, sg, sb = out[si], out[si + 1], out[si + 2]
+                for step in range(1, wake_px + 1):
+                    tx = left_x - step - 1
+                    if tx >= 0 and out[(row_off + tx) * 4 + 3] == 0:
+                        di = (row_off + tx) * 4
+                        out[di] = min(255, int(sr * 0.75 + 55))
+                        out[di + 1] = min(255, int(sg * 0.80 + 55))
+                        out[di + 2] = min(255, int(sb * 0.90 + 70))
+                        out[di + 3] = 175 if step == 1 else 105
+
+    return out
+
+
+def build_8_frames_from_4(frames4: list, cw: int, ch: int, mode: str) -> list:
+    """Sinh đủ 8 frame chuẩn pixel-art từ 4 khung hình gốc [F0, F1, F2, F3] theo từng thể loại chuyển động."""
+    f0, f1, f2, f3 = frames4[0], frames4[1], frames4[2], frames4[3]
+
+    if mode == "idle":
+        # Vòng thở & phất tóc/dải lụa 8 nhịp mượt mà (F0 -> B0 -> F1 -> B1 -> F2 -> B2 -> F3 -> B3)
+        b0 = deform_cell_pixel_crisp(f0, cw, ch, scale_x=0.992, scale_y=1.015, sway_x=1.0)
+        b1 = deform_cell_pixel_crisp(f1, cw, ch, scale_x=0.988, scale_y=1.022, sway_x=1.5)
+        b2 = deform_cell_pixel_crisp(f2, cw, ch, scale_x=1.008, scale_y=0.990, sway_x=-1.0)
+        b3 = deform_cell_pixel_crisp(f3, cw, ch, scale_x=1.005, scale_y=0.994, sway_x=-0.8)
+        return [f0, b0, f1, b1, f2, b2, f3, b3]
+
+    if mode == "cast":
+        # Tụ ấn -> nén lực -> đẩy chưởng -> bùng phát -> dư lực
+        b0 = deform_cell_pixel_crisp(f0, cw, ch, scale_x=1.020, scale_y=0.978, shear_x=-1.2)
+        b1 = deform_cell_pixel_crisp(f1, cw, ch, scale_x=1.010, scale_y=0.992, shear_x=2.2, dx_shift=1.0)
+        b2 = deform_cell_pixel_crisp(f2, cw, ch, scale_x=1.032, scale_y=0.982, shear_x=2.8, dx_shift=2.0, glow_boost=0.22)
+        b3 = deform_cell_pixel_crisp(f3, cw, ch, scale_x=0.992, scale_y=1.012, shear_x=-0.8, dx_shift=-1.0, sway_x=-1.5)
+        return [f0, b0, f1, b1, f2, b2, f3, b3]
+
+    if mode == "dash":
+        # Khởi đà -> bật lao -> kéo vệt tốc độ -> bay đỉnh -> tiếp đất nhún gối
+        b0 = deform_cell_pixel_crisp(f0, cw, ch, scale_x=1.035, scale_y=0.960, shear_x=3.5, dx_shift=1.5)
+        b1 = deform_cell_pixel_crisp(f1, cw, ch, scale_x=1.055, scale_y=0.955, shear_x=3.8, dx_shift=2.0, wake_px=2)
+        b2 = deform_cell_pixel_crisp(f2, cw, ch, scale_x=1.020, scale_y=0.985, shear_x=2.2, dy_shift=-2.5, wake_px=2)
+        b3 = deform_cell_pixel_crisp(f3, cw, ch, scale_x=1.038, scale_y=0.958, shear_x=1.2, sway_x=-1.5)
+        return [f0, b0, f1, b1, f2, b2, f3, b3]
+
+    if mode == "attack":
+        # Combo 1: [0:F0 Windup1, 1:Đà vung1, 2:F1 Strike1, 3:Dư lực1]
+        # Combo 2: [4:F2 Windup2, 5:Đà vung2, 6:F3 Strike2, 7:Dư lực2]
+        a0 = deform_cell_pixel_crisp(f0, cw, ch, scale_x=0.985, scale_y=1.022, shear_x=4.5, dx_shift=2.0, glow_boost=0.14)
+        a1 = deform_cell_pixel_crisp(f1, cw, ch, scale_x=1.028, scale_y=0.968, shear_x=2.5, dx_shift=3.0, sway_x=-2.0)
+        a2 = deform_cell_pixel_crisp(f2, cw, ch, scale_x=0.985, scale_y=1.025, shear_x=4.5, dx_shift=2.0, glow_boost=0.16)
+        a3 = deform_cell_pixel_crisp(f3, cw, ch, scale_x=1.024, scale_y=0.974, shear_x=2.0, dx_shift=2.5, sway_x=-2.0)
+        return [f0, a0, f1, a1, f2, a2, f3, a3]
+
+    # mode == "boss" (lưới 4×2):
+    # Hàng 0: [0:Idle A, 1:Idle B thở, 2:Move A, 3:Move B bước bật]
+    # Hàng 1: [4:Windup A, 5:Windup B đỉnh tích lực, 6:Strike A, 7:Strike B dư lực bùng nổ]
+    idle_b = deform_cell_pixel_crisp(f0, cw, ch, scale_x=0.990, scale_y=1.022, sway_x=1.5)
+    move_b = deform_cell_pixel_crisp(f1, cw, ch, scale_x=1.028, scale_y=0.982, shear_x=3.5, dx_shift=1.5, dy_shift=-2.0)
+    wind_b = deform_cell_pixel_crisp(f2, cw, ch, scale_x=0.980, scale_y=1.032, shear_x=-2.8, glow_boost=0.28)
+    strk_b = deform_cell_pixel_crisp(f3, cw, ch, scale_x=1.030, scale_y=0.972, shear_x=3.0, dx_shift=2.5, glow_boost=0.22)
+    return [f0, idle_b, f1, move_b, f2, wind_b, f3, strk_b]
+
+
+def cmd_upgrade_8f(args):
+    w, h, buf = load_rgba(args.input)
+    in_cols = args.in_cols
+    in_rows = args.in_rows
+    if in_cols * in_rows != 4:
+        print(f"ERROR: upgrade-8f yeu cau dau vao 4 frame (hien tai {in_cols}x{in_rows})", file=sys.stderr)
+        sys.exit(1)
+    if w % in_cols != 0 or h % in_rows != 0:
+        print(f"ERROR: Kich thuoc {w}x{h} khong chia het cho luoi {in_cols}x{in_rows}", file=sys.stderr)
+        sys.exit(1)
+
+    cw = w // in_cols
+    ch = h // in_rows
+    frames4 = []
+    for r in range(in_rows):
+        for c in range(in_cols):
+            frames4.append(crop_rgba(buf, w, c * cw, r * ch, cw, ch))
+
+    frames8 = build_8_frames_from_4(frames4, cw, ch, args.mode)
+
+    layout = args.layout
+    if layout == "auto":
+        layout = "8x1" if args.mode in ("cast", "dash") else "4x2"
+    out_cols, out_rows = (8, 1) if layout == "8x1" else (4, 2)
+
+    out_w = out_cols * cw
+    out_h = out_rows * ch
+    out_buf = bytearray(out_w * out_h * 4)
+    for idx, cell in enumerate(frames8):
+        oc = idx % out_cols
+        orow = idx // out_cols
+        blit_rgba(out_buf, out_w, out_h, cell, cw, ch, oc * cw, orow * ch)
+
+    save_rgba(args.output, out_w, out_h, out_buf)
+    print(f"Upgraded 4f -> 8f [{args.mode} | {out_cols}x{out_rows}]: {args.output} ({w}x{h} -> {out_w}x{out_h}, cell {cw}x{ch})")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Chuan hoa & ghep SpriteSheet AI cho Godot 4")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -867,10 +1068,19 @@ def main():
     p_ref.add_argument("input")
     p_ref.add_argument("-o", "--output", required=True)
     p_ref.add_argument("--cols", type=int, default=4)
-    p_ref.add_argument("--rows", type=int, default=1)
+    p_ref.add_argument("--rows", type=int, default=2)
     p_ref.add_argument("--frame", type=int, default=0)
     p_ref.add_argument("--scale", type=int, default=5)
     p_ref.set_defaults(func=cmd_extract_ref)
+
+    p_u8 = sub.add_parser("upgrade-8f", help="Nang cap SpriteSheet 4 frame -> 8 frame sac net (chuan mac dinh 8f)")
+    p_u8.add_argument("input")
+    p_u8.add_argument("-o", "--output", required=True)
+    p_u8.add_argument("--mode", choices=["idle", "cast", "dash", "attack", "boss"], required=True)
+    p_u8.add_argument("--in-cols", type=int, default=4)
+    p_u8.add_argument("--in-rows", type=int, default=1)
+    p_u8.add_argument("--layout", choices=["auto", "4x2", "8x1"], default="auto")
+    p_u8.set_defaults(func=cmd_upgrade_8f)
 
     args = parser.parse_args()
     args.func(args)

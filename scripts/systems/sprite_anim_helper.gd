@@ -159,13 +159,13 @@ static func get_player_attack_frames(meta: Dictionary, combo_step: int, is_skill
 			return PackedInt32Array([4, 5])
 	if total == 8:
 		if is_skill:
-			return PackedInt32Array([4, 5, 6, 7])
+			return PackedInt32Array([0, 1, 2, 6, 7])
 		if combo_step == 1:
-			return PackedInt32Array([0, 1, 2])
+			return PackedInt32Array([0, 1, 2, 3])
 		elif combo_step == 2:
-			return PackedInt32Array([3, 4, 5])
+			return PackedInt32Array([4, 5, 6, 7])
 		else:
-			return PackedInt32Array([5, 6, 7])
+			return PackedInt32Array([0, 1, 2, 4, 5, 6, 7])
 
 	# Dải 9..16+ frame: tự chia đều thành 3 nhịp combo (hoặc 4 phần nếu >= 12 frame)
 	if is_skill:
@@ -205,13 +205,13 @@ static func get_enemy_state_frames(meta: Dictionary, state_name: String) -> Pack
 			r = 3
 		return _range_frames(r * hf, mini((r + 1) * hf - 1, total - 1))
 
-	# Lưới 2 hàng (ví dụ 4×2 = 8 frame: Hàng 0 = Idle/Move, Hàng 1 = Windup/Strike)
+	# Lưới 2 hàng chuẩn mặc định 8 frame (4×2: Hàng 0 = [0,1] Idle + [2,3] Move, Hàng 1 = [4,5] Windup + [6,7] Strike)
 	if vf == 2:
 		var half: int = maxi(1, hf / 2)
 		if state_name == "idle":
 			return _range_frames(0, maxi(0, half - 1))
 		elif state_name == "move":
-			return _range_frames(0, hf - 1)
+			return _range_frames(mini(half, hf - 1), hf - 1)
 		elif state_name == "windup":
 			return _range_frames(hf, hf + maxi(0, half - 1))
 		else:

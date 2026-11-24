@@ -8,7 +8,7 @@ Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn v�
 
 1. **Chơi ngay**: Nhấp đúp file **`CHAY_GAME.bat`** trong thư mục dự án (`e:\Project\DauPhaThuongKhung\CHAY_GAME.bat`).
 2. **Mở trình soạn thảo Godot Editor**: Nhấp đúp file **`MO_GODOT_EDITOR.bat`** (hoặc mở Godot 4 -> Import `project.godot` -> nhấn `F5`).
-3. **Chạy bộ kiểm thử tự động (512 assertions)**: Chạy **`tests\run_tests.bat`** (hoặc `Godot --headless --path . res://tests/test_runner.tscn`).
+3. **Chạy bộ kiểm thử tự động (605 assertions)**: Chạy **`tests\run_tests.bat`** (hoặc `Godot --headless --path . res://tests/test_runner.tscn`).
 4. **Đóng gói Windows `.exe`**: Cấu hình sẵn preset **`Windows Desktop`** trong `export_presets.cfg` (tích hợp `icon.ico`, nhúng `.pck`, xuất ra `builds/DauPhaThuongKhung.exe`).
 
 ---
@@ -132,7 +132,7 @@ Toàn bộ chiêu thức, kỹ năng cơ động, đan dược và 8 bảng hệ
 
 * `docs/` — **25 Tài liệu Thiết kế Game (GDD) & Tiến Độ** chia chi tiết 11 Chương (4 Quyển), 23 Dị Hỏa, 12 Cảnh giới, Đấu Kỹ, Luyện Đan, Quái & 25 Boss, kèm bảng theo dõi tiến độ & lộ trình phát triển tại [`docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md`](docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md).
 * `data/` — **16 Cơ sở dữ liệu JSON** (`maps.json`, `maps_ch04.json`, `maps_ch05.json` — 25 map; `quests_ch01/04/05.json` — 39 NV chính; `dialogues_ch04/05.json`; `enemies.json`, `enemies_ch04/05.json` — 43 quái/23 Boss; `realms.json`, `flames.json`, `skills.json`, `alchemy_items.json`, `equipment.json`).
-* `assets/` — **107 tài nguyên 32-bit HD Pixel Art & Shader** (bộ sprite Tiêu Viêm đồng bộ `idle 4f / run 8f / cast 4f / dash 4f` + 4 bộ attack strip vũ khí liền thân, sprite 4-frame Boss, 15 NPC, 26 icon MOBA, tileset/props/VFX và `assets/shaders/di_hoa_palette.gdshader`).
+* `assets/` — **107 tài nguyên 32-bit HD Pixel Art & Shader** (chuẩn mặc định **8 frame**: trọn bộ 8 sheet Tiêu Viêm `idle/run/cast/dash/4×attack` và toàn bộ 12 `*_boss_anim.png` đều là **8 frame** `4×2`/`8×1`, 15 NPC, 26 icon MOBA, tileset/props/VFX và `assets/shaders/di_hoa_palette.gdshader`).
 * `scripts/` & `scenes/` — **32 script GDScript** (đã tách mô-đun `SaveLoadManager`, `BossRushManager`, `ThienPhanTowerManager`, `StoryDialogueRunner`, 6 panel UI trong `scripts/ui/panels/`, `AuctionSystem`, `AlchemySystem`, `EquipmentSystem`, **7 BGM ngũ cung Procedural** & 20+ SFX) & **9 scene `.tscn`**.
 * `tests/` — Bộ kiểm thử tự động Godot headless (`tests/test_runner.tscn`, `tests/test_suite.gd`, `tests/run_tests.bat`) kiểm tra JSON schema, tồn tại asset `res://`, liên thông BFS 25 bản đồ, `alchemy_max_tier`, Save/Load, DEMO & live UI/Endgame.
 * `tools/` — Công cụ tự động chuẩn hóa spritesheet `tools/normalize_spritesheet.py`.

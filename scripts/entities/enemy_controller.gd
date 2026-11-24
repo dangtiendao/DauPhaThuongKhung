@@ -303,7 +303,7 @@ func _load_from_db() -> void:
 			loaded_anim = load(anim_sheet_path)
 		if loaded_anim != null:
 			has_anim_sheet = true
-			anim_meta = SpriteAnimHelper.inspect_sheet(loaded_anim, "enemy_anim", 4, 1, explicit_anim_meta)
+			anim_meta = SpriteAnimHelper.inspect_sheet(loaded_anim, "enemy_anim", 4, 2, explicit_anim_meta)
 			SpriteAnimHelper.apply_to_sprite(body_sprite, loaded_anim, anim_meta, base_sprite_foot_y)
 			sprite_offset_y = float(anim_meta.get("foot_offset_y", -48.0))
 			body_sprite.frame = 0
@@ -624,7 +624,8 @@ func _update_smooth_animation(delta: float) -> void:
 			var c_idx: int = frames_arr.size() - 1 if frames_arr.size() <= 2 else (int(anim_phase * 0.6) % frames_arr.size())
 			body_sprite.frame = clampi(frames_arr[c_idx], 0, max_f)
 		else:
-			var loop_idx: int = int(absf(anim_phase) * 0.45) % frames_arr.size()
+			var loop_rate: float = 0.72 if anim_key == "idle" else 0.55
+			var loop_idx: int = int(absf(anim_phase) * loop_rate) % frames_arr.size()
 			body_sprite.frame = clampi(frames_arr[loop_idx], 0, max_f)
 
 	if boss_light != null and not is_winding:

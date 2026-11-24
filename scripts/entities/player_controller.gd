@@ -130,12 +130,12 @@ func _ready() -> void:
 	if ResourceLoader.exists("res://assets/sprites/player/tieu_viem_dash.png"):
 		dash_tex = load("res://assets/sprites/player/tieu_viem_dash.png")
 
-	idle_meta = SpriteAnimHelper.inspect_sheet(idle_tex, "square", 1, 1)
-	run_meta = SpriteAnimHelper.inspect_sheet(run_tex, "square", 4, 1)
+	idle_meta = SpriteAnimHelper.inspect_sheet(idle_tex, "square", 4, 2)
+	run_meta = SpriteAnimHelper.inspect_sheet(run_tex, "square", 4, 2)
 	if cast_tex != null:
-		cast_meta = SpriteAnimHelper.inspect_sheet(cast_tex, "square", 4, 1)
+		cast_meta = SpriteAnimHelper.inspect_sheet(cast_tex, "square", 8, 1)
 	if dash_tex != null:
-		dash_meta = SpriteAnimHelper.inspect_sheet(dash_tex, "square", 3, 1)
+		dash_meta = SpriteAnimHelper.inspect_sheet(dash_tex, "square", 8, 1)
 
 	_apply_body_sheet(idle_tex, idle_meta)
 	slash_vfx.visible = false
@@ -171,7 +171,7 @@ func _refresh_equipped_weapon_visual() -> void:
 	var loaded_atk: Texture2D = load(atk_path)
 	if loaded_atk != null:
 		attack_tex = loaded_atk
-		attack_meta = SpriteAnimHelper.inspect_sheet(attack_tex, "player_attack", 4, 1)
+		attack_meta = SpriteAnimHelper.inspect_sheet(attack_tex, "player_attack", 4, 2)
 
 
 func _setup_lighting_particles_and_trail() -> void:
@@ -406,18 +406,25 @@ func _update_character_animation(delta: float, is_moving: bool) -> void:
 				target_sc = Vector2(1.14, 0.89).lerp(Vector2.ONE, r_t)
 				target_rot = f_sign * 0.09 * (1.0 - r_t)
 		else:
-			# Quét mượt qua toàn bộ danh sách attack_frames (2, 3, 4, 5, 6+ frame tùy sheet!)
+			# Quét mượt qua toàn bộ danh sách attack_frames (chuẩn 8-frame sheet: 4f/combo & 7f combo 3!)
 			var hit_threshold: float = 0.24 if n_frames <= 2 else 0.30
 			var f_idx: int = 0
 			if n_frames == 2:
 				f_idx = 0 if progress < hit_threshold else 1
+			elif n_frames >= 4:
+				# Dành 2 frame đầu (0 -> 1) cho pha Windup & Đà vung, các frame sau cho Impact -> Follow-through!
+				if progress < hit_threshold:
+					var w_p: float = clampf(progress / hit_threshold, 0.0, 0.999)
+					f_idx = int(w_p * 2.0)
+				else:
+					var rem_p: float = clampf((progress - hit_threshold) / (1.0 - hit_threshold), 0.0, 0.999)
+					f_idx = 2 + int(rem_p * float(n_frames - 2))
 			else:
-				# Dành ~28% cho Windup, phần còn lại quét mượt qua các frame Smear -> Strike -> Follow-through!
 				if progress < hit_threshold:
 					f_idx = 0
 				else:
-					var rem_p: float = clampf((progress - hit_threshold) / (1.0 - hit_threshold), 0.0, 0.999)
-					f_idx = 1 + int(rem_p * float(n_frames - 1))
+					var rem_p3: float = clampf((progress - hit_threshold) / (1.0 - hit_threshold), 0.0, 0.999)
+					f_idx = 1 + int(rem_p3 * float(n_frames - 1))
 			body_sprite.frame = attack_frames[clampi(f_idx, 0, n_frames - 1)]
 
 			if progress < hit_threshold:
@@ -487,9 +494,10 @@ func _update_character_animation(delta: float, is_moving: bool) -> void:
 			dust_timer = 0.16
 			VfxAssets.spawn_dust_puff(get_parent(), global_position + Vector2(0, 11), Color(0.74, 0.78, 0.84, 0.42), 5, 75.0, 0.9)
 	else:
-		var idle_total: int = maxi(1, int(idle_meta.get("total_frames", 1)))
+		var idle_total: int = maxi(1, int(idle_meta.get("total_frames", 8)))
 		if idle_total > 1:
-			anim_timer += delta * 5.8
+			var idle_fps: float = clampf(4.2 + float(idle_total) * 0.62, 5.8, 10.5)
+			anim_timer += delta * idle_fps
 			body_sprite.frame = int(anim_timer) % idle_total
 			var breath_s: float = sin(t_sec * 3.0) * 0.008
 			target_sc = Vector2(1.0 - breath_s * 0.5, 1.0 + breath_s)
