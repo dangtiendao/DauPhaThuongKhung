@@ -494,10 +494,10 @@ func _suite_08_live_scene_and_panels() -> void:
 
 
 # =========================================================
-# SUITE 9: 8-FRAME DEFAULT SPRITESHEET VERIFICATION (20 SHEETS)
+# SUITE 9: 8-FRAME DEFAULT SPRITESHEET & CH.04-05 ART VERIFICATION
 # =========================================================
 func _suite_09_8frame_spritesheets() -> void:
-	print("[Suite 9] 8-Frame Default Spritesheet Verification (8 Player + 12 Boss)...")
+	print("[Suite 9] 8-Frame Default Spritesheet & Unique Art Verification (8 Player + 23 Boss + 15 Skills + 4 Tiles + 8 NPCs)...")
 	var player_sheets: Array = [
 		{ "p": "res://assets/sprites/player/tieu_viem_idle.png", "kind": "square", "fh": 4, "fv": 2 },
 		{ "p": "res://assets/sprites/player/tieu_viem_run.png", "kind": "square", "fh": 4, "fv": 2 },
@@ -525,6 +525,7 @@ func _suite_09_8frame_spritesheets() -> void:
 		if not bool(ed.get("is_boss", false)):
 			continue
 		var ap: String = str(ed.get("anim_sheet", ""))
+		_assert(ap != "", "Boss has dedicated anim_sheet: " + str(eid))
 		if ap == "" or checked_boss_sheets.has(ap):
 			continue
 		checked_boss_sheets[ap] = true
@@ -535,5 +536,41 @@ func _suite_09_8frame_spritesheets() -> void:
 		for st in ["idle", "move", "windup", "strike"]:
 			var st_arr: PackedInt32Array = SpriteAnimHelper.get_enemy_state_frames(bmeta, st)
 			_assert(st_arr.size() == 2, "Boss 8f state has 2 crisp frames (%s): %s" % [st, ap], "got %s" % str(st_arr))
-	_assert(checked_boss_sheets.size() == 12, "Verified all 12 unique boss anim sheets are 8 frames", "got %d" % checked_boss_sheets.size())
+	_assert(checked_boss_sheets.size() == 23, "Verified all 23/23 unique boss anim sheets are 8 frames", "got %d" % checked_boss_sheets.size())
+
+	# Kiểm tra 15/15 Đấu Kỹ đều có icon riêng biệt (không tái sử dụng trùng lặp)
+	var unique_skill_icons: Dictionary = {}
+	for sid in GameDatabase.skills_by_id.keys():
+		var sk: Dictionary = GameDatabase.skills_by_id[sid]
+		var ip: String = str(sk.get("icon", ""))
+		var itex: Texture2D = load(ip)
+		_assert(itex != null and itex.get_width() == 56 and itex.get_height() == 56, "Skill icon is 56x56: " + ip)
+		unique_skill_icons[ip] = true
+	_assert(unique_skill_icons.size() == 15, "All 15 skills have 15 unique icons", "got %d" % unique_skill_icons.size())
+
+	# Kiểm tra 4 tileset vùng mới Ch.04–05 chuẩn 128x128
+	var new_tiles: Array = [
+		"res://assets/sprites/tiles/de_do_palace.png",
+		"res://assets/sprites/tiles/yunlan_marble.png",
+		"res://assets/sprites/tiles/hac_giac_obsidian.png",
+		"res://assets/sprites/tiles/gia_nam_courtyard.png"
+	]
+	for tp in new_tiles:
+		var ttex: Texture2D = load(tp)
+		_assert(ttex != null and ttex.get_width() == 128 and ttex.get_height() == 128, "New regional tile is 128x128: " + tp)
+
+	# Kiểm tra 8 sprite NPC mới Ch.04–05
+	var new_npcs: Array = [
+		"res://assets/sprites/npcs/npc_nap_lan_kiet.png",
+		"res://assets/sprites/npcs/npc_phap_ma.png",
+		"res://assets/sprites/npcs/npc_gia_hinh_thien.png",
+		"res://assets/sprites/npcs/npc_van_son.png",
+		"res://assets/sprites/npcs/npc_ho_can.png",
+		"res://assets/sprites/npcs/npc_to_thien.png",
+		"res://assets/sprites/npcs/npc_bat_phien_auctioneer.png",
+		"res://assets/sprites/npcs/npc_thuong_nhan_gia_ma.png"
+	]
+	for np in new_npcs:
+		var ntex: Texture2D = load(np)
+		_assert(ntex != null and ntex.get_width() >= 92 and ntex.get_height() >= 92, "New Ch.04-05 NPC sprite loads cleanly: " + np)
 

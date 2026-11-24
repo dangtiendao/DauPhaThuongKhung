@@ -20,7 +20,7 @@
         1152
       ],
       "ambient_hex": "#8d92ab",
-      "base_tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+      "base_tile": "res://assets/sprites/tiles/hac_giac_obsidian.png",
       "default_spawn": [
         180,
         560
@@ -269,7 +269,7 @@
             640,
             640
           ],
-          "tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+          "tile": "res://assets/sprites/tiles/hac_giac_obsidian.png",
           "border_hex": "#EF476F"
         },
         {
@@ -501,7 +501,7 @@
         1152
       ],
       "ambient_hex": "#a898b0",
-      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "base_tile": "res://assets/sprites/tiles/hac_giac_obsidian.png",
       "default_spawn": [
         180,
         560
@@ -660,7 +660,7 @@
           "id": "npc_ch05_bat_phien_auctioneer",
           "name": "Chưởng Quỹ Bát Phiến Môn (Đấu Giá Sư)",
           "title": "Đại Đấu Giá Chiến Thuật Hắc Ấn Thành",
-          "sprite": "res://assets/sprites/npcs/npc_nha_phi.png",
+          "sprite": "res://assets/sprites/npcs/npc_bat_phien_auctioneer.png",
           "pos": [
             690,
             405
@@ -754,7 +754,7 @@
         1024
       ],
       "ambient_hex": "#d4e2d4",
-      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "base_tile": "res://assets/sprites/tiles/gia_nam_courtyard.png",
       "default_spawn": [
         180,
         512
@@ -898,7 +898,7 @@
           "id": "npc_ch05_thuong_nhan_gia_ma",
           "name": "Thương Nhân Lữ Hành Gia Mã",
           "title": "Tin Tức Tiêu Gia · Tiếp Tế Đan Dược & Nguyên Liệu",
-          "sprite": "res://assets/sprites/npcs/npc_tieu_chien.png",
+          "sprite": "res://assets/sprites/npcs/npc_thuong_nhan_gia_ma.png",
           "pos": [
             615,
             420
@@ -974,7 +974,7 @@
         1152
       ],
       "ambient_hex": "#dce4cf",
-      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "base_tile": "res://assets/sprites/tiles/gia_nam_courtyard.png",
       "default_spawn": [
         180,
         560
@@ -1155,7 +1155,7 @@
           "id": "npc_ch05_ho_can_tang_thu",
           "name": "Phó Viện Trưởng Hổ Càn",
           "title": "Trấn Thủ Tàng Thư Các · Trao Thưởng Top 5",
-          "sprite": "res://assets/sprites/npcs/npc_nhuoc_lam.png",
+          "sprite": "res://assets/sprites/npcs/npc_ho_can.png",
           "pos": [
             1465,
             265
@@ -1269,7 +1269,7 @@
             352,
             704
           ],
-          "tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+          "tile": "res://assets/sprites/tiles/gia_nam_courtyard.png",
           "border_hex": "#FFD166"
         }
       ],
@@ -1402,7 +1402,7 @@
           "id": "npc_ch05_to_thien_gate",
           "name": "Đại Trưởng Lão Tô Thiên (Đấu Tông)",
           "title": "Thủ Hộ Giả Nội Viện · Khen Thưởng Đệ Nhất Tân Sinh Vương",
-          "sprite": "res://assets/sprites/npcs/npc_hai_ba_dong.png",
+          "sprite": "res://assets/sprites/npcs/npc_to_thien.png",
           "pos": [
             1720,
             485

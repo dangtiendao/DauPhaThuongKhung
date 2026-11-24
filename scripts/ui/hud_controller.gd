@@ -1238,8 +1238,11 @@ func _refresh_moba_dock() -> void:
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped()
 	var dash_sub: String = "Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt")
 	var dash_col: Color = Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF"))
+	var dash_tex: Texture2D = _get_cached_tex("res://assets/sprites/icons/skill_tam_thien_loi_dong.png") if has_thunder else (
+		_get_cached_tex("res://assets/sprites/icons/skill_tu_van_duc.png") if has_wings else _get_cached_tex("res://assets/sprites/icons/skill_dash.png")
+	)
 	slot_dash.set_slot_visual(
-		_get_cached_tex("res://assets/sprites/icons/skill_tu_van_duc.png") if (has_wings or has_thunder) else _get_cached_tex("res://assets/sprites/icons/skill_dash.png"),
+		dash_tex,
 		dash_sub,
 		false,
 		has_wings or has_thunder,

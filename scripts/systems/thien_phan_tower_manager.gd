@@ -101,7 +101,7 @@ static func get_blessing_pool() -> Array:
 			"desc": "Thân pháp lôi đình xuất thần nhập hóa: -15% Hồi Chiêu Đấu Kỹ & +15% Tốc Độ Di Chuyển!",
 			"color_hex": "#38BDF8",
 			"color": "#38BDF8",
-			"icon": "res://assets/sprites/icons/skill_tu_van_duc.png",
+			"icon": "res://assets/sprites/icons/skill_tam_thien_loi_dong.png",
 			"stat_key": "cd_red_pct",
 			"value": 15.0,
 			"stat_key2": "spd_pct",

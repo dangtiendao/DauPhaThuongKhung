@@ -22,7 +22,7 @@
         1152
       ],
       "ambient_hex": "#b7c4d8",
-      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "base_tile": "res://assets/sprites/tiles/de_do_palace.png",
       "default_spawn": [
         195,
         560
@@ -301,7 +301,7 @@
         1152
       ],
       "ambient_hex": "#e2d4bc",
-      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "base_tile": "res://assets/sprites/tiles/de_do_palace.png",
       "default_spawn": [
         195,
         560
@@ -596,7 +596,7 @@
         1024
       ],
       "ambient_hex": "#c8d6cc",
-      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "base_tile": "res://assets/sprites/tiles/de_do_palace.png",
       "default_spawn": [
         800,
         890
@@ -723,7 +723,7 @@
           "id": "npc_nap_lan_kiet",
           "name": "Nguyên Soái Nạp Lan Kiệt",
           "title": "Đấu Vương Trúng Lạc Độc · Thất Huyễn Thanh Linh Tiên",
-          "sprite": "res://assets/sprites/npcs/npc_tieu_chien.png",
+          "sprite": "res://assets/sprites/npcs/npc_nap_lan_kiet.png",
           "pos": [
             800,
             320
@@ -793,7 +793,7 @@
         1088
       ],
       "ambient_hex": "#e6d8b8",
-      "base_tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+      "base_tile": "res://assets/sprites/tiles/de_do_palace.png",
       "default_spawn": [
         896,
         175
@@ -888,7 +888,7 @@
           "id": "npc_phap_ma",
           "name": "Hội Trưởng Pháp Mã",
           "title": "Ngũ Phẩm Đỉnh Phong · Mật Trao Tam Văn Đan Phương",
-          "sprite": "res://assets/sprites/npcs/npc_duoc_lao.png",
+          "sprite": "res://assets/sprites/npcs/npc_phap_ma.png",
           "pos": [
             640,
             405
@@ -901,7 +901,7 @@
           "id": "npc_gia_hinh_thien",
           "name": "Lão Tổ Gia Hình Thiên",
           "title": "Đấu Hoàng Đỉnh Phong Hoàng Thất Gia Mã",
-          "sprite": "res://assets/sprites/npcs/npc_hai_ba_dong.png",
+          "sprite": "res://assets/sprites/npcs/npc_gia_hinh_thien.png",
           "pos": [
             1150,
             405
@@ -949,7 +949,7 @@
         1280
       ],
       "ambient_hex": "#d2e4f0",
-      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "base_tile": "res://assets/sprites/tiles/yunlan_marble.png",
       "default_spawn": [
         800,
         1140
@@ -1172,7 +1172,7 @@
         1152
       ],
       "ambient_hex": "#d4e3f2",
-      "base_tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+      "base_tile": "res://assets/sprites/tiles/yunlan_marble.png",
       "default_spawn": [
         1024,
         995
@@ -1346,7 +1346,7 @@
           "id": "npc_van_son_summit",
           "name": "Đấu Tông Vân Sơn (Hư Không)",
           "title": "Đệ Nhị Thượng Vân Lam — Đòi Mạng Vân Lăng!",
-          "sprite": "res://assets/sprites/npcs/npc_hai_ba_dong.png",
+          "sprite": "res://assets/sprites/npcs/npc_van_son.png",
           "pos": [
             1320,
             275
