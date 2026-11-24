@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/entities/skill_projectile.gd" id="1_skill_script"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_skill"]
+radius = 16.0
+
+[node name="SkillEffect" type="Area2D"]
+monitoring = false
+monitorable = false
+script = ExtResource("1_skill_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_skill")

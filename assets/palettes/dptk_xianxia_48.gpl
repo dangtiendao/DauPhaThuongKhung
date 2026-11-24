@@ -1,0 +1,53 @@
+GIMP Palette
+Name: DPTK Xianxia 48
+Columns: 8
+# Bảng màu Cổ Phong Tiên Hiệp 48 màu (Hue-Shifted) dành cho Aseprite / LibreSprite
+# Copy hoặc mở trực tiếp file .gpl này trong Aseprite (Palette -> Load Palette)
+ 18  14  28	Ink Indigo Outline
+ 28  24  48	Deep Shadow Robe
+ 42  38  69	Dark Black Robe
+ 62  59  92	Mid Black Robe
+ 90  86 125	Highlight Robe
+134 130 168	Silver Edge
+ 32  24  38	Hair Shadow
+ 56  46  72	Hair Mid
+ 92  78 112	Hair Specular
+ 94  52  46	Skin Outline
+184 128 106	Skin Shadow
+224 176 146	Skin Mid
+248 214 186	Skin Light
+255 240 222	Skin Specular
+ 92  18  34	Crimson Shadow
+168  34  52	Crimson Mid
+224  64  76	Crimson Bright
+255 138 154	Crimson Highlight
+107  56  22	Bronze Shadow
+168  98  34	Bronze Mid
+230 162  52	Gold Bright
+255 228 128	Gold Specular
+ 15  36  36	Bamboo Deep
+ 25  61  58	Bamboo Dark
+ 38  92  79	Bamboo Mid
+ 60 133 102	Bamboo Light
+ 99 176 124	Bamboo Tip
+158 224 158	Bamboo Sunlit
+ 31  37  52	Stone Shadow
+ 48  58  78	Stone Dark
+ 72  86 112	Stone Mid
+108 124 154	Stone Light
+154 170 198	Stone Edge
+ 66  44  36	Wood Shadow
+112  74  52	Wood Mid
+164 114  76	Wood Light
+212 164 114	Wood Highlight
+ 11  82  91	Jade Fire Outer
+ 46 196 182	Jade Fire Mid
+216 243 220	Jade Fire Core
+ 60   9 108	Purple Fire Outer
+157  78 221	Purple Fire Mid
+243 213 255	Purple Fire Core
+138  28  28	Flame Red Outer
+232  89  28	Flame Orange Mid
+255 186  46	Flame Gold Bright
+255 246 196	Flame White Core
+255 255 255	Pure Light

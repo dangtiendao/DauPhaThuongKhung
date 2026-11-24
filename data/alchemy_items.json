@@ -1,0 +1,218 @@
+{
+  "version": "1.0",
+  "items": {
+    "herb_tu_diep_lan": {
+      "id": "herb_tu_diep_lan",
+      "name": "Tử Diệp Lan Thảo",
+      "type": "herb",
+      "tier": 1,
+      "color_hex": "#B5838D",
+      "description": "Thảo dược Nhất phẩm có lá tím nhạt, nguyên liệu chính luyện Trúc Cơ Linh Dịch và Tụ Khí Tán."
+    },
+    "herb_tay_cot_hoa": {
+      "id": "herb_tay_cot_hoa",
+      "name": "Tẩy Cốt Hoa",
+      "type": "herb",
+      "tier": 1,
+      "color_hex": "#EDE0D4",
+      "description": "Đóa hoa trắng ngần mọc nơi vách núi âm hàn, giúp tẩy rửa kinh mạch thiếu niên."
+    },
+    "herb_ngung_huyet_thao": {
+      "id": "herb_ngung_huyet_thao",
+      "name": "Ngưng Huyết Thảo",
+      "type": "herb",
+      "tier": 1,
+      "color_hex": "#E63946",
+      "description": "Dược thảo cầm máu phổ biến nhất cho lính đánh thuê ở Ma Thú Sơn Mạch."
+    },
+    "herb_hoat_khi_qua": {
+      "id": "herb_hoat_khi_qua",
+      "name": "Hoạt Khí Quả",
+      "type": "herb",
+      "tier": 2,
+      "color_hex": "#52B788",
+      "description": "Linh quả Nhị phẩm dồi dào năng lượng, dùng luyện Hồi Khí Đan và Hộ Mạch Đan."
+    },
+    "core_hoa_1": {
+      "id": "core_hoa_1",
+      "name": "Hỏa Ma Hạch (Cấp 1)",
+      "type": "monster_core",
+      "tier": 1,
+      "color_hex": "#FF7B00",
+      "description": "Tinh thể năng lượng Hỏa kết tụ trong cơ thể Ma Thú Cấp 1, dung hòa dược tính khi luyện đan."
+    },
+    "core_moc_2": {
+      "id": "core_moc_2",
+      "name": "Mộc Ma Hạch (Cấp 2)",
+      "type": "monster_core",
+      "tier": 2,
+      "color_hex": "#2EC4B6",
+      "description": "Ma Hạch thuộc tính Mộc ôn hòa, cần thiết cho các loại đan dược đột phá trung cấp."
+    },
+    "herb_sa_chi_man_da_la": {
+      "id": "herb_sa_chi_man_da_la",
+      "name": "Sa Chi Mạn Đà La",
+      "type": "herb",
+      "tier": 3,
+      "color_hex": "#FFD166",
+      "description": "Kỳ hoa sinh trưởng giữa tâm bão cát Sa Mạc Tháp Qua Nhĩ — dược liệu cốt lõi luyện Băng Tâm Đan & Phá Ách Đan!"
+    },
+    "core_hoa_3": {
+      "id": "core_hoa_3",
+      "name": "Viêm Xà Ma Hạch (Cấp 3)",
+      "type": "monster_core",
+      "tier": 3,
+      "color_hex": "#FF4D6D",
+      "description": "Ma Hạch cấp 3 kết tinh từ Ma Thú & Tinh Anh Xà Tộc Đại Mạc, chứa hỏa lực cuồng bạo."
+    },
+    "pill_bang_tam_dan": {
+      "id": "pill_bang_tam_dan",
+      "name": "Băng Tâm Đan (Tứ Phẩm)",
+      "type": "consumable_hp",
+      "tier": 4,
+      "heal_hp": 185,
+      "color_hex": "#70D6FF",
+      "description": "Đan dược Tứ phẩm giữ linh đài thanh tỉnh khi Thôn Phệ Thanh Liên Địa Tâm Hỏa (#19)! Uống hồi ngay +185 HP."
+    },
+    "pill_thanh_lien_tu": {
+      "id": "pill_thanh_lien_tu",
+      "name": "Hạt Thanh Liên Tử",
+      "type": "consumable_qi",
+      "tier": 4,
+      "restore_qi": 140,
+      "color_hex": "#2EC4B6",
+      "description": "Hạt sen ngọc bích kết tụ ngàn năm trên Thanh Liên Đài đáy sông dung nham! Hồi tức thì +140 Đấu Khí."
+    },
+    "pill_ngung_huyet_tan": {
+      "id": "pill_ngung_huyet_tan",
+      "name": "Ngưng Huyết Tán",
+      "type": "consumable_hp",
+      "tier": 1,
+      "heal_hp": 75,
+      "color_hex": "#EF476F",
+      "description": "Nhất phẩm dược tán giúp Tiêu Gia đánh bại Hồi Xuân Tán của Gia Liệt Gia. Hồi ngay 75 HP."
+    },
+    "pill_hoi_khi_dan": {
+      "id": "pill_hoi_khi_dan",
+      "name": "Hồi Khí Đan",
+      "type": "consumable_qi",
+      "tier": 1,
+      "restore_qi": 55,
+      "color_hex": "#4CC9F0",
+      "description": "Đan dược chiến đấu thiết yếu giúp khôi phục nhanh 55 Đấu Khí (QI)."
+    },
+    "pill_truc_co_linh_dich": {
+      "id": "pill_truc_co_linh_dich",
+      "name": "Trúc Cơ Linh Dịch",
+      "type": "consumable_exp",
+      "tier": 2,
+      "grant_exp": 240,
+      "color_hex": "#06D6A0",
+      "description": "Dược dịch ngọc bích Dược Lão dạy Tiêu Viêm luyện đầu tiên! Dùng nhận ngay +240 EXP Đấu Khí."
+    },
+    "pill_tu_khi_tan": {
+      "id": "pill_tu_khi_tan",
+      "name": "Tụ Khí Tán",
+      "type": "breakthrough",
+      "tier": 4,
+      "color_hex": "#FFD166",
+      "description": "Đan dược then chốt giúp Đấu Chi Khí Cửu Đoạn ngưng tụ Đấu Khí Toàn 100% đột phá Đấu Giả!"
+    },
+    "pill_ho_mach_dan": {
+      "id": "pill_ho_mach_dan",
+      "name": "Hộ Mạch Đan",
+      "type": "breakthrough",
+      "tier": 3,
+      "color_hex": "#72EFDD",
+      "description": "Bảo vệ kinh mạch khi ngưng tụ Khí Tuyền đột phá từ Đấu Giả lên Đấu Sư."
+    },
+    "pill_pha_chuong_dan": {
+      "id": "pill_pha_chuong_dan",
+      "name": "Phá Chướng Đan",
+      "type": "breakthrough",
+      "tier": 4,
+      "color_hex": "#FF9F1C",
+      "description": "Phá vỡ bình cảnh giúp Đấu Sư Cửu Tinh đột phá Đại Đấu Sư."
+    },
+    "pill_tam_van_thanh_linh": {
+      "id": "pill_tam_van_thanh_linh",
+      "name": "Tam Văn Thanh Linh Đan",
+      "type": "breakthrough",
+      "tier": 4,
+      "color_hex": "#80ED99",
+      "description": "Đan dược giúp Tiêu Viêm đăng quang Quán Quân Đan Hội Gia Mã — Đột phá lên Đấu Linh."
+    }
+  },
+  "recipes": [
+    {
+      "id": "recipe_ngung_huyet_tan",
+      "output_item": "pill_ngung_huyet_tan",
+      "output_count": 2,
+      "tier": 1,
+      "req_soul": 5,
+      "base_success_rate": 0.95,
+      "soul_exp_gain": 2,
+      "ingredients": { "herb_ngung_huyet_thao": 2 }
+    },
+    {
+      "id": "recipe_hoi_khi_dan",
+      "output_item": "pill_hoi_khi_dan",
+      "output_count": 2,
+      "tier": 1,
+      "req_soul": 6,
+      "base_success_rate": 0.92,
+      "soul_exp_gain": 3,
+      "ingredients": { "herb_tu_diep_lan": 1, "herb_ngung_huyet_thao": 1 }
+    },
+    {
+      "id": "recipe_truc_co_linh_dich",
+      "output_item": "pill_truc_co_linh_dich",
+      "output_count": 1,
+      "tier": 2,
+      "req_soul": 8,
+      "base_success_rate": 0.85,
+      "soul_exp_gain": 5,
+      "ingredients": { "herb_tu_diep_lan": 2, "herb_tay_cot_hoa": 1, "core_hoa_1": 1 }
+    },
+    {
+      "id": "recipe_tu_khi_tan",
+      "output_item": "pill_tu_khi_tan",
+      "output_count": 1,
+      "tier": 4,
+      "req_soul": 12,
+      "base_success_rate": 0.80,
+      "soul_exp_gain": 10,
+      "ingredients": { "herb_tu_diep_lan": 3, "herb_tay_cot_hoa": 2, "core_hoa_1": 2 }
+    },
+    {
+      "id": "recipe_ho_mach_dan",
+      "output_item": "pill_ho_mach_dan",
+      "output_count": 1,
+      "tier": 3,
+      "req_soul": 25,
+      "base_success_rate": 0.78,
+      "soul_exp_gain": 15,
+      "ingredients": { "herb_hoat_khi_qua": 2, "herb_tay_cot_hoa": 2, "core_hoa_1": 2 }
+    },
+    {
+      "id": "recipe_bang_tam_dan",
+      "output_item": "pill_bang_tam_dan",
+      "output_count": 1,
+      "tier": 4,
+      "req_soul": 30,
+      "base_success_rate": 0.76,
+      "soul_exp_gain": 18,
+      "ingredients": { "herb_sa_chi_man_da_la": 2, "core_moc_2": 1 }
+    },
+    {
+      "id": "recipe_pha_chuong_dan",
+      "output_item": "pill_pha_chuong_dan",
+      "output_count": 1,
+      "tier": 4,
+      "req_soul": 36,
+      "base_success_rate": 0.75,
+      "soul_exp_gain": 22,
+      "ingredients": { "herb_sa_chi_man_da_la": 2, "herb_hoat_khi_qua": 2, "core_hoa_3": 1 }
+    }
+  ]
+}
