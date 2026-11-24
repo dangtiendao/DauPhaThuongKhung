@@ -1,6 +1,6 @@
 # Đấu Phá Thương Khung — Top-down 2D HD Pixel Action RPG (Godot 4)
 
-Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn vẹn từ tiểu thuyết **Đấu Phá Thương Khung** (Thiên Tằm Thổ Đậu), phát triển trên **Godot Engine 4 (GDScript)** với đồ họa **32-bit HD Pixel Art (`1280×720`, Physics Interpolation & VFX 2.0 Shader 60–144 FPS)**, giao diện **nút bấm MOBA trực quan**, **Data-Driven Story Engine**, **11 Bản Nhạc Nền Ngũ Cung Địa Vực**, và **tiến trình chuẩn nguyên tác TRỌN BỘ QUYỂN I, QUYỂN II & MỞ MÀN QUYỂN III (`v0.7.2`): 46 bản đồ — 66 mốc nhiệm vụ chính (Chương 01 -> Chương 08: Bắc Vực Trung Châu, Đột Phá Đấu Tông, Giải Ma Độc Ban, Thiên Hỏa Tôn Giả, Quán Quân Đan Hội Bát Phẩm Ngũ Sắc Đan Lôi, #12 Cửu Long & #9 Tam Thiên Diễm Viêm Hỏa)**.
+Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn vẹn từ tiểu thuyết **Đấu Phá Thương Khung** (Thiên Tằm Thổ Đậu), phát triển trên **Godot Engine 4 (GDScript)** với đồ họa **100% 32-bit HD AI Pixel Art (`1280×720`, 49/49 True 8-Frame AI, Physics Interpolation & VFX 2.0 Shader 60–144 FPS)**, giao diện **nút bấm MOBA trực quan**, **Data-Driven Story Engine**, **11 Bản Nhạc Nền Ngũ Cung Địa Vực**, và **tiến trình chuẩn nguyên tác TRỌN BỘ QUYỂN I, QUYỂN II & MỞ MÀN QUYỂN III (`v0.7.3`): 46 bản đồ — 66 mốc nhiệm vụ chính (Chương 01 -> Chương 08: Bắc Vực Trung Châu, Đột Phá Đấu Tông, Giải Ma Độc Ban, Thiên Hỏa Tôn Giả, Quán Quân Đan Hội Bát Phẩm Ngũ Sắc Đan Lôi, #12 Cửu Long & #9 Tam Thiên Diễm Viêm Hỏa)**.
 
 ---
 
@@ -9,7 +9,7 @@ Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn v�
 1. **Chơi ngay**: Nhấp đúp file **`CHAY_GAME.bat`** trong thư mục dự án (`e:\Project\DauPhaThuongKhung\CHAY_GAME.bat`).
 2. **Mở trình soạn thảo Godot Editor**: Nhấp đúp file **`MO_GODOT_EDITOR.bat`** (hoặc mở Godot 4 -> Import `project.godot` -> nhấn `F5`).
 3. **Chạy bộ kiểm thử tự động (1.461 assertions · 13 Suites)**: Chạy **`tests\run_tests.bat`** (hoặc `Godot --headless --path . res://tests/test_runner.tscn`).
-4. **Đóng gói Windows `.exe`**: Cấu hình sẵn preset **`Windows Desktop`** trong `export_presets.cfg` (`0.7.2.0`, tích hợp `icon.ico`, nhúng `.pck`, xuất ra `builds/DauPhaThuongKhung.exe`).
+4. **Đóng gói Windows `.exe`**: Cấu hình sẵn preset **`Windows Desktop`** trong `export_presets.cfg` (`0.7.3.0`, tích hợp `icon.ico`, nhúng `.pck`, xuất ra `builds/DauPhaThuongKhung.exe`).
 
 ---
 
@@ -107,7 +107,7 @@ Khởi đầu **Phút 0**, Tiêu Viêm đứng tại **Quảng Trường Tiêu G
 
 ---
 
-## 3. Tính Năng Gameplay Nổi Bật (v0.7.1 — VFX 2.0 · Quyển I, II & Ch.08 Quyển III)
+## 3. Tính Năng Gameplay Nổi Bật (v0.7.3 — 100% AI Art · VFX 2.0 · Modular & 11 BGM)
 
 * **Chiến đấu 60–144 FPS & Gói VFX 2.0 (`v0.7.1`)**: 2D Physics Interpolation, **4 Shader GLSL (`gl_compatibility` 100%)** gồm `char_motion_polish` (gió phất áo + Rim-Glow), `di_hoa_palette`, `space_shockwave` (sóng khúc xạ bẻ cong không gian + tách sắc RGB qua `ScreenFxOverlay`) & `vfx_energy_dissolve` (**Cánh Đấu Khí Hóa Dực sprite-shader** đổi màu theo cảnh giới/Dị Hỏa); Input Buffer, Hitstop, Camera Look-Ahead, **Thanh Phá Thế Boss (Poise/Stagger)** (`+35%` DMG), **sét phân nhánh đa tầng, trận đồ cổ tự, hố nứt 3s & Ngũ Sắc Đan Lôi giáng thực chiến**, **Độ Thông Thạo đủ 24/24 Đấu Kỹ (100% GDD)**, 7 mẫu AI quái thường, **41/41 Boss độc chiêu chuẩn 8-frame (`4×2`)**, cơ chế **Đấu Hoàng** → **Đấu Tông Đạp Hư Không (`860 px/s`, `1.42×` reach)**, **Tứ Sắc Hủy Diệt Hỏa Liên** (`#19 + #14 + #11 + #9`) & nội tại **Bất Tử Chi Thân** (`#9`).
 * **Quản Trị Thế Lực Bàn Môn → Đế Quốc VIÊM MINH (`[M] -> 👑 Viêm Minh`)**: Tiến hóa từ 3 Phân Đường Bàn Môn lên **4 Đường Đế Quốc Viêm Minh** (*Đan Đường*, *Hình Đường*, *Ám Đường Tầm Bảo*, *Ám Võng Tình Báo* Lv.0→3 — đạt Max mở `FLAG_YAN_ALLIANCE_MAX`), thu hoạch thụ động tài nguyên cao cấp, cử **Tử Nghiên** tầm bảo & khiêu chiến **11 cao thủ Cường Bảng / Đấu Tông / Dị Hỏa**!
@@ -160,8 +160,8 @@ Toàn bộ chiêu thức, kỹ năng cơ động, đan dược và 8 bảng hệ
 
 * `docs/` — **25 Tài liệu Thiết kế Game (GDD), Tiến Độ & Sổ Nợ Đồ Họa** chia chi tiết 11 Chương (4 Quyển), 23 Dị Hỏa, 12 Cảnh giới, Đấu Kỹ, Luyện Đan, Quái & 25+ Boss, kèm bảng theo dõi tiến độ tại [`docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md`](docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md) và sổ theo dõi đồ họa tại [`docs/00_Tong_Quan_Kien_Truc/03_Danh_Sach_Do_Hoa_Va_VFX_Can_Nang_Cap.md`](docs/00_Tong_Quan_Kien_Truc/03_Danh_Sach_Do_Hoa_Va_VFX_Can_Nang_Cap.md).
 * `data/` — **28 Cơ sở dữ liệu JSON** (`maps.json`, `maps_ch04..08.json` — 46 map; `quests_ch01`, `quests_ch04..08.json` — 66 NV chính; `dialogues_ch04..08.json`; `enemies.json`, `enemies_ch04..08.json` — 79 quái/41 Boss; `realms.json`, `flames.json`, `skills.json` — 24 Đấu Kỹ; `alchemy_items.json` — 52 vật phẩm/24 đan phương; `equipment.json` — 46 mẫu/8 Set).
-* `assets/` — **215 tài nguyên sprite/texture 32-bit HD Pixel Art & 4 Shader GLSL** (chuẩn mặc định **8 frame**: trọn bộ **49/49 spritesheet hoạt ảnh** gồm 8 sheet Tiêu Viêm `idle/run/cast/dash/4×attack` và trọn bộ **41/41 Boss `*_boss_anim.png`** đều là **8 frame** `4×2`/`8×1`; **38 NPC**, **40 icon** gồm 24/24 Đấu Kỹ có icon riêng, **21 tileset vùng** từ Ô Thản Thành tới Thánh Đan Thành & Ngân Hà Tinh Vực, texture VFX `128×128` / `wing_plume` `96×128`, 3 pickup `32×32`, và 4 shader `di_hoa_palette`, `char_motion_polish`, `space_shockwave`, `vfx_energy_dissolve`).
+* `assets/` — **215 tài nguyên sprite/texture 32-bit HD AI Pixel Art & 4 Shader GLSL** (chuẩn mặc định **8 frame**: trọn bộ **49/49 spritesheet hoạt ảnh = 100% True 8-Frame AI** gồm 8 sheet Tiêu Viêm `idle/run/cast/dash/4×attack` và trọn bộ **41/41 Boss `*_boss_anim.png`** đều là **8 frame** `4×2`/`8×1`; **38 NPC AI**, **40 icon** gồm 24/24 Đấu Kỹ có icon AI riêng, **21 tileset vùng seamless AI** từ Ô Thản Thành tới Thánh Đan Thành & Ngân Hà Tinh Vực, texture VFX `128×128` / `wing_plume` `96×128`, 3 pickup `32×32`, và 4 shader `di_hoa_palette`, `char_motion_polish`, `space_shockwave`, `vfx_energy_dissolve`).
 * `scripts/` & `scenes/` — **44 script GDScript** (`24.5K` LOC · mọi file lõi `< 1.700` dòng sau đợt mô-đun hóa `v0.7.2`: `SaveLoadManager`, `PanGateManager`, `HeroineAffectionManager`, `StoryProgressionHelper`, `RegionalWeatherBuilder`, `WorldNavigationHelper`, `BossSkillExecutor`, `PlayerSkillExecutor`, `BossRushManager`, `ThienPhanTowerManager`, `StoryDialogueRunner`, `ScreenFxOverlay`, `AudioBgmCh0508`, **9 mô-đun UI** trong `scripts/ui/panels/`, `AuctionSystem`, `AlchemySystem`, `EquipmentSystem`, **11 BGM ngũ cung địa vực Procedural** & **24 SFX**) & **9 scene `.tscn`**.
 * `tests/` — Bộ kiểm thử tự động Godot headless (`tests/test_runner.tscn`, `tests/test_suite.gd`, `tests/run_tests.bat`) — **13 Suites / 1.461 assertions (0 FAILED · 0 leaks)** kiểm tra JSON schema, tồn tại asset `res://`, liên thông BFS 46 bản đồ, `alchemy_max_tier`, Save/Load, DEMO, live UI/VFX 2.0/Endgame, 49/49 sheet 8-frame, Ch.06–08, 11 BGM / 46-map BGM & 10 mô-đun refactor `v0.7.2`.
 * `tools/` — Công cụ tự động chuẩn hóa spritesheet `tools/normalize_spritesheet.py`.
-* `export_presets.cfg` & `icon.ico` — Cấu hình đóng gói Windows x64 (`GL Compatibility`, `v0.7.2.0`) độc lập.
+* `export_presets.cfg` & `icon.ico` — Cấu hình đóng gói Windows x64 (`GL Compatibility`, `v0.7.3.0`) độc lập.

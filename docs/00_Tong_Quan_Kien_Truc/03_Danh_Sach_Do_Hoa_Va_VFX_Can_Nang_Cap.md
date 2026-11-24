@@ -1,84 +1,84 @@
 # SỔ THEO DÕI CHẤT LƯỢNG ĐỒ HỌA & VFX CẦN NÂNG CẤP (ART & VFX QUALITY DEBT)
 
-> **Cập nhật lần cuối**: 24/11/2026 (tại mốc `v0.7.1` — Đã chốt trọn bộ **VFX 2.0 (P2)** & **3 Pickup HD `32×32` (P3.1)**)
-> **Mục đích**: Ghi nhận minh bạch toàn bộ **ảnh sprite, NPC, tileset, icon, quái thường, prop và hiệu ứng VFX/Shader** hiện chưa đạt chất lượng phát hành cuối cùng (do lỗi quá tải model tạo ảnh `503 MODEL_CAPACITY_EXHAUSTED`, tái sử dụng sprite cũ, placeholder từ `v0.1`, hoặc giới hạn VFX vẽ bằng hình học cơ bản).
-> **Nguyên tắc thay nóng**: Mọi file ảnh trong danh sách dưới đây đã được gắn đường dẫn chuẩn trong JSON/GDScript — khi tạo lại ảnh mới đúng kích thước cột **"Kích thước chuẩn"** và ghi đè file cũ rồi chạy `--import --quit`, toàn bộ game sẽ tự động nhận ảnh mới mà **không cần sửa code hay JSON**.
+> **Cập nhật lần cuối**: 25/11/2026 (tại mốc `v0.7.3` — **ĐÃ TRẢ DỨT ĐIỂM 100% NỢ ART P0 + P1 [41/41 FILE PNG AI 32-BIT HD]** · Đạt tròn **49/49 = 100% True 8-Frame AI** toàn dự án!)
+> **Mục đích**: Ghi nhận minh bạch toàn bộ **ảnh sprite, NPC, tileset, icon, quái thường, prop và hiệu ứng VFX/Shader** của dự án, đối chiếu trạng thái nâng cấp theo mức ưu tiên.
+> **Nguyên tắc thay nóng**: Mọi file ảnh trong danh sách dưới đây đã được gắn đường dẫn chuẩn trong JSON/GDScript — khi ghi đè ảnh mới đúng kích thước cột **"Kích thước chuẩn"** rồi chạy `--import --quit`, toàn bộ game sẽ tự động nhận ảnh mới mà **không cần sửa code hay JSON**.
 
 ---
 
 ## Tổng Quan Nhanh Theo Mức Ưu Tiên
 
-| Mức ưu tiên | Nhóm tài nguyên | Số lượng | Nguyên nhân gốc |
+| Mức ưu tiên | Nhóm tài nguyên | Số lượng | Trạng thái |
 | :---: | :--- | :---: | :--- |
-| **P0 — Cao nhất** | Đồ họa **Chương 08** (7 Boss 8f + 7 chân dung + 7 NPC + 5 Tileset + 5 Icon) | **31 file PNG** | Model `gemini-3.1-flash-image` quá tải `503` — tạm sinh bằng Python pixel-art hình khối cơ bản |
-| **P1 — Cao** | **10 file Ch.06–07** còn sót chưa kịp thay AI ở đợt `v0.6.3` (4 NPC + 3 Tileset + 3 Icon) | **10 file PNG** | Model `gemini-3.1-flash-image` hết capacity `503` giữa đợt `v0.6.3` (tạm dùng bản palette-crafted) |
+| **P0 — Cao nhất** | Đồ họa **Chương 08** (7 Boss 8f + 7 chân dung + 7 NPC + 5 Tileset + 5 Icon) | **✅ 31/31 Đã xong (`v0.7.3`)** | Đã thay mới 100% bằng tranh AI 32-bit HD Pixel Art (True 8-Frame `4×2`, `semi_alpha = 0`, `min_diff` `66.7%–93.5%`) |
+| **P1 — Cao** | **10 file Ch.06–07** còn sót ở đợt `v0.6.3` (4 NPC + 3 Tileset + 3 Icon) | **✅ 10/10 Đã xong (`v0.7.3`)** | Đã thay mới 100% bằng tranh AI 32-bit HD Pixel Art đồng bộ chuẩn `v0.6.3` |
 | **P2 — Trung bình** | **VFX 2.0, Shader & Hiệu Ứng Thị Giác** (`ScreenFxOverlay`, `space_shockwave`, `vfx_energy_dissolve`, Cánh Hóa Dực, Đồng Hành 2.0, Đan Lôi) | **✅ 6/6 Đã xong (`v0.7.1`)** | Hoàn tất trọn gói VFX 2.0 100% tương thích `gl_compatibility` (60–144 FPS) |
-| **P3 — Bổ sung Polish** | **Quái thường tái sử dụng sprite, Prop & Vũ khí đeo lưng** *(đã xong 3/3 Pickup `32×32` ở `v0.7.1`)* | **38 Mob + Prop/Vũ khí** | Tái sử dụng sprite cũ Ch.01–03 & prop tương tác dùng chung |
+| **P3 — Bổ sung Polish** | **Quái thường tái sử dụng sprite, Prop & Vũ khí đeo lưng** *(đã xong 3/3 Pickup `32×32` ở `v0.7.1`)* | **38 Mob + Prop/Vũ khí** | Tùy chọn polish nâng cao (không chặn phát hành Ch.09–11) |
 
-> **Ghi chú đối chứng (Phần ĐÃ ĐẠT CHUẨN AI 32-bit HD Pixel Art)**:
+> **Ghi chú đối chứng (Phần ĐÃ ĐẠT CHUẨN AI 32-bit HD Pixel Art — 100% P0 + P1 + P2!)**:
 > * `8/8` spritesheet Tiêu Viêm (`v0.6.1`) — True 8-Frame AI sắc nét.
-> * `34/34` Boss Chương 01–07 (`v0.6.2` & `v0.6.3`) — True 8-Frame (`4×2`) AI sắc nét.
-> * `6/16` art Ch.06–07 đã thay AI ở `v0.6.3`: `npc_han_nhan.png`, `npc_thien_doc_nu.png`, `npc_lieu_kinh.png`, `npc_vu_ho_phap.png`, `noi_vien_jade.png`, `skill_dai_liet_phach_quan.png`.
+> * **`41/41` Boss Chương 01–08** (`v0.6.2`, `v0.6.3`, **`v0.7.3`**) — **49/49 = 100% True 8-Frame (`4×2`) AI toàn dự án** + **41/41 chân dung Boss AI**.
+> * **100% NPC (38/38), Tileset vùng (21/21) và Icon Đấu Kỹ (24/24)** Ch.01–08 đạt chuẩn AI 32-bit HD Pixel Art (`0` file P0/P1 còn tồn đọng!).
 
 ---
 
-## P0 — Đồ Họa Chương 08 Tạm Sinh Thủ Công Do Model AI `503` (31 File)
+## P0 — Đồ Họa Chương 08 — ✅ ĐÃ HOÀN TẤT 31/31 (`v0.7.3`)
 
-> **Vấn đề chung**: Toàn bộ 31 file Chương 08 trong đợt `v0.7.0` được tạo bằng script Python thuần (vì `gemini-3.1-flash-image` trả lỗi `HTTP 503 MODEL_CAPACITY_EXHAUSTED`). Dù đạt đúng kích thước, viền `#141020` và 8/8 khung hình khác biệt, nhưng **chi tiết khuôn mặt, nếp y phục, hiệu ứng vảy rồng, ánh sáng và độ sâu pixel kém xa chuẩn 32-bit HD AI của Chương 01–07**.
+> **Trạng thái**: Đã vẽ mới 100% bằng AI 32-bit HD Pixel Art, chuẩn hóa đúng kích thước gốc, nền trong suốt sạch (`semi_alpha = 0`), kiểm duyệt trực quan từng file và re-import sạch trên Godot 4.7.2 (`1.461/1.461` test PASSED).
 
-### P0.1 — 7 Boss Chương 08 (`4×2` True 8-Frame + 7 Chân Dung — 14 File)
-* [ ] `assets/sprites/enemies/phi_thien_boss_anim.png` (`624×272`, cell `156×136`) & `phi_thien_boss.png` (`156×136`) — *Thiên Lôi Tử Phí Thiên (Bát Tinh Đấu Tông, đạo bào tím-chàm lôi điện, thương sét)* — **Nguyên nhân**: Model `503` (procedural hình khối, ~8.8KB / 1.1KB).
-* [ ] `assets/sprites/enemies/vuong_tran_boss_anim.png` (`624×272`, cell `156×136`) & `vuong_tran_boss.png` (`156×136`) — *Huyết Sát Vương Trần (Hoàng Tuyền Các, giáp đỏ-đen, song huyết đao)* — **Nguyên nhân**: Model `503` (procedural, ~9.3KB / 1.1KB).
-* [ ] `assets/sprites/enemies/phuong_thanh_nhi_boss_anim.png` (`672×320`, cell `168×160`) & `phuong_thanh_nhi_boss.png` (`168×160`) — *Phượng Thanh Nhi (Thiên Yêu Hoàng cánh phượng tím-vàng, thương lôi)* — **Nguyên nhân**: Model `503` (procedural, cánh & mặt còn thô, ~11.5KB / 1.4KB).
-* [ ] `assets/sprites/enemies/bang_ha_thanh_hai_boss_anim.png` (`672×320`, cell `168×160`) & `bang_ha_thanh_hai_boss.png` (`168×160`) — *Cốc Chủ Băng Hà & Thanh Hải Tôn Giả (băng bào + bóng ma xiềng xích Hồn Điện)* — **Nguyên nhân**: Model `503` (procedural, bóng Thanh Hải quá nhỏ/đơn giản, ~10.2KB / 1.2KB).
-* [ ] `assets/sprites/enemies/cuu_long_loi_cuong_boss_anim.png` (`640×264`, cell `160×132`) & `cuu_long_loi_cuong_boss.png` (`160×132`) — *#12 Cửu Long Lôi Cương Hỏa (Ngân Long lửa bạc-lam)* — **Nguyên nhân**: Model `503` (procedural thân rồng dạng chuỗi hình tròn, thiếu vảy & sừng tinh xảo, ~9.5KB / 1.2KB).
-* [ ] `assets/sprites/enemies/mo_cot_lao_nhan_boss_anim.png` (`624×272`, cell `156×136`) & `mo_cot_lao_nhan_boss.png` (`156×136`) — *Mộ Cốt Lão Nhân (trượng đầu lâu, quỷ hỏa tím-đen Hồn Điện)* — **Nguyên nhân**: Model `503` (procedural, ~9.9KB / 1.2KB).
-* [ ] `assets/sprites/enemies/tam_thien_diem_viem_boss_anim.png` (`672×320`, cell `168×160`) & `tam_thien_diem_viem_boss.png` (`168×160`) — *Final Boss #9 Thái Hư Tử Hắc Cự Long (rồng tinh hà tím-đen cánh sao)* — **Nguyên nhân**: Model `503` (procedural thân chuỗi chấm tròn, chưa xứng tầm Final Boss Ch.08, ~13.0KB / 1.6KB).
+### P0.1 — 7 Boss Chương 08 (`4×2` True 8-Frame + 7 Chân Dung — ✅ 14/14 File)
+* [x] `assets/sprites/enemies/phi_thien_boss_anim.png` (`624×272`, cell `156×136`, `min_diff=85.5%`) & `phi_thien_boss.png` (`156×136`) — *Thiên Lôi Tử Phí Thiên (Bát Tinh Đấu Tông, đạo bào tím-chàm lôi điện, thương sét)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/enemies/vuong_tran_boss_anim.png` (`624×272`, cell `156×136`, `min_diff=66.7%`) & `vuong_tran_boss.png` (`156×136`) — *Huyết Sát Vương Trần (Hoàng Tuyền Các, giáp đỏ-đen, song huyết đao)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/enemies/phuong_thanh_nhi_boss_anim.png` (`672×320`, cell `168×160`, `min_diff=78.2%`) & `phuong_thanh_nhi_boss.png` (`168×160`) — *Phượng Thanh Nhi (Thiên Yêu Hoàng cánh phượng tím-vàng, thương lôi)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/enemies/bang_ha_thanh_hai_boss_anim.png` (`672×320`, cell `168×160`, `min_diff=86.5%`) & `bang_ha_thanh_hai_boss.png` (`168×160`) — *Cốc Chủ Băng Hà & Thanh Hải Tôn Giả (băng bào + bóng ma xiềng xích Hồn Điện)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/enemies/cuu_long_loi_cuong_boss_anim.png` (`640×264`, cell `160×132`, `min_diff=93.5%`) & `cuu_long_loi_cuong_boss.png` (`160×132`) — *#12 Cửu Long Lôi Cương Hỏa (Ngân Long lửa bạc-lam)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/enemies/mo_cot_lao_nhan_boss_anim.png` (`624×272`, cell `156×136`, `min_diff=76.8%`) & `mo_cot_lao_nhan_boss.png` (`156×136`) — *Mộ Cốt Lão Nhân (trượng đầu lâu, quỷ hỏa tím-đen Hồn Điện)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/enemies/tam_thien_diem_viem_boss_anim.png` (`672×320`, cell `168×160`, `min_diff=77.6%`) & `tam_thien_diem_viem_boss.png` (`168×160`) — *Final Boss #9 Thái Hư Tử Hắc Cự Long (rồng tinh hà tím-đen cánh sao)* — **Hoàn tất AI (`v0.7.3`)**.
 
-### P0.2 — 7 NPC & Đồng Hành #7 Chương 08 (7 File — ~0.8–1.0KB/file)
-* [ ] `assets/sprites/npcs/npc_thien_hoa_ton_gia.png` (`104×104`) — **Ưu tiên cao nhất trong nhóm NPC** vì là **Đồng Hành #7 `[G]`** xuất hiện liên tục cạnh Tiêu Viêm (*Thiên Hỏa Tôn Giả với Ngũ Luân Ly Hỏa*).
-* [ ] `assets/sprites/npcs/npc_han_tuyet.png` (`96×96`) — *Nhị Tiểu Thư Hàn Tuyết (áo lụa xanh ngọc, tóc đen)*.
-* [ ] `assets/sprites/npcs/npc_phong_ton_gia.png` (`104×104`) — *Phong Tôn Giả — Phong Nhàn (bào xanh trắng Tinh Vẫn Các, râu bạc)*.
-* [ ] `assets/sprites/npcs/npc_duong_chan.png` (`104×104`) — *Cốc Chủ Đường Chấn (giáp bào đỏ-vàng Phần Viêm Cốc)*.
-* [ ] `assets/sprites/npcs/npc_huyen_khong_tu.png` (`104×104`) — *Cự Đầu Huyền Không Tử (bạch bào viền vàng kim Đan Tháp)*.
-* [ ] `assets/sprites/npcs/npc_tao_dinh.png` (`96×96`) — *Yêu Nữ Tào Dĩnh (váy tím-hồng Đan Vực)*.
-* [ ] `assets/sprites/npcs/npc_hung_chien.png` (`104×104`) — *Viễn Cổ Long Hùng Hoàng Hùng Chiến (chiến sĩ lông vàng đồng khổng lồ)*.
+### P0.2 — 7 NPC & Đồng Hành #7 Chương 08 (✅ 7/7 File)
+* [x] `assets/sprites/npcs/npc_thien_hoa_ton_gia.png` (`104×104`) — **Đồng Hành #7 `[G]`** *Thiên Hỏa Tôn Giả với đủ 5 vòng Ngũ Luân Ly Hỏa* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_han_tuyet.png` (`96×96`) — *Nhị Tiểu Thư Hàn Tuyết (áo lụa xanh ngọc, tóc đen)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_phong_ton_gia.png` (`104×104`) — *Phong Tôn Giả — Phong Nhàn (bào xanh trắng Tinh Vẫn Các, râu bạc)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_duong_chan.png` (`104×104`) — *Cốc Chủ Đường Chấn (giáp bào đỏ-vàng Phần Viêm Cốc)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_huyen_khong_tu.png` (`104×104`) — *Cự Đầu Huyền Không Tử (bạch bào viền vàng kim Đan Tháp)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_tao_dinh.png` (`96×96`) — *Yêu Nữ Tào Dĩnh (váy tím-hồng Đan Vực, hồn hỏa)* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_hung_chien.png` (`104×104`) — *Viễn Cổ Long Hùng Hoàng Hùng Chiến (chiến sĩ lông vàng đồng khổng lồ)* — **Hoàn tất AI (`v0.7.3`)**.
 
-### P0.3 — 5 Tileset Vùng Seamless Chương 08 (`128×128`, ~1.6–1.7KB/file)
-* [ ] `assets/sprites/tiles/bac_vuc_storm_slate.png` (`128×128`) — Nền đá xám bão cát Bắc Vực (hiện là gạch đơn giản ít chiều sâu).
-* [ ] `assets/sprites/tiles/thien_son_blood_pool.png` (`128×128`) — Đá đen núi lửa nứt mạch huyết nham Thiên Sơn Huyết Đàm.
-* [ ] `assets/sprites/tiles/lac_than_frost_poison.png` (`128×128`) — Băng thạch lam xen vết nứt độc tím Lạc Thần Giản.
-* [ ] `assets/sprites/tiles/thanh_dan_white_marble.png` (`128×128`) — Cẩm thạch trắng khảm chỉ vàng Thánh Đan Thành.
-* [ ] `assets/sprites/tiles/tinh_vuc_starfield.png` (`128×128`) — Sàn tinh hà tím thẫm Ngân Hà Tinh Vực.
+### P0.3 — 5 Tileset Vùng Seamless Chương 08 (`128×128` — ✅ 5/5 File)
+* [x] `assets/sprites/tiles/bac_vuc_storm_slate.png` (`128×128`) — Nền đá xám bão cát Bắc Vực — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/tiles/thien_son_blood_pool.png` (`128×128`) — Đá đen núi lửa nứt mạch huyết nham Thiên Sơn Huyết Đàm — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/tiles/lac_than_frost_poison.png` (`128×128`) — Băng thạch lam xen vết nứt độc tím Lạc Thần Giản — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/tiles/thanh_dan_white_marble.png` (`128×128`) — Cẩm thạch trắng khảm chỉ vàng Thánh Đan Thành — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/tiles/tinh_vuc_starfield.png` (`128×128`) — Sàn tinh hà tím thẫm Ngân Hà Tinh Vực — **Hoàn tất AI (`v0.7.3`)**.
 
-### P0.4 — 5 Icon Đấu Kỹ Chương 08 (`56×56`, ~269–338 bytes/file)
-* [ ] `assets/sprites/icons/skill_khong_gian_phong_toa.png` (`56×56`) — *Không Gian Phong Tỏa* (hiện là hình bát giác 2D đơn giản).
-* [ ] `assets/sprites/icons/skill_co_de_an.png` (`56×56`) — *Đế Ấn Quyết — Cổ Đế Ấn* (hiện là 5 ô vuông ghép đơn giản).
-* [ ] `assets/sprites/icons/skill_tam_huyen_tam_bien.png` (`56×56`) — *Thiên Hỏa Tam Huyền Biến — Tam Biến* (hiện là 3 tam giác lửa phẳng).
-* [ ] `assets/sprites/icons/skill_kinh_hon_chuong.png` (`56×56`) — *Hồn Kỹ: Kinh Hồn Chưởng* (hiện là bàn tay nét thẳng).
-* [ ] `assets/sprites/icons/skill_tam_thien_loi_huyen_than.png` (`56×56`) — *Tam Thiên Lôi Huyễn Thân* (hiện là 2 bóng hình tam giác).
+### P0.4 — 5 Icon Đấu Kỹ Chương 08 (`56×56` — ✅ 5/5 File)
+* [x] `assets/sprites/icons/skill_khong_gian_phong_toa.png` (`56×56`) — *Không Gian Phong Tỏa* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/icons/skill_co_de_an.png` (`56×56`) — *Đế Ấn Quyết — Cổ Đế Ấn* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/icons/skill_tam_huyen_tam_bien.png` (`56×56`) — *Thiên Hỏa Tam Huyền Biến — Tam Biến* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/icons/skill_kinh_hon_chuong.png` (`56×56`) — *Hồn Kỹ: Kinh Hồn Chưởng* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/icons/skill_tam_thien_loi_huyen_than.png` (`56×56`) — *Tam Thiên Lôi Huyễn Thân* — **Hoàn tất AI (`v0.7.3`)**.
 
 ---
 
-## P1 — 10 File Palette-Crafted Ch.06–07 Còn Sót Lại Do Model AI `503` (Đợt `v0.6.3`)
+## P1 — 10 File Ch.06–07 — ✅ ĐÃ HOÀN TẤT 10/10 (`v0.7.3`)
 
-> **Vấn đề**: Chất lượng khá hơn bản Python Ch.08 nhưng vẫn là bản tổng hợp palette-crafted (không phải tranh vẽ AI 32-bit đồng bộ như `npc_thien_doc_nu.png` hay `noi_vien_jade.png`).
+> **Trạng thái**: Đã thay thế 100% bản palette-crafted cũ bằng tranh vẽ AI 32-bit HD Pixel Art đồng bộ chuẩn `v0.6.3`.
 
-### P1.1 — 4 NPC Ch.06–07 (Đặc biệt ưu tiên 2 Đồng Hành `[G]`)
-* [ ] `assets/sprites/npcs/npc_tu_nghien.png` (`96×96`) — **Ưu tiên cao**: Đồng Hành #5 `[G]` Tử Nghiên (xuất hiện thường xuyên).
-* [ ] `assets/sprites/npcs/npc_dia_yeu_khoi.png` (`104×104`) — **Ưu tiên cao**: Đồng Hành #6 `[G]` & icon `[T]` Địa Yêu Khôi / Chuẩn Thiên Yêu Khôi.
-* [ ] `assets/sprites/npcs/npc_lam_tu_nhai.png` (`104×104`) — Lâm Tu Nhai (Nội Viện Già Nam).
-* [ ] `assets/sprites/npcs/npc_mac_thien_hanh.png` (`96×96`) — Tông Chủ Mạc Thiên Hành (Hắc Hoàng Tông).
+### P1.1 — 4 NPC Ch.06–07 (✅ 4/4 File)
+* [x] `assets/sprites/npcs/npc_tu_nghien.png` (`96×96`) — Đồng Hành #5 `[G]` Tử Nghiên — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_dia_yeu_khoi.png` (`104×104`) — Đồng Hành #6 `[G]` & `[T]` Địa Yêu Khôi / Chuẩn Thiên Yêu Khôi — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_lam_tu_nhai.png` (`104×104`) — Lâm Tu Nhai (Nội Viện Già Nam) — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/npcs/npc_mac_thien_hanh.png` (`96×96`) — Tông Chủ Mạc Thiên Hành (Hắc Hoàng Tông) — **Hoàn tất AI (`v0.7.3`)**.
 
-### P1.2 — 3 Tileset Vùng Ch.06–07 (`128×128`)
-* [ ] `assets/sprites/tiles/thien_phan_magma.png` (`128×128`) — Nền dung nham Đáy Tháp Thiên Phần.
-* [ ] `assets/sprites/tiles/xuat_van_poison_marsh.png` (`128×128`) — Đầm lầy độc tím Xuất Vân Đế Quốc.
-* [ ] `assets/sprites/tiles/thien_nhai_wormhole.png` (`128×128`) — Sàn Không Gian Trùng Động Thiên Nhai Thành.
+### P1.2 — 3 Tileset Vùng Ch.06–07 (`128×128` — ✅ 3/3 File)
+* [x] `assets/sprites/tiles/thien_phan_magma.png` (`128×128`) — Nền dung nham Đáy Tháp Thiên Phần — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/tiles/xuat_van_poison_marsh.png` (`128×128`) — Đầm lầy độc tím Xuất Vân Đế Quốc — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/tiles/thien_nhai_wormhole.png` (`128×128`) — Sàn Không Gian Trùng Động Thiên Nhai Thành — **Hoàn tất AI (`v0.7.3`)**.
 
-### P1.3 — 3 Icon Đấu Kỹ Ch.06–07 (`56×56`)
-* [ ] `assets/sprites/icons/skill_luu_ly_lien_tam.png` (`56×56`) — *Lưu Ly Liên Tâm Ấn*.
-* [ ] `assets/sprites/icons/skill_phien_hai_an.png` (`56×56`) — *Đế Ấn Quyết — Phiên Hải Ấn*.
-* [ ] `assets/sprites/icons/skill_tam_huyen_nhi_bien.png` (`56×56`) — *Thiên Hỏa Tam Huyền Biến — Nhị Biến*.
+### P1.3 — 3 Icon Đấu Kỹ Ch.06–07 (`56×56` — ✅ 3/3 File)
+* [x] `assets/sprites/icons/skill_luu_ly_lien_tam.png` (`56×56`) — *Lưu Ly Liên Tâm Ấn* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/icons/skill_phien_hai_an.png` (`56×56`) — *Đế Ấn Quyết — Phiên Hải Ấn* — **Hoàn tất AI (`v0.7.3`)**.
+* [x] `assets/sprites/icons/skill_tam_huyen_nhi_bien.png` (`56×56`) — *Thiên Hỏa Tam Huyền Biến — Nhị Biến* — **Hoàn tất AI (`v0.7.3`)**.
 
 ---
 
@@ -121,9 +121,10 @@
 
 ---
 
-## Quy Trình Trả Nợ Đồ Họa Khuyến Nghị Khi Model AI Hết `503`
+## Tiến Độ Hoàn Thiện Trả Nợ Đồ Họa (P0 + P1 + P2)
 
-1. **Đợt A (14 file — Tác động thị giác lớn nhất)**: Thay toàn bộ **7 Boss Ch.08 True 8-Frame (`4×2`) + 7 ảnh chân dung** (P0.1) để đạt tròn **49/49 = 100% True 8-Frame AI** toàn dự án.
-2. **Đợt B (11 file — Nhân vật gặp xuyên suốt)**: Thay **2 NPC Đồng Hành P1** (`npc_tu_nghien`, `npc_dia_yeu_khoi`) + **7 NPC Ch.08** (đặc biệt `npc_thien_hoa_ton_gia`) + **2 NPC Ch.06–07** còn lại (`npc_lam_tu_nhai`, `npc_mac_thien_hanh`).
-3. **Đợt C (16 file — Bối cảnh & UI sắc nét)**: Thay **8 Tileset (`128×128`)** Ch.06–08 + **8 Icon Đấu Kỹ (`56×56`)** Ch.06–08. *(3 Pickup `pickups/` đã nâng cấp xong ở `v0.7.1`).*
+1. ~~**Đợt A (14 file — 7 Boss Ch.08 True 8-Frame + 7 Chân Dung)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.3`** — Chốt trọn **49/49 = 100% True 8-Frame AI** toàn dự án!
+2. ~~**Đợt B (11 file — 11 NPC Ch.06–08 gồm Tử Nghiên, Địa Yêu Khôi, Thiên Hỏa Tôn Giả...)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.3`**.
+3. ~~**Đợt C (16 file — 8 Tileset `128×128` & 8 Icon Đấu Kỹ `56×56` Ch.06–08)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.3`**. *(3 Pickup `pickups/` đã nâng cấp xong ở `v0.7.1`).*
 4. ~~**Đợt D (VFX 2.0)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.1`** (`space_shockwave.gdshader`, `vfx_energy_dissolve.gdshader`, `ScreenFxOverlay`, Cánh Hóa Dực sprite-shader, `128×128` VFX textures, Đồng Hành 2.0 & Ngũ Sắc Đan Lôi giáng thực tế).
+5. **Tùy chọn Polish P3 (không chặn Ch.09–11)**: Chỉ còn quái thường tái sử dụng sprite cũ & biến thể vũ khí/prop (P3.2 & P3.3).
