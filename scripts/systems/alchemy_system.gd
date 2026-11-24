@@ -3,7 +3,29 @@ extends RefCounted
 ## Xử lý logic Lò Luyện Đan (hỗ trợ cả Khai Lò nhanh & Mini-game Khống Hỏa + Đón Đan Lôi!):
 ## - Kiểm tra nguyên liệu trong Nạp Giới, Linh Hồn Lực (SOUL), thưởng Dị Hỏa & Dược Đỉnh.
 
+static func get_required_soul_realm_for_tier(tier: int) -> Dictionary:
+	for entry in GameDatabase.soul_realms_list:
+		if entry is Dictionary and int(entry.get("alchemy_max_tier", 6)) >= tier:
+			return entry
+	return { "id": "de_canh", "name": "Đế Cảnh Linh Hồn", "min_soul": 3500, "alchemy_max_tier": 10 }
+
+
 static func can_craft(recipe: Dictionary) -> Dictionary:
+	var recipe_tier: int = int(recipe.get("tier", 1))
+	var sr: Dictionary = PlayerData.get_soul_realm_info()
+	var max_tier: int = int(sr.get("alchemy_max_tier", 6))
+	if recipe_tier > max_tier:
+		var req_sr: Dictionary = get_required_soul_realm_for_tier(recipe_tier)
+		var cur_sr_name: String = str(sr.get("name", "Phàm Cảnh Linh Hồn"))
+		var req_sr_name: String = str(req_sr.get("name", "Linh Cảnh Linh Hồn"))
+		var req_min_soul: int = int(req_sr.get("min_soul", 250))
+		return {
+			"ok": false,
+			"reason": "Phẩm %d vượt giới hạn %s (tối đa Phẩm %d) — cần %s (%d+ SOUL)" % [
+				recipe_tier, cur_sr_name, max_tier, req_sr_name, req_min_soul
+			]
+		}
+
 	var req_soul: int = int(recipe.get("req_soul", 1))
 	if PlayerData.get_soul() < req_soul:
 		return { "ok": false, "reason": "Cần %d Linh Hồn Lực (Hiện có: %d)" % [req_soul, PlayerData.get_soul()] }

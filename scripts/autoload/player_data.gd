@@ -4,6 +4,8 @@ extends Node
 ## - Hỗ trợ Save 3 Ô, Auto-Save/Auto-Continue, Chế Độ DEMO, 10 Ô Trang Bị + Khảm Ma Hạch, 15 Đấu Kỹ, 25 Bản Đồ, 39 Mốc Cốt Truyện, Hảo Cảm Hồng Nhan & Kỳ Vật!
 
 const LEGACY_SAVE_PATH: String = "user://dptk_savegame.json"
+const SaveLoadMgr = preload("res://scripts/systems/save_load_manager.gd")
+
 const SETTINGS_PATH: String = "user://dptk_settings.json"
 const MAX_SAVE_SLOTS: int = 3
 
@@ -157,44 +159,11 @@ func is_in_gameplay_session() -> bool:
 
 
 func load_user_settings() -> void:
-	if not FileAccess.file_exists(SETTINGS_PATH):
-		return
-	var f := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
-	if f == null:
-		return
-	var parsed: Variant = JSON.parse_string(f.get_as_text())
-	if not (parsed is Dictionary):
-		return
-	var d: Dictionary = parsed
-	auto_save_enabled = bool(d.get("auto_save_enabled", true))
-	auto_continue_on_start = bool(d.get("auto_continue_on_start", false))
-	last_played_slot = clampi(int(d.get("last_played_slot", 1)), 1, MAX_SAVE_SLOTS)
-	# Truyền save_to_disk = false để không ghi đè mất file settings trong lúc đang đọc!
-	if d.has("bgm_volume"):
-		AudioManager.set_bgm_volume(float(d.get("bgm_volume", 0.65)), false)
-	if d.has("sfx_volume"):
-		AudioManager.set_sfx_volume(float(d.get("sfx_volume", 0.80)), false)
-	if d.has("is_muted"):
-		AudioManager.set_muted(bool(d.get("is_muted", false)), false)
+	SaveLoadMgr.load_user_settings(self)
 
 
 func save_user_settings() -> void:
-	var payload: Dictionary = {}
-	if FileAccess.file_exists(SETTINGS_PATH):
-		var rf := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
-		if rf != null:
-			var parsed: Variant = JSON.parse_string(rf.get_as_text())
-			if parsed is Dictionary:
-				payload = parsed
-	payload["auto_save_enabled"] = auto_save_enabled
-	payload["auto_continue_on_start"] = auto_continue_on_start
-	payload["last_played_slot"] = last_played_slot
-	payload["bgm_volume"] = AudioManager.bgm_volume
-	payload["sfx_volume"] = AudioManager.sfx_volume
-	payload["is_muted"] = AudioManager.is_muted
-	var f := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
-	if f != null:
-		f.store_string(JSON.stringify(payload, "\t"))
+	SaveLoadMgr.save_user_settings(self)
 
 
 func set_auto_save_enabled(enabled: bool) -> void:
@@ -209,12 +178,7 @@ func set_auto_continue_on_start(enabled: bool) -> void:
 
 
 func get_best_continue_slot() -> int:
-	if bool(get_save_slot_summary(last_played_slot).get("exists", false)):
-		return last_played_slot
-	for s in range(1, MAX_SAVE_SLOTS + 1):
-		if bool(get_save_slot_summary(s).get("exists", false)):
-			return s
-	return -1
+	return SaveLoadMgr.get_best_continue_slot(self)
 
 
 func trigger_auto_save(reason: String = "tự động", force: bool = false) -> bool:
@@ -2060,247 +2024,25 @@ func _advance_quest_progress(delta_cnt: int) -> void:
 	EventBus.quest_updated.emit()
 
 
-# --- HỆ THỐNG LƯU / TẢI 3 Ô ---
+# --- HỆ THỐNG LƯU / TẢI 3 Ô (ỦY QUYỀN SANG SaveLoadManager) ---
 func get_save_slot_path(slot_idx: int) -> String:
-	var s: int = clampi(slot_idx, 1, MAX_SAVE_SLOTS)
-	return "user://dptk_save_slot_%d.json" % s
+	return SaveLoadMgr.get_save_slot_path(slot_idx)
 
 
 func has_any_save() -> bool:
-	for s in range(1, MAX_SAVE_SLOTS + 1):
-		if FileAccess.file_exists(get_save_slot_path(s)):
-			return true
-	return FileAccess.file_exists(LEGACY_SAVE_PATH)
+	return SaveLoadMgr.has_any_save()
 
 
 func get_save_slot_summary(slot_idx: int) -> Dictionary:
-	var p: String = get_save_slot_path(slot_idx)
-	if not FileAccess.file_exists(p):
-		if slot_idx == 1 and FileAccess.file_exists(LEGACY_SAVE_PATH):
-			p = LEGACY_SAVE_PATH
-		else:
-			return { "exists": false, "slot": slot_idx, "label": "Ô Lưu %d — (Trống)" % slot_idx }
-	var f := FileAccess.open(p, FileAccess.READ)
-	if f == null:
-		return { "exists": false, "slot": slot_idx, "label": "Ô Lưu %d — (Trống)" % slot_idx }
-	var parsed: Variant = JSON.parse_string(f.get_as_text())
-	if not (parsed is Dictionary):
-		return { "exists": false, "slot": slot_idx, "label": "Ô Lưu %d — (Lỗi tệp)" % slot_idx }
-	var d: Dictionary = parsed
-	var r_title: String = str(d.get("meta_realm", "Đấu Chi Khí"))
-	var m_title: String = str(d.get("meta_map", str(d.get("current_map_id", "Tiêu Gia"))))
-	var mins: int = int(float(d.get("playtime_sec", 0.0)) / 60.0)
-	var saved_at: String = str(d.get("meta_saved_at", ""))
-	var demo_tag: String = "[DEMO] " if bool(d.get("is_demo_mode", false)) else ""
-	return {
-		"exists": true,
-		"slot": slot_idx,
-		"is_demo": bool(d.get("is_demo_mode", false)),
-		"label": "Ô %d: %s%s | %s (%d phút) %s" % [slot_idx, demo_tag, r_title, m_title, mins, saved_at]
-	}
+	return SaveLoadMgr.get_save_slot_summary(slot_idx)
 
 
 func save_game(slot_idx: int = -1, silent: bool = false) -> bool:
-	var target_slot: int = active_save_slot if slot_idx <= 0 else clampi(slot_idx, 1, MAX_SAVE_SLOTS)
-	active_save_slot = target_slot
-	last_played_slot = target_slot
-	var m_def: Dictionary = GameDatabase.get_map_def(current_map_id)
-	var m_name: String = str(m_def.get("name", current_map_id))
-	var dt: Dictionary = Time.get_datetime_dict_from_system()
-	var stamp: String = "%02d:%02d %02d/%02d" % [int(dt.get("hour", 0)), int(dt.get("minute", 0)), int(dt.get("day", 1)), int(dt.get("month", 1))]
-
-	# Ghi nhận tọa độ chính xác hiện tại của Tiêu Viêm để lần sau vào đứng đúng chỗ cũ!
-	var players: Array[Node] = get_tree().get_nodes_in_group("player")
-	if not players.is_empty() and players[0] is Node2D:
-		saved_player_pos = (players[0] as Node2D).global_position
-		has_saved_player_pos = true
-
-	var payload: Dictionary = {
-		"meta_realm": get_realm_display_title(),
-		"meta_map": m_name,
-		"meta_saved_at": stamp,
-		"is_demo_mode": is_demo_mode,
-		"has_player_pos": has_saved_player_pos,
-		"player_pos_x": saved_player_pos.x,
-		"player_pos_y": saved_player_pos.y,
-		"playtime_sec": playtime_sec,
-		"current_map_id": current_map_id,
-		"realm_index": realm_index,
-		"stage": stage,
-		"current_exp": current_exp,
-		"bonus_soul": bonus_soul,
-		"gold": gold,
-		"enhance_stones": enhance_stones,
-		"story_flags": story_flags,
-		"opened_chests": opened_chests,
-		"affection": affection,
-		"story_relics": story_relics,
-		"claimed_affection_milestones": claimed_affection_milestones,
-		"enemies_killed_total": enemies_killed_total,
-		"enemy_kill_counts": enemy_kill_counts,
-		"skill_mastery_uses": skill_mastery_uses,
-		"boss_rush_records": boss_rush_records,
-		"weapon_core_sockets": weapon_core_sockets,
-		"fire_energy": fire_energy,
-		"tower_best_floor": tower_best_floor,
-		"auction_wins": auction_wins,
-		"auction_consigned_total": auction_consigned_total,
-		"quick_hp_pill_id": quick_hp_pill_id,
-		"quick_qi_pill_id": quick_qi_pill_id,
-		"equipped_gear": equipped_gear,
-		"gear_bag": gear_bag,
-		"is_ruler_sealed": is_ruler_sealed,
-		"equipped_flame_id": equipped_flame_id,
-		"unlocked_flames": unlocked_flames,
-		"lotus_fusion_flames": lotus_fusion_flames,
-		"unlocked_skills": unlocked_skills,
-		"slot_q_skill": slot_q_skill,
-		"slot_e_skill": slot_e_skill,
-		"slot_r_skill": slot_r_skill,
-		"slot_f_skill": slot_f_skill,
-		"duoc_lao_assist_unlocked": duoc_lao_assist_unlocked,
-		"unlocked_companions": unlocked_companions,
-		"active_companion_id": active_companion_id,
-		"inventory": inventory,
-		"active_quest_idx": active_quest_idx,
-		"active_quest_id": active_quest_id,
-		"completed_quest_ids": completed_quest_ids,
-		"kim_viem_revive_used": kim_viem_revive_used,
-		"quest_progress": quest_progress,
-		"all_quests_done": all_quests_done
-	}
-	var f := FileAccess.open(get_save_slot_path(target_slot), FileAccess.WRITE)
-	if f == null:
-		return false
-	f.store_string(JSON.stringify(payload, "\t"))
-	save_user_settings()
-	if not silent:
-		EventBus.audio_sfx_requested.emit("ui_click")
-	return true
+	return SaveLoadMgr.save_game(self, slot_idx, silent)
 
 
 func load_game(slot_idx: int = -1) -> bool:
-	var target_slot: int = active_save_slot if slot_idx <= 0 else clampi(slot_idx, 1, MAX_SAVE_SLOTS)
-	var p: String = get_save_slot_path(target_slot)
-	if not FileAccess.file_exists(p):
-		if target_slot == 1 and FileAccess.file_exists(LEGACY_SAVE_PATH):
-			p = LEGACY_SAVE_PATH
-		else:
-			return false
-	var f := FileAccess.open(p, FileAccess.READ)
-	if f == null:
-		return false
-	var parsed: Variant = JSON.parse_string(f.get_as_text())
-	if not (parsed is Dictionary):
-		return false
-
-	active_save_slot = target_slot
-	last_played_slot = target_slot
-	var d: Dictionary = parsed
-	is_demo_mode = bool(d.get("is_demo_mode", false))
-	has_saved_player_pos = bool(d.get("has_player_pos", false))
-	saved_player_pos = Vector2(float(d.get("player_pos_x", 0.0)), float(d.get("player_pos_y", 0.0)))
-	playtime_sec = float(d.get("playtime_sec", 0.0))
-	current_map_id = str(d.get("current_map_id", "ch01_tieu_gia"))
-	realm_index = int(d.get("realm_index", 1))
-	stage = int(d.get("stage", 3))
-	current_exp = int(d.get("current_exp", 0))
-	bonus_soul = int(d.get("bonus_soul", 0))
-	gold = int(d.get("gold", 35))
-	enhance_stones = int(d.get("enhance_stones", 0))
-	story_flags = d.get("story_flags", {})
-	opened_chests = d.get("opened_chests", {})
-	if d.has("affection") and d["affection"] is Dictionary:
-		affection = d["affection"]
-		for ak in ["huan_nhi", "tieu_y_tien", "van_chi", "thanh_lan", "my_do_toa"]:
-			if not affection.has(ak):
-				affection[ak] = 0
-	else:
-		affection = { "huan_nhi": 20, "tieu_y_tien": 0, "van_chi": 0, "thanh_lan": 0, "my_do_toa": 0 }
-	if d.has("story_relics") and d["story_relics"] is Array:
-		story_relics = d["story_relics"]
-	else:
-		story_relics = []
-	if d.has("claimed_affection_milestones") and d["claimed_affection_milestones"] is Dictionary:
-		claimed_affection_milestones = d["claimed_affection_milestones"]
-	else:
-		claimed_affection_milestones = {}
-	enemies_killed_total = int(d.get("enemies_killed_total", 0))
-	enemy_kill_counts = d.get("enemy_kill_counts", {}) if (d.get("enemy_kill_counts", {}) is Dictionary) else {}
-	skill_mastery_uses = d.get("skill_mastery_uses", {}) if (d.get("skill_mastery_uses", {}) is Dictionary) else {}
-	boss_rush_records = d.get("boss_rush_records", {}) if (d.get("boss_rush_records", {}) is Dictionary) else {}
-	var loaded_socks = d.get("weapon_core_sockets", ["", "", ""])
-	if loaded_socks is Array and loaded_socks.size() == 3:
-		weapon_core_sockets = [str(loaded_socks[0]), str(loaded_socks[1]), str(loaded_socks[2])]
-	else:
-		weapon_core_sockets = ["", "", ""]
-	fire_energy = int(d.get("fire_energy", 0))
-	tower_best_floor = int(d.get("tower_best_floor", 0))
-	auction_wins = int(d.get("auction_wins", 0))
-	auction_consigned_total = int(d.get("auction_consigned_total", 0))
-	tower_active_buffs.clear()
-	am_duong_buff_timer = 0.0
-	quick_hp_pill_id = str(d.get("quick_hp_pill_id", "pill_ngung_huyet_tan"))
-	quick_qi_pill_id = str(d.get("quick_qi_pill_id", "pill_hoi_khi_dan"))
-	lotus_shield_hp = 0.0
-	lotus_dmg_red_timer = 0.0
-	lotus_double_herb_timer = 0.0
-	player_slow_timer = 0.0
-	player_slow_ratio = 0.0
-	if d.has("equipped_gear") and d["equipped_gear"] is Dictionary:
-		equipped_gear = d["equipped_gear"]
-	if d.has("gear_bag") and d["gear_bag"] is Array:
-		gear_bag = d["gear_bag"]
-	is_ruler_sealed = bool(d.get("is_ruler_sealed", false))
-	is_duoc_lao_active = false
-	is_flame_buff_active = false
-	equipped_flame_id = str(d.get("equipped_flame_id", ""))
-	unlocked_flames = d.get("unlocked_flames", [])
-	lotus_fusion_flames = d.get("lotus_fusion_flames", [])
-	unlocked_skills = d.get("unlocked_skills", [])
-	slot_q_skill = str(d.get("slot_q_skill", ""))
-	slot_e_skill = str(d.get("slot_e_skill", ""))
-	slot_r_skill = str(d.get("slot_r_skill", ""))
-	slot_f_skill = str(d.get("slot_f_skill", ""))
-	for sk_s in [slot_q_skill, slot_e_skill, slot_r_skill, slot_f_skill]:
-		if sk_s != "" and not unlocked_skills.has(sk_s):
-			unlocked_skills.append(sk_s)
-	duoc_lao_assist_unlocked = bool(d.get("duoc_lao_assist_unlocked", false))
-	unlocked_companions = d.get("unlocked_companions", [])
-	active_companion_id = str(d.get("active_companion_id", ""))
-	inventory = d.get("inventory", {})
-	active_quest_idx = int(d.get("active_quest_idx", 0))
-	active_quest_id = str(d.get("active_quest_id", ""))
-	if d.has("completed_quest_ids") and d["completed_quest_ids"] is Dictionary:
-		completed_quest_ids = d["completed_quest_ids"]
-	else:
-		completed_quest_ids = {}
-	kim_viem_revive_used = bool(d.get("kim_viem_revive_used", false))
-	quest_progress = int(d.get("quest_progress", 0))
-	all_quests_done = bool(d.get("all_quests_done", false))
-	# Tương thích tự động khi thêm chương mới: định vị lại active_quest_idx theo ID & tự mở tiếp chương mới cho bản lưu cũ!
-	if active_quest_id != "":
-		var mapped_idx: int = GameDatabase.get_quest_index(active_quest_id)
-		if mapped_idx >= 0:
-			active_quest_idx = mapped_idx
-	if all_quests_done and not is_demo_mode and active_quest_idx < GameDatabase.all_quests.size():
-		all_quests_done = false
-		active_quest_id = str(GameDatabase.all_quests[active_quest_idx].get("id", ""))
-		quest_progress = 0
-	elif not all_quests_done and active_quest_idx >= 0 and active_quest_idx < GameDatabase.all_quests.size():
-		active_quest_id = str(GameDatabase.all_quests[active_quest_idx].get("id", ""))
-	_rebuild_gear_cache()
-	_rebuild_affection_cache()
-	recalculate_and_clamp(true)
-	save_user_settings()
-	EventBus.equipment_changed.emit()
-	EventBus.skills_updated.emit()
-	EventBus.stats_changed.emit()
-	EventBus.inventory_changed.emit()
-	EventBus.quest_updated.emit()
-	EventBus.flame_changed.emit(equipped_flame_id)
-	EventBus.companion_changed.emit(active_companion_id)
-	return true
+	return SaveLoadMgr.load_game(self, slot_idx)
 
 
 # =========================================================

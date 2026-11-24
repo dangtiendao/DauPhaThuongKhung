@@ -8,6 +8,9 @@ extends Node2D
 const ENEMY_SCENE: PackedScene = preload("res://scenes/entities/enemy_base.tscn")
 const COMPANION_SCENE: PackedScene = preload("res://scenes/entities/companion.tscn")
 const TEX_LIGHT_RADIAL: Texture2D = preload("res://assets/sprites/vfx/light_radial_128.png")
+const StoryDlgRunner = preload("res://scripts/systems/story_dialogue_runner.gd")
+const BossRushMgrScript = preload("res://scripts/systems/boss_rush_manager.gd")
+const ThienPhanTowerMgrScript = preload("res://scripts/systems/thien_phan_tower_manager.gd")
 
 var current_map_id: String = ""
 var current_map_bgm: String = "bgm_peaceful"
@@ -28,30 +31,23 @@ var bamboo_sprites: Array = []
 var active_companion_node: Node2D = null
 var interact_cooldown: float = 0.0
 
-# Tâm Ma Luyện Cảnh (Boss Rush Arena)
-var is_boss_rush_active: bool = false
-var boss_rush_boss_id: String = ""
-var boss_rush_diff: String = "normal"
-var boss_rush_elapsed: float = 0.0
-var boss_rush_dmg_taken: float = 0.0
-var boss_rush_return_map: String = "ch01_tieu_gia"
-var boss_rush_return_pos: Vector2 = Vector2(340, 520)
-var boss_rush_boss_node: Node2D = null
-var _boss_rush_session_token: int = 0
+# Trình quản lý Phó bản tách biệt (Tâm Ma Luyện Cảnh & Thiên Phần Luyện Khí Tháp)
+var boss_rush_mgr: RefCounted = null
+var tower_mgr: RefCounted = null
 
-# Thiên Phần Luyện Khí Tháp (Infinite Roguelite Tower)
-var is_tower_active: bool = false
-var tower_floor: int = 1
-var tower_enemies_alive: Array = []
-var tower_total_wave: int = 0
-var tower_heat_dps: float = 0.0
-var tower_heat_accum: float = 0.0
-var tower_heat_text_accum: float = 0.0
-var tower_return_map: String = ""
-var tower_return_pos: Vector2 = Vector2.ZERO
-var tower_waiting_blessing: bool = false
-var _tower_session_token: int = 0
-var tower_sign_lbl: Label = null
+var is_boss_rush_active: bool:
+	get:
+		return boss_rush_mgr.is_active if boss_rush_mgr != null else false
+	set(v):
+		if boss_rush_mgr != null:
+			boss_rush_mgr.is_active = v
+
+var is_tower_active: bool:
+	get:
+		return tower_mgr.is_active if tower_mgr != null else false
+	set(v):
+		if tower_mgr != null:
+			tower_mgr.is_active = v
 
 # Soul Radar Wave (Cảm Ứng Linh Hồn [Z])
 var radar_wave_timer: float = 0.0
@@ -71,6 +67,8 @@ var map_overlay_root: Node2D
 
 func _ready() -> void:
 	add_to_group("world_stage")
+	boss_rush_mgr = BossRushMgrScript.new(self)
+	tower_mgr = ThienPhanTowerMgrScript.new(self)
 
 	map_backdrop_root = Node2D.new()
 	map_backdrop_root.name = "MapBackdrop"
@@ -102,9 +100,18 @@ func _ready() -> void:
 	call_deferred("_announce_initial_quest")
 
 
+func _exit_tree() -> void:
+	if boss_rush_mgr != null:
+		boss_rush_mgr.world = null
+		boss_rush_mgr = null
+	if tower_mgr != null:
+		tower_mgr.world = null
+		tower_mgr = null
+
+
 func _announce_initial_quest() -> void:
 	if PlayerData.is_demo_mode:
-		EventBus.banter_triggered.emit("CHẾ ĐỘ DEMO FULL: Mở toàn bộ %d Map (bấm [M] Dịch Chuyển Nhanh), Đấu Kỹ, [F] Phật Nộ Hỏa Liên 4 Hỏa, 28 Dị Hỏa [H] & 3 Đồng Hành [G]!" % GameDatabase.maps_ordered.size())
+		EventBus.banter_triggered.emit("CHẾ ĐỘ DEMO FULL: Mở toàn bộ %d Map (bấm [M] Dịch Chuyển Nhanh), 15 Đấu Kỹ, [F] Phật Nộ Hỏa Liên 4 Hỏa, 28 Dị Hỏa [H] & 4 Đồng Hành [G]!" % GameDatabase.maps_ordered.size())
 		EventBus.quest_updated.emit()
 	else:
 		PlayerData.trigger_initial_quest_banter()
@@ -114,22 +121,46 @@ func restore_map_bgm() -> void:
 	EventBus.bgm_requested.emit(current_map_bgm)
 
 
+func setup_arena_stage(arena_def: Dictionary, spawn_pt: Vector2) -> void:
+	current_map_id = str(arena_def.get("id", "tam_ma_luyen_canh"))
+	current_map_bgm = str(arena_def.get("bgm", "bgm_boss"))
+	current_is_forest = false
+	interact_cooldown = 0.25
+
+	var sz_arr: Array = arena_def.get("size", [1280, 896])
+	map_size = Vector2(float(sz_arr[0]), float(sz_arr[1]))
+	map_rect = Rect2(64.0, 64.0, map_size.x - 128.0, map_size.y - 128.0)
+
+	_clear_current_map_nodes()
+	current_npc_defs = []
+	_build_tiled_ground(arena_def)
+	_build_atmosphere_and_boundaries(arena_def)
+	_build_signs(arena_def)
+	_build_props(arena_def)
+
+	PlayerData.recalculate_and_clamp(true)
+	EventBus.stats_changed.emit()
+
+	if player_node != null:
+		player_node.global_position = spawn_pt
+		player_node.reset_physics_interpolation()
+		if player_node.has_method("set_camera_limits"):
+			player_node.set_camera_limits(int(map_size.x), int(map_size.y))
+		var cam_node: Camera2D = player_node.get_node_or_null("Camera2D") as Camera2D
+		if cam_node != null:
+			cam_node.reset_smoothing()
+			cam_node.reset_physics_interpolation()
+
+	_sync_active_companion(spawn_pt)
+	EventBus.boss_status_updated.emit("", "", 0.0, 1.0, 1, false)
+	EventBus.boss_poise_updated.emit(0.0, 1.0, false, false)
+
+
 func load_map(map_id: String, custom_spawn: Vector2 = Vector2.ZERO, should_autosave: bool = true) -> void:
-	is_boss_rush_active = false
-	boss_rush_boss_node = null
-	_boss_rush_session_token += 1
-	if is_tower_active:
-		is_tower_active = false
-		tower_waiting_blessing = false
-		tower_enemies_alive.clear()
-		tower_total_wave = 0
-		tower_heat_dps = 0.0
-		tower_heat_accum = 0.0
-		tower_heat_text_accum = 0.0
-		tower_sign_lbl = null
-		_tower_session_token += 1
-		PlayerData.clear_tower_buffs()
-		EventBus.tower_state_updated.emit(0, 0, 0, 0.0, false)
+	if boss_rush_mgr != null:
+		boss_rush_mgr.reset_state()
+	if tower_mgr != null and tower_mgr.is_active:
+		tower_mgr.reset_state(true)
 
 	var m_def: Dictionary = GameDatabase.get_map_def(map_id)
 	if m_def.is_empty():
@@ -214,7 +245,8 @@ func _clear_current_map_nodes() -> void:
 	stele_positions.clear()
 	lantern_lights.clear()
 	bamboo_sprites.clear()
-	tower_sign_lbl = null
+	if tower_mgr != null:
+		tower_mgr.sign_lbl = null
 	radar_wave_timer = 0.0
 	radar_ping_timer = 0.0
 	radar_pinged_chests.clear()
@@ -1325,8 +1357,8 @@ func _on_story_flag_changed(_flag_name: String) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if is_boss_rush_active:
-		boss_rush_elapsed += delta
+	if boss_rush_mgr != null:
+		boss_rush_mgr.tick(delta)
 
 	if radar_wave_timer > 0.0:
 		radar_wave_timer = maxf(0.0, radar_wave_timer - delta)
@@ -1335,25 +1367,8 @@ func _physics_process(delta: float) -> void:
 		if radar_ping_timer <= 0.0:
 			radar_pinged_chests.clear()
 
-	if is_tower_active and not tower_waiting_blessing and not tower_enemies_alive.is_empty():
-		_prune_tower_enemies()
-		if is_tower_active and not tower_waiting_blessing and not tower_enemies_alive.is_empty():
-			tower_heat_accum += delta
-			if tower_heat_accum >= 1.0:
-				tower_heat_accum -= 1.0
-				tower_heat_text_accum += 1.0
-				if tower_heat_dps > 0.0 and PlayerData.current_hp > 1.0:
-					var actual_loss: float = minf(tower_heat_dps, PlayerData.current_hp - 1.0)
-					if actual_loss > 0.0:
-						PlayerData.current_hp = maxf(1.0, PlayerData.current_hp - actual_loss)
-						EventBus.stats_changed.emit()
-						if tower_heat_text_accum >= 3.0 and player_node != null:
-							tower_heat_text_accum = 0.0
-							EventBus.floating_text_requested.emit(
-								player_node.global_position + Vector2(0, -58),
-								"Tâm Hỏa -%d" % maxi(1, int(round(actual_loss))),
-								Color("#FF6B6B")
-							)
+	if tower_mgr != null:
+		tower_mgr.tick(delta)
 
 	if interact_cooldown > 0.0:
 		interact_cooldown -= delta
@@ -1784,315 +1799,14 @@ func _bfs_next_hop_map(start_id: String, goal_id: String, unlocked_only: bool) -
 
 
 # =========================================================
-# DATA-DRIVEN DIALOGUE RUNNER (CH.04 -> CH.11) + KỊCH BẢN CH.01–03
+# DATA-DRIVEN DIALOGUE RUNNER (ỦY QUYỀN SANG StoryDialogueRunner)
 # =========================================================
 func _run_data_driven_dialogue(dlg_def: Dictionary, npc_name: String, sprite_p: String) -> bool:
-	var branches: Array = dlg_def.get("branches", [])
-	if branches.is_empty():
-		return false
-	for br in branches:
-		if not (br is Dictionary):
-			continue
-		var bd: Dictionary = br
-		var is_def: bool = bool(bd.get("default", false))
-		var cond_d: Dictionary = bd.get("when", {}) if (bd.get("when", {}) is Dictionary) else {}
-		if not is_def and not PlayerData.evaluate_story_condition(cond_d):
-			continue
-
-		var sfx_s: String = str(bd.get("sfx", ""))
-		if sfx_s != "":
-			EventBus.audio_sfx_requested.emit(sfx_s)
-		var sh_arr: Array = bd.get("shake", [])
-		if sh_arr.size() >= 2:
-			EventBus.screen_shake_requested.emit(float(sh_arr[0]), float(sh_arr[1]))
-
-		var q_cur: Dictionary = PlayerData.get_current_quest()
-		var q_hint: String = str(q_cur.get("objective", "Tiếp tục tu luyện nâng cao cảnh giới!"))
-		var raw_lines: Array = bd.get("lines", [])
-		var resolved_lines: Array = []
-		for ln in raw_lines:
-			resolved_lines.append(str(ln).replace("{quest_objective}", q_hint))
-
-		var sp_override: String = str(bd.get("speaker", npc_name))
-		var choices_raw: Array = bd.get("choices", [])
-		if not choices_raw.is_empty():
-			var filtered_choices: Array = []
-			for ch in choices_raw:
-				if not (ch is Dictionary):
-					continue
-				var ch_cond: Dictionary = ch.get("when", {}) if (ch.get("when", {}) is Dictionary) else {}
-				if PlayerData.evaluate_story_condition(ch_cond):
-					filtered_choices.append({
-						"label": str(ch.get("label", "Tiếp tục")),
-						"action": str(ch.get("action", ""))
-					})
-			if not filtered_choices.is_empty():
-				EventBus.dialogue_choice_requested.emit(sp_override, sprite_p, resolved_lines, filtered_choices)
-				return true
-
-		EventBus.dialogue_requested.emit(sp_override, sprite_p, resolved_lines, str(bd.get("action", "")))
-		return true
-	return false
+	return StoryDlgRunner.run_data_driven_dialogue(dlg_def, npc_name, sprite_p)
 
 
 func _trigger_npc_interaction(npc_entry: Dictionary) -> void:
-	var role_str: String = str(npc_entry.get("role", ""))
-	var npc_name: String = str(npc_entry.get("name", "NPC"))
-	var sprite_p: String = str(npc_entry.get("sprite", ""))
-
-	# Ưu tiên đọc kịch bản Data-Driven JSON (dialogues_chXX.json) nếu tồn tại!
-	var dlg_def: Dictionary = GameDatabase.get_dialogue_def(role_str)
-	if not dlg_def.is_empty():
-		if _run_data_driven_dialogue(dlg_def, npc_name, sprite_p):
-			return
-
-	if role_str == "story_tieu_chien":
-		if not PlayerData.has_flag("tu_hon_done"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Chiến (vỗ vai con trai, ánh mắt trầm ổn): 'Viêm nhi, ba năm qua dù tộc nhân có bàn tán ra sao, trong lòng vi phụ con vẫn là niềm tự hào của Tiêu Gia!'",
-				"Tiêu Chiến (nhíu mày): 'Hôm nay phái đoàn Vân Lam Tông bất ngờ ghé thăm — Nạp Lan Yên Nhiên đang đợi ở sân trước, con đi cùng ta xem chúng giở trò gì!'"
-			], "")
-		elif not PlayerData.has_flag("unlocked_bat_cuc_bang"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Chiến (cười lớn đầy khí phách): 'Viết Hưu Thư trả lại Tụ Khí Tán trước mặt Chấp sự Vân Lam Tông — thật xứng là con trai của Tiêu Chiến ta!'",
-				"Tiêu Chiến: 'Cố gắng tu luyện chuẩn bị cho Lễ Thành Niên Tiêu Gia, đừng để tên Tiêu Ninh kia coi thường!'"
-			], "heal_full")
-		elif not PlayerData.has_flag("ch01_completed"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Chiến (tự hào): 'Một chiêu đánh bay Tiêu Ninh khỏi Lôi Đài! Đám trưởng lão nay câm nín hết rồi!'",
-				"Tiêu Chiến (lo lắng): 'Gần đây Gia Liệt Gia thuê được Luyện Đan Sư Liễu Tịch chèn ép phường thị Tiêu Gia ở Ô Thản Thành... Con nhớ cẩn thận nếu ra thành!'"
-			], "heal_full")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Chiến (rưng rưng tự hào): 'Gia Liệt Gia đã bị diệt, Tiêu Gia nay đứng đầu Ô Thản Thành! Con trai, đường lớn bên ngoài Ma Thú Sơn Mạch đang chờ con — hãy bình an trở về!'"
-			], "heal_full")
-
-	elif role_str == "story_huan_nhi":
-		if not PlayerData.has_flag("huan_nhi_gift"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Huân Nhi (dịu dàng): 'Tiêu Viêm ca ca, huynh đừng buồn vì Ma Thạch Bi vẫn là Tam Đoạn... Muội nhớ suốt 2 năm thuở nhỏ mỗi đêm huynh đều vụng về ôn dưỡng kinh mạch cho muội.'",
-				"Tiêu Huân Nhi (đưa túi thảo dược): 'Đây là 2 cây Ngưng Huyết Thảo và 1 viên Ngưng Huyết Tán muội để dành. Bên kia Nạp Lan Yên Nhiên của Vân Lam Tông đang đứng chờ kìa!'"
-			], "gift_huan_nhi")
-		elif not PlayerData.has_flag("duoc_lao_awake"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Huân Nhi (ánh mắt lấp lánh tia Kim Hỏa rồi dịu lại): 'Tiêu Viêm ca ca thật khí phách khi viết Hưu Thư trước mặt Vân Lam Tông! Huynh cứ lên Hậu Sơn cho khuây khỏa nhé.'"
-			], "heal_full")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Huân Nhi (mỉm cười ấm áp): 'Khí tức trên người Tiêu Viêm ca ca mạnh lên từng ngày! Muội sẽ chờ huynh ở Học Viện Già Nam — để muội hồi đầy thể lực cho huynh nhé!'"
-			], "heal_full")
-
-	elif role_str == "story_tu_hon":
-		EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-			"Nạp Lan Yên Nhiên (lạnh nhạt): 'Tiêu Viêm công tử, ba năm qua ngươi dậm chân tại Đấu Chi Khí Tam Đoạn. Khoảng cách giữa chúng ta đã là trời vực...'",
-			"Cát Diệp Trưởng Lão (phóng uy áp Đấu Linh): 'Vân Lam Tông tặng Tiêu Gia một viên Tụ Khí Tán Tam Phẩm, chỉ mong công tử hủy bỏ hôn ước này!'",
-			"Tiêu Viêm (rạch tay viết Hưu Thư đẫm máu): 'Lấy Tụ Khí Tán về đi! Không phải ngươi từ hôn ta, mà là TIÊU VIÊM TA HƯU NGƯƠI!'",
-			"Tiêu Viêm (gằn từng chữ): 'TAM THẬP NIÊN HÀ ĐÔNG, TAM THẬP NIÊN HÀ TÂY — MẠC KHI THIẾU NIÊN CÙNG! Ba năm sau ta sẽ bước lên Vân Lam Sơn rửa nhục!'",
-			"Nạp Lan Yên Nhiên tái mặt phất tay áo rời khỏi Tiêu Gia... (Nhận Buff [Ấn Ký Tôn Nghiêm +5% ATK] & mở Cổng Bắc lên Hậu Sơn!)"
-		], "flag:tu_hon_done")
-
-	elif role_str == "story_nhuoc_lam":
-		if not PlayerData.has_flag("got_gia_nam_leave"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Nhược Lâm Đạo Sư (mỉm cười tán thưởng): 'Thật kinh ngạc! Một năm từ Tam Đoạn vọt lên đánh bại cả Tiêu Ninh uống Tăng Khí Tán — Học Viện Già Nam đặc cách tuyển thẳng em và Huân Nhi!'",
-				"Tiêu Viêm (chắp tay kiên định): 'Đa tạ Đạo sư! Đệ tử có một Ước Hẹn 3 Năm cần tự mình khổ tu bên ngoài, xin Đạo sư cho phép nghỉ phép 2 năm trước khi nhập học!'",
-				"Nhược Lâm Đạo Sư (trao ngọc bài xanh biếc): 'Chí khí đáng khen! Đây là [Già Nam Ngọc Bài] — hai năm sau ta chờ hai đứa tại Nội Viện Già Nam!'"
-			], "flag:got_gia_nam_leave")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Nhược Lâm Đạo Sư: 'Cầm chắc Già Nam Ngọc Bài nhé! Hãy đột phá lên Đấu Giả rồi ra ngoài rèn luyện cho thật vững vàng.'"
-			], "heal_full")
-
-	elif role_str == "secret_lang_anh":
-		EventBus.dialogue_choice_requested.emit(npc_name, sprite_p, [
-			"Dược Lão (truyền âm kinh hãi): 'Tiểu tử DỪNG LẠI NGAY! Trong bóng tối gốc tùng kia là một cường giả Đấu Hoàng Cửu Tinh ẩn thân — chắc chắn là ám vệ bảo vệ Huân Nhi!'",
-			"Bóng đen mặc hắc bào khẽ hé đôi mắt tím sắc lạnh nhìn về phía bạn..."
-		], [
-			{ "label": "Nín thở đứng im không động đậy (Nghe lời Dược Lão -> Nhận Hắc Ảnh Phù +8% SPD!)", "action": "choice:lang_anh_quiet" },
-			{ "label": "Chắp tay kính lễ cảm ơn tiền bối bảo vệ Huân Nhi (+10 Hảo Cảm Huân Nhi & +4 SOUL!)", "action": "choice:lang_anh_bow" }
-		])
-
-	elif role_str == "story_duoc_lao":
-		if not PlayerData.has_flag("duoc_lao_awake"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Hắc giới mẫu thân để lại đột nhiên bốc khói trắng — một lão giả bạch bào lơ lửng hiện thân giữa Vách Đá Hậu Sơn!",
-				"Dược Lão (cười khà khà): 'Hắc hắc tiểu tử, ba năm qua chính lão phu đã hấp thu Đấu Chi Khí của con để thức tỉnh linh hồn từ giấc ngủ say!'",
-				"Tiêu Viêm (quỳ xuống hành lễ): 'Tiền bối là Luyện Dược Đại Sư?! Xin nhận đồ nhi một lạy — chỉ cần giúp con thắng ước hẹn ba năm, khổ cực mấy con cũng chịu!'",
-				"Dược Lão: 'Khá lắm! Vi sư truyền cho con [Q] Toái Thạch Chưởng, ngọn [Phàm Hỏa], Kho Đấu Kỹ [K] và mở Lò Luyện Đan [L]! Hãy luyện Trúc Cơ Linh Dịch đầu đời đi!'"
-			], "flag:duoc_lao_awake")
-		else:
-			var q: Dictionary = PlayerData.get_current_quest()
-			var q_hint: String = str(q.get("objective", "Tiếp tục khổ tu nâng cao cảnh giới!"))
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Dược Lão: 'Tiểu tử cố lên! Mục tiêu hiện tại của con: %s'" % q_hint,
-				"Dược Lão: 'Vi sư vừa dùng linh hồn lực điều tức lại toàn bộ HP và Đấu Khí cho con rồi đấy!'"
-			], "heal_full")
-
-	elif role_str == "shop_nha_phi":
-		if not PlayerData.has_flag("met_nha_phi"):
-			PlayerData.set_story_flag("met_nha_phi")
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Nhã Phi (mỉm cười quyến rũ): 'Ô kìa, đây chẳng phải Tam Thiếu Gia Tiêu Gia sao? Hoan nghênh tới Phòng Đấu Giá Mễ Đặc Nhĩ!'",
-				"Nhã Phi: 'Bản phòng vừa nhập về Bí Tịch [Hấp Chưởng], [Bạo Bộ], Thanh Thiết Kiếm, Tinh Cương Chiến Đao và thảo dược luyện đan — mời công tử xem hàng!'"
-			], "open_shop:nha_phi")
-		else:
-			EventBus.shop_requested.emit()
-
-	elif role_str == "story_muc_luc_intro":
-		EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-			"Mục Lực (khinh khỉnh dựa thương): 'Hừ, lại một tên lính đánh thuê vác thanh sắt đen rỉ sét muốn tiếp cận Tiểu Y Tiên à?'",
-			"Mục Lực (cười lạnh): 'Thanh Sơn Trấn này là địa bàn của Lang Đầu Đoàn ta — thức thời thì đừng xía mũi vào chuyện của Vạn Dược Trai!'"
-		], "")
-
-	elif role_str == "story_tieu_y_tien":
-		if not PlayerData.has_flag("met_tieu_y_tien"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiểu Y Tiên (mỉm cười trong trẻo): 'Chào vị lính đánh thuê trẻ tuổi! Cảm ơn huynh đã không bị lời đe dọa của Mục Lực làm cho chùn bước.'",
-				"Tiểu Y Tiên: 'Ở Vách Đá Đoạn Hồn phía Bắc có một hang đá cổ bị mây mù che khuất — nghe đồn có nhiều linh dược hiếm! Muội sẽ đi cùng hỗ trợ hồi máu cho huynh (bấm phím [G])!'",
-				"Dược Lão (truyền âm trong nhẫn): 'Huyền Trọng Xích đã quen tay rồi! Giờ vi sư truyền cho con Địa Giai Đấu Kỹ [R] — Diễm Phân Phệ Lãng Xích để xông pha Ma Thú Sơn Mạch!'"
-			], "flag:met_tieu_y_tien")
-		elif PlayerData.has_flag("found_doc_kinh") and not PlayerData.has_flag("absorbed_tu_hoa"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiểu Y Tiên (ôm chặt cuốn Thất Thải Độc Kinh, mắt sáng rỡ): 'Cảm ơn Tiêu Viêm đã chia sẻ linh dược và cuốn sách kỳ lạ này ở Huyền Nhai Sơn Động!'",
-				"Tiểu Y Tiên: 'Nghe nói phía Đông Bắc gần Bờ Suối Trăng Bạc vừa có dị tượng Đấu Hoàng đại chiến — huynh nhớ cẩn thận nhé! Để muội hồi đầy HP & Đấu Khí cho huynh.'"
-			], "heal_full")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiểu Y Tiên: 'Mục Lực và Lang Đầu Đoàn ngày càng hung hăng ở phía Đông! Huynh bấm [G] để muội luôn đi sát hỗ trợ hồi máu nhé!'"
-			], "heal_full")
-
-	elif role_str == "story_van_chi":
-		if not PlayerData.has_flag("met_van_chi"):
-			EventBus.dialogue_choice_requested.emit(npc_name, sprite_p, [
-				"Vân Chi (mỹ nhân áo trắng lạnh lùng tựa đá, Đấu Khí bị Tử Tinh Phong Ấn khóa chặt): 'Đa tạ tiểu huynh đệ đã cứu ta bên Bờ Suối Trăng Bạc... Hãy gọi ta là Vân Chi.'",
-				"Bên đống lửa trại Hang Ẩn Tu, Tiêu Viêm nướng hai con cá suối thơm phức để bồi bổ cho mỹ nhân bị thương. Dược Lão trong nhẫn bỗng cười gian chỉ vào một lọ bột màu hồng nhạt..."
-			], [
-				{ "label": "Nướng cá thảo mộc thanh đạm chăm sóc chu đáo (+30 Hảo Cảm Vân Chi!)", "action": "choice:van_chi_herb_fish" },
-				{ "label": "Rắc nhầm lọ 'muối tiêu hồng' của Dược Lão (Kỳ ngộ hài hước Vân Chi nhảy xuống suối lạnh!)", "action": "choice:van_chi_pink_powder" }
-			])
-		elif not PlayerData.has_flag("killed_tieu_su_vuong"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Vân Chi (khẽ gật đầu): 'Ta đã dụ Tử Tinh Dực Sư Vương rời khỏi ổ rồi! Ngươi hãy nhân cơ hội tiến sâu vào Hang Tím phía Đông hạ Tiểu Sư Vương đoạt [Tử Linh Tinh] nhé!'",
-				"Vân Chi: 'Để ta dùng dược thảo hồi đầy thể lực cho ngươi trước khi xuất phát.'"
-			], "heal_full")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Vân Chi (kinh ngạc nhận lấy một nửa Bầu Tử Linh Tinh): 'Ngươi thực sự đã đoạt được cả Tử Linh Tinh lẫn Tử Tinh Nguyên sao?! Phong ấn trên người ta đã giải trừ hoàn toàn rồi!'",
-				"Vân Chi (lưu luyến cởi chiếc nội giáp lấp lánh lam quang đặt vào tay bạn): 'Ta phải trở về tông môn rồi... Chiếc [Hải Tâm Giáp] này tặng ngươi phòng thân. Hẹn một ngày hữu duyên tái ngộ!'",
-				"Vân Chi vút bay lên tầng mây! Dược Lão lập tức hộ pháp giúp Tiêu Viêm vận chuyển Phần Quyết nuốt chửng ngọn [TỬ TINH THÚ HỎA] — Đấu Khí lột xác thành sắc TÍM RỰC LỬA!"
-			], "flag:absorbed_tu_hoa")
-
-	elif role_str == "story_tieu_y_tien_farewell":
-		if not PlayerData.has_flag("ch02_farewell_done"):
-			EventBus.dialogue_choice_requested.emit(npc_name, sprite_p, [
-				"Giữa Thung Lũng U Lan, toàn bộ cỏ hoa xung quanh bóng lưng nhỏ bé của Tiểu Y Tiên đều héo đen vì khí độc tím bốc lên từ cơ thể nàng!",
-				"Tiểu Y Tiên (khóc nấc lùi lại): 'Tiêu Viêm đừng bước qua vạch cỏ héo! Ách Nan Độc Thể của muội đã thức tỉnh rồi — chạm vào muội huynh sẽ trúng kịch độc mất... Muội phải rời sang Xuất Vân Đế Quốc thôi!'"
-			], [
-				{ "label": "Bọc Tử Hỏa bước thẳng qua vòng cỏ độc ôm chặt nàng & hẹn ngày luyện Độc Đan (+40 Hảo Cảm!)", "action": "choice:u_lan_hug" },
-				{ "label": "Đứng ngoài vòng độc nắm chặt tay thề trở thành Luyện Đan Tông Sư cứu nàng (+20 Hảo Cảm!)", "action": "choice:u_lan_promise" }
-			])
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiểu Y Tiên (mỉm cười qua làn nước mắt): 'Huynh hãy mạnh mẽ tiến về Sa Mạc Tháp Qua Nhĩ ở Chương 03 nhé... Muội sẽ luôn nhớ lời hẹn giữa chúng ta!'"
-			], "heal_full")
-
-	elif role_str == "story_tieu_dinh":
-		if not PlayerData.has_flag("met_tieu_dinh_le"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Đỉnh (vỗ mạnh vai em trai, mắt ánh lên niềm vui khôn xiết): 'Hảo tiểu tử! Mới hơn một năm xa Ô Thản Thành, tam đệ nhà họ Tiêu chúng ta đã trở thành một vị Đấu Sư đường đường chính chính!'",
-				"Tiêu Đỉnh (đưa bình nước lạnh & dược tán): 'Đệ muốn mua bản đồ vùng lõi Sa Mạc Tháp Qua Nhĩ? Ở góc Tây Nam thành có một lão quái vẽ bản đồ cổ cực kỳ bí ẩn — nhớ giữ an toàn nhé!'"
-			], "flag:met_tieu_dinh_le")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Đỉnh (mỉm cười trầm ổn): 'Tổng bộ Mạc Thiết Đoàn mãi là nhà của tam đệ! Mệt mỏi cứ về đây đại ca chuẩn bị tiếp tế và hồi đầy thể lực cho!'"
-			], "heal_full")
-
-	elif role_str == "story_tieu_le":
-		if not PlayerData.has_flag("met_tieu_dinh_le"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Lệ (cười gằn lạnh lùng bên ngọn Huyết Thương nhưng ánh mắt nhìn em trai cực kỳ ấm áp): 'Hắc! Ở cái Thạch Mạc Thành này, đứa nào dám động tới một cọng tóc của tam đệ, nhị ca đem cả đoàn đánh thuê nhà nó chôn sống dưới cát vàng!'",
-				"Tiêu Lệ: 'Lão quái vẽ bản đồ ở góc Tây Nam sát khí nặng lắm đấy, nhưng tam đệ giờ đã là Đấu Sư, cứ đi thử xem sao!'"
-			], "flag:met_tieu_dinh_le")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Tiêu Lệ (vung Huyết Thương): 'Đám Sa Chi Đoàn & Xà Nhân ngoài thành mà dám cản đường đệ, cứ kêu nhị ca dẫn anh em Mạc Thiết chém sạch!'"
-			], "heal_full")
-
-	elif role_str == "story_hai_ba_dong":
-		if not PlayerData.has_flag("pact_hai_ba_dong"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Hải Ba Đông (lau vết sương lạnh bên mép, ánh mắt kinh hãi nhìn hư ảnh bạch bào của Dược Lão): 'Cốt Linh Lãnh Hỏa?! Tiền bối... xin tha mạng! Lão phu vốn là Băng Hoàng Hải Ba Đông, bị Mỹ Đỗ Toa hạ Xà Chi Phong Ấn Chú nên thực lực rớt xuống Đấu Linh!'",
-				"Dược Lão (cười khà khà): 'Hắc hắc, muốn đồ đệ ta sau này luyện Lục phẩm Phá Ách Đan giải phong ấn cho ngươi? Giao ngay Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa #2 ra đây, và ký giao ước làm Bảo Tiêu Đấu Hoàng miễn phí 1 năm!'",
-				"Hải Ba Đông (cắn răng trao nửa mảnh da dê cổ & viên Hàn Băng Chi Tâm): 'Thành giao!! Ta giao [Mảnh Tàn Đồ #2 (2/4)] và bản đồ lõi sa mạc! Nghe nói cô bé Thanh Lân ở Mạc Thiết Đoàn cảm ứng được nguồn lửa cực mạnh dưới Hố Cát Bắc đấy!'"
-			], "flag:pact_hai_ba_dong")
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Hải Ba Đông (khoanh tay ngạo nghễ): 'Yên tâm tiểu tử, giao ước của Băng Hoàng ta nặng tựa núi! Chờ ngươi thu phục Thanh Liên Địa Tâm Hỏa rồi luyện Phá Ách Đan cho lão phu đấy!'"
-			], "heal_full")
-
-	elif role_str == "story_thanh_lan":
-		if not PlayerData.has_flag("met_thanh_lan"):
-			EventBus.dialogue_choice_requested.emit(npc_name, sprite_p, [
-				"Thanh Lân (cúi gằm mặt che cánh tay có vảy rắn xanh, nước mắt lưng tròng): 'Tam thiếu gia đừng chạm vào nô tỳ... Người trong thành đều gọi Thanh Lân là quái vật lai Xà Nhân, chạm vào sẽ gặp xui xẻo...'",
-				"Đôi mắt xanh biếc của cô bé bỗng lấp lánh ba chấm hoa ngọc bích — Bích Xà Tam Hoa Đồng bắt đầu cảm ứng mãnh liệt về phía Hố Cát Bắc!"
-			], [
-				{ "label": "Dịu dàng xoa đầu gỡ băng vải: 'Từ nay muội là muội muội của 3 huynh đệ Tiêu Gia!' (+35 Hảo Cảm Thanh Lân!)", "action": "choice:thanh_lan_sister" },
-				{ "label": "Đứng chắn trước mặt dặn hai huynh trưởng bảo vệ Thanh Lân thật tốt (+20 Hảo Cảm Thanh Lân!)", "action": "choice:thanh_lan_protect" }
-			])
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Thanh Lân (mỉm cười rạng rỡ với đôi mắt Bích Xà Tam Hoa Đồng): 'Tiêu Viêm thiếu gia cẩn thận nhé! Dưới Hố Cát phía Bắc có một con Song Đầu Hỏa Linh Xà rất hung dữ canh giữ đóa sen xanh khổng lồ!'"
-			], "heal_full")
-
-	elif role_str == "story_van_van_ch03":
-		if not PlayerData.has_flag("van_van_ch03_done"):
-			EventBus.dialogue_choice_requested.emit(npc_name, sprite_p, [
-				"Giữa chiến trường bão cát Thánh Thành Xà Nhân, tà váy trắng che mạng mỏng chặn đứng đường bạn! Kiếm phong xanh biếc xé rách vạt Hắc Bào, để lộ ánh sáng lam quen thuộc của chiếc [Hải Tâm Giáp] trên ngực Tiêu Viêm!",
-				"Vân Vận — Tông Chủ Vân Lam Tông — đồng tử co rút kịch liệt, bàn tay cầm cổ kiếm run lên bần bật: 'Hải Tâm Giáp... Dược Nham?! Sao... sao lại là ngươi?!'"
-			], [
-				{ "label": "Khẽ thì thầm qua lớp áo choàng: 'Vân Chi... bảo trọng! Đừng để Cổ Hà cản ta!' (+35 Hảo Cảm Vân Vận!)", "action": "choice:van_van_call_name" },
-				{ "label": "Im lặng cúi đầu vỗ Tử Vân Dực lướt qua mũi kiếm nghiêng ba tấc của nàng (+20 Hảo Cảm Vân Vận!)", "action": "choice:van_van_silent" }
-			])
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Vân Vận (mắt phượng u buồn quay mặt cản hướng gió): 'Ta sẽ giữ chân Phong Lê và Cổ Hà thêm vài nhịp... Ngươi mau đoạt lấy Dị Hỏa rồi rời khỏi đại mạc đi!'"
-			], "heal_full")
-
-	elif role_str == "story_my_do_toa":
-		if not PlayerData.has_flag("beat_co_ha_mac_ba_tu"):
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Dược Lão (truyền âm khẩn cấp): 'Khoan đã tiểu tử! Đại Thống Lĩnh Mặc Ba Tư và Đan Vương Cổ Hà vẫn đang chặn bên ngoài — phải đánh bại cả HAI tên đó trước mới có thể đột kích Đảo Thánh Trì đoạt lửa an toàn!'"
-			], "")
-		else:
-			EventBus.audio_sfx_requested.emit("boss_roar")
-			EventBus.screen_shake_requested.emit(11.0, 0.45)
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Mỹ Đỗ Toa Nữ Vương (kiêu diễm đứng giữa Thánh Trì Đảo Tâm Hồ, ngẩng đầu đối diện chín tầng Tử Sắc Thiên Lôi): 'Xà Nhân Tộc ta đã khát máu nơi sa mạc cằn cỗi ngàn năm! Hôm nay bổn vương lấy thân nhập Dị Hỏa — hoặc hóa tro bụi, hoặc bước vào ĐẤU TÔNG!!'",
-				"ẦM ẦM!! Chín đạo Thiên Lôi Tím giáng tan lớp vảy cháy đen! Từ trong ngọn lửa xanh ngọc chui ra một sinh vật nhỏ bé 7 màu cầu vồng lấp lánh — Thượng Cổ Thần Thú [THẤT THẢI THÔN THIÊN MÃNG] rơi vào hôn mê bên cạnh Hỏa Chủng Thanh Liên Địa Tâm Hỏa!",
-				"Tiêu Viêm vỗ Tử Vân Dực lao như tia chớp đen đoạt gọn [HỎA CHỦNG THANH LIÊN ĐỊA TÂM HỎA] cùng con rắn nhỏ 7 màu nhét vào ngực áo! Vân Vận nghiêng mũi kiếm mở đường máu — mau bay qua Cổng Đông Nam tới [Ốc Đảo Diêm Lệ]!!"
-			], "flag:snatched_thanh_lien_hoa")
-
-	elif role_str == "story_devour_thanh_lien":
-		if not PlayerData.has_flag("ch03_completed"):
-			var has_bt: bool = PlayerData.get_item_count("pill_bang_tam_dan") > 0
-			var opt1_lbl: String = "Uống [Băng Tâm Đan] + Vận Phần Quyết nuốt trọn #19 Thanh Liên Hỏa (+400 EXP & Mở [F] Hỏa Liên!)" if has_bt else "Vận Phần Quyết + Thanh Liên Đài nuốt trọn #19 Thanh Liên Hỏa (Mở [F] Phật Nộ Hỏa Liên!)"
-			EventBus.dialogue_choice_requested.emit(npc_name, sprite_p, [
-				"Dược Lão (giăng kết giới linh hồn quanh Thanh Liên Đài giữa Ốc Đảo Diêm Lệ): 'Hỏa Chủng sắp phá bình ngọc rồi! Thôn phệ Dị Hỏa là cửu tử nhất sinh — một khi thành công, Phần Quyết thăng thẳng Huyền Giai Trung Cấp và con có thể dung hợp Song Hỏa sáng tạo tuyệt kỹ độc tôn!'",
-				"Ngọn lửa xanh ngọc #19 Thanh Liên Địa Tâm Hỏa bùng cháy rực trời trước mặt Tiêu Viêm..."
-			], [
-				{ "label": opt1_lbl, "action": "choice:devour_bang_tam" },
-				{ "label": "Gầm vang lời thề Ước Hẹn 3 Năm dùng ý chí sắt đá nghiền nát Dị Hỏa (+6 SOUL & Mở [F] Hỏa Liên!)", "action": "choice:devour_iron_will" }
-			])
-		else:
-			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-				"Dược Lão (cười vang tự hào): 'TUYỆT ĐỈNH! Vừa thu phục [#19 Thanh Liên Địa Tâm Hỏa], vừa có Thần Thú [Thải Lân] hộ thân, lại tự sáng tạo ra [F] PHẬT NỘ HỎA LIÊN rung chuyển thiên địa! Mau ra Bãi Thử phía Đông bắn thử một đóa Hỏa Liên xem uy lực cỡ nào!!'"
-			], "heal_full")
-
-	elif role_str == "story_thai_lan_pet":
-		EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-			"Thải Lân (con rắn nhỏ 7 màu đội vương miện vàng quấn quanh cổ tay Tiêu Viêm, mắt lấp lánh đòi ăn Hỏa Tinh như trẻ con): 'Xì xì~ ♪'",
-			"Tiêu Viêm mỉm cười đút cho Thải Lân một mảnh Địa Tâm Hỏa Tinh — nàng vui vẻ tỏa ra luồng Thất Thải Quang Mang hồi đầy HP & Đấu Khí cho bạn (+15 Hảo Cảm Thải Lân / Mỹ Đỗ Toa)!"
-		], "feed_thai_lan")
+	StoryDlgRunner.trigger_npc_interaction(npc_entry)
 
 
 func _spawn_from_slot(idx: int) -> void:
@@ -2106,676 +1820,61 @@ func _spawn_from_slot(idx: int) -> void:
 
 
 # =========================================================
-# TÂM MA LUYỆN CẢNH — BOSS RUSH ARENA CONTROLLER (TASK 5)
+# PHÓ BẢN TÂM MA & THIÊN PHẦN THÁP (ỦY QUYỀN SANG BossRushManager / ThienPhanTowerManager)
 # =========================================================
-func _get_boss_rush_diff_label(diff_key: String) -> String:
-	if diff_key == "normal":
-		return "Thường"
-	elif diff_key == "nightmare":
-		return "Ác Mộng"
-	elif diff_key == "di_hoa":
-		return "Dị Hỏa"
-	return "Địa Ngục"
-
-
 func record_boss_rush_player_damage(amount: float) -> void:
-	if is_boss_rush_active and amount > 0.0:
-		boss_rush_dmg_taken += amount
+	if boss_rush_mgr != null:
+		boss_rush_mgr.record_player_damage(amount)
 
 
 func start_boss_rush(boss_id: String, diff_key: String = "normal") -> void:
-	var b_def: Dictionary = GameDatabase.get_enemy_def(boss_id)
-	if b_def.is_empty():
-		return
-
-	if is_tower_active:
-		var saved_t_map: String = tower_return_map
-		var saved_t_pos: Vector2 = tower_return_pos
-		is_tower_active = false
-		tower_waiting_blessing = false
-		tower_enemies_alive.clear()
-		tower_total_wave = 0
-		tower_heat_dps = 0.0
-		tower_heat_accum = 0.0
-		tower_heat_text_accum = 0.0
-		tower_sign_lbl = null
-		_tower_session_token += 1
-		PlayerData.clear_tower_buffs()
-		EventBus.tower_state_updated.emit(0, 0, 0, 0.0, false)
-		boss_rush_return_map = saved_t_map if (saved_t_map != "" and saved_t_map != "thien_phan_thap") else GameDatabase.start_map_id
-		boss_rush_return_pos = saved_t_pos if saved_t_pos != Vector2.ZERO else Vector2(340.0, 520.0)
-	elif not is_boss_rush_active and current_map_id != "tam_ma_luyen_canh":
-		boss_rush_return_map = current_map_id if current_map_id != "" else GameDatabase.start_map_id
-		boss_rush_return_pos = player_node.global_position if player_node != null else Vector2(340.0, 520.0)
-
-	_boss_rush_session_token += 1
-	is_boss_rush_active = true
-	boss_rush_boss_id = boss_id
-	boss_rush_diff = diff_key
-	boss_rush_elapsed = 0.0
-	boss_rush_dmg_taken = 0.0
-	boss_rush_boss_node = null
-
-	current_map_id = "tam_ma_luyen_canh"
-	current_map_bgm = "bgm_boss"
-	current_is_forest = false
-	interact_cooldown = 0.25
-
-	map_size = Vector2(1280.0, 896.0)
-	map_rect = Rect2(64.0, 64.0, map_size.x - 128.0, map_size.y - 128.0)
-
-	var diff_label: String = _get_boss_rush_diff_label(diff_key)
-	var boss_name: String = str(b_def.get("name", boss_id))
-	var arena_def: Dictionary = {
-		"id": "tam_ma_luyen_canh",
-		"name": "Tâm Ma Luyện Cảnh",
-		"bgm": "bgm_boss",
-		"size": [1280, 896],
-		"ambient_hex": "#a8b0d8",
-		"base_tile": "res://assets/sprites/tiles/arena_violet.png",
-		"zones": [
-			{
-				"rect": [192, 128, 896, 640],
-				"tile": "res://assets/sprites/tiles/arena_violet.png",
-				"border_hex": "#C77DFF",
-				"arena_circle": true
-			}
-		],
-		"signs": [
-			{
-				"pos": [420, 80],
-				"text": "TÂM MA LUYỆN CẢNH — %s (%s)" % [boss_name.to_upper(), diff_label],
-				"color": "#E0AAFF"
-			}
-		],
-		"props": [
-			{ "type": "lantern", "pos": [140, 160] },
-			{ "type": "lantern", "pos": [1140, 160] },
-			{ "type": "lantern", "pos": [140, 760] },
-			{ "type": "lantern", "pos": [1140, 760] }
-		],
-		"chests": [],
-		"portals": [],
-		"npcs": [],
-		"spawns": []
-	}
-
-	_clear_current_map_nodes()
-	current_npc_defs = []
-	_build_tiled_ground(arena_def)
-	_build_atmosphere_and_boundaries(arena_def)
-	_build_signs(arena_def)
-	_build_props(arena_def)
-
-	PlayerData.recalculate_and_clamp(true)
-	EventBus.stats_changed.emit()
-
-	var spawn_pt := Vector2(340.0, 448.0)
-	if player_node != null:
-		player_node.global_position = spawn_pt
-		player_node.reset_physics_interpolation()
-		if player_node.has_method("set_camera_limits"):
-			player_node.set_camera_limits(int(map_size.x), int(map_size.y))
-		var cam_node: Camera2D = player_node.get_node_or_null("Camera2D") as Camera2D
-		if cam_node != null:
-			cam_node.reset_smoothing()
-			cam_node.reset_physics_interpolation()
-
-	_sync_active_companion(spawn_pt)
-	EventBus.boss_status_updated.emit("", "", 0.0, 1.0, 1, false)
-	EventBus.boss_poise_updated.emit(0.0, 1.0, false, false)
-
-	var boss_inst: CharacterBody2D = ENEMY_SCENE.instantiate() as CharacterBody2D
-	entities_root.add_child(boss_inst)
-	var boss_pos := Vector2(920.0, 448.0)
-	if boss_inst.has_method("configure_enemy"):
-		boss_inst.configure_enemy(boss_id, boss_pos)
-	if boss_inst.has_method("configure_boss_rush"):
-		boss_inst.configure_boss_rush(diff_key)
-	boss_rush_boss_node = boss_inst
-
-	EventBus.audio_sfx_requested.emit("portal_warp")
-	EventBus.bgm_requested.emit("bgm_boss")
-	EventBus.map_changed.emit("tam_ma_luyen_canh", "Tâm Ma Luyện Cảnh — %s" % diff_label)
-	EventBus.banter_triggered.emit("TÂM MA LUYỆN CẢNH [%s]: Đối đầu [%s] — Kết liễu nhanh & né đòn hoàn hảo để đạt hạng SSS!" % [diff_label, boss_name])
-	if player_node != null:
-		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -84), "TÂM MA KHAI CHIẾN!", Color("#E0AAFF"))
-	queue_redraw()
+	if boss_rush_mgr != null:
+		boss_rush_mgr.start_boss_rush(boss_id, diff_key)
 
 
 func _on_enemy_killed_boss_rush(enemy_id: String, _is_boss: bool) -> void:
-	if is_boss_rush_active and enemy_id == boss_rush_boss_id:
-		on_boss_rush_boss_defeated(enemy_id)
-	if is_tower_active and not tower_waiting_blessing:
-		_prune_tower_enemies()
+	if boss_rush_mgr != null and boss_rush_mgr.is_active and enemy_id == boss_rush_mgr.boss_id:
+		boss_rush_mgr.on_boss_defeated(enemy_id)
+	if tower_mgr != null and tower_mgr.is_active and not tower_mgr.waiting_blessing:
+		tower_mgr.prune_enemies()
 
 
 func on_boss_rush_boss_defeated(defeated_id: String) -> void:
-	if not is_boss_rush_active or defeated_id != boss_rush_boss_id:
-		return
-
-	var res: Dictionary = PlayerData.record_boss_rush_clear(boss_rush_boss_id, boss_rush_diff, boss_rush_elapsed, boss_rush_dmg_taken)
-	is_boss_rush_active = false
-	boss_rush_boss_node = null
-
-	var grade_str: String = str(res["grade"])
-	var rew_stones: int = int(res["stones"])
-	var rew_gold: int = int(res["gold"])
-	var elapsed_final: float = boss_rush_elapsed
-	var diff_label: String = _get_boss_rush_diff_label(boss_rush_diff)
-	var b_def: Dictionary = GameDatabase.get_enemy_def(defeated_id)
-	var boss_name: String = str(b_def.get("name", defeated_id))
-
-	EventBus.boss_rush_completed.emit(boss_rush_boss_id, boss_rush_diff, grade_str, elapsed_final, rew_stones, rew_gold)
-	EventBus.audio_sfx_requested.emit("breakthrough")
-	EventBus.screen_shake_requested.emit(7.5, 0.28)
-	if player_node != null:
-		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -92), "HẠNG %s!" % grade_str, Color("#FFD166"))
-	EventBus.banter_triggered.emit("TÂM MA LUYỆN CẢNH THẮNG LỢI! Hạ [%s · %s] trong %.1fs — Hạng [%s] (+%d Đá CH · +%d Kim Tệ)!" % [
-		boss_name, diff_label, elapsed_final, grade_str, rew_stones, rew_gold
-	])
-
-	var token: int = _boss_rush_session_token
-	get_tree().create_timer(2.2).timeout.connect(func() -> void:
-		if is_inside_tree() and not is_boss_rush_active and token == _boss_rush_session_token and current_map_id == "tam_ma_luyen_canh":
-			exit_boss_rush()
-	)
+	if boss_rush_mgr != null:
+		boss_rush_mgr.on_boss_defeated(defeated_id)
 
 
 func exit_boss_rush() -> void:
-	is_boss_rush_active = false
-	boss_rush_boss_node = null
-	_boss_rush_session_token += 1
-	var ret_map: String = boss_rush_return_map if (boss_rush_return_map != "" and boss_rush_return_map != "tam_ma_luyen_canh") else GameDatabase.start_map_id
-	load_map(ret_map, boss_rush_return_pos, false)
+	if boss_rush_mgr != null:
+		boss_rush_mgr.exit_boss_rush()
 
 
 func on_player_died_in_boss_rush() -> bool:
-	if not is_boss_rush_active:
-		return false
-	PlayerData.recalculate_and_clamp(true)
-	EventBus.stats_changed.emit()
-	EventBus.audio_sfx_requested.emit("alchemy_fail")
-	if player_node != null:
-		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -82), "TÂM MA BẠI TRẬN!", Color("#FF4D6D"))
-	EventBus.banter_triggered.emit("Thất bại trong Tâm Ma Luyện Cảnh! Tâm ma tan biến — Tiêu Viêm điều tức hồi đầy sinh lực và trở về vị trí cũ.")
-	exit_boss_rush()
-	return true
-
-
-# =========================================================
-# THIÊN PHẦN LUYỆN KHÍ THÁP — INFINITE ROGUELITE TOWER
-# =========================================================
-func _get_tower_blessing_pool() -> Array:
-	return [
-		{
-			"id": "tower_atk",
-			"name": "Phần Thiên Viêm Ý",
-			"title": "Phần Thiên Viêm Ý",
-			"tag": "+25% ATK",
-			"desc": "Vẫn Lạc Tâm Viêm rèn Đấu Khí: +25% Công Kích (ATK) trong suốt lượt leo Tháp!",
-			"color_hex": "#FF6B00",
-			"color": "#FF6B00",
-			"icon": "res://assets/sprites/icons/skill_phe_lang_xich.png",
-			"stat_key": "atk_pct",
-			"value": 25.0,
-			"stat_key2": "",
-			"value2": 0.0,
-			"heal_ratio": 0.0
-		},
-		{
-			"id": "tower_hp",
-			"name": "Thanh Liên Hộ Tâm",
-			"title": "Thanh Liên Hộ Tâm",
-			"tag": "+22% HP · Hồi 45%",
-			"desc": "Thanh Liên khí tức ôn dưỡng kinh mạch: +22% Sinh Lực Tối Đa (HP) & hồi ngay 45% HP/QI!",
-			"color_hex": "#52B788",
-			"color": "#52B788",
-			"icon": "res://assets/sprites/icons/pill_hp_red.png",
-			"stat_key": "hp_pct",
-			"value": 22.0,
-			"stat_key2": "",
-			"value2": 0.0,
-			"heal_ratio": 0.45
-		},
-		{
-			"id": "tower_haste",
-			"name": "Tam Thiên Lôi Ảnh",
-			"title": "Tam Thiên Lôi Ảnh",
-			"tag": "-15% CD · +15% SPD",
-			"desc": "Thân pháp lôi đình xuất thần nhập hóa: -15% Hồi Chiêu Đấu Kỹ & +15% Tốc Độ Di Chuyển!",
-			"color_hex": "#38BDF8",
-			"color": "#38BDF8",
-			"icon": "res://assets/sprites/icons/skill_tu_van_duc.png",
-			"stat_key": "cd_red_pct",
-			"value": 15.0,
-			"stat_key2": "spd_pct",
-			"value2": 15.0,
-			"heal_ratio": 0.0
-		},
-		{
-			"id": "tower_poise_crit",
-			"name": "Bát Cực Phá Thế",
-			"title": "Bát Cực Phá Thế",
-			"tag": "+35% Phá Thế · +12% Crit",
-			"desc": "Ám kình xuyên giáp vỡ hộ thuẫn: +35% Phá Thế Boss & +12% Tỷ lệ Chí Mạng!",
-			"color_hex": "#FFD166",
-			"color": "#FFD166",
-			"icon": "res://assets/sprites/icons/skill_bat_cuc_bang.png",
-			"stat_key": "poise_pct",
-			"value": 35.0,
-			"stat_key2": "crit_pct",
-			"value2": 12.0,
-			"heal_ratio": 0.0
-		},
-		{
-			"id": "tower_lifesteal",
-			"name": "Huyết Ma Hấp Tinh",
-			"title": "Huyết Ma Hấp Tinh",
-			"tag": "+7% Hút Máu",
-			"desc": "Thôn phệ tinh huyết địch thủ chống lại Tâm Hỏa: +7% Hút Máu mọi đòn đánh & kỹ năng!",
-			"color_hex": "#EF476F",
-			"color": "#EF476F",
-			"icon": "res://assets/sprites/icons/skill_hap_chuong.png",
-			"stat_key": "lifesteal_pct",
-			"value": 7.0,
-			"stat_key2": "",
-			"value2": 0.0,
-			"heal_ratio": 0.0
-		},
-		{
-			"id": "tower_def",
-			"name": "Huyền Trọng Bất Hoại",
-			"title": "Huyền Trọng Bất Hoại",
-			"tag": "+30% DEF · Hồi 35%",
-			"desc": "Đấu Khí Khải Giáp ngưng thực kiên cố: +30% Phòng Ngự (DEF) & hồi ngay 35% HP/QI!",
-			"color_hex": "#C77DFF",
-			"color": "#C77DFF",
-			"icon": "res://assets/sprites/icons/icon_armor.png",
-			"stat_key": "def_pct",
-			"value": 30.0,
-			"stat_key2": "",
-			"value2": 0.0,
-			"heal_ratio": 0.35
-		}
-	]
+	return boss_rush_mgr.on_player_died() if boss_rush_mgr != null else false
 
 
 func start_tower(start_floor: int = 1) -> void:
-	if is_boss_rush_active:
-		var saved_br_map: String = boss_rush_return_map
-		var saved_br_pos: Vector2 = boss_rush_return_pos
-		is_boss_rush_active = false
-		boss_rush_boss_node = null
-		_boss_rush_session_token += 1
-		tower_return_map = saved_br_map if (saved_br_map != "" and saved_br_map != "tam_ma_luyen_canh") else GameDatabase.start_map_id
-		tower_return_pos = saved_br_pos if saved_br_pos != Vector2.ZERO else Vector2(340.0, 520.0)
-	elif not is_tower_active and current_map_id != "thien_phan_thap":
-		tower_return_map = current_map_id if current_map_id != "" else GameDatabase.start_map_id
-		tower_return_pos = player_node.global_position if player_node != null else Vector2(340.0, 520.0)
-
-	PlayerData.clear_tower_buffs()
-	_tower_session_token += 1
-	is_tower_active = true
-	tower_floor = maxi(1, start_floor)
-	tower_enemies_alive.clear()
-	tower_total_wave = 0
-	tower_heat_dps = 0.0
-	tower_heat_accum = 0.0
-	tower_heat_text_accum = 0.0
-	tower_waiting_blessing = false
-
-	current_map_id = "thien_phan_thap"
-	current_map_bgm = "bgm_lava"
-	current_is_forest = false
-	interact_cooldown = 0.25
-
-	map_size = Vector2(1280.0, 896.0)
-	map_rect = Rect2(64.0, 64.0, map_size.x - 128.0, map_size.y - 128.0)
-
-	var arena_def: Dictionary = {
-		"id": "thien_phan_thap",
-		"name": "Thiên Phần Luyện Khí Tháp",
-		"bgm": "bgm_lava",
-		"size": [1280, 896],
-		"ambient_hex": "#ffb899",
-		"base_tile": "res://assets/sprites/tiles/volcanic_basalt.png",
-		"zones": [
-			{
-				"rect": [192, 128, 896, 640],
-				"tile": "res://assets/sprites/tiles/arena_violet.png",
-				"border_hex": "#FF6B00",
-				"arena_circle": true
-			}
-		],
-		"signs": [
-			{
-				"pos": [420, 78],
-				"text": "THIÊN PHẦN LUYỆN KHÍ THÁP — TẦNG %d" % tower_floor,
-				"color": "#FFD166"
-			}
-		],
-		"props": [
-			{ "type": "lantern", "pos": [140, 160] },
-			{ "type": "lantern", "pos": [1140, 160] },
-			{ "type": "lantern", "pos": [140, 760] },
-			{ "type": "lantern", "pos": [1140, 760] }
-		],
-		"chests": [],
-		"portals": [],
-		"npcs": [],
-		"spawns": []
-	}
-
-	_clear_current_map_nodes()
-	current_npc_defs = []
-	_build_tiled_ground(arena_def)
-	_build_atmosphere_and_boundaries(arena_def)
-	_build_signs(arena_def)
-	_build_props(arena_def)
-
-	# Tìm lại Label bảng hiệu Tháp để cập nhật số tầng khi leo tiếp
-	for ch in map_overlay_root.get_children():
-		if ch is Label and (ch as Label).text.find("THIÊN PHẦN LUYỆN KHÍ THÁP") != -1:
-			tower_sign_lbl = ch as Label
-			break
-
-	PlayerData.recalculate_and_clamp(true)
-	EventBus.stats_changed.emit()
-
-	var spawn_pt := Vector2(340.0, 448.0)
-	if player_node != null:
-		player_node.global_position = spawn_pt
-		player_node.reset_physics_interpolation()
-		if player_node.has_method("set_camera_limits"):
-			player_node.set_camera_limits(int(map_size.x), int(map_size.y))
-		var cam_node: Camera2D = player_node.get_node_or_null("Camera2D") as Camera2D
-		if cam_node != null:
-			cam_node.reset_smoothing()
-			cam_node.reset_physics_interpolation()
-
-	_sync_active_companion(spawn_pt)
-	EventBus.boss_status_updated.emit("", "", 0.0, 1.0, 1, false)
-	EventBus.boss_poise_updated.emit(0.0, 1.0, false, false)
-
-	EventBus.audio_sfx_requested.emit("portal_warp")
-	EventBus.bgm_requested.emit("bgm_lava")
-	EventBus.map_changed.emit("thien_phan_thap", "Thiên Phần Luyện Khí Tháp — Tầng %d" % tower_floor)
-	EventBus.banter_triggered.emit("THIÊN PHẦN LUYỆN KHÍ THÁP TẦNG %d: Vẫn Lạc Tâm Viêm rèn thể! Quét sạch địch từng tầng để chọn Chúc Phúc Roguelite & thu Tinh Hỏa Năng!" % tower_floor)
-
-	_spawn_tower_floor(tower_floor)
-	queue_redraw()
-
-
-func _get_tower_boss_pool() -> Array:
-	var bosses: Array = []
-	for eid in GameDatabase.enemies_by_id.keys():
-		var edef: Dictionary = GameDatabase.enemies_by_id[eid]
-		if edef is Dictionary and bool(edef.get("is_boss", false)):
-			bosses.append({
-				"id": str(eid),
-				"realm": int(edef.get("realm_index", 1)),
-				"hp": float(edef.get("max_hp", 500.0))
-			})
-	bosses.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		if int(a["realm"]) != int(b["realm"]):
-			return int(a["realm"]) < int(b["realm"])
-		return float(a["hp"]) < float(b["hp"])
-	)
-	var out: Array = []
-	for b in bosses:
-		out.append(str(b["id"]))
-	if out.is_empty():
-		out.append("tieu_ninh_boss")
-	return out
-
-
-func _get_tower_mob_pools() -> Dictionary:
-	var special_types: Array = ["burrower", "artillery", "shieldbearer", "bomber"]
-	var special_mobs: Array = []
-	var standard_mobs: Array = []
-	var max_realm_cap: int = clampi(PlayerData.realm_index + 2, 2, 12)
-
-	for eid in GameDatabase.enemies_by_id.keys():
-		var edef: Dictionary = GameDatabase.enemies_by_id[eid]
-		if not (edef is Dictionary):
-			continue
-		if bool(edef.get("is_boss", false)):
-			continue
-		var ai_t: String = str(edef.get("ai_type", "chaser"))
-		if ai_t == "dummy":
-			continue
-		var r_idx: int = int(edef.get("realm_index", 1))
-		if special_types.has(ai_t):
-			special_mobs.append(str(eid))
-		elif r_idx <= max_realm_cap:
-			standard_mobs.append(str(eid))
-
-	if standard_mobs.is_empty():
-		for eid in GameDatabase.enemies_by_id.keys():
-			var edef: Dictionary = GameDatabase.enemies_by_id[eid]
-			if edef is Dictionary and not bool(edef.get("is_boss", false)) and str(edef.get("ai_type", "")) != "dummy":
-				standard_mobs.append(str(eid))
-	if standard_mobs.is_empty():
-		standard_mobs.append("hoang_da_son_lang")
-
-	return { "special": special_mobs, "standard": standard_mobs }
-
-
-func _spawn_tower_enemy_unit(enemy_id_str: String, spawn_pos: Vector2, floor_num: int, is_boss_slot: bool) -> Node2D:
-	var inst: CharacterBody2D = ENEMY_SCENE.instantiate() as CharacterBody2D
-	entities_root.add_child(inst)
-	if inst.has_method("configure_enemy"):
-		inst.configure_enemy(enemy_id_str, spawn_pos)
-	if inst.has_method("configure_tower_enemy"):
-		inst.configure_tower_enemy(floor_num, is_boss_slot)
-	else:
-		if "detect_radius" in inst:
-			inst.set("detect_radius", 1200.0)
-		if "max_hp" in inst and "cur_hp" in inst:
-			var sc_hp: float = (0.78 + float(floor_num) * 0.14) if is_boss_slot else (0.70 + float(floor_num) * 0.12)
-			var scaled_hp: float = maxf(80.0, float(inst.get("max_hp")) * sc_hp)
-			inst.set("max_hp", scaled_hp)
-			inst.set("cur_hp", scaled_hp)
-	tower_enemies_alive.append(inst)
-	return inst
-
-
-func _spawn_tower_floor(floor_num: int) -> void:
-	tower_enemies_alive.clear()
-	tower_heat_accum = 0.0
-	tower_heat_text_accum = 0.0
-
-	# Tâm Hỏa Chước Đốt: 2.0 + floor * 1.4 HP/s, giảm 45% nếu đang trang bị Dị Hỏa!
-	var raw_heat: float = 2.0 + float(floor_num) * 1.4
-	var f_def: Dictionary = PlayerData.get_active_flame_def()
-	var has_di_hoa: bool = false
-	if not f_def.is_empty():
-		var fid: String = str(f_def.get("id", ""))
-		var fcat: String = str(f_def.get("category", ""))
-		has_di_hoa = (fcat == "heavenly" or fid.begins_with("di_hoa_"))
-	tower_heat_dps = snappedf(raw_heat * (0.55 if has_di_hoa else 1.0), 0.1)
-
-	if tower_sign_lbl != null and is_instance_valid(tower_sign_lbl):
-		tower_sign_lbl.text = "THIÊN PHẦN LUYỆN KHÍ THÁP — TẦNG %d%s" % [
-			floor_num,
-			" (THÁP CHỦ)" if (floor_num % 3 == 0) else ""
-		]
-
-	var mob_pools: Dictionary = _get_tower_mob_pools()
-	var special_mobs: Array = mob_pools["special"]
-	var standard_mobs: Array = mob_pools["standard"]
-	var p_pos: Vector2 = player_node.global_position if player_node != null else Vector2(340.0, 448.0)
-
-	if floor_num % 3 == 0:
-		# Tầng Boss (3, 6, 9...): 1 Tháp Chủ Boss xoay vòng theo tiến trình + 2 Hộ Vệ!
-		var boss_pool: Array = _get_tower_boss_pool()
-		var tier_step: int = int(floor_num / 3) - 1
-		var start_offset: int = clampi((PlayerData.realm_index - 1) * 2, 0, maxi(0, boss_pool.size() - 1))
-		var b_idx: int = (start_offset + tier_step) % boss_pool.size()
-		var boss_id: String = str(boss_pool[b_idx])
-		var boss_pos := Vector2(930.0, 448.0)
-		if p_pos.distance_to(boss_pos) < 280.0:
-			boss_pos = Vector2(320.0, 448.0)
-		_spawn_tower_enemy_unit(boss_id, boss_pos, floor_num, true)
-
-		var escort_offsets: Array = [Vector2(-110.0, -170.0), Vector2(-110.0, 170.0)]
-		for idx_e in range(2):
-			var pick_pool: Array = special_mobs if (not special_mobs.is_empty() and (idx_e == 0 or randf() < 0.65)) else standard_mobs
-			var mob_id: String = str(pick_pool[randi() % pick_pool.size()])
-			var e_pos: Vector2 = (boss_pos + (escort_offsets[idx_e] as Vector2)).clamp(Vector2(140.0, 150.0), Vector2(1140.0, 746.0))
-			_spawn_tower_enemy_unit(mob_id, e_pos, floor_num, false)
-
-		var b_name: String = str(GameDatabase.get_enemy_def(boss_id).get("name", boss_id))
-		if player_node != null:
-			EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -86), "TẦNG %d — THÁP CHỦ XUẤT HIỆN!" % floor_num, Color("#FF4D6D"))
-		EventBus.banter_triggered.emit("THÁP TẦNG %d (BOSS): [%s] cùng 2 hộ vệ chấn giữ tầng lửa!" % [floor_num, b_name])
-	else:
-		# Tầng thường: 3 + min(5, floor_num) quái đa dạng (ưu tiên các loại mới burrower/artillery/shieldbearer/bomber!)
-		var wave_cnt: int = 3 + mini(5, floor_num)
-		for i in range(wave_cnt):
-			var use_special: bool = (not special_mobs.is_empty()) and (i < mini(special_mobs.size(), maxi(2, int(wave_cnt / 2))) or randf() < 0.55)
-			var mob_id: String = ""
-			if use_special:
-				mob_id = str(special_mobs[(i + floor_num) % special_mobs.size()])
-			else:
-				mob_id = str(standard_mobs[(i + floor_num + randi()) % standard_mobs.size()])
-
-			var ang: float = -PI * 0.44 + (PI * 0.88) * (float(i) / maxf(1.0, float(wave_cnt - 1)))
-			var dist_r: float = 250.0 + float(i % 2) * 115.0
-			var candidate := Vector2(720.0 + cos(ang) * dist_r, 448.0 + sin(ang) * dist_r)
-			candidate = candidate.clamp(Vector2(150.0, 150.0), Vector2(1130.0, 746.0))
-			if candidate.distance_to(p_pos) < 230.0:
-				var away: Vector2 = (candidate - p_pos).normalized()
-				if away.length() < 0.01:
-					away = Vector2.RIGHT
-				candidate = (p_pos + away * 290.0).clamp(Vector2(150.0, 150.0), Vector2(1130.0, 746.0))
-			_spawn_tower_enemy_unit(mob_id, candidate, floor_num, false)
-
-		if player_node != null:
-			EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -86), "TẦNG %d — KHAI CHIẾN!" % floor_num, Color("#FFD166"))
-
-	tower_total_wave = tower_enemies_alive.size()
-	EventBus.tower_state_updated.emit(tower_floor, tower_enemies_alive.size(), tower_total_wave, tower_heat_dps, true)
-
-
-func _prune_tower_enemies() -> void:
-	if not is_tower_active or tower_waiting_blessing or tower_enemies_alive.is_empty():
-		return
-	var dead_found: Array = []
-	for en in tower_enemies_alive:
-		if en == null or not is_instance_valid(en):
-			dead_found.append(en)
-		else:
-			var is_dying_f: bool = bool(en.get("is_dying")) if "is_dying" in en else false
-			if is_dying_f or not en.is_in_group("enemies"):
-				dead_found.append(en)
-	if not dead_found.is_empty():
-		on_tower_enemy_defeated(dead_found[0] as Node)
+	if tower_mgr != null:
+		tower_mgr.start_tower(start_floor)
 
 
 func on_tower_enemy_defeated(enemy_node: Node) -> void:
-	if not is_tower_active or tower_waiting_blessing:
-		return
-
-	var next_alive: Array = []
-	for en in tower_enemies_alive:
-		if en == null or not is_instance_valid(en) or en == enemy_node:
-			continue
-		var is_dying_f: bool = bool(en.get("is_dying")) if "is_dying" in en else false
-		if is_dying_f or not en.is_in_group("enemies"):
-			continue
-		next_alive.append(en)
-	tower_enemies_alive = next_alive
-
-	EventBus.tower_state_updated.emit(tower_floor, tower_enemies_alive.size(), tower_total_wave, tower_heat_dps, true)
-
-	if tower_enemies_alive.is_empty():
-		var rew: Dictionary = PlayerData.record_tower_floor_clear(tower_floor)
-		var fe_gain: int = int(rew.get("fire_energy", 12))
-		var st_gain: int = int(rew.get("stones", 1))
-		var g_gain: int = int(rew.get("gold", 55))
-
-		EventBus.audio_sfx_requested.emit("breakthrough")
-		EventBus.screen_shake_requested.emit(6.0, 0.24)
-		if player_node != null:
-			EventBus.floating_text_requested.emit(
-				player_node.global_position + Vector2(0, -90),
-				"VƯỢT TẦNG %d! +%d Hỏa Năng" % [tower_floor, fe_gain],
-				Color("#FFD166")
-			)
-		EventBus.banter_triggered.emit(
-			"VƯỢT TẦNG %d THIÊN PHẦN THÁP! Nhận +%d Tinh Hỏa Năng · +%d Đá CH · +%d Kim Tệ (Kỷ lục: Tầng %d)!" % [
-				tower_floor, fe_gain, st_gain, g_gain, int(rew.get("best_floor", tower_floor))
-			]
-		)
-
-		tower_waiting_blessing = true
-		var pool: Array = _get_tower_blessing_pool()
-		pool.shuffle()
-		var choices: Array = [pool[0], pool[1], pool[2]]
-		EventBus.tower_blessing_requested.emit(tower_floor, choices)
+	if tower_mgr != null:
+		tower_mgr.on_enemy_defeated(enemy_node)
 
 
 func apply_tower_blessing(blessing_id: String) -> void:
-	if not is_tower_active:
-		return
-
-	var chosen: Dictionary = {}
-	for b in _get_tower_blessing_pool():
-		if str(b.get("id", "")) == blessing_id:
-			chosen = b
-			break
-
-	if not chosen.is_empty():
-		var sk1: String = str(chosen.get("stat_key", ""))
-		var v1: float = float(chosen.get("value", 0.0))
-		var hr: float = float(chosen.get("heal_ratio", 0.0))
-		PlayerData.add_tower_buff(sk1, v1, hr)
-		var sk2: String = str(chosen.get("stat_key2", ""))
-		var v2: float = float(chosen.get("value2", 0.0))
-		if sk2 != "" and v2 != 0.0:
-			PlayerData.add_tower_buff(sk2, v2, 0.0)
-		EventBus.banter_triggered.emit("CHÚC PHÚC TÂM HỎA [%s]: %s" % [str(chosen.get("name", "")), str(chosen.get("desc", ""))])
-
-	tower_floor += 1
-	tower_waiting_blessing = false
-	EventBus.audio_sfx_requested.emit("level_up")
-	EventBus.map_changed.emit("thien_phan_thap", "Thiên Phần Luyện Khí Tháp — Tầng %d" % tower_floor)
-	_spawn_tower_floor(tower_floor)
+	if tower_mgr != null:
+		tower_mgr.apply_blessing(blessing_id)
 
 
 func exit_tower() -> void:
-	is_tower_active = false
-	tower_waiting_blessing = false
-	tower_enemies_alive.clear()
-	tower_total_wave = 0
-	tower_heat_dps = 0.0
-	tower_heat_accum = 0.0
-	tower_heat_text_accum = 0.0
-	tower_sign_lbl = null
-	_tower_session_token += 1
-	PlayerData.clear_tower_buffs()
-	EventBus.tower_state_updated.emit(0, 0, 0, 0.0, false)
-	PlayerData.recalculate_and_clamp(true)
-	EventBus.stats_changed.emit()
-	var ret_map: String = tower_return_map if (tower_return_map != "" and tower_return_map != "thien_phan_thap" and tower_return_map != "tam_ma_luyen_canh") else GameDatabase.start_map_id
-	var ret_pos: Vector2 = tower_return_pos if tower_return_pos != Vector2.ZERO else Vector2.ZERO
-	load_map(ret_map, ret_pos, false)
+	if tower_mgr != null:
+		tower_mgr.exit_tower()
 
 
 func on_player_died_in_tower() -> bool:
-	if not is_tower_active:
-		return false
-	var cur_fl: int = tower_floor
-	PlayerData.recalculate_and_clamp(true)
-	EventBus.stats_changed.emit()
-	EventBus.audio_sfx_requested.emit("alchemy_fail")
-	if player_node != null:
-		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -82), "TRUYỀN TỐNG KHẨN CẤP!", Color("#FF758F"))
-	EventBus.banter_triggered.emit("Trọng thương tại Thiên Phần Tháp Tầng %d — đã tự động truyền tống ra ngoài (giữ nguyên toàn bộ Tinh Hỏa Năng & Đá CH)!" % cur_fl)
-	exit_tower()
-	return true
+	return tower_mgr.on_player_died() if tower_mgr != null else false
 
 
 # =========================================================
