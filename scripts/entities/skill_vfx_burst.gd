@@ -103,7 +103,7 @@ func configure(
 				"len": randf_range(28.0, 62.0),
 				"mid_jit": randf_range(-12.0, 12.0)
 			})
-	elif vfx_mode == "mountain_seal":
+	elif vfx_mode == "mountain_seal" or vfx_mode == "tyrant_claw":
 		_crack_angles.clear()
 		_crack_lengths.clear()
 		for i in range(10):
@@ -119,6 +119,13 @@ func configure(
 				"w": randf_range(12.0, 20.0),
 				"h": randf_range(85.0, 145.0),
 				"delay": float(p % 3) * 0.06
+			})
+	elif vfx_mode == "glazed_lotus_vortex":
+		_petal_dirs.clear()
+		for i in range(8):
+			_petal_dirs.append({
+				"ang": float(i) * (TAU / 8.0),
+				"cidx": i
 			})
 
 
@@ -180,6 +187,14 @@ func _draw() -> void:
 			_draw_golden_roar(t)
 		"flame_clone":
 			_draw_flame_clone(t)
+		"windup_charge":
+			_draw_windup_charge(t)
+		"boss_strike_arc":
+			_draw_boss_strike_arc(t)
+		"tyrant_claw":
+			_draw_tyrant_claw(t)
+		"glazed_lotus_vortex":
+			_draw_glazed_lotus_vortex(t)
 		_:
 			_draw_generic_ring(t)
 
@@ -219,18 +234,27 @@ func _draw_melee_slash(t: float) -> void:
 	var r: float = radius_px * (0.90 + 0.16 * ease_t)
 	var base_thick: float = (34.0 if combo_idx >= 3 else 24.0) * (1.0 - 0.35 * t)
 
-	# 3 tầng ánh sáng phát quang (Viền ngoài -> Thân Dị Hỏa -> Lõi chém trắng rực)
-	_draw_tapered_arc_ribbon(Vector2.ZERO, r, base_thick * 1.65, tail_a, head_a, Color(outer_color.r, outer_color.g, outer_color.b, 0.42 * fade), 22)
-	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 1.02, base_thick, tail_a, head_a, Color(mid_color.r, mid_color.g, mid_color.b, 0.82 * fade), 22)
-	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 1.05, base_thick * 0.42, lerpf(tail_a, head_a, 0.25), head_a, Color(core_color.r, core_color.g, core_color.b, 0.96 * fade), 18)
+	# 3 tầng ánh sáng phát quang + lớp Motion-Smear che nối pha Windup->Impact mượt 60–144 FPS!
+	var smear_fade: float = clampf(1.0 - pow(t, 1.35), 0.0, 1.0)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 0.78, base_thick * 2.15, start_a, head_a, Color(outer_color.r, outer_color.g, outer_color.b, 0.24 * smear_fade), 20)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r, base_thick * 1.65, tail_a, head_a, Color(outer_color.r, outer_color.g, outer_color.b, 0.46 * fade), 22)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 1.02, base_thick, tail_a, head_a, Color(mid_color.r, mid_color.g, mid_color.b, 0.86 * fade), 22)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 1.05, base_thick * 0.44, lerpf(tail_a, head_a, 0.22), head_a, Color(core_color.r, core_color.g, core_color.b, 0.98 * fade), 18)
 
-	# Đầu lưỡi chém lóe sáng + vệt thứ 2 cho nhịp Combo 3!
-	var tip_pos := Vector2(cos(head_a), sin(head_a)) * (r * 1.03)
-	draw_circle(tip_pos, (14.0 if combo_idx >= 3 else 9.0) * fade, Color(core_color.r, core_color.g, core_color.b, 0.85 * fade))
+	# Đầu lưỡi chém lóe sáng + 3 kim gió xé không khí bám theo mũi lưỡi + vệt thứ 2 cho nhịp Combo 3!
+	var tip_dir := Vector2(cos(head_a), sin(head_a))
+	var tip_tan := Vector2(-tip_dir.y, tip_dir.x) * flip_dir
+	var tip_pos: Vector2 = tip_dir * (r * 1.03)
+	draw_circle(tip_pos, (14.5 if combo_idx >= 3 else 9.5) * fade, Color(core_color.r, core_color.g, core_color.b, 0.88 * fade))
+	for ns in range(3):
+		var rad_off: float = (float(ns) - 1.0) * 11.0
+		var needle_base: Vector2 = tip_dir * (r * 0.98 + rad_off)
+		var needle_len: float = (34.0 if combo_idx >= 3 else 24.0) * (1.0 - 0.35 * t)
+		draw_line(needle_base - tip_tan * needle_len, needle_base + tip_tan * (needle_len * 0.32), Color(core_color.r, core_color.g, core_color.b, 0.72 * fade), (2.6 if ns == 1 else 1.6) * fade)
 	if combo_idx >= 3:
-		_draw_tapered_arc_ribbon(Vector2.ZERO, r * 0.72, base_thick * 0.65, tail_a, head_a, Color(core_color.r, core_color.g, core_color.b, 0.58 * fade), 18)
+		_draw_tapered_arc_ribbon(Vector2.ZERO, r * 0.70, base_thick * 0.72, tail_a, head_a, Color(core_color.r, core_color.g, core_color.b, 0.62 * fade), 18)
 		var ring_r: float = radius_px * (0.35 + 0.85 * _ease_out_cubic(t))
-		draw_arc(Vector2.ZERO, ring_r, 0.0, TAU, 40, Color(mid_color.r, mid_color.g, mid_color.b, 0.55 * fade), 4.5 * fade)
+		draw_arc(Vector2.ZERO, ring_r, 0.0, TAU, 40, Color(mid_color.r, mid_color.g, mid_color.b, 0.58 * fade), 4.8 * fade)
 
 
 func _draw_toai_thach(t: float) -> void:
@@ -878,6 +902,142 @@ func _draw_flame_clone(t: float) -> void:
 		var bt: float = clampf(t / 0.14, 0.0, 1.0)
 		var bf: float = 1.0 - bt
 		draw_arc(Vector2.ZERO, radius_px * (0.28 + 0.85 * _ease_out_expo(bt)), 0.0, TAU, 44, Color(core_color.r, core_color.g, core_color.b, 0.90 * bf), 6.0 * bf)
+
+
+func _draw_windup_charge(t: float) -> void:
+	# TỤ LỰC HỘI TỤ (Cast Tiêu Viêm & Boss Windup): 8 tia linh khí hút mạnh về tâm + vòng ấn thu nhỏ phát sáng!
+	var inv_t: float = 1.0 - t
+	var fade_in: float = clampf(t * 4.0, 0.0, 1.0)
+	var fade_out: float = clampf((1.0 - t) * 4.5, 0.0, 1.0)
+	var env: float = fade_in * fade_out
+	var spin: float = elapsed * 5.2
+
+	# 1. Vòng ấn hội tụ co dần về lõi
+	var ring_r: float = radius_px * (0.28 + 0.78 * inv_t * inv_t)
+	draw_arc(Vector2.ZERO, ring_r, spin, spin + TAU * 0.84, 36, Color(mid_color.r, mid_color.g, mid_color.b, 0.78 * env), 3.6)
+	draw_arc(Vector2.ZERO, ring_r * 0.74, -spin * 1.4, -spin * 1.4 + TAU * 0.72, 28, Color(core_color.r, core_color.g, core_color.b, 0.65 * env), 2.0)
+
+	# 2. 8 tia linh khí kéo vệt lao thẳng vào tâm
+	for i in range(8):
+		var a: float = spin * 0.4 + float(i) * (TAU / 8.0)
+		var d := Vector2(cos(a), sin(a))
+		var outer_d: float = radius_px * (0.25 + 0.92 * inv_t)
+		var inner_d: float = maxf(6.0, outer_d - radius_px * (0.34 + 0.22 * t))
+		draw_line(d * outer_d, d * inner_d, Color(outer_color.r, outer_color.g, outer_color.b, 0.48 * env), 5.0 * env)
+		draw_line(d * lerpf(outer_d, inner_d, 0.25), d * inner_d, Color(core_color.r, core_color.g, core_color.b, 0.92 * env), 2.2 * env)
+
+	# 3. Lõi tích tụ phình sáng lên đỉnh ở cuối pha tụ lực
+	var core_r: float = (10.0 + 18.0 * t) * env
+	draw_circle(Vector2.ZERO, core_r * 1.55, Color(mid_color.r, mid_color.g, mid_color.b, 0.32 * env))
+	draw_circle(Vector2.ZERO, core_r * 0.68, Color(core_color.r, core_color.g, core_color.b, 0.92 * env))
+
+
+func _draw_boss_strike_arc(t: float) -> void:
+	# VỆT CHÉM BOSS 3 TẦNG 60 FPS: Dải lưỡi liềm sắc lẹm + vệt Motion Smear + kim gió theo màu đặc trưng từng Boss!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.65), 0.0, 1.0)
+	var span: float = 2.25
+	var start_a: float = aim_angle - flip_dir * span * 0.54
+	var head_a: float = start_a + flip_dir * span * ease_t
+	var tail_lag: float = clampf((t - 0.12) / 0.88, 0.0, 1.0)
+	var tail_a: float = lerpf(start_a, head_a, tail_lag * tail_lag)
+	var r: float = radius_px * (0.86 + 0.22 * ease_t)
+	var thick: float = 30.0 * (1.0 - 0.34 * t)
+
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 0.78, thick * 1.85, start_a, head_a, Color(outer_color.r, outer_color.g, outer_color.b, 0.22 * fade), 18)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r, thick * 1.48, tail_a, head_a, Color(outer_color.r, outer_color.g, outer_color.b, 0.52 * fade), 20)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 1.03, thick * 0.95, tail_a, head_a, Color(mid_color.r, mid_color.g, mid_color.b, 0.88 * fade), 20)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 1.06, thick * 0.38, lerpf(tail_a, head_a, 0.25), head_a, Color(core_color.r, core_color.g, core_color.b, 0.98 * fade), 16)
+
+	var tip_dir := Vector2(cos(head_a), sin(head_a))
+	var tip_pos: Vector2 = tip_dir * (r * 1.04)
+	draw_circle(tip_pos, 11.5 * fade, Color(core_color.r, core_color.g, core_color.b, 0.88 * fade))
+
+
+func _draw_tyrant_claw(t: float) -> void:
+	# ĐẠI LIỆT PHÁCH QUAN TRẢO (Bá Thương Liễu Kình — Ch.06): 4 vết cào kim quang song song xé rách không gian + sóng phá giáp!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var f_dir := Vector2(cos(aim_angle), sin(aim_angle))
+	var perp := Vector2(-f_dir.y, f_dir.x)
+
+	# 1. Vòng xung kích phá khiên vàng kim + vết nứt địa chấn
+	var shock_r: float = radius_px * (0.28 + 0.86 * ease_t)
+	draw_circle(Vector2.ZERO, shock_r * 0.82, Color(outer_color.r, outer_color.g, outer_color.b, 0.16 * fade))
+	draw_arc(Vector2.ZERO, shock_r, 0.0, TAU, 44, Color(mid_color.r, mid_color.g, mid_color.b, 0.82 * fade), 5.5 * fade)
+	draw_arc(Vector2.ZERO, shock_r * 0.72, 0.0, TAU, 36, Color(core_color.r, core_color.g, core_color.b, 0.65 * fade), 2.6 * fade)
+
+	for ci in range(_crack_angles.size()):
+		var ca: float = _crack_angles[ci]
+		var cl: float = _crack_lengths[ci] * clampf(t * 3.0, 0.0, 1.0)
+		var cd := Vector2(cos(ca), sin(ca))
+		draw_line(cd * 14.0, cd * cl, Color(mid_color.r, mid_color.g, mid_color.b, 0.62 * fade), 2.6 * fade)
+
+	# 2. 4 vết cào móng rồng/bá trảo chéo song song quét tốc độ cao (lệch pha tạo cảm giác xé từng móng!)
+	var slash_dir: Vector2 = (f_dir * 0.76 + perp * 0.65).normalized()
+	var slash_perp := Vector2(-slash_dir.y, slash_dir.x)
+	for claw_i in range(4):
+		var ct: float = clampf((t - float(claw_i) * 0.045) / (1.0 - float(claw_i) * 0.045), 0.0, 1.0)
+		if ct <= 0.0:
+			continue
+		var ce: float = _ease_out_expo(ct)
+		var cf: float = clampf(1.0 - pow(ct, 1.5), 0.0, 1.0)
+		var lane: float = (float(claw_i) - 1.5) * (radius_px * 0.25)
+		var len_mult: float = 1.08 if (claw_i == 1 or claw_i == 2) else 0.86
+		var half_len: float = radius_px * 0.92 * len_mult
+		var p_start: Vector2 = slash_perp * lane - slash_dir * half_len
+		var p_end: Vector2 = slash_perp * lane + slash_dir * lerpf(-half_len * 0.35, half_len, ce)
+		var mid_p: Vector2 = p_start.lerp(p_end, 0.55) + slash_perp * (10.0 * (1.0 if claw_i % 2 == 0 else -1.0))
+		var w_base: float = (18.0 if (claw_i == 1 or claw_i == 2) else 13.0) * cf
+
+		var claw_pts := PackedVector2Array([p_start, mid_p, p_end])
+		draw_polyline(claw_pts, Color(outer_color.r, outer_color.g, outer_color.b, 0.55 * cf), w_base * 1.45)
+		draw_polyline(claw_pts, Color(mid_color.r, mid_color.g, mid_color.b, 0.92 * cf), w_base * 0.82)
+		draw_polyline(claw_pts, Color(core_color.r, core_color.g, core_color.b, 0.98 * cf), w_base * 0.34)
+		draw_circle(p_end, 11.0 * cf, Color(core_color.r, core_color.g, core_color.b, 0.92 * cf))
+
+
+func _draw_glazed_lotus_vortex(t: float) -> void:
+	# LƯU LY LIÊN TÂM ẤN (Song Dị Hỏa #19 Thanh Liên + #14 Vẫn Lạc): Xoáy Lưu Ly xanh-tím hút vào tâm -> Nở Liên Hoa 8 Cánh bùng nổ Nội Thiêu!
+	var fade: float = clampf(1.0 - pow(t, 1.85), 0.0, 1.0)
+	var emerald := Color("#00F5D4")
+	var violet := Color("#E0AAFF")
+	var white_hot := Color("#FFFFFF")
+	var spin: float = elapsed * 6.8
+
+	# 1. Xoáy kép ngược chiều (Thanh Liên Lục & Tâm Viêm Tím) hút địch vào tâm
+	var pull_r: float = radius_px * (1.06 - 0.36 * _ease_out_cubic(t))
+	draw_circle(Vector2.ZERO, pull_r * 0.85, Color(violet.r, violet.g, violet.b, 0.14 * fade))
+	for arm in range(4):
+		var col_a: Color = emerald if (arm % 2 == 0) else violet
+		var a0: float = spin + float(arm) * (TAU * 0.25)
+		_draw_tapered_arc_ribbon(Vector2.ZERO, pull_r * (0.92 if arm % 2 == 0 else 0.72), 20.0 * fade, a0 - 1.35, a0, Color(col_a.r, col_a.g, col_a.b, 0.78 * fade), 18)
+		_draw_tapered_arc_ribbon(Vector2.ZERO, pull_r * (0.94 if arm % 2 == 0 else 0.74), 7.5 * fade, a0 - 0.85, a0, Color(white_hot.r, white_hot.g, white_hot.b, 0.92 * fade), 14)
+
+	# 2. Đóa Sen Lưu Ly 8 cánh nở rực ở trung tâm rồi bung sóng Nội Thiêu!
+	var bloom_t: float = _ease_out_expo(clampf(t * 1.45, 0.0, 1.0))
+	var petal_len: float = radius_px * (0.34 + 0.56 * bloom_t)
+	var petal_w: float = radius_px * 0.18 * (1.0 - 0.25 * t)
+	for pd in _petal_dirs:
+		var idx_p: int = int(pd.get("cidx", 0))
+		var ang: float = float(pd.get("ang", 0.0)) - spin * 0.35
+		var d := Vector2(cos(ang), sin(ang))
+		var prp := Vector2(-d.y, d.x)
+		var p_col: Color = emerald if (idx_p % 2 == 0) else violet
+		var poly := PackedVector2Array([
+			Vector2.ZERO,
+			d * (petal_len * 0.45) + prp * petal_w,
+			d * petal_len,
+			d * (petal_len * 0.45) - prp * petal_w
+		])
+		draw_colored_polygon(poly, Color(p_col.r, p_col.g, p_col.b, 0.44 * fade))
+		draw_polyline(PackedVector2Array([poly[0], poly[1], poly[2], poly[3], poly[0]]), Color(white_hot.r, white_hot.g, white_hot.b, 0.78 * fade), 2.0 * fade)
+
+	# 3. Lõi Tâm Hỏa trắng rực + Sóng chấn động kép bung rộng
+	var wave_r: float = radius_px * (0.20 + 0.96 * _ease_out_expo(t))
+	draw_arc(Vector2.ZERO, wave_r, 0.0, TAU, 48, Color(emerald.r, emerald.g, emerald.b, 0.82 * fade), 5.0 * fade)
+	draw_arc(Vector2.ZERO, wave_r * 0.78, 0.0, TAU, 40, Color(violet.r, violet.g, violet.b, 0.86 * fade), 3.6 * fade)
+	draw_circle(Vector2.ZERO, (22.0 + 18.0 * (1.0 - t)) * fade, Color(white_hot.r, white_hot.g, white_hot.b, 0.85 * fade))
 
 
 func _draw_generic_ring(t: float) -> void:

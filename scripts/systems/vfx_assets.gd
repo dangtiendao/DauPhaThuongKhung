@@ -5,6 +5,7 @@ extends RefCounted
 ## - Cache sẵn CanvasItemMaterial (BLEND_MODE_ADD), Shader Dị Hỏa động, Curve co giãn và hàm sinh hạt 1 dòng.
 
 const FLAME_SHADER_PATH: String = "res://assets/shaders/di_hoa_palette.gdshader"
+const CHAR_MOTION_SHADER_PATH: String = "res://assets/shaders/char_motion_polish.gdshader"
 
 static var _glow_dot_tex: Texture2D
 static var _spark_streak_tex: Texture2D
@@ -12,6 +13,7 @@ static var _smoke_puff_tex: Texture2D
 static var _ring_soft_tex: Texture2D
 static var _add_material: CanvasItemMaterial
 static var _flame_shader: Shader
+static var _char_motion_shader: Shader
 static var _scale_pop_curve: Curve
 static var _scale_smoke_curve: Curve
 static var _scale_ember_curve: Curve
@@ -107,6 +109,28 @@ static func get_flame_shader() -> Shader:
 	if _flame_shader == null:
 		_flame_shader = load(FLAME_SHADER_PATH)
 	return _flame_shader
+
+
+static func get_char_motion_shader() -> Shader:
+	if _char_motion_shader == null:
+		_char_motion_shader = load(CHAR_MOTION_SHADER_PATH)
+	return _char_motion_shader
+
+
+static func create_char_motion_material(rim_col: Color = Color("#70D6FF"), sway_amp: float = 0.005, rim_str: float = 0.0) -> ShaderMaterial:
+	var sh: Shader = get_char_motion_shader()
+	if sh == null:
+		return null
+	var mat := ShaderMaterial.new()
+	mat.shader = sh
+	mat.set_shader_parameter("hframes", 4.0)
+	mat.set_shader_parameter("vframes", 2.0)
+	mat.set_shader_parameter("sway_amp", sway_amp)
+	mat.set_shader_parameter("sway_speed", 3.2)
+	mat.set_shader_parameter("rim_color", rim_col)
+	mat.set_shader_parameter("rim_strength", rim_str)
+	mat.set_shader_parameter("hit_flash", 0.0)
+	return mat
 
 
 static func create_flame_material(core_c: Color, mid_c: Color, outer_c: Color, intensity_val: float = 1.55, flow_spd: float = 2.6, turb: float = 0.055) -> ShaderMaterial:

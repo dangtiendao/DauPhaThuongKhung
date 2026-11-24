@@ -116,6 +116,9 @@ var burn_tick_accum: float = 0.0
 
 var spawn_origin: Vector2 = Vector2.ZERO
 var boss_light: PointLight2D
+var char_motion_mat: ShaderMaterial
+var _step_dust_cd: float = 0.0
+var _windup_vfx_spawned: bool = false
 
 @onready var body_sprite: Sprite2D = $Sprite2D
 
@@ -319,6 +322,15 @@ func _load_from_db() -> void:
 		body_sprite.scale = visual_scale
 		body_sprite.modulate = Color.WHITE
 
+		if is_boss_unit or is_floating_unit:
+			if char_motion_mat == null:
+				char_motion_mat = VfxAssets.create_char_motion_material(_get_signature_color(), 0.008, 0.25 if is_boss_unit else 0.0)
+			if char_motion_mat != null:
+				body_sprite.material = char_motion_mat
+				char_motion_mat.set_shader_parameter("hframes", float(body_sprite.hframes))
+				char_motion_mat.set_shader_parameter("vframes", float(body_sprite.vframes))
+				char_motion_mat.set_shader_parameter("rim_color", _get_signature_color())
+
 		if is_boss_unit:
 			if boss_light == null:
 				boss_light = PointLight2D.new()
@@ -396,23 +408,41 @@ func _update_body_modulate() -> void:
 		# Bản thể Vô Hình Tâm Hỏa (#14): nhấp nháy bán trong suốt trừ khi bị Linh Hồn Cảm Tri [Z] soi lộ hình!
 		target_a = 0.62 + 0.30 * (0.5 + 0.5 * sin(float(Time.get_ticks_msec()) * 0.008))
 	if hit_flash_timer > 0.0:
-		body_sprite.modulate = Color(2.8, 2.8, 2.8, target_a)
-	elif is_priming_bomb:
-		var fuse_p: float = 1.0 - clampf(bomb_fuse_timer / 1.15, 0.0, 1.0)
-		var flash_f: float = 0.5 + 0.5 * sin(float(Time.get_ticks_msec()) * (0.025 + 0.038 * fuse_p))
-		var b_col: Color = Color("#FF3B30").lerp(Color("#FF9F1C"), flash_f)
-		var boost: float = 1.30 + 0.55 * flash_f
-		body_sprite.modulate = Color(b_col.r * boost, b_col.g * boost, b_col.b * boost, target_a)
-	elif enemy_id == "ngo_hao_boss":
-		var br: float = _get_ngo_hao_berserk_ratio()
-		var base_c: Color = Color(1.16, 0.86, 0.90, 1.0) if boss_phase >= 2 else Color.WHITE
-		var rage_c: Color = Color(1.38, 0.66, 0.72, 1.0)
-		var c_out: Color = base_c.lerp(rage_c, br)
-		body_sprite.modulate = Color(c_out.r, c_out.g, c_out.b, target_a)
-	elif is_boss_unit and boss_phase >= 2:
-		body_sprite.modulate = Color(1.16, 0.86, 0.90, target_a)
+		if char_motion_mat != null:
+			body_sprite.modulate = Color(1.0, 1.0, 1.0, target_a)
+			char_motion_mat.set_shader_parameter("hit_flash", 1.0)
+		else:
+			body_sprite.modulate = Color(2.8, 2.8, 2.8, target_a)
 	else:
-		body_sprite.modulate = Color(1.0, 1.0, 1.0, target_a)
+		if char_motion_mat != null:
+			char_motion_mat.set_shader_parameter("hit_flash", 0.0)
+		if is_priming_bomb:
+			var fuse_p: float = 1.0 - clampf(bomb_fuse_timer / 1.15, 0.0, 1.0)
+			var flash_f: float = 0.5 + 0.5 * sin(float(Time.get_ticks_msec()) * (0.025 + 0.038 * fuse_p))
+			var b_col: Color = Color("#FF3B30").lerp(Color("#FF9F1C"), flash_f)
+			var boost: float = 1.30 + 0.55 * flash_f
+			body_sprite.modulate = Color(b_col.r * boost, b_col.g * boost, b_col.b * boost, target_a)
+		elif enemy_id == "ngo_hao_boss":
+			var br: float = _get_ngo_hao_berserk_ratio()
+			var base_c: Color = Color(1.16, 0.86, 0.90, 1.0) if boss_phase >= 2 else Color.WHITE
+			var rage_c: Color = Color(1.38, 0.66, 0.72, 1.0)
+			var c_out: Color = base_c.lerp(rage_c, br)
+			body_sprite.modulate = Color(c_out.r, c_out.g, c_out.b, target_a)
+		elif is_boss_unit and boss_phase >= 2:
+			body_sprite.modulate = Color(1.16, 0.86, 0.90, target_a)
+		else:
+			body_sprite.modulate = Color(1.0, 1.0, 1.0, target_a)
+
+	if char_motion_mat != null:
+		var is_w: bool = (state_phase == "windup" or state_phase == "boss_nova" or state_phase == "boss_wave_windup" or state_phase == "boss_sig_windup")
+		var rim_c: Color = Color("#FF2A5F") if (is_boss_unit and boss_phase >= 2) else _get_signature_color()
+		var rim_s: float = 1.05 if is_w else (0.78 if (is_boss_unit and boss_phase >= 2) else (0.65 if strike_hold_timer > 0.0 else (0.28 if is_boss_unit else 0.0)))
+		var sw_a: float = 0.013 if is_w else (0.010 if is_floating_unit else (0.008 if smooth_vel.length() <= 18.0 else 0.0045))
+		var sw_s: float = 7.2 if is_w else (4.2 if is_floating_unit else 3.2)
+		char_motion_mat.set_shader_parameter("rim_color", rim_c)
+		char_motion_mat.set_shader_parameter("rim_strength", rim_s)
+		char_motion_mat.set_shader_parameter("sway_amp", sw_a)
+		char_motion_mat.set_shader_parameter("sway_speed", sw_s)
 
 
 func _start_bomb_priming() -> void:
@@ -540,6 +570,8 @@ func _update_smooth_animation(delta: float) -> void:
 	var state_prog_norm: float = 0.0
 
 	var is_winding: bool = (state_phase == "windup" or state_phase == "boss_nova" or state_phase == "boss_wave_windup" or state_phase == "boss_sig_windup")
+	if not is_winding:
+		_windup_vfx_spawned = false
 
 	if strike_hold_timer > 0.0:
 		# Pha TUNG ĐÒN: Nhào người (Overshoot) + Giãn ngang sắc bén!
@@ -575,13 +607,18 @@ func _update_smooth_animation(delta: float) -> void:
 		if boss_light != null:
 			boss_light.energy = lerpf(boss_light.energy, 1.95 if boss_phase >= 2 else 1.55, minf(1.0, delta * 10.0))
 
+		if is_boss_unit and not _windup_vfx_spawned:
+			_windup_vfx_spawned = true
+			_spawn_enemy_vfx("windup_charge", global_position + Vector2(0, -28), wave_aim_dir, 82.0, clampf(state_duration, 0.28, 0.72), _get_signature_color(), { "follow_target": self, "follow_offset": Vector2(0, -28) })
+
 		gather_spark_timer -= delta
 		if gather_spark_timer <= 0.0:
 			gather_spark_timer = 0.12
 			_spawn_gather_sparks()
 
 	elif moving:
-		# Pha DI CHUYỂN: Lướt/bước nhịp nhàng, nghiêng thân theo đà & nhún giãn mềm mại!
+		_windup_vfx_spawned = false
+		# Pha DI CHUYỂN: Lướt/bước nhịp nhàng, nghiêng thân theo đà & nhún giãn mềm mại + bụi bước chân cho Boss!
 		anim_key = "move"
 		anim_phase += delta * clampf(spd * 0.068, 6.5, 13.5)
 		var hop: float = absf(sin(anim_phase))
@@ -591,8 +628,19 @@ func _update_smooth_animation(delta: float) -> void:
 		target_off = Vector2(0.0, -hop * (6.5 if is_boss_unit else 5.0))
 		if is_floating_unit:
 			target_off.y -= 5.0 + sin(anim_phase * 0.7) * 3.0
+		elif is_boss_unit and not is_burrowed:
+			_step_dust_cd -= delta
+			if _step_dust_cd <= 0.0:
+				_step_dust_cd = 0.24
+				VfxAssets.spawn_dust_puff(get_parent(), global_position + Vector2(0, 10), Color(0.74, 0.76, 0.82, 0.42), 5, 85.0, 1.05)
+			if spd > move_spd * 1.12:
+				afterimage_timer -= delta
+				if afterimage_timer <= 0.0:
+					afterimage_timer = 0.12
+					_spawn_afterimage()
 
 	else:
+		_windup_vfx_spawned = false
 		# Pha ĐỨNG THỦ (Idle): Thở nhịp êm ái neo chắc bàn chân trên mặt đất!
 		anim_key = "idle"
 		anim_phase += delta * 3.0
@@ -676,6 +724,16 @@ func _spawn_afterimage() -> void:
 func _spawn_gather_sparks() -> void:
 	var sig: Color = _get_signature_color()
 	VfxAssets.spawn_spark_burst(get_parent(), global_position + Vector2(0, -32), Color.WHITE.lerp(sig, 0.35), sig, 6, 35.0, 88.0, 0.28, Vector2.UP, 180.0, 0.22, 0.44, false)
+
+
+func _spawn_enemy_vfx(mode: String, world_pos: Vector2, dir_vec: Vector2, rad: float, dur: float, sig_col: Color, opts: Dictionary = {}) -> void:
+	if get_parent() == null:
+		return
+	var vfx := SkillVfxBurst.new()
+	get_parent().add_child(vfx)
+	var core_c: Color = Color.WHITE.lerp(sig_col, 0.22)
+	var outer_c: Color = sig_col.darkened(0.38)
+	vfx.configure(mode, world_pos, dir_vec, rad, dur, core_c, sig_col, outer_c, opts)
 
 
 func is_phase2_warning() -> bool:
@@ -1071,6 +1129,8 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 				strike_vfx_radius = 96.0
 				strike_vfx_is_nova = false
 				strike_vfx_color = _get_signature_color()
+				_spawn_afterimage()
+				_spawn_enemy_vfx("boss_strike_arc", global_position + Vector2(0, -24), wave_aim_dir, 108.0, 0.24, strike_vfx_color, { "flip_dir": -1.0 if body_sprite.flip_h else 1.0, "follow_target": self, "follow_offset": Vector2(0, -24) })
 				state_phase = "idle"
 				attack_cd = 2.05 * p2_cd_mult
 			return Vector2.ZERO
@@ -1085,6 +1145,8 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 				strike_vfx_radius = 120.0
 				strike_vfx_is_nova = true
 				strike_vfx_color = _get_signature_color()
+				_spawn_afterimage()
+				_spawn_enemy_vfx("boss_strike_arc", global_position + Vector2(0, -24), wave_aim_dir, 118.0, 0.26, strike_vfx_color, { "flip_dir": -1.0 if body_sprite.flip_h else 1.0 })
 				boss_special_cd = (3.4 if boss_phase >= 2 else 4.6) * berserk_cd
 				if state_phase == "idle":
 					attack_cd = maxf(attack_cd, 1.15 * p2_cd_mult)
@@ -1600,6 +1662,9 @@ func _deal_melee_hit(player_node: Node2D, mult: float, trigger_slash_vfx: bool =
 		strike_vfx_radius = 86.0 if is_boss_unit else 62.0
 		strike_vfx_is_nova = false
 		strike_vfx_color = _get_signature_color()
+		if is_boss_unit:
+			_spawn_afterimage()
+			_spawn_enemy_vfx("boss_strike_arc", global_position + Vector2(0, -24), push_dir, 96.0, 0.22, strike_vfx_color, { "flip_dir": -1.0 if body_sprite.flip_h else 1.0, "follow_target": self, "follow_offset": Vector2(0, -24) })
 	if player_node.has_method("take_enemy_damage"):
 		var raw_dmg: float = _get_effective_atk() * mult
 		player_node.take_enemy_damage(raw_dmg, realm_idx, push_dir * 260.0)

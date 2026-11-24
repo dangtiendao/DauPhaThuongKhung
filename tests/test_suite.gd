@@ -220,6 +220,7 @@ func _suite_02_assets_exist() -> void:
 		"res://scenes/entities/enemy_base.tscn",
 		"res://scenes/entities/companion.tscn",
 		"res://assets/shaders/di_hoa_palette.gdshader",
+		"res://assets/shaders/char_motion_polish.gdshader",
 		"res://icon.svg",
 		"res://icon.ico"
 	]:
@@ -446,7 +447,9 @@ func _suite_08_live_scene_and_panels() -> void:
 
 	var world: Node = inst
 	var hud: Node = inst.get_node_or_null("GameHUD")
+	var player_nd: Node = get_tree().get_first_node_in_group("player")
 	_assert(world != null and hud != null, "WorldStage and GameHUD instantiated")
+	_assert(player_nd != null and player_nd.get("char_motion_mat") != null, "PlayerController attached char_motion_polish shader material")
 	_assert(world.get("boss_rush_mgr") != null and world.get("tower_mgr") != null, "WorldStage delegates initialized")
 	_assert(
 		hud.get("panel_pause_settings") != null
@@ -664,4 +667,14 @@ func _suite_10_ch06_systems() -> void:
 	EventBus.dialogue_choice_requested.disconnect(cb6a)
 	EventBus.dialogue_requested.disconnect(cb6b)
 	_assert(ran6 and bool(emitted6[0]), "StoryDialogueRunner runs Ch.06 JSON dialogue cleanly")
+
+	# 8. Kiểm thử gói Combat VFX & Procedural Polish 60 FPS (char_motion_polish.gdshader + 4 mode SkillVfxBurst mới)
+	var cm_mat: ShaderMaterial = VfxAssets.create_char_motion_material(Color("#00F5D4"), 0.008, 0.5)
+	_assert(cm_mat != null and cm_mat.shader != null, "char_motion_polish.gdshader loads and creates ShaderMaterial")
+	for v_mode in ["melee_slash", "windup_charge", "boss_strike_arc", "tyrant_claw", "glazed_lotus_vortex"]:
+		var vb := SkillVfxBurst.new()
+		add_child(vb)
+		vb.configure(v_mode, Vector2.ZERO, Vector2.RIGHT, 120.0, 0.40, Color("#FFFFFF"), Color("#00F5D4"), Color("#9D4EDD"))
+		_assert(vb.vfx_mode == v_mode, "SkillVfxBurst configures mode cleanly: " + v_mode)
+		vb.queue_free()
 

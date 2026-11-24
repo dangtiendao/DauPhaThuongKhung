@@ -95,6 +95,8 @@ var dash_cooldown_total: float = 0.72
 var slash_preview_timer: float = 0.0
 var slash_preview_duration: float = 0.16
 var slash_shader_mat: ShaderMaterial
+var char_motion_mat: ShaderMaterial
+var hurt_flash_timer: float = 0.0
 
 var shake_strength: float = 0.0
 var shake_timer: float = 0.0
@@ -139,6 +141,11 @@ func _ready() -> void:
 		dash_meta = SpriteAnimHelper.inspect_sheet(dash_tex, "square", 8, 1)
 
 	_apply_body_sheet(idle_tex, idle_meta)
+	char_motion_mat = VfxAssets.create_char_motion_material(active_mid_col, 0.007, 0.0)
+	if char_motion_mat != null and body_sprite != null:
+		body_sprite.material = char_motion_mat
+		char_motion_mat.set_shader_parameter("hframes", float(body_sprite.hframes))
+		char_motion_mat.set_shader_parameter("vframes", float(body_sprite.vframes))
 	slash_vfx.visible = false
 	_setup_lighting_particles_and_trail()
 	_refresh_flame_shader()
@@ -222,6 +229,9 @@ func _apply_body_sheet(tex: Texture2D, meta: Dictionary) -> void:
 	if tex == null or body_sprite == null:
 		return
 	SpriteAnimHelper.apply_to_sprite(body_sprite, tex, meta, BASE_FOOT_Y)
+	if char_motion_mat != null:
+		char_motion_mat.set_shader_parameter("hframes", float(body_sprite.hframes))
+		char_motion_mat.set_shader_parameter("vframes", float(body_sprite.vframes))
 
 
 func _on_flame_changed(_fid: String) -> void:
@@ -276,7 +286,37 @@ func _process(delta: float) -> void:
 			slash_vfx.visible = false
 
 	_update_weapon_trail(delta)
+	_update_char_motion_shader(delta)
 	queue_redraw()
+
+
+func _update_char_motion_shader(delta: float) -> void:
+	if char_motion_mat == null:
+		return
+	if hurt_flash_timer > 0.0:
+		hurt_flash_timer = maxf(0.0, hurt_flash_timer - delta)
+	var sway_a: float = 0.0085 if anim_state == "idle" else (0.0115 if dash_timer > 0.0 else (0.0032 if anim_state == "run" else 0.0045))
+	var sway_s: float = 3.4 if anim_state == "idle" else (8.5 if dash_timer > 0.0 else 5.2)
+	var rim_c: Color = active_mid_col
+	var rim_s: float = 0.24 if not PlayerData.get_active_flame_def().is_empty() else 0.0
+	if PlayerData.is_flame_buff_active:
+		rim_c = Color("#FF4D6D")
+		rim_s = 1.05
+	elif PlayerData.is_duoc_lao_active:
+		rim_c = Color("#E0AAFF") if PlayerData.get_assist_mode() == "medusa_dau_tong" else Color("#A8DADC")
+		rim_s = 1.05
+	elif PlayerData.has_dau_vuong_wings():
+		rim_c = Color("#00F5D4") if not PlayerData.has_van_lac_passive() else Color("#E0AAFF")
+		rim_s = maxf(rim_s, 0.62)
+	if is_attacking:
+		rim_s = maxf(rim_s, 0.85)
+	elif dash_timer > 0.0:
+		rim_s = maxf(rim_s, 0.72)
+	char_motion_mat.set_shader_parameter("sway_amp", sway_a)
+	char_motion_mat.set_shader_parameter("sway_speed", sway_s)
+	char_motion_mat.set_shader_parameter("rim_color", rim_c)
+	char_motion_mat.set_shader_parameter("rim_strength", rim_s)
+	char_motion_mat.set_shader_parameter("hit_flash", clampf(hurt_flash_timer / 0.11, 0.0, 1.0))
 
 
 func _update_weapon_trail(delta: float) -> void:
@@ -941,8 +981,37 @@ func _start_integrated_combo_attack() -> void:
 		EventBus.audio_sfx_requested.emit("swing_unarmed")
 
 
+func _spawn_action_afterimage(tint_col: Color, fade_dur: float = 0.20, pos_offset: Vector2 = Vector2.ZERO) -> void:
+	if get_parent() == null or body_sprite == null or body_sprite.texture == null:
+		return
+	var ghost := Sprite2D.new()
+	ghost.texture = body_sprite.texture
+	ghost.hframes = body_sprite.hframes
+	ghost.vframes = body_sprite.vframes
+	ghost.frame = body_sprite.frame
+	ghost.flip_h = body_sprite.flip_h
+	ghost.centered = body_sprite.centered
+	ghost.offset = body_sprite.offset
+	ghost.scale = body_sprite.scale
+	ghost.rotation = body_sprite.rotation
+	ghost.global_position = body_sprite.global_position + pos_offset
+	ghost.material = VfxAssets.get_additive_material()
+	ghost.modulate = Color(tint_col.r, tint_col.g, tint_col.b, 0.54)
+	get_parent().add_child(ghost)
+	var tw := ghost.create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(ghost, "modulate:a", 0.0, fade_dur).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(ghost, "scale", ghost.scale * Vector2(1.07, 0.96), fade_dur)
+	tw.chain().tween_callback(ghost.queue_free)
+
+
 func _execute_melee_strike_impact() -> void:
 	var has_wpn: bool = PlayerData.has_weapon_equipped()
+	# Tàn ảnh hành động nối mượt Windup -> Impact + bụi chân khi tung nhịp 3!
+	_spawn_action_afterimage(active_mid_col, 0.18, -attack_aim_dir * 8.0)
+	if combo_step == 3:
+		_spawn_action_afterimage(active_core_col, 0.22, -attack_aim_dir * 18.0)
+		VfxAssets.spawn_dust_puff(get_parent(), global_position + Vector2(0, 10), Color(0.84, 0.78, 0.68, 0.50), 8, 125.0, 1.25)
 	weapon_pivot.rotation = attack_aim_dir.angle()
 	slash_vfx.visible = true
 	slash_vfx.flip_v = (combo_step == 2)
@@ -1055,6 +1124,7 @@ func _start_skill_pose(aim_dir: Vector2, dur: float = 0.25, style: String = "wea
 		_apply_body_sheet(cast_tex, cast_meta)
 		body_sprite.frame = attack_frames[0]
 		weapon_trail_active = false
+		_spawn_skill_vfx("windup_charge", global_position + Vector2(0, -24), aim_dir, 66.0, minf(0.28, dur), active_core_col, active_mid_col, active_outer_col, { "follow_target": self, "follow_offset": Vector2(0, -24) })
 	elif attack_tex != null:
 		anim_state = "attack"
 		attack_frames = SpriteAnimHelper.get_player_attack_frames(attack_meta, 3, true)
@@ -1062,6 +1132,7 @@ func _start_skill_pose(aim_dir: Vector2, dur: float = 0.25, style: String = "wea
 		body_sprite.frame = attack_frames[0]
 		weapon_trail_active = (style == "weapon")
 		weapon_trail_points.clear()
+		_spawn_action_afterimage(active_mid_col, 0.22, -aim_dir * 10.0)
 	back_weapon_sprite.visible = false
 
 
@@ -1463,11 +1534,11 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -80), "HỎA LIÊN PHÂN THÂN!", active_mid_col)
 
 	elif behavior == "tyrant_claw":
-		# ĐẠI LIỆT PHÁCH QUAN TRẢO (Bá Thương Liễu Kình): Vọt mạnh tung trảo kim quang nghiền nát khiên & phá thế cực đại + Choáng 2s!
+		# ĐẠI LIỆT PHÁCH QUAN TRẢO (Bá Thương Liễu Kình): Vọt mạnh tung 4 vết cào kim quang nghiền nát khiên & phá thế cực đại + Choáng 2s!
 		_start_skill_pose(aim_dir, 0.34, "weapon")
 		lunge_vel = aim_dir * 465.0
 		var claw_pos: Vector2 = global_position + aim_dir * 78.0
-		_spawn_skill_vfx("mountain_seal", claw_pos + Vector2(0, -14), aim_dir, rad_px, 0.58, Color("#FFF8D6"), Color("#FFD166"), Color("#FF7B00"))
+		_spawn_skill_vfx("tyrant_claw", claw_pos + Vector2(0, -14), aim_dir, rad_px, 0.54, Color("#FFF8D6"), Color("#FFD166"), Color("#FF7B00"))
 		VfxAssets.spawn_spark_burst(get_parent(), claw_pos + Vector2(0, -20), Color("#FFFFFF"), Color("#FFD166"), 28, 125.0, 320.0, 0.44, aim_dir, 140.0, 0.30, 0.72, true)
 		VfxAssets.spawn_dust_puff(get_parent(), claw_pos + Vector2(0, 10), Color(0.96, 0.84, 0.46, 0.54), 12, 175.0, 1.7)
 		EventBus.audio_sfx_requested.emit("skill_burst")
@@ -1498,13 +1569,12 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 			EventBus.trigger_hitstop(0.046, 0.08)
 
 	elif behavior == "glazed_lotus_vortex":
-		# LƯU LY LIÊN TÂM ẤN (Song Dị Hỏa #19 + #14): Xoáy Lưu Ly hút tụ địch + Tâm Hỏa Nội Thiêu xuyên giáp + Choáng 1.6s!
+		# LƯU LY LIÊN TÂM ẤN (Song Dị Hỏa #19 + #14): Xoáy Lưu Ly xanh-tím hút tụ địch -> Nở Liên Hoa 8 Cánh Nội Thiêu + Choáng 1.6s!
 		_start_skill_pose(aim_dir, 0.36, "cast")
 		var v_vec: Vector2 = aim_target - global_position
 		var v_dist: float = v_vec.length()
 		var vortex_pos: Vector2 = (global_position + aim_dir * 135.0) if v_dist < 24.0 else (global_position + aim_dir * minf(v_dist, 225.0))
-		_spawn_skill_vfx("pull_pulse", vortex_pos + Vector2(0, -18), aim_dir, rad_px, 0.60, Color("#FFFFFF"), Color("#00F5D4"), Color("#9D4EDD"))
-		_spawn_skill_vfx("lotus_cast", vortex_pos + Vector2(0, -20), aim_dir, rad_px * 0.92, 0.62, Color("#FFFFFF"), Color("#E0AAFF"), Color("#00F5D4"), { "extra_colors": [Color("#00F5D4"), Color("#E0AAFF")] })
+		_spawn_skill_vfx("glazed_lotus_vortex", vortex_pos + Vector2(0, -18), aim_dir, rad_px, 0.64, Color("#FFFFFF"), Color("#00F5D4"), Color("#9D4EDD"))
 		VfxAssets.spawn_spark_burst(get_parent(), vortex_pos + Vector2(0, -20), Color("#FFFFFF"), Color("#00F5D4"), 26, 110.0, 290.0, 0.48, Vector2.UP, 180.0, 0.30, 0.72, true)
 		VfxAssets.spawn_spark_burst(get_parent(), vortex_pos + Vector2(0, -20), Color("#FFFFFF"), Color("#E0AAFF"), 20, 95.0, 250.0, 0.46, Vector2.UP, 180.0, 0.28, 0.66, true)
 		EventBus.audio_sfx_requested.emit("skill_fire")
@@ -1727,6 +1797,7 @@ func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector
 	if not ws_list.is_empty() and ws_list[0].has_method("record_boss_rush_player_damage"):
 		ws_list[0].record_boss_rush_player_damage(final_dmg)
 	invuln_timer = 0.35
+	hurt_flash_timer = 0.11
 	knockback_vel = push_vec
 	visual_scale = Vector2(1.16, 0.86)
 	EventBus.audio_sfx_requested.emit("player_hurt")
