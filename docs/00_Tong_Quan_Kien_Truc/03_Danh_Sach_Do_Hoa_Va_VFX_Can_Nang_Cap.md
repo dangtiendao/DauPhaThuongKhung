@@ -1,6 +1,6 @@
 # SỔ THEO DÕI CHẤT LƯỢNG ĐỒ HỌA & VFX CẦN NÂNG CẤP (ART & VFX QUALITY DEBT)
 
-> **Cập nhật lần cuối**: 24/11/2026 (tại mốc `v0.7.0` — Chương 01 đến Chương 08)
+> **Cập nhật lần cuối**: 24/11/2026 (tại mốc `v0.7.1` — Đã chốt trọn bộ **VFX 2.0 (P2)** & **3 Pickup HD `32×32` (P3.1)**)
 > **Mục đích**: Ghi nhận minh bạch toàn bộ **ảnh sprite, NPC, tileset, icon, quái thường, prop và hiệu ứng VFX/Shader** hiện chưa đạt chất lượng phát hành cuối cùng (do lỗi quá tải model tạo ảnh `503 MODEL_CAPACITY_EXHAUSTED`, tái sử dụng sprite cũ, placeholder từ `v0.1`, hoặc giới hạn VFX vẽ bằng hình học cơ bản).
 > **Nguyên tắc thay nóng**: Mọi file ảnh trong danh sách dưới đây đã được gắn đường dẫn chuẩn trong JSON/GDScript — khi tạo lại ảnh mới đúng kích thước cột **"Kích thước chuẩn"** và ghi đè file cũ rồi chạy `--import --quit`, toàn bộ game sẽ tự động nhận ảnh mới mà **không cần sửa code hay JSON**.
 
@@ -12,8 +12,8 @@
 | :---: | :--- | :---: | :--- |
 | **P0 — Cao nhất** | Đồ họa **Chương 08** (7 Boss 8f + 7 chân dung + 7 NPC + 5 Tileset + 5 Icon) | **31 file PNG** | Model `gemini-3.1-flash-image` quá tải `503` — tạm sinh bằng Python pixel-art hình khối cơ bản |
 | **P1 — Cao** | **10 file Ch.06–07** còn sót chưa kịp thay AI ở đợt `v0.6.3` (4 NPC + 3 Tileset + 3 Icon) | **10 file PNG** | Model `gemini-3.1-flash-image` hết capacity `503` giữa đợt `v0.6.3` (tạm dùng bản palette-crafted) |
-| **P2 — Trung bình** | **VFX, Shader & Hiệu Ứng Thị Giác** (`SkillVfxBurst`, Cánh Đấu Khí, Texture VFX `64×64`, Bloom) | **6 hạng mục VFX** | Hiện dùng vẽ vector Canvas2D (`draw_arc`/`draw_polygon`) và texture `64×64` sơ khai, chưa có shader dissolve/distortion/bloom |
-| **P3 — Bổ sung Polish** | **Quái thường tái sử dụng sprite, Pickup sơ khai (`< 210B`), Prop & Vũ khí đeo lưng** | **3 Pickup + 38 Mob + Prop/Vũ khí** | Tái sử dụng sprite cũ Ch.01–03 & ảnh placeholder từ giai đoạn prototype `v0.1` |
+| **P2 — Trung bình** | **VFX 2.0, Shader & Hiệu Ứng Thị Giác** (`ScreenFxOverlay`, `space_shockwave`, `vfx_energy_dissolve`, Cánh Hóa Dực, Đồng Hành 2.0, Đan Lôi) | **✅ 6/6 Đã xong (`v0.7.1`)** | Hoàn tất trọn gói VFX 2.0 100% tương thích `gl_compatibility` (60–144 FPS) |
+| **P3 — Bổ sung Polish** | **Quái thường tái sử dụng sprite, Prop & Vũ khí đeo lưng** *(đã xong 3/3 Pickup `32×32` ở `v0.7.1`)* | **38 Mob + Prop/Vũ khí** | Tái sử dụng sprite cũ Ch.01–03 & prop tương tác dùng chung |
 
 > **Ghi chú đối chứng (Phần ĐÃ ĐẠT CHUẨN AI 32-bit HD Pixel Art)**:
 > * `8/8` spritesheet Tiêu Viêm (`v0.6.1`) — True 8-Frame AI sắc nét.
@@ -82,41 +82,33 @@
 
 ---
 
-## P2 — Hạn Chế Về VFX, Shader & Hiệu Ứng Thị Giác
+## P2 — Hạn Chế Về VFX, Shader & Hiệu Ứng Thị Giác — ✅ ĐÃ HOÀN TẤT 6/6 (`v0.7.1`)
 
-> **Nguyên nhân**: Toàn bộ VFX hiện ưu tiên độ mượt `60–144 FPS` bằng `Canvas2D` (`draw_arc`, `draw_line`, `draw_colored_polygon`) kết hợp `CPUParticles2D` trên `gl_compatibility`, nên khi lên các đại chiêu bậc Đấu Hoàng / Đấu Tông (Ch.07–08) vẫn mang cảm giác **đường nét vector phẳng**, thiếu chiều sâu texture/shader.
+> **Trạng thái**: Đã nâng cấp trọn bộ **VFX 2.0** trong bản `v0.7.1`, giữ 100% tương thích `gl_compatibility` (`OpenGL 3.3.0`) và 60–144 FPS.
 
-* [ ] **VFX-01 — Texture VFX lõi sơ khai (`64×64`)**:
-  * Vị trí: `assets/sprites/vfx/slash_arc.png` (`64×64`, `2.080 bytes`) & `assets/sprites/vfx/fire_lotus.png` (`64×64`, `2.663 bytes`).
-  * Vấn đề: Độ phân giải thấp từ `v0.1`, ít chi tiết cánh sen/lưỡi lửa khi phóng to ở tuyệt kỹ `[F] Tứ Sắc Hủy Diệt Hỏa Liên`.
-  * Hướng nâng cấp: Vẽ lại `128×128` (hoặc flipbook 4–8 frame) kết hợp `di_hoa_palette.gdshader` có biến đổi đa sắc theo số lượng Dị Hỏa dung hợp (2/3/4 màu).
-* [ ] **VFX-02 — 6 Mode `SkillVfxBurst` Ch.08 & 3 Mode Ch.07 thuần hình học phẳng**:
-  * Vị trí: `scripts/entities/skill_vfx_burst.gd` (`space_lock`, `emperor_five_seals`, `flame_buff_tier3`, `soul_shock_palm`, `thunder_clone`, `thien_yeu_khoi_assist`, `ocean_seal`, `dia_yeu_khoi_assist`).
-  * Vấn đề: Dùng `draw_polyline`/`draw_arc`/`draw_circle` thuần (ví dụ `emperor_five_seals` vẽ 5 hình vuông đơn giản xoay tròn; `soul_shock_palm` vẽ 5 đoạn thẳng làm ngón tay).
-  * Hướng nâng cấp: Bổ sung **Shader biến dạng không gian (screen-space ripple/refraction)** cho `space_lock` & `fire_lotus_ult`, **Noise-Dissolve Shader** cho cột lửa/sét, và **sprite rune/ấn chữ cổ** cho `emperor_five_seals` & `ocean_seal`.
-* [ ] **VFX-03 — Cánh Đấu Khí Hóa Dực & Sóng Đạp Hư Không vẽ bằng tam giác đa giác**:
-  * Vị trí: `scripts/entities/player_controller.gd` (`_draw()`).
-  * Vấn đề: Đôi cánh Đấu Vương/Đấu Hoàng/Đấu Tông hiện là đa giác 5 đỉnh phẳng (`draw_colored_polygon`), chưa có kết cấu lông vũ năng lượng hay đuôi lửa mờ dần.
-  * Hướng nâng cấp: Tạo spritesheet cánh 4–6 frame (`wing_flame_anim.png`) + additive shader nhuộm theo màu Dị Hỏa đang vận chuyển.
-* [ ] **VFX-04 — Ngũ Luân Ly Hỏa Pháp & Hào Quang Đồng Hành còn đơn điệu**:
-  * Vị trí: `scripts/entities/companion_controller.gd` (`_draw()`).
-  * Vấn đề: 5 vòng lửa của Thiên Hỏa Tôn Giả hiện vẽ bằng 5 `draw_arc` nhỏ; các đạn năng lượng đồng hành (`active_bolts`) chỉ là 3 hình tròn đồng tâm.
-  * Hướng nâng cấp: Thêm vệt đuôi (`Line2D` additive trail) cho đạn đồng hành và sprite/shader lửa xoay sống động cho 5 vòng lửa.
-* [ ] **VFX-05 — Thiếu Bloom / Glow Nhẹ Toàn Cảnh (`WorldEnvironment`)**:
-  * Vị trí: `scenes/main_prototype.tscn`.
-  * Vấn đề: Chưa có lớp Glow nhẹ phân tầng (chỉ glow ngưỡng sáng cao của Dị Hỏa, Lôi Điện, Đan Lôi) nên cảnh chiến đấu Đấu Tông/Tinh Vực chưa đạt hiệu ứng phát sáng điện ảnh.
-* [ ] **VFX-06 — Chưa có Ngũ Sắc Đan Lôi đánh trực tiếp xuống bản đồ**:
-  * Vị trí: `scripts/systems/world_stage_manager.gd` & `scripts/ui/panels/panel_alchemy.gd`.
-  * Vấn đề: Độ Ngũ Sắc Đan Lôi ở Chung Kết Đan Hội (Ch.08) hiện chủ yếu qua hội thoại & chữ nổi, chưa có cắt cảnh thiên lôi 5 màu giáng xuống thực tế trên bản đồ Thánh Đan Thành.
+* [x] **VFX-01 — Texture VFX lõi nâng cấp HD (`128×128` & `96×128`)** *(Hoàn tất `v0.7.1`)*:
+  * Đã vẽ mới `assets/sprites/vfx/fire_lotus.png` (`128×128` hoa sen 16 cánh phát sáng đa tầng), `assets/sprites/vfx/slash_arc.png` (`128×128` trăng khuyết sắc bén) và tạo mới `assets/sprites/vfx/wing_plume.png` (`96×128` cánh lông vũ năng lượng); đồng bộ lại scale hiển thị trong `skill_projectile.gd` & `player_controller.gd`.
+* [x] **VFX-02 — Nâng cấp toàn bộ Mode `SkillVfxBurst` Ch.07–08 + Shader Khúc Xạ / Dissolve + Vết Nứt Mặt Đất** *(Hoàn tất `v0.7.1`)*:
+  * Tạo 2 shader mới: `assets/shaders/space_shockwave.gdshader` (khúc xạ bẻ cong không gian + tách sắc RGB) và `assets/shaders/vfx_energy_dissolve.gdshader` (fBM flow + noise dissolve + viền cháy nóng).
+  * Nâng cấp `scripts/entities/skill_vfx_burst.gd` với **sét phân nhánh đa tầng** (`_draw_fractal_bolt`), **trận đồ cổ tự vòng đôi** (`_draw_ancient_rune_seal`), 2 mode mới `"ground_crater"` (hố nứt cháy sém lưu lại 3s) & `"dan_lei_pillar"`, và đại tu trực quan cho toàn bộ `space_lock`, `emperor_five_seals`, `flame_buff_tier3`, `soul_shock_palm`, `thunder_clone`, `dia_yeu_khoi_assist`, `thien_yeu_khoi_assist`.
+* [x] **VFX-03 — Cánh Đấu Khí Hóa Dực dạng Sprite + Shader Năng Lượng** *(Hoàn tất `v0.7.1`)*:
+  * Thay hoàn toàn cánh đa giác 5 đỉnh cũ trong `player_controller.gd` bằng đôi `wing_left_sprite` / `wing_right_sprite` sử dụng `wing_plume.png` + `vfx_energy_dissolve.gdshader`, tự động mở rộng kích thước, nhịp vỗ và đổi bảng màu động theo cảnh giới Đấu Vương / Đấu Hoàng / Đấu Tông / Tam Biến & khi Lướt `[Space]`.
+* [x] **VFX-04 — Đồng Hành 2.0 (Vệt Đuôi Mượt + Ngũ Luân Ly Hỏa 3D-Tilt) & Cột Ánh Sáng Rơi Đồ** *(Hoàn tất `v0.7.1`)*:
+  * Nâng cấp `companion_controller.gd`: mọi đạn năng lượng của cả 7 Đồng Hành có vệt đuôi thuôn phát sáng 8 điểm + nổ tia lửa khi trúng đích; riêng **Thiên Hỏa Tôn Giả** sở hữu 5 vòng **Ngũ Luân Ly Hỏa Pháp** xoay phối cảnh nghiêng 3D sống động.
+  * Nâng cấp `loot_pickup.gd`: cột ánh sáng phẩm chất đa tầng thuôn nhọn + hạt sáng bay lên + vòng cổ tự mặt đất cho trang bị & Ma Hạch.
+* [x] **VFX-05 — Lớp Hậu Kỳ Toàn Màn Hình `ScreenFxOverlay` (`gl_compatibility` Safe)** *(Hoàn tất `v0.7.1`)*:
+  * Tạo `scripts/systems/screen_fx_overlay.gd` (`CanvasLayer` layer 6 nằm dưới `GameHUD` layer 10): Sóng khúc xạ biến dạng không gian thực (bật ở Hỏa Liên, Không Gian Phong Tỏa, Cổ Đế Ấn, Tam Biến, Đan Lôi, Boss Phase 2), chớp sáng Additive Flash, viền đỏ nhịp tim khi HP `< 25%`, và viền ánh sao Ngân Hà tại `ch08_tinh_vuc_phong_an` (tôn trọng cài đặt `shake_scale`).
+* [x] **VFX-06 — Ngũ Sắc Đan Lôi Giáng Trực Tiếp Xuống Bản Đồ** *(Hoàn tất `v0.7.1`)*:
+  * Nối `EventBus.dan_lei_strike_requested` vào hàng đợi `_dan_lei_queue` sạch bộ nhớ trong `world_stage_manager.gd`: đánh nối tiếp 3–5 cột thiên lôi đa sắc từ bầu trời xuống đất kèm hố nứt, sóng khúc xạ & chớp sáng khi đạt quán quân Đan Hội (`ch08_dan_hoi_champion`), luyện thành Đan Phẩm 7/8 (`alchemy_system.gd`), và đột phá Đấu Tông / hoàn tất Ch.08.
 
 ---
 
 ## P3 — Quái Thường Tái Sử Dụng Sprite, Pickup Sơ Khai & Prop
 
-* [ ] **P3.1 — 3 Vật Phẩm Nhặt Rơi (`pickups/`) quá nhỏ/sơ khai (`< 210 bytes` từ `v0.1`)**:
-  * `assets/sprites/pickups/herb_item.png` (`115 bytes`)
-  * `assets/sprites/pickups/monster_core.png` (`118 bytes` — đang dùng làm cả icon đấu giá & Ma Hạch Cấp 1–7!)
-  * `assets/sprites/pickups/qi_orb.png` (`204 bytes`)
+* [x] **P3.1 — 3 Vật Phẩm Nhặt Rơi (`pickups/`) nâng cấp lên `32×32` HD Pixel Art** *(Hoàn tất `v0.7.1`)*:
+  * `assets/sprites/pickups/herb_item.png` (`32×32` linh dược lá ngọc có viền `#141020`)
+  * `assets/sprites/pickups/monster_core.png` (`32×32` ma hạch đa diện lõi sáng tím-hồng)
+  * `assets/sprites/pickups/qi_orb.png` (`32×32` tinh cầu đấu khí ngọc lam phát sáng)
 * [ ] **P3.2 — Quái Thường Ch.04–08 Tái Sử Dụng Sprite Cũ & Chưa Có Anim Sheet Riêng**:
   * `lang_dau_tinh_anh.png` đang dùng chung cho **7 loại quái** (`Ch.02 → Ch.08`: *Hộ Vệ Mặc Gia, Huyết Y Đao Khách, Đấu Vương Hắc Giác, Ma Viêm Chấp Pháp, Phong Lôi Chấp Sự, Hoàng Tuyền Đao Khách*).
   * `xa_nhan_chien_binh.png` đang dùng chung cho **6 loại quái** (*Chấp Sự Vân Lam, Cường Bảng Tinh Nhuệ, Độc Thi Chiến Binh, Vạn Xà Độc Mãng*).
@@ -133,5 +125,5 @@
 
 1. **Đợt A (14 file — Tác động thị giác lớn nhất)**: Thay toàn bộ **7 Boss Ch.08 True 8-Frame (`4×2`) + 7 ảnh chân dung** (P0.1) để đạt tròn **49/49 = 100% True 8-Frame AI** toàn dự án.
 2. **Đợt B (11 file — Nhân vật gặp xuyên suốt)**: Thay **2 NPC Đồng Hành P1** (`npc_tu_nghien`, `npc_dia_yeu_khoi`) + **7 NPC Ch.08** (đặc biệt `npc_thien_hoa_ton_gia`) + **2 NPC Ch.06–07** còn lại (`npc_lam_tu_nhai`, `npc_mac_thien_hanh`).
-3. **Đợt C (16 file — Bối cảnh & UI sắc nét)**: Thay **8 Tileset (`128×128`)** Ch.06–08 + **8 Icon Đấu Kỹ (`56×56`)** Ch.06–08 + **3 Pickup (`pickups/`)**.
-4. **Đợt D (VFX 2.0)**: Nâng cấp **VFX-01 → VFX-06** (flipbook `fire_lotus`/`slash_arc`, shader distortion `space_lock`, cánh Đấu Khí dạng sprite-shader, `WorldEnvironment` Glow nhẹ).
+3. **Đợt C (16 file — Bối cảnh & UI sắc nét)**: Thay **8 Tileset (`128×128`)** Ch.06–08 + **8 Icon Đấu Kỹ (`56×56`)** Ch.06–08. *(3 Pickup `pickups/` đã nâng cấp xong ở `v0.7.1`).*
+4. ~~**Đợt D (VFX 2.0)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.1`** (`space_shockwave.gdshader`, `vfx_energy_dissolve.gdshader`, `ScreenFxOverlay`, Cánh Hóa Dực sprite-shader, `128×128` VFX textures, Đồng Hành 2.0 & Ngũ Sắc Đan Lôi giáng thực tế).

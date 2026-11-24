@@ -59,6 +59,8 @@ var radar_pinged_chests: Array = []
 
 var map_backdrop_root: Node2D
 var map_overlay_root: Node2D
+var screen_fx_overlay: ScreenFxOverlay
+var _dan_lei_queue: Array = [] # { delay: float, pos: Vector2, color: Color }
 
 @onready var entities_root: Node2D = $Entities
 @onready var floating_layer: Node2D = $FloatingTexts
@@ -81,6 +83,9 @@ func _ready() -> void:
 	map_overlay_root.z_index = 2
 	add_child(map_overlay_root)
 
+	screen_fx_overlay = ScreenFxOverlay.new()
+	add_child(screen_fx_overlay)
+
 	EventBus.floating_text_requested.connect(_spawn_floating_text)
 	EventBus.story_flag_changed.connect(_on_story_flag_changed)
 	EventBus.quest_updated.connect(_refresh_npc_quest_markers)
@@ -91,6 +96,8 @@ func _ready() -> void:
 	EventBus.tower_blessing_picked.connect(apply_tower_blessing)
 	EventBus.tower_exit_requested.connect(exit_tower)
 	EventBus.soul_radar_pulsed.connect(_on_soul_radar_pulsed)
+	EventBus.dan_lei_strike_requested.connect(_on_dan_lei_strike_requested)
+	EventBus.realm_updated.connect(_on_realm_updated_fx)
 
 	var init_spawn: Vector2 = Vector2.ZERO
 	if PlayerData.has_saved_player_pos and PlayerData.saved_player_pos != Vector2.ZERO:
@@ -101,12 +108,79 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if EventBus.dan_lei_strike_requested.is_connected(_on_dan_lei_strike_requested):
+		EventBus.dan_lei_strike_requested.disconnect(_on_dan_lei_strike_requested)
+	if EventBus.realm_updated.is_connected(_on_realm_updated_fx):
+		EventBus.realm_updated.disconnect(_on_realm_updated_fx)
 	if boss_rush_mgr != null:
 		boss_rush_mgr.world = null
 		boss_rush_mgr = null
 	if tower_mgr != null:
 		tower_mgr.world = null
 		tower_mgr = null
+
+
+func _on_realm_updated_fx(_realm_title: String, _unlock_text: String) -> void:
+	if player_node == null or not is_instance_valid(player_node):
+		return
+	EventBus.shockwave_requested.emit(player_node.global_position, 320.0, 0.052, Color("#FFD166"), 0.44)
+	EventBus.screen_flash_requested.emit(Color("#FFD166"), 0.28, 0.22)
+
+
+func _on_dan_lei_strike_requested(world_pos: Vector2, color_count: int = 5) -> void:
+	var five_cols: Array = [Color("#FF595E"), Color("#4CC9F0"), Color("#FFFFFF"), Color("#FFD166"), Color("#C77DFF")]
+	var n: int = clampi(color_count, 1, 5)
+	var base_pos: Vector2 = world_pos
+	if base_pos == Vector2.ZERO and player_node != null and is_instance_valid(player_node):
+		base_pos = player_node.global_position
+	for i in range(n):
+		var ang: float = float(i) * (TAU / float(maxi(1, n)))
+		var off: Vector2 = Vector2.ZERO if i == n - 1 else Vector2(cos(ang), sin(ang) * 0.55) * 92.0
+		_dan_lei_queue.append({
+			"delay": float(i) * 0.17,
+			"pos": base_pos + off,
+			"color": five_cols[i % five_cols.size()],
+			"is_finale": (i == n - 1)
+		})
+
+
+func _tick_dan_lei_queue(delta: float) -> void:
+	if _dan_lei_queue.is_empty():
+		return
+	var remain: Array = []
+	for item in _dan_lei_queue:
+		var d: float = float(item.get("delay", 0.0)) - delta
+		if d <= 0.0:
+			_spawn_dan_lei_bolt(item.get("pos", Vector2.ZERO) as Vector2, item.get("color", Color("#FFD166")) as Color, bool(item.get("is_finale", false)))
+		else:
+			item["delay"] = d
+			remain.append(item)
+	_dan_lei_queue = remain
+
+
+func _spawn_dan_lei_bolt(strike_pos: Vector2, bolt_col: Color, is_finale: bool) -> void:
+	var entities_root: Node = get_node_or_null("Entities")
+	if entities_root == null:
+		return
+	var pillar := SkillVfxBurst.new()
+	entities_root.add_child(pillar)
+	pillar.configure(
+		"dan_lei_pillar",
+		strike_pos,
+		Vector2.DOWN,
+		220.0 if is_finale else 160.0,
+		0.72 if is_finale else 0.56,
+		Color("#FFFFFF"),
+		bolt_col,
+		bolt_col.darkened(0.40),
+		{ "z_index": 7 }
+	)
+	VfxAssets.spawn_ground_crater(entities_root, strike_pos, 115.0 if is_finale else 80.0, bolt_col, 3.0)
+	VfxAssets.spawn_spark_burst(entities_root, strike_pos + Vector2(0, -16), Color.WHITE, bolt_col, 24 if is_finale else 14, 110.0, 320.0, 0.44, Vector2.UP, 180.0, 0.28, 0.72, true)
+	EventBus.audio_sfx_requested.emit("breakthrough" if is_finale else "skill_burst")
+	EventBus.screen_shake_requested.emit(14.0 if is_finale else 8.0, 0.32 if is_finale else 0.18)
+	EventBus.shockwave_requested.emit(strike_pos, 340.0 if is_finale else 220.0, 0.056 if is_finale else 0.036, bolt_col, 0.40)
+	EventBus.screen_flash_requested.emit(bolt_col, 0.30 if is_finale else 0.18, 0.20)
 
 
 func _announce_initial_quest() -> void:
@@ -1339,8 +1413,13 @@ func _setup_spawns(m_def: Dictionary) -> void:
 			_spawn_from_slot(i)
 
 
-func _on_story_flag_changed(_flag_name: String) -> void:
+func _on_story_flag_changed(flag_name: String) -> void:
 	_sync_conditional_npcs()
+	if flag_name == "ch08_dan_hoi_champion" and player_node != null and is_instance_valid(player_node):
+		EventBus.dan_lei_strike_requested.emit(player_node.global_position, 5)
+	elif (flag_name == "ch08_broke_dau_tong" or flag_name == "ch08_completed") and player_node != null and is_instance_valid(player_node):
+		EventBus.shockwave_requested.emit(player_node.global_position, 390.0, 0.064, Color("#C77DFF") if flag_name == "ch08_completed" else Color("#72EFDD"), 0.48)
+		EventBus.screen_flash_requested.emit(Color("#C77DFF") if flag_name == "ch08_completed" else Color("#72EFDD"), 0.34, 0.26)
 	for i in range(spawn_slots.size()):
 		var slot: Dictionary = spawn_slots[i]
 		var req_f: String = str(slot.get("require_flag", ""))
@@ -1357,6 +1436,7 @@ func _on_story_flag_changed(_flag_name: String) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_tick_dan_lei_queue(delta)
 	if boss_rush_mgr != null:
 		boss_rush_mgr.tick(delta)
 

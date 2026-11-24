@@ -224,6 +224,14 @@ func _suite_02_assets_exist() -> void:
 		"res://scenes/entities/companion.tscn",
 		"res://assets/shaders/di_hoa_palette.gdshader",
 		"res://assets/shaders/char_motion_polish.gdshader",
+		"res://assets/shaders/space_shockwave.gdshader",
+		"res://assets/shaders/vfx_energy_dissolve.gdshader",
+		"res://assets/sprites/vfx/fire_lotus.png",
+		"res://assets/sprites/vfx/slash_arc.png",
+		"res://assets/sprites/vfx/wing_plume.png",
+		"res://assets/sprites/pickups/qi_orb.png",
+		"res://assets/sprites/pickups/monster_core.png",
+		"res://assets/sprites/pickups/herb_item.png",
 		"res://icon.svg",
 		"res://icon.ico"
 	]:
@@ -456,6 +464,15 @@ func _suite_08_live_scene_and_panels() -> void:
 	var player_nd: Node = get_tree().get_first_node_in_group("player")
 	_assert(world != null and hud != null, "WorldStage and GameHUD instantiated")
 	_assert(player_nd != null and player_nd.get("char_motion_mat") != null, "PlayerController attached char_motion_polish shader material")
+	_assert(player_nd != null and player_nd.get("wing_shader_mat") != null and player_nd.get("wing_left_sprite") != null and player_nd.get("wing_right_sprite") != null, "PlayerController attached VFX 2.0 feathered Energy Wings shader & sprites")
+	var sfx_overlay: Node = world.get("screen_fx_overlay") as Node
+	_assert(sfx_overlay != null and sfx_overlay.get("shockwave_mat") != null, "WorldStage attached ScreenFxOverlay (VFX 2.0) with SpaceShockwave shader")
+	# Smoke-test VFX 2.0 global signals (Shockwave + Flash + 5-Color Dan Lei sequence)
+	EventBus.shockwave_requested.emit(Vector2(640, 360), 220.0, 0.045, Color("#72EFDD"), 0.35)
+	EventBus.screen_flash_requested.emit(Color("#FFD166"), 0.20, 0.16)
+	EventBus.dan_lei_strike_requested.emit(Vector2(640, 360), 5)
+	await get_tree().physics_frame
+	_assert(bool(sfx_overlay.get("sw_active")), "ScreenFxOverlay activated space shockwave on signal")
 	_assert(world.get("boss_rush_mgr") != null and world.get("tower_mgr") != null, "WorldStage delegates initialized")
 	_assert(
 		hud.get("panel_pause_settings") != null
@@ -904,11 +921,29 @@ func _suite_12_ch08_systems() -> void:
 	EventBus.dialogue_requested.disconnect(cb8b)
 	_assert(ran8 and bool(emitted8[0]), "StoryDialogueRunner runs Ch.08 JSON dialogue cleanly")
 
-	for v8 in ["space_lock", "emperor_five_seals", "flame_buff_tier3", "soul_shock_palm", "thunder_clone", "thien_yeu_khoi_assist"]:
+	for v8 in ["space_lock", "emperor_five_seals", "flame_buff_tier3", "soul_shock_palm", "thunder_clone", "thien_yeu_khoi_assist", "ground_crater", "dan_lei_pillar"]:
 		var vb8 := SkillVfxBurst.new()
 		add_child(vb8)
 		vb8.configure(v8, Vector2.ZERO, Vector2.RIGHT, 210.0, 0.65, Color("#FFFFFF"), Color("#C77DFF"), Color("#FFD166"))
-		_assert(vb8.vfx_mode == v8, "SkillVfxBurst configures Ch.08 mode cleanly: " + v8)
+		_assert(vb8.vfx_mode == v8, "SkillVfxBurst configures Ch.08/VFX 2.0 mode cleanly: " + v8)
 		vb8.queue_free()
+
+	# 9. Kiểm thử gói VFX 2.0 (v0.7.1): 2 Shader mới + 6 Texture nâng cấp HD (128x128 / 96x128 / 32x32)
+	var sw_mat: ShaderMaterial = VfxAssets.create_space_shockwave_material()
+	var ed_mat: ShaderMaterial = VfxAssets.create_energy_dissolve_material(Color("#FFFFFF"), Color("#00F5D4"), Color("#9D4EDD"))
+	_assert(sw_mat != null and sw_mat.shader != null, "VFX 2.0 space_shockwave.gdshader loads cleanly")
+	_assert(ed_mat != null and ed_mat.shader != null, "VFX 2.0 vfx_energy_dissolve.gdshader loads cleanly")
+	var vfx_dims: Dictionary = {
+		"res://assets/sprites/vfx/fire_lotus.png": Vector2i(128, 128),
+		"res://assets/sprites/vfx/slash_arc.png": Vector2i(128, 128),
+		"res://assets/sprites/vfx/wing_plume.png": Vector2i(96, 128),
+		"res://assets/sprites/pickups/qi_orb.png": Vector2i(32, 32),
+		"res://assets/sprites/pickups/monster_core.png": Vector2i(32, 32),
+		"res://assets/sprites/pickups/herb_item.png": Vector2i(32, 32)
+	}
+	for vp in vfx_dims.keys():
+		var vtex: Texture2D = load(str(vp))
+		var exp_sz: Vector2i = vfx_dims[vp]
+		_assert(vtex != null and vtex.get_width() == exp_sz.x and vtex.get_height() == exp_sz.y, "VFX 2.0 HD texture matches %dx%d: %s" % [exp_sz.x, exp_sz.y, str(vp)], "got %s" % (str(vtex.get_size()) if vtex != null else "null"))
 
 

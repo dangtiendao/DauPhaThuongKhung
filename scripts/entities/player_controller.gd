@@ -7,6 +7,7 @@ extends CharacterBody2D
 
 const SKILL_SCENE: PackedScene = preload("res://scenes/entities/skill_effect.tscn")
 const TEX_LIGHT_RADIAL: Texture2D = preload("res://assets/sprites/vfx/light_radial_128.png")
+const TEX_WING_PLUME: Texture2D = preload("res://assets/sprites/vfx/wing_plume.png")
 const BASE_FOOT_Y: float = 11.0
 const INPUT_BUFFER_WINDOW: float = 0.14
 
@@ -96,6 +97,9 @@ var slash_preview_timer: float = 0.0
 var slash_preview_duration: float = 0.16
 var slash_shader_mat: ShaderMaterial
 var char_motion_mat: ShaderMaterial
+var wing_shader_mat: ShaderMaterial
+var wing_left_sprite: Sprite2D
+var wing_right_sprite: Sprite2D
 var hurt_flash_timer: float = 0.0
 
 var shake_strength: float = 0.0
@@ -224,6 +228,32 @@ func _setup_lighting_particles_and_trail() -> void:
 	weapon_trail.width_curve = w_curve
 	add_child(weapon_trail)
 
+	# Đôi Cánh Đấu Khí Hóa Dực VFX 2.0 (Texture lông vũ đa tầng + Shader cháy mép vfx_energy_dissolve!)
+	wing_shader_mat = VfxAssets.create_energy_dissolve_material(Color("#FFFFFF"), Color("#00F5D4"), Color("#9D4EDD"), 1.38, 3.4, 0.024)
+	wing_left_sprite = Sprite2D.new()
+	wing_left_sprite.texture = TEX_WING_PLUME
+	wing_left_sprite.flip_h = true
+	wing_left_sprite.centered = false
+	wing_left_sprite.offset = Vector2(-88.0, -72.0)
+	wing_left_sprite.position = Vector2(-8.0, -34.0)
+	wing_left_sprite.z_index = -1
+	wing_left_sprite.visible = false
+	if wing_shader_mat != null:
+		wing_left_sprite.material = wing_shader_mat
+	add_child(wing_left_sprite)
+
+	wing_right_sprite = Sprite2D.new()
+	wing_right_sprite.texture = TEX_WING_PLUME
+	wing_right_sprite.flip_h = false
+	wing_right_sprite.centered = false
+	wing_right_sprite.offset = Vector2(-8.0, -72.0)
+	wing_right_sprite.position = Vector2(8.0, -34.0)
+	wing_right_sprite.z_index = -1
+	wing_right_sprite.visible = false
+	if wing_shader_mat != null:
+		wing_right_sprite.material = wing_shader_mat
+	add_child(wing_right_sprite)
+
 
 func _apply_body_sheet(tex: Texture2D, meta: Dictionary) -> void:
 	if tex == null or body_sprite == null:
@@ -287,7 +317,51 @@ func _process(delta: float) -> void:
 
 	_update_weapon_trail(delta)
 	_update_char_motion_shader(delta)
+	_update_energy_wings(delta)
 	queue_redraw()
+
+
+func _update_energy_wings(_delta: float) -> void:
+	if wing_left_sprite == null or wing_right_sprite == null:
+		return
+	var show_w: bool = PlayerData.has_dau_vuong_wings()
+	wing_left_sprite.visible = show_w
+	wing_right_sprite.visible = show_w
+	if not show_w:
+		return
+	var t_sec: float = float(Time.get_ticks_msec()) * 0.001
+	var is_dt: bool = PlayerData.has_dau_tong_void_step()
+	var is_dh: bool = (PlayerData.realm_index >= 7)
+	var is_dash: bool = (dash_timer > 0.0)
+	var flap: float = sin(t_sec * (13.0 if is_dash else 5.4))
+	var base_sc: float = (0.76 if is_dt else (0.70 if is_dh else 0.62)) * (1.22 if is_dash else 1.0)
+	var rot_mag: float = (0.24 if is_dash else 0.14) * flap
+	wing_left_sprite.scale = Vector2(base_sc, base_sc * (0.94 + 0.08 * flap))
+	wing_right_sprite.scale = Vector2(base_sc, base_sc * (0.94 + 0.08 * flap))
+	wing_left_sprite.rotation = rot_mag - (0.14 if is_dash else 0.04)
+	wing_right_sprite.rotation = -rot_mag + (0.14 if is_dash else 0.04)
+	if wing_shader_mat != null:
+		if PlayerData.is_tam_bien_active:
+			wing_shader_mat.set_shader_parameter("core_color", Color("#FFFFFF"))
+			wing_shader_mat.set_shader_parameter("mid_color", Color("#FFD166"))
+			wing_shader_mat.set_shader_parameter("outer_color", Color("#C77DFF"))
+			wing_shader_mat.set_shader_parameter("intensity", 1.72 if is_dash else 1.52)
+		elif is_dt:
+			wing_shader_mat.set_shader_parameter("core_color", Color("#FFFFFF"))
+			wing_shader_mat.set_shader_parameter("mid_color", Color("#72EFDD"))
+			wing_shader_mat.set_shader_parameter("outer_color", Color("#A855F7"))
+			wing_shader_mat.set_shader_parameter("intensity", 1.62 if is_dash else 1.42)
+		elif is_dh:
+			wing_shader_mat.set_shader_parameter("core_color", Color("#FFF8D6"))
+			wing_shader_mat.set_shader_parameter("mid_color", Color("#FFD166"))
+			wing_shader_mat.set_shader_parameter("outer_color", Color("#00F5D4"))
+			wing_shader_mat.set_shader_parameter("intensity", 1.55 if is_dash else 1.36)
+		else:
+			var has_vl: bool = PlayerData.has_van_lac_passive()
+			wing_shader_mat.set_shader_parameter("core_color", Color("#FFFFFF"))
+			wing_shader_mat.set_shader_parameter("mid_color", Color("#E0AAFF") if has_vl else Color("#48CAE4"))
+			wing_shader_mat.set_shader_parameter("outer_color", Color("#00F5D4") if has_vl else Color("#3A6EA5"))
+			wing_shader_mat.set_shader_parameter("intensity", 1.45 if is_dash else 1.28)
 
 
 func _update_char_motion_shader(delta: float) -> void:
@@ -1049,7 +1123,7 @@ func _execute_melee_strike_impact() -> void:
 	slash_vfx.visible = true
 	slash_vfx.flip_v = (combo_step == 2)
 	slash_vfx.modulate.a = 0.92
-	var base_sc: float = 1.85 if has_wpn else 1.10
+	var base_sc: float = 0.96 if has_wpn else 0.58
 	slash_vfx.scale = Vector2(base_sc * 1.28, base_sc * 1.28) if combo_step == 3 else Vector2(base_sc, base_sc)
 	slash_preview_duration = 0.18 if combo_step == 3 else 0.14
 	slash_preview_timer = slash_preview_duration
@@ -1709,6 +1783,9 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 		EventBus.audio_sfx_requested.emit("skill_stun")
 		EventBus.audio_sfx_requested.emit("poise_break")
 		EventBus.screen_shake_requested.emit(11.0, 0.32)
+		EventBus.shockwave_requested.emit(sl_pos, rad_px * 1.40, 0.056, Color("#72EFDD"), 0.42)
+		EventBus.screen_flash_requested.emit(Color("#72EFDD"), 0.22, 0.18)
+		VfxAssets.spawn_ground_crater(get_parent(), sl_pos, rad_px * 0.72, Color("#48BFE3"), 2.8)
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -88), "KHÔNG GIAN PHONG TỎA!! (ĐẤU TÔNG)", Color("#72EFDD"))
 		var stun_sl: float = float(sdef.get("stun_sec", 2.5))
 		var hit_sl: bool = false
@@ -1742,6 +1819,9 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 		EventBus.audio_sfx_requested.emit("breakthrough")
 		EventBus.audio_sfx_requested.emit("skill_burst")
 		EventBus.screen_shake_requested.emit(16.0, 0.45)
+		EventBus.shockwave_requested.emit(ef_pos, rad_px * 1.55, 0.068, Color("#FFD166"), 0.48)
+		EventBus.screen_flash_requested.emit(Color("#FFD166"), 0.34, 0.24)
+		VfxAssets.spawn_ground_crater(get_parent(), ef_pos, rad_px * 0.88, Color("#FF595E"), 3.4)
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -92), "ĐẾ ẤN QUYẾT — NGŨ ẤN HỢP NHẤT: CỔ ĐẾ ẤN!!", Color("#FFD166"))
 		var stun_ef: float = float(sdef.get("stun_sec", 2.4))
 		var hit_ef: bool = false
@@ -1782,6 +1862,8 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 		VfxAssets.spawn_spark_burst(get_parent(), global_position + Vector2(0, -24), Color("#FFFFFF"), Color("#FFD166"), 32, 125.0, 340.0, 0.52, Vector2.UP, 180.0, 0.32, 0.76, true)
 		EventBus.audio_sfx_requested.emit("breakthrough")
 		EventBus.screen_shake_requested.emit(13.0, 0.38)
+		EventBus.shockwave_requested.emit(global_position, rad_px * 1.35, 0.048, Color("#FFD166"), 0.42)
+		EventBus.screen_flash_requested.emit(Color("#C77DFF"), 0.26, 0.20)
 		EventBus.stats_changed.emit()
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -90), "THIÊN HỎA TAM HUYỀN BIẾN — TAM BIẾN!! (+85% ATK · -30% CD)", Color("#FFD166"))
 		for en in get_tree().get_nodes_in_group("enemies"):
@@ -2006,6 +2088,9 @@ func _activate_duoc_lao_assist() -> void:
 		PlayerData.player_slow_ratio = 0.0
 		PlayerData.lotus_shield_hp = maxf(PlayerData.lotus_shield_hp, PlayerData.get_max_hp() * 0.30)
 		_spawn_skill_vfx("thien_yeu_khoi_assist", global_position + Vector2(0, -22), Vector2.UP, 300.0, 0.78, Color("#FFFFFF"), Color("#FFD166"), Color("#C77DFF"), { "follow_target": self, "follow_offset": Vector2(0, -22) })
+		EventBus.shockwave_requested.emit(global_position, 360.0, 0.060, Color("#FFD166"), 0.45)
+		EventBus.screen_flash_requested.emit(Color("#FFD166"), 0.30, 0.22)
+		VfxAssets.spawn_ground_crater(get_parent(), global_position, 185.0, Color("#C77DFF"), 3.2)
 		_spawn_hit_sparks(global_position + Vector2(0, -24), Color("#FFD166"), Vector2.UP, 40)
 		var ty_dmg: float = PlayerData.get_atk() * 3.35
 		for en in get_tree().get_nodes_in_group("enemies"):
@@ -2116,6 +2201,8 @@ func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector
 			_spawn_skill_vfx("flame_buff_tier3", global_position + Vector2(0, -18), Vector2.UP, 260.0, 0.75, Color("#FFFFFF"), Color("#C77DFF"), Color("#FFD166"))
 			EventBus.audio_sfx_requested.emit("breakthrough")
 			EventBus.screen_shake_requested.emit(13.0, 0.42)
+			EventBus.shockwave_requested.emit(global_position, 360.0, 0.062, Color("#C77DFF"), 0.46)
+			EventBus.screen_flash_requested.emit(Color("#C77DFF"), 0.34, 0.26)
 			EventBus.trigger_hitstop(0.050, 0.08)
 			for en in get_tree().get_nodes_in_group("enemies"):
 				if is_instance_valid(en) and en is Node2D and global_position.distance_to((en as Node2D).global_position) <= 260.0:
@@ -2168,40 +2255,11 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, 28.0, Color(0.03, 0.02, 0.06, 0.50))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
-	# ĐẤU VƯƠNG (>= 6) & ĐẤU HOÀNG (>= 7): Đấu Khí Hóa Dực nâng cấp thành Cánh Hoàng Kim Lưu Ly + Hào Quang Thiên Địa!
-	if PlayerData.has_dau_vuong_wings():
-		var flap: float = sin(t_sec * (12.0 if dash_timer > 0.0 else 5.2))
-		var is_dh: bool = (PlayerData.realm_index >= 7)
-		var flare: float = (1.30 if dash_timer > 0.0 else 1.08) if is_dh else (1.24 if dash_timer > 0.0 else 1.0)
-		var wing_a: float = 0.88 if dash_timer > 0.0 else 0.74
-		var has_vl: bool = PlayerData.has_van_lac_passive()
-		var col_outer: Color = Color(1.0, 0.84, 0.30, 0.46 * wing_a) if is_dh else (Color(0.0, 0.96, 0.83, 0.42 * wing_a) if has_vl else Color(0.28, 0.84, 1.0, 0.42 * wing_a))
-		var col_mid: Color = Color(0.0, 0.96, 0.83, 0.70 * wing_a) if is_dh else (Color(0.88, 0.66, 1.0, 0.68 * wing_a) if has_vl else Color(0.45, 0.96, 0.88, 0.66 * wing_a))
-		var col_core: Color = Color(1.0, 1.0, 1.0, 0.88 * wing_a)
-		for side in [-1.0, 1.0]:
-			var root_pt := Vector2(side * 10.0, -34.0)
-			var tip_up := Vector2(side * (56.0 * flare), -64.0 + flap * 9.0)
-			var tip_mid := Vector2(side * (66.0 * flare), -40.0 + flap * 12.0)
-			var tip_low := Vector2(side * (46.0 * flare), -16.0 + flap * 7.0)
-			var inner_low := Vector2(side * 16.0, -20.0)
-			var poly_outer := PackedVector2Array([root_pt, tip_up, tip_mid, tip_low, inner_low])
-			draw_colored_polygon(poly_outer, col_outer)
-			var poly_mid := PackedVector2Array([
-				root_pt + Vector2(side * 3.0, 0.0),
-				root_pt.lerp(tip_up, 0.80),
-				root_pt.lerp(tip_mid, 0.76),
-				root_pt.lerp(tip_low, 0.72),
-				inner_low
-			])
-			draw_colored_polygon(poly_mid, col_mid)
-			draw_line(root_pt, root_pt.lerp(tip_up, 0.88), col_core, 2.2)
-			draw_line(root_pt, root_pt.lerp(tip_mid, 0.84), col_core, 1.8)
-			draw_line(root_pt, root_pt.lerp(tip_low, 0.78), col_core, 1.4)
-		if is_dh:
-			# Vòng Điều Động Thiên Địa Năng Lượng (Đấu Hoàng >= 7) xoay tỏa ánh vàng kim!
-			var dh_p: float = 0.86 + 0.14 * sin(t_sec * 4.4)
-			draw_arc(Vector2(0, -26), 44.0, t_sec * 1.4, t_sec * 1.4 + TAU * 0.75, 40, Color(1.0, 0.85, 0.32, 0.56 * dh_p), 2.4)
-			draw_arc(Vector2(0, -26), 49.0, -t_sec * 1.1, -t_sec * 1.1 + TAU * 0.55, 36, Color(0.0, 0.96, 0.83, 0.42 * dh_p), 1.8)
+	# Vòng Điều Động Thiên Địa Năng Lượng (Đấu Hoàng >= 7) xoay tỏa ánh vàng kim (Cánh Hóa Dực đã chuyển lên wing_left/right_sprite Shader!)
+	if PlayerData.has_dau_vuong_wings() and PlayerData.realm_index >= 7:
+		var dh_p: float = 0.86 + 0.14 * sin(t_sec * 4.4)
+		draw_arc(Vector2(0, -26), 44.0, t_sec * 1.4, t_sec * 1.4 + TAU * 0.75, 40, Color(1.0, 0.85, 0.32, 0.56 * dh_p), 2.4)
+		draw_arc(Vector2(0, -26), 49.0, -t_sec * 1.1, -t_sec * 1.1 + TAU * 0.55, 36, Color(0.0, 0.96, 0.83, 0.42 * dh_p), 1.8)
 
 	# ĐẤU TÔNG (>= 8): Đạp Hư Không — Sóng không gian bạc-ngọc tỏa gợn dưới bàn chân!
 	if PlayerData.has_dau_tong_void_step():

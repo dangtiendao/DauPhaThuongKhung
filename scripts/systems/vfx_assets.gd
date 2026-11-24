@@ -6,6 +6,8 @@ extends RefCounted
 
 const FLAME_SHADER_PATH: String = "res://assets/shaders/di_hoa_palette.gdshader"
 const CHAR_MOTION_SHADER_PATH: String = "res://assets/shaders/char_motion_polish.gdshader"
+const SPACE_SHOCKWAVE_SHADER_PATH: String = "res://assets/shaders/space_shockwave.gdshader"
+const ENERGY_DISSOLVE_SHADER_PATH: String = "res://assets/shaders/vfx_energy_dissolve.gdshader"
 
 static var _glow_dot_tex: Texture2D
 static var _spark_streak_tex: Texture2D
@@ -14,6 +16,8 @@ static var _ring_soft_tex: Texture2D
 static var _add_material: CanvasItemMaterial
 static var _flame_shader: Shader
 static var _char_motion_shader: Shader
+static var _space_shockwave_shader: Shader
+static var _energy_dissolve_shader: Shader
 static var _scale_pop_curve: Curve
 static var _scale_smoke_curve: Curve
 static var _scale_ember_curve: Curve
@@ -115,6 +119,59 @@ static func get_char_motion_shader() -> Shader:
 	if _char_motion_shader == null:
 		_char_motion_shader = load(CHAR_MOTION_SHADER_PATH)
 	return _char_motion_shader
+
+
+static func get_space_shockwave_shader() -> Shader:
+	if _space_shockwave_shader == null:
+		_space_shockwave_shader = load(SPACE_SHOCKWAVE_SHADER_PATH)
+	return _space_shockwave_shader
+
+
+static func get_energy_dissolve_shader() -> Shader:
+	if _energy_dissolve_shader == null:
+		_energy_dissolve_shader = load(ENERGY_DISSOLVE_SHADER_PATH)
+	return _energy_dissolve_shader
+
+
+static func create_space_shockwave_material() -> ShaderMaterial:
+	var sh: Shader = get_space_shockwave_shader()
+	if sh == null:
+		return null
+	var mat := ShaderMaterial.new()
+	mat.shader = sh
+	mat.set_shader_parameter("center_uv", Vector2(0.5, 0.5))
+	mat.set_shader_parameter("radius", 0.0)
+	mat.set_shader_parameter("thickness", 0.09)
+	mat.set_shader_parameter("force", 0.0)
+	mat.set_shader_parameter("chroma_shift", 0.005)
+	mat.set_shader_parameter("ring_tint", Color("#72EFDD"))
+	mat.set_shader_parameter("ring_glow", 0.48)
+	mat.set_shader_parameter("aspect_ratio", 16.0 / 9.0)
+	return mat
+
+
+static func create_energy_dissolve_material(
+	core_c: Color,
+	mid_c: Color,
+	outer_c: Color,
+	intensity_val: float = 1.38,
+	flow_spd: float = 3.2,
+	wave_amp: float = 0.022
+) -> ShaderMaterial:
+	var sh: Shader = get_energy_dissolve_shader()
+	if sh == null:
+		return null
+	var mat := ShaderMaterial.new()
+	mat.shader = sh
+	mat.set_shader_parameter("core_color", core_c)
+	mat.set_shader_parameter("mid_color", mid_c)
+	mat.set_shader_parameter("outer_color", outer_c)
+	mat.set_shader_parameter("intensity", intensity_val)
+	mat.set_shader_parameter("flow_speed", flow_spd)
+	mat.set_shader_parameter("wave_amp", wave_amp)
+	mat.set_shader_parameter("dissolve", 0.0)
+	mat.set_shader_parameter("pulse_amp", 0.14)
+	return mat
 
 
 static func create_char_motion_material(rim_col: Color = Color("#70D6FF"), sway_amp: float = 0.005, rim_str: float = 0.0) -> ShaderMaterial:
@@ -276,3 +333,28 @@ static func spawn_dust_puff(parent_node: Node, world_pos: Vector2, dust_col: Col
 	parent_node.add_child(p)
 	p.emitting = true
 	parent_node.get_tree().create_timer(0.50).timeout.connect(p.queue_free)
+
+
+## Để lại vết cháy / nứt mặt đất âm ỉ tro lửa sau các đại chiêu (Cổ Đế Ấn, Phật Nộ Hỏa Liên, Đan Lôi...).
+static func spawn_ground_crater(
+	parent_node: Node,
+	world_pos: Vector2,
+	radius_px: float = 110.0,
+	burn_col: Color = Color("#FF7B00"),
+	duration: float = 3.0
+) -> void:
+	if parent_node == null:
+		return
+	var crater := SkillVfxBurst.new()
+	parent_node.add_child(crater)
+	crater.configure(
+		"ground_crater",
+		world_pos,
+		Vector2.RIGHT,
+		radius_px,
+		duration,
+		Color("#FFF3B0"),
+		burn_col,
+		burn_col.darkened(0.55),
+		{ "z_index": -1 }
+	)

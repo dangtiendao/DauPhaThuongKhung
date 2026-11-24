@@ -895,6 +895,8 @@ func _trigger_boss_phase_2() -> void:
 		cry = "RỐNG NGÂN HÀ!! BẢN TÔN THÁI HƯ TỬ HẮC CỰ LONG (#9) BẤT TỬ BẤT DIỆT — THIÊU RỤI TINH VỰC!!"
 
 	EventBus.floating_text_requested.emit(global_position + Vector2(0, -108), "GIAI ĐOẠN II — CUỒNG BẠO!", Color("#FF4D6D"))
+	EventBus.shockwave_requested.emit(global_position, 290.0, 0.048, _get_signature_color(), 0.38)
+	EventBus.screen_flash_requested.emit(_get_signature_color(), 0.20, 0.16)
 	EventBus.banter_triggered.emit("[%s]: '%s' (Cẩn thận 3 tia sóng Đấu Khí — bấm Space để lướt né!)" % [display_title, cry])
 	EventBus.boss_status_updated.emit(display_title, realm_badge, cur_hp, max_hp, boss_phase, true)
 	if boss_bar_shown:

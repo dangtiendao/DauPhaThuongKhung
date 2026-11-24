@@ -119,6 +119,9 @@ static func finish_minigame_craft(recipe: Dictionary, quality_tier: int, lightni
 	PlayerData.bonus_soul += soul_gain
 	PlayerData.notify_pill_crafted(out_id)
 	EventBus.audio_sfx_requested.emit("alchemy_success")
+	var r_tier: int = int(recipe.get("tier", 1))
+	if r_tier >= 7:
+		EventBus.dan_lei_strike_requested.emit(Vector2.ZERO, 5 if r_tier >= 8 else 3)
 	EventBus.stats_changed.emit()
 
 	var tag: String = ""

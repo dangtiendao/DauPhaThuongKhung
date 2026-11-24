@@ -295,6 +295,7 @@ func _physics_process(delta: float) -> void:
 			var stun_s: float = (1.8 if is_tyk_atk else 1.4) if companion_id == "dia_yeu_khoi" else ((2.5 if PlayerData.has_flag("ch06_tu_nghien_candy_done") else 1.5) if companion_id == "tu_nghien" else 0.0)
 			active_bolts.append({
 				"pos": global_position + Vector2(0, -30),
+				"trail": [global_position + Vector2(0, -30)],
 				"target": target_en,
 				"color": bolt_col,
 				"dmg": bolt_dmg,
@@ -314,6 +315,8 @@ func _physics_process(delta: float) -> void:
 		var dest: Vector2 = tgt.global_position + Vector2(0, -24)
 		var to_t: Vector2 = dest - cur_p
 		if to_t.length() <= 24.0:
+			var b_col_hit: Color = b.get("color", Color("#70D6FF"))
+			VfxAssets.spawn_spark_burst(get_parent(), dest, Color.WHITE, b_col_hit, 10 if bool(b.get("aoe", false)) else 6, 70.0, 195.0, 0.28, to_t.normalized(), 160.0, 0.22, 0.52, true)
 			if tgt.has_method("receive_hit"):
 				var kb_str: float = 280.0 if float(b.get("stun", 0.0)) > 0.0 else 90.0
 				tgt.receive_hit(float(b.get("dmg", 10.0)), to_t.normalized() * kb_str, 0.28, float(b.get("burn", 0.0)))
@@ -323,14 +326,20 @@ func _physics_process(delta: float) -> void:
 				var stun_lbl: String = "ĐỊA YÊU LÔI QUYỀN! CHOÁNG %.1fs" % st_val if companion_id == "dia_yeu_khoi" else "CỔ LONG NHẤT QUYỀN! CHOÁNG %.1fs" % st_val
 				EventBus.floating_text_requested.emit(tgt.global_position + Vector2(0, -82), stun_lbl, Color("#CAF0F8") if companion_id == "dia_yeu_khoi" else Color("#E0AAFF"))
 			if bool(b.get("aoe", false)):
-				# Địa Yêu Khôi & Thiên Độc Nữ: nổ lan sóng chấn động / độc vụ quanh mục tiêu!
+				# Địa Yêu Khôi, Thiên Hỏa Tôn Giả & Thiên Độc Nữ: nổ lan sóng chấn động / độc vụ quanh mục tiêu!
 				for splash_n in get_tree().get_nodes_in_group("enemies"):
 					if is_instance_valid(splash_n) and splash_n != tgt and splash_n is Node2D:
 						var s2: Node2D = splash_n as Node2D
 						if tgt.global_position.distance_to(s2.global_position) <= 130.0 and s2.has_method("receive_hit"):
 							s2.receive_hit(float(b.get("dmg", 10.0)) * 0.55, (s2.global_position - tgt.global_position).normalized() * 160.0, 0.30, float(b.get("burn", 0.0)) * 0.6)
 		else:
-			b["pos"] = cur_p + to_t.normalized() * 520.0 * delta
+			var next_p: Vector2 = cur_p + to_t.normalized() * 540.0 * delta
+			b["pos"] = next_p
+			var tr: Array = b.get("trail", [])
+			tr.append(next_p)
+			if tr.size() > 8:
+				tr.pop_front()
+			b["trail"] = tr
 			kept_bolts.append(b)
 	active_bolts = kept_bolts
 	queue_redraw()
@@ -373,17 +382,35 @@ func _draw() -> void:
 		draw_arc(Vector2.ZERO, 26.0, anim_t * 2.0, anim_t * 2.0 + TAU * 0.85, 32, Color(0.84, 0.48, 1.0, 0.64 * v_pulse), 2.8)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
-	# Ngũ Luân Ly Hỏa Pháp: 5 vòng lửa hoàng kim xoay quanh Thiên Hỏa Tôn Giả!
+	# Ngũ Luân Ly Hỏa Pháp (VFX 2.0): 5 đĩa hỏa luân xoay nghiêng giả lập 3D phát tàn lửa quanh Thiên Hỏa Tôn Giả!
 	if companion_id == "thien_hoa_ton_gia":
+		var ring_cols: Array = [Color("#FF595E"), Color("#FF9F1C"), Color("#FFD166"), Color("#FF6B35"), Color("#FFF3B0")]
 		for ri in range(5):
-			var ra: float = anim_t * 3.4 + float(ri) * (TAU / 5.0)
-			var rp := Vector2(cos(ra) * 32.0, -36.0 + sin(ra) * 14.0)
-			draw_arc(rp, 7.5, 0.0, TAU, 16, Color(1.0, 0.62, 0.12, 0.85), 2.4)
-			draw_circle(rp, 3.0, Color(1.0, 0.94, 0.68, 0.94))
+			var ra: float = anim_t * 3.2 + float(ri) * (TAU / 5.0)
+			var depth_s: float = 0.78 + 0.28 * sin(ra)
+			var rp := Vector2(cos(ra) * 38.0, -38.0 + sin(ra) * 15.0)
+			var rc: Color = ring_cols[ri]
+			draw_set_transform(rp, anim_t * 4.5 + float(ri), Vector2(depth_s, depth_s * 0.62))
+			draw_circle(Vector2.ZERO, 10.5, Color(rc.r, rc.g, rc.b, 0.26))
+			draw_arc(Vector2.ZERO, 9.2, 0.0, TAU, 20, Color(rc.r, rc.g, rc.b, 0.92), 2.8)
+			draw_arc(Vector2.ZERO, 6.0, anim_t * 5.0, anim_t * 5.0 + TAU * 0.65, 14, Color(1.0, 0.96, 0.78, 0.95), 1.8)
+			for sp in range(3):
+				var sa: float = anim_t * 6.0 + float(sp) * (TAU / 3.0)
+				draw_line(Vector2(cos(sa), sin(sa)) * 5.0, Vector2(cos(sa), sin(sa)) * 11.5, Color(1.0, 0.94, 0.70, 0.85), 1.4)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
+	# Đạn đồng hành VFX 2.0: Vệt đuôi năng lượng thuôn nhọn mượt mà + lõi sáng rực!
 	for b in active_bolts:
 		var local_p: Vector2 = (b.get("pos", global_position) as Vector2) - global_position
 		var col: Color = b.get("color", Color("#70D6FF"))
-		draw_circle(local_p, 10.0 if companion_id == "huan_nhi" else 8.0, Color(col.r, col.g, col.b, 0.44))
-		draw_circle(local_p, 5.2 if companion_id == "huan_nhi" else 4.5, col)
-		draw_circle(local_p, 2.4, Color.WHITE)
+		var tr: Array = b.get("trail", [])
+		if tr.size() >= 2:
+			for ti in range(tr.size() - 1):
+				var u: float = float(ti + 1) / float(tr.size())
+				var p_a: Vector2 = (tr[ti] as Vector2) - global_position
+				var p_b: Vector2 = (tr[ti + 1] as Vector2) - global_position
+				draw_line(p_a, p_b, Color(col.r, col.g, col.b, 0.55 * u), (9.5 if companion_id == "thien_hoa_ton_gia" else 7.2) * u)
+				draw_line(p_a, p_b, Color(1.0, 1.0, 1.0, 0.72 * u), 2.8 * u)
+		draw_circle(local_p, 11.5 if (companion_id == "huan_nhi" or companion_id == "thien_hoa_ton_gia") else 9.0, Color(col.r, col.g, col.b, 0.44))
+		draw_circle(local_p, 5.6 if (companion_id == "huan_nhi" or companion_id == "thien_hoa_ton_gia") else 4.6, col)
+		draw_circle(local_p, 2.6, Color.WHITE)

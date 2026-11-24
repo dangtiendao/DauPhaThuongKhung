@@ -117,12 +117,12 @@ func _apply_flame_visuals(flame_def: Dictionary) -> void:
 	if visual_sprite != null:
 		if behavior_mode == "fire_lotus_ult":
 			visual_sprite.texture = TEX_FIRE_LOTUS
-			visual_sprite.scale = Vector2(1.45, 1.45)
-			shader_mat = VfxAssets.create_flame_material(core_col, mid_col, outer_col, 1.65, 3.6, 0.075)
+			visual_sprite.scale = Vector2(0.82, 0.82)
+			shader_mat = VfxAssets.create_flame_material(core_col, mid_col, outer_col, 1.72, 3.8, 0.075)
 		else:
 			visual_sprite.texture = TEX_SLASH_ARC
-			visual_sprite.scale = Vector2(2.15, 2.35)
-			shader_mat = VfxAssets.create_flame_material(core_col, mid_col, outer_col, 1.75, 4.4, 0.085)
+			visual_sprite.scale = Vector2(1.16, 1.26)
+			shader_mat = VfxAssets.create_flame_material(core_col, mid_col, outer_col, 1.80, 4.6, 0.085)
 		visual_sprite.material = shader_mat
 
 	glow_light = PointLight2D.new()
@@ -168,7 +168,7 @@ func _physics_process(delta: float) -> void:
 			shader_mat.set_shader_parameter("dissolve", (life_ratio - 0.62) / 0.38)
 		if visual_sprite != null:
 			var grow: float = 1.0 + life_ratio * 0.28
-			visual_sprite.scale = Vector2(2.15 * grow, 2.35 * grow)
+			visual_sprite.scale = Vector2(1.16 * grow, 1.26 * grow)
 			if life_ratio > 0.72:
 				visual_sprite.modulate.a = clampf((1.0 - life_ratio) / 0.28, 0.0, 1.0)
 		if elapsed >= lifetime:
@@ -181,7 +181,7 @@ func _physics_process(delta: float) -> void:
 				global_position = global_position.move_toward(target_point, speed_px * delta)
 			else:
 				_pull_enemies_toward_lotus(delta)
-				var pulse: float = 1.55 + sin(elapsed * 28.0) * 0.35
+				var pulse: float = 0.88 + sin(elapsed * 28.0) * 0.20
 				if visual_sprite != null:
 					visual_sprite.scale = Vector2(pulse, pulse)
 
@@ -240,7 +240,7 @@ func _pull_enemies_toward_lotus(delta: float) -> void:
 func _detonate_fire_lotus() -> void:
 	lotus_detonated = true
 	if visual_sprite != null:
-		visual_sprite.scale = Vector2(3.6, 3.6)
+		visual_sprite.scale = Vector2(2.05, 2.05)
 	if glow_light != null:
 		glow_light.texture_scale = 7.6
 		glow_light.energy = 3.0
@@ -251,10 +251,13 @@ func _detonate_fire_lotus() -> void:
 	EventBus.audio_sfx_requested.emit("breakthrough")
 	EventBus.audio_sfx_requested.emit("skill_burst")
 	EventBus.screen_shake_requested.emit(14.0, 0.44)
+	EventBus.shockwave_requested.emit(global_position, explosion_radius * 1.65, 0.062, mid_col, 0.46)
+	EventBus.screen_flash_requested.emit(core_col.lerp(mid_col, 0.35), 0.34, 0.24)
 	EventBus.trigger_hitstop(0.048, 0.08)
 
-	# Sinh hiệu ứng nổ Phật Nộ Hỏa Liên đa tầng (Flash + 2 sóng xung kích + 16 cánh sen bay + chùm hạt sáng!)
+	# Sinh hiệu ứng nổ Phật Nộ Hỏa Liên đa tầng (Flash + 2 sóng xung kích + 16 cánh sen bay + vết cháy sàn!)
 	if get_parent() != null:
+		VfxAssets.spawn_ground_crater(get_parent(), global_position, explosion_radius * 0.85, mid_col, 3.4)
 		var det_vfx := SkillVfxBurst.new()
 		get_parent().add_child(det_vfx)
 		det_vfx.configure(

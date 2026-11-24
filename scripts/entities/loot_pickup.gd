@@ -48,10 +48,10 @@ func _init_pop() -> void:
 
 func _ready() -> void:
 	if pickup_kind == "exp":
-		sprite_node.scale = Vector2(1.75, 1.75)
+		sprite_node.scale = Vector2(0.88, 0.88)
 		sprite_node.texture = load("res://assets/sprites/pickups/qi_orb.png")
 	elif pickup_kind == "gold":
-		sprite_node.scale = Vector2(1.65, 1.65)
+		sprite_node.scale = Vector2(0.84, 0.84)
 		sprite_node.texture = load("res://assets/sprites/pickups/qi_orb.png")
 		sprite_node.modulate = Color("#FFD166")
 	elif pickup_kind == "gear":
@@ -60,7 +60,7 @@ func _ready() -> void:
 		sprite_node.texture = load(icon_path)
 		sprite_node.scale = Vector2(0.65, 0.65)
 	else:
-		sprite_node.scale = Vector2(1.75, 1.75)
+		sprite_node.scale = Vector2(0.94, 0.94)
 		var idef: Dictionary = GameDatabase.get_item_def(item_id)
 		var itype: String = str(idef.get("type", "herb"))
 		if itype == "monster_core":
@@ -69,6 +69,7 @@ func _ready() -> void:
 			sprite_node.texture = load("res://assets/sprites/pickups/herb_item.png")
 		var hex_col: String = str(idef.get("color_hex", "#FFFFFF"))
 		sprite_node.modulate = Color(hex_col)
+		rarity_col = Color(hex_col)
 
 
 func _physics_process(delta: float) -> void:
@@ -129,10 +130,27 @@ func _collect(collect_pos: Vector2) -> void:
 
 
 func _draw() -> void:
+	var pulse: float = 0.78 + 0.22 * sin(spawn_timer * 6.0)
 	if pickup_kind == "gear":
-		# Cột ánh sáng Phẩm chất tỏa thẳng lên trời giúp cực kỳ dễ thấy đồ hiếm!
-		var beam_col := Color(rarity_col.r, rarity_col.g, rarity_col.b, 0.36 + sin(spawn_timer * 6.0) * 0.12)
-		draw_rect(Rect2(-7, -72, 14, 78), beam_col)
-		var core_col := Color(1.0, 1.0, 1.0, 0.55)
-		draw_rect(Rect2(-2, -62, 4, 66), core_col)
-		draw_arc(Vector2(0, 6), 16.0, 0.0, TAU, 24, rarity_col, 2.0)
+		# Cột ánh sáng Phẩm chất VFX 2.0 (Đa tầng thuôn nhọn + Vòng sáng xoay + Hạt bay lên trời!)
+		var top_y: float = -108.0 - sin(spawn_timer * 4.0) * 8.0
+		var poly_outer := PackedVector2Array([Vector2(-12, 8), Vector2(12, 8), Vector2(4, top_y), Vector2(-4, top_y)])
+		draw_colored_polygon(poly_outer, Color(rarity_col.r, rarity_col.g, rarity_col.b, 0.26 * pulse))
+		var poly_mid := PackedVector2Array([Vector2(-6, 6), Vector2(6, 6), Vector2(2, top_y * 0.88), Vector2(-2, top_y * 0.88)])
+		draw_colored_polygon(poly_mid, Color(rarity_col.r, rarity_col.g, rarity_col.b, 0.54 * pulse))
+		draw_line(Vector2(0, 6), Vector2(0, top_y * 0.76), Color(1.0, 1.0, 1.0, 0.82 * pulse), 2.4)
+		# 3 đốm sáng bay dọc cột
+		for si in range(3):
+			var sy: float = 4.0 - fmod(spawn_timer * 42.0 + float(si) * 32.0, 96.0)
+			var sx: float = sin(spawn_timer * 5.0 + float(si) * 2.1) * 5.5
+			draw_circle(Vector2(sx, sy), 2.4, Color(1.0, 1.0, 1.0, 0.78))
+		draw_set_transform(Vector2(0, 7), 0.0, Vector2(1.0, 0.48))
+		draw_arc(Vector2.ZERO, 18.0, spawn_timer * 2.2, spawn_timer * 2.2 + TAU * 0.85, 28, rarity_col, 2.4)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	elif pickup_kind == "item" and item_id.begins_with("core_"):
+		# Ma Hạch quý cũng tỏa tia cột nhỏ + vòng phát sáng
+		var c_poly := PackedVector2Array([Vector2(-7, 6), Vector2(7, 6), Vector2(2, -58), Vector2(-2, -58)])
+		draw_colored_polygon(c_poly, Color(rarity_col.r, rarity_col.g, rarity_col.b, 0.30 * pulse))
+		draw_set_transform(Vector2(0, 6), 0.0, Vector2(1.0, 0.48))
+		draw_arc(Vector2.ZERO, 13.0, -spawn_timer * 2.5, -spawn_timer * 2.5 + TAU * 0.8, 22, rarity_col, 2.0)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
