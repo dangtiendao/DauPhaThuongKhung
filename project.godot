@@ -33,6 +33,10 @@ window/stretch/aspect="expand"
 
 common/snap_controls_to_pixels=true
 
+[physics]
+
+common/physics_interpolation=true
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

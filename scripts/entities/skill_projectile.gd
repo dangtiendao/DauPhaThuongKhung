@@ -1,7 +1,12 @@
 extends Area2D
-## Thực thể Kỹ năng Đấu Kỹ bay trên bản đồ HD (1280x720):
-## - Diễm Phân Phệ Lãng Xích & Phật Nộ Hỏa Liên kích thước hoành tráng kèm Đèn 2D & Hạt Lửa!
-## - Hiện thực hóa trọn bộ 28 hiệu ứng đặc biệt (lotus_effect) của 28 loại Hỏa khi dung hợp Phật Nộ Hỏa Liên [F]!
+## Thực thể Kỹ năng Đấu Kỹ bay trên bản đồ HD (1280x720 — 60–144 FPS Additive Shader + Procedural Petals):
+## - Diễm Phân Phệ Lãng Xích: Sóng lửa đa tầng sắc bén + Shader lửa động + Đuôi tàn lửa phát sáng tức thì (hết lỗi mất hình frame đầu!).
+## - Phật Nộ Hỏa Liên [F]: Đóa sen lửa nhiều tầng cánh nhọn đa sắc theo 2–4 ngọn Hỏa dung hợp + Hitstop toàn cục & Vụ nổ hoành tráng!
+## - Hiện thực hóa trọn bộ 28 hiệu ứng đặc biệt (lotus_effect) của 28 loại Hỏa!
+
+const TEX_FIRE_LOTUS: Texture2D = preload("res://assets/sprites/vfx/fire_lotus.png")
+const TEX_SLASH_ARC: Texture2D = preload("res://assets/sprites/vfx/slash_arc.png")
+const TEX_LIGHT_RADIAL: Texture2D = preload("res://assets/sprites/vfx/light_radial_128.png")
 
 var behavior_mode: String = "flame_wave"
 var move_dir: Vector2 = Vector2.RIGHT
@@ -28,10 +33,14 @@ var sub_bolts: Array = [] # { pos, vel, color, dmg, life, radius, hit_ids }
 var chain_arcs: Array = [] # { p1, p2, color, timer }
 var active_ring_colors: Array = []
 
+var core_col: Color = Color("#FFF3B0")
+var mid_col: Color = Color("#FF7B00")
+var outer_col: Color = Color("#9E2A2B")
+var shader_mat: ShaderMaterial
+
 var glow_light: PointLight2D
 var trail_particles: CPUParticles2D
-
-@onready var visual_sprite: Sprite2D = $Sprite2D
+var visual_sprite: Sprite2D
 
 
 func configure_skill(
@@ -63,7 +72,6 @@ func configure_skill(
 	if behavior_mode == "fire_lotus_ult" and fusion_flames.is_empty():
 		fusion_flames = [str(flame_def.get("id", "pham_hoa"))]
 
-	# Các hiệu ứng điều chỉnh ngay từ lúc khởi tạo Hỏa Liên:
 	if behavior_mode == "fire_lotus_ult":
 		if _has_flame("xich_lang_thu_hoa"):
 			explosion_radius *= 1.15
@@ -71,13 +79,17 @@ func configure_skill(
 			realm_pen = 1.0
 		if _has_flame("di_hoa_15_hai_tam"):
 			knockback_force *= 1.35
-		lifetime = 1.65
+		lifetime = 1.75
 		_build_ring_colors(flame_def)
 	else:
 		lifetime = 0.95
 		rotation = move_dir.angle()
 
-	call_deferred("_apply_flame_visuals", flame_def)
+	# Áp đồ họa TRỰC TIẾP ngay lúc spawn (không dùng call_deferred -> hết lỗi tàng hình frame đầu!)
+	z_index = 5
+	material = VfxAssets.get_additive_material()
+	_apply_flame_visuals(flame_def)
+	reset_physics_interpolation()
 
 
 func _has_flame(fid: String) -> bool:
@@ -97,79 +109,92 @@ func _build_ring_colors(fallback_def: Dictionary) -> void:
 
 
 func _apply_flame_visuals(flame_def: Dictionary) -> void:
-	if visual_sprite == null:
-		return
-	var core_c := Color(str(flame_def.get("core_hex", "#FFF3B0")))
-	var mid_c := Color(str(flame_def.get("mid_hex", "#FF7B00")))
-	var outer_c := Color(str(flame_def.get("outer_hex", "#9E2A2B")))
+	visual_sprite = get_node_or_null("Sprite2D") as Sprite2D
+	core_col = Color(str(flame_def.get("core_hex", "#FFF3B0")))
+	mid_col = Color(str(flame_def.get("mid_hex", "#FF7B00")))
+	outer_col = Color(str(flame_def.get("outer_hex", "#9E2A2B")))
 
-	if behavior_mode == "fire_lotus_ult":
-		visual_sprite.texture = load("res://assets/sprites/vfx/fire_lotus.png")
-		visual_sprite.scale = Vector2(1.8, 1.8)
-	else:
-		visual_sprite.texture = load("res://assets/sprites/vfx/slash_arc.png")
-		visual_sprite.scale = Vector2(2.2, 2.2)
-
-	var shader_res: Shader = load("res://assets/shaders/di_hoa_palette.gdshader")
-	var mat := ShaderMaterial.new()
-	mat.shader = shader_res
-	mat.set_shader_parameter("core_color", core_c)
-	mat.set_shader_parameter("mid_color", mid_c)
-	mat.set_shader_parameter("outer_color", outer_c)
-	mat.set_shader_parameter("intensity", 1.85)
-	visual_sprite.material = mat
+	if visual_sprite != null:
+		if behavior_mode == "fire_lotus_ult":
+			visual_sprite.texture = TEX_FIRE_LOTUS
+			visual_sprite.scale = Vector2(1.45, 1.45)
+			shader_mat = VfxAssets.create_flame_material(core_col, mid_col, outer_col, 1.65, 3.6, 0.075)
+		else:
+			visual_sprite.texture = TEX_SLASH_ARC
+			visual_sprite.scale = Vector2(2.15, 2.35)
+			shader_mat = VfxAssets.create_flame_material(core_col, mid_col, outer_col, 1.75, 4.4, 0.085)
+		visual_sprite.material = shader_mat
 
 	glow_light = PointLight2D.new()
-	glow_light.texture = load("res://assets/sprites/vfx/light_radial_128.png")
-	glow_light.texture_scale = 3.8 if behavior_mode == "fire_lotus_ult" else 2.8
-	glow_light.energy = 1.75
-	glow_light.color = mid_c.lerp(core_c, 0.35)
+	glow_light.texture = TEX_LIGHT_RADIAL
+	glow_light.texture_scale = 3.8 if behavior_mode == "fire_lotus_ult" else 2.9
+	glow_light.energy = 1.65
+	glow_light.color = mid_col.lerp(core_col, 0.35)
 	add_child(glow_light)
 
 	trail_particles = CPUParticles2D.new()
 	trail_particles.emitting = true
-	trail_particles.amount = 32
-	trail_particles.lifetime = 0.45
-	trail_particles.spread = 180.0
-	trail_particles.gravity = Vector2(0, -24)
-	trail_particles.initial_velocity_min = 35.0
-	trail_particles.initial_velocity_max = 110.0
-	trail_particles.scale_amount_min = 3.0
-	trail_particles.scale_amount_max = 6.0
-	trail_particles.color = core_c.lerp(mid_c, 0.5)
+	trail_particles.amount = 36 if behavior_mode == "fire_lotus_ult" else 28
+	trail_particles.lifetime = 0.42
+	trail_particles.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	trail_particles.emission_sphere_radius = 22.0 if behavior_mode == "fire_lotus_ult" else 26.0
+	trail_particles.direction = Vector2(-1, 0)
+	trail_particles.spread = 180.0 if behavior_mode == "fire_lotus_ult" else 55.0
+	trail_particles.gravity = Vector2(0, -18)
+	trail_particles.damping_min = 45.0
+	trail_particles.damping_max = 95.0
+	trail_particles.initial_velocity_min = 38.0
+	trail_particles.initial_velocity_max = 120.0
+	trail_particles.scale_amount_min = 0.25
+	trail_particles.scale_amount_max = 0.56
+	VfxAssets.configure_glow_particles(trail_particles, core_col, mid_col, behavior_mode != "fire_lotus_ult")
 	add_child(trail_particles)
+
+
+func _process(_delta: float) -> void:
+	queue_redraw()
 
 
 func _physics_process(delta: float) -> void:
 	elapsed += delta
 	_tick_chain_arcs(delta)
 	_tick_sub_bolts(delta)
-	queue_redraw()
 
 	if behavior_mode == "flame_wave":
 		global_position += move_dir * speed_px * delta
 		_check_wave_hits()
+		var life_ratio: float = clampf(elapsed / maxf(0.1, lifetime), 0.0, 1.0)
+		if shader_mat != null and life_ratio > 0.62:
+			shader_mat.set_shader_parameter("dissolve", (life_ratio - 0.62) / 0.38)
+		if visual_sprite != null:
+			var grow: float = 1.0 + life_ratio * 0.28
+			visual_sprite.scale = Vector2(2.15 * grow, 2.35 * grow)
+			if life_ratio > 0.72:
+				visual_sprite.modulate.a = clampf((1.0 - life_ratio) / 0.28, 0.0, 1.0)
 		if elapsed >= lifetime:
 			queue_free()
 	elif behavior_mode == "fire_lotus_ult":
 		if not lotus_detonated:
-			visual_sprite.rotation += 10.5 * delta
+			if visual_sprite != null:
+				visual_sprite.rotation += 11.5 * delta
 			if global_position.distance_to(target_point) > 16.0 and elapsed < 0.55:
 				global_position = global_position.move_toward(target_point, speed_px * delta)
 			else:
 				_pull_enemies_toward_lotus(delta)
-				var pulse: float = 1.9 + sin(elapsed * 26.0) * 0.45
-				visual_sprite.scale = Vector2(pulse, pulse)
+				var pulse: float = 1.55 + sin(elapsed * 28.0) * 0.35
+				if visual_sprite != null:
+					visual_sprite.scale = Vector2(pulse, pulse)
 
 			if elapsed >= 1.15:
 				_detonate_fire_lotus()
 		else:
-			# Duy trì các vùng hậu chấn sau vụ nổ (Dung nham Thanh Liên 3s / Mây lửa Hỏa Vân 3.5s / Vạn Thú 3 nhịp / Thiên thạch)
 			_tick_post_detonation_effects(delta)
 			if visual_sprite != null:
-				visual_sprite.modulate.a = maxf(0.0, visual_sprite.modulate.a - delta * 2.2)
+				visual_sprite.modulate.a = maxf(0.0, visual_sprite.modulate.a - delta * 2.8)
+				if shader_mat != null:
+					shader_mat.set_shader_parameter("dissolve", clampf((elapsed - 1.15) * 2.1, 0.0, 1.0))
 			if glow_light != null and post_zone_timer <= 0.0:
-				glow_light.energy = maxf(0.0, glow_light.energy - delta * 4.0)
+				glow_light.energy = maxf(0.0, glow_light.energy - delta * 3.8)
 			if elapsed >= lifetime and post_zone_timer <= 0.0 and beast_bites_left <= 0 and sub_bolts.is_empty() and chain_arcs.is_empty():
 				queue_free()
 
@@ -185,7 +210,8 @@ func _check_wave_hits() -> void:
 		if global_position.distance_to(enemy_node.global_position) <= explosion_radius:
 			hit_enemies[enemy_node.get_instance_id()] = true
 			if enemy_node.has_method("receive_hit"):
-				enemy_node.receive_hit(damage_amount, move_dir * knockback_force, realm_pen, burn_dps)
+				enemy_node.receive_hit(damage_amount, move_dir * knockback_force, realm_pen, burn_dps, 0.0, 1.0, 28.0)
+			VfxAssets.spawn_spark_burst(get_parent(), enemy_node.global_position + Vector2(0, -24), core_col, mid_col, 10, 90.0, 210.0, 0.28, move_dir, 95.0)
 
 
 func _pull_enemies_toward_lotus(delta: float) -> void:
@@ -213,16 +239,37 @@ func _pull_enemies_toward_lotus(delta: float) -> void:
 
 func _detonate_fire_lotus() -> void:
 	lotus_detonated = true
-	visual_sprite.scale = Vector2(4.4, 4.4)
+	if visual_sprite != null:
+		visual_sprite.scale = Vector2(3.6, 3.6)
 	if glow_light != null:
-		glow_light.texture_scale = 7.2
-		glow_light.energy = 2.8
+		glow_light.texture_scale = 7.6
+		glow_light.energy = 3.0
 	if trail_particles != null:
 		trail_particles.amount = 64
-		trail_particles.initial_velocity_max = 280.0
+		trail_particles.initial_velocity_max = 320.0
+		trail_particles.scale_amount_max = 0.72
 	EventBus.audio_sfx_requested.emit("breakthrough")
 	EventBus.audio_sfx_requested.emit("skill_burst")
-	EventBus.screen_shake_requested.emit(13.5, 0.42)
+	EventBus.screen_shake_requested.emit(14.0, 0.44)
+	EventBus.trigger_hitstop(0.048, 0.08)
+
+	# Sinh hiệu ứng nổ Phật Nộ Hỏa Liên đa tầng (Flash + 2 sóng xung kích + 16 cánh sen bay + chùm hạt sáng!)
+	if get_parent() != null:
+		var det_vfx := SkillVfxBurst.new()
+		get_parent().add_child(det_vfx)
+		det_vfx.configure(
+			"lotus_detonate",
+			global_position,
+			Vector2.RIGHT,
+			explosion_radius,
+			0.62,
+			core_col,
+			mid_col,
+			outer_col,
+			{ "extra_colors": active_ring_colors, "z_index": 7 }
+		)
+		VfxAssets.spawn_spark_burst(get_parent(), global_position, core_col, mid_col, 34, 140.0, 390.0, 0.56, Vector2.RIGHT, 180.0, 0.35, 0.85, true)
+		VfxAssets.spawn_dust_puff(get_parent(), global_position, Color(mid_col.r, mid_col.g, mid_col.b, 0.34), 12, 180.0, 2.0)
 
 	var f_cnt: int = max(1, fusion_flames.size())
 	var effect_tags: Array = []
@@ -304,7 +351,6 @@ func _detonate_fire_lotus() -> void:
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -84), "✦ " + " · ".join(effect_tags.slice(0, 3)), Color("#72EFDD"))
 
 	# === 3. TÁC ĐỘNG LÊN TOÀN BỘ KẺ ĐỊCH TRONG VÙNG NỔ ===
-	var hit_list: Array = []
 	var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
 	for en in enemies:
 		if not is_instance_valid(en):
@@ -313,42 +359,34 @@ func _detonate_fire_lotus() -> void:
 		if enemy_node == null:
 			continue
 		if global_position.distance_to(enemy_node.global_position) <= explosion_radius:
-			hit_list.append(enemy_node)
 			var out_dir: Vector2 = (enemy_node.global_position - global_position).normalized()
 			if out_dir == Vector2.ZERO:
 				out_dir = Vector2.RIGHT
 
-			# Phá khiên / Tịnh hóa buff Boss (#7 Cửu U Kim Tổ Hỏa & #3 Tịnh Liên Yêu Hỏa)
 			if (_has_flame("di_hoa_07_cuu_u_kim_to") or _has_flame("di_hoa_03_tinh_lien")) and enemy_node.has_method("break_boss_shield"):
 				enemy_node.break_boss_shield()
-			# Ăn mòn phòng ngự (Cửu U Minh Hỏa -15% DEF, #15 Hải Tâm Diễm -25% DEF)
 			if _has_flame("cuu_u_minh_hoa") and enemy_node.has_method("apply_def_shred"):
 				enemy_node.apply_def_shred(0.15, 5.5)
 			if _has_flame("di_hoa_15_hai_tam") and enemy_node.has_method("apply_def_shred"):
 				enemy_node.apply_def_shred(0.25, 5.5)
-			# Làm chậm (#11 Cốt Linh Lãnh Hỏa -50%, #16 Hỏa Vân Thủy Viêm -40%)
 			if _has_flame("di_hoa_11_cot_linh") and enemy_node.has_method("apply_slow"):
 				enemy_node.apply_slow(0.50, 4.5)
 			elif _has_flame("di_hoa_16_hoa_van") and enemy_node.has_method("apply_slow"):
 				enemy_node.apply_slow(0.40, 4.5)
-			# Tê liệt / Làm choáng (#12 Cửu Long Lôi Cương 2.0s, #18 Phong Lôi 1.2s)
 			if _has_flame("di_hoa_12_cuu_long") and enemy_node.has_method("apply_stun"):
 				enemy_node.apply_stun(2.0)
 			elif _has_flame("di_hoa_18_phong_loi") and enemy_node.has_method("apply_stun"):
 				enemy_node.apply_stun(1.2)
-			# Đánh dấu sương độc nổ dây chuyền khi chết (#20 U Minh Độc Hỏa)
 			if _has_flame("di_hoa_20_u_minh_doc") and enemy_node.has_method("apply_poison_detonate"):
 				enemy_node.apply_poison_detonate(final_dmg * 0.55, 6.0)
 
 			if enemy_node.has_method("receive_hit"):
-				enemy_node.receive_hit(final_dmg, out_dir * knockback_force, final_pen, final_burn, ignore_def, crit_mult_override)
+				enemy_node.receive_hit(final_dmg, out_dir * knockback_force, final_pen, final_burn, ignore_def, crit_mult_override, 68.0)
 
 	# === 4. HIỆU ỨNG PHỤ BẮN LAN / HẬU CHẤN ===
-	# Tử Tinh Thú Hỏa: phóng tia lửa tím nảy lan 3 mục tiêu gần nhất!
 	if _has_flame("tu_tinh_thu_hoa"):
 		_trigger_purple_chain_bounce(final_dmg * 0.42)
 
-	# #17 Hỏa Sơn Thạch Diễm: bắn văng 6 mảnh thiên thạch nham thạch xung quanh!
 	if _has_flame("di_hoa_17_hoa_son"):
 		for mi in range(6):
 			var ang: float = float(mi) * (TAU / 6.0) + randf_range(-0.12, 0.12)
@@ -362,12 +400,10 @@ func _detonate_fire_lotus() -> void:
 				"hit_ids": {}
 			})
 
-	# #22 Vạn Thú Linh Hỏa: hóa hình bầy thú lửa cắn xé thêm 3 nhịp!
 	if _has_flame("di_hoa_22_van_thu"):
 		beast_bites_left = 3
 		beast_bite_timer = 0.42
 
-	# #19 Thanh Liên Địa Tâm Hỏa (vũng dung nham 3s) & #16 Hỏa Vân Thủy Viêm (thảm mây lửa làm chậm 3.5s)
 	if _has_flame("di_hoa_19_thanh_lien") or _has_flame("di_hoa_16_hoa_van"):
 		post_zone_timer = 3.5 if _has_flame("di_hoa_16_hoa_van") else 3.0
 		post_tick_accum = 0.0
@@ -461,57 +497,109 @@ func _tick_chain_arcs(delta: float) -> void:
 	chain_arcs = kept
 
 
-func _draw() -> void:
-	if behavior_mode == "fire_lotus_ult":
-		var ring_cols: Array = active_ring_colors if not active_ring_colors.is_empty() else [Color("#2EC4B6"), Color("#9D4EDD")]
-		var c1: Color = ring_cols[0] as Color
-		var c2: Color = ring_cols[1 % ring_cols.size()] as Color
+func _draw_pointed_petal(center: Vector2, ang: float, length: float, width: float, col: Color) -> void:
+	var f := Vector2(cos(ang), sin(ang))
+	var p := Vector2(-f.y, f.x)
+	var poly := PackedVector2Array([
+		center + f * length,
+		center + f * (length * 0.42) + p * (width * 0.5),
+		center - f * (length * 0.12),
+		center + f * (length * 0.42) - p * (width * 0.5)
+	])
+	draw_colored_polygon(poly, col)
 
-		# Vẽ vũng dung nham Thanh Liên (#19) / thảm mây lửa Hỏa Vân (#16) đang cháy trên mặt đất!
+
+func _draw() -> void:
+	if behavior_mode == "flame_wave":
+		# Diễm Phân Phệ Lãng Xích: Sóng lửa lưỡi liềm 3 tầng sắc nét + vệt đuôi dài phát sáng!
+		var life_ratio: float = clampf(elapsed / maxf(0.1, lifetime), 0.0, 1.0)
+		var fade: float = 1.0 if life_ratio < 0.68 else clampf((1.0 - life_ratio) / 0.32, 0.0, 1.0)
+		var r: float = explosion_radius * (0.95 + life_ratio * 0.25)
+
+		# 3 dải đuôi lửa lướt theo phía sau
+		for i in range(-1, 2):
+			var y_off: float = float(i) * (r * 0.42)
+			var wag: float = sin(elapsed * 26.0 + float(i) * 2.1) * 7.0
+			draw_line(Vector2(10.0, y_off), Vector2(-r * 1.65, y_off + wag), Color(mid_col.r, mid_col.g, mid_col.b, 0.55 * fade), 10.0 * fade)
+			draw_line(Vector2(14.0, y_off), Vector2(-r * 1.10, y_off + wag * 0.6), Color(core_col.r, core_col.g, core_col.b, 0.85 * fade), 3.6 * fade)
+
+		# Lưỡi liềm sóng lửa 3 tầng rực sáng (vẽ sắc cạnh hơn texture 64x64)
+		var segs: int = 20
+		for layer in range(3):
+			var outer_pts := PackedVector2Array()
+			var inner_pts := PackedVector2Array()
+			var thick: float = (28.0 if layer == 0 else (16.0 if layer == 1 else 6.5))
+			var col: Color = Color(outer_col.r, outer_col.g, outer_col.b, 0.45 * fade) if layer == 0 else (Color(mid_col.r, mid_col.g, mid_col.b, 0.85 * fade) if layer == 1 else Color(core_col.r, core_col.g, core_col.b, 0.96 * fade))
+			for s in range(segs + 1):
+				var u: float = float(s) / float(segs)
+				var ang: float = lerpf(-1.22, 1.22, u)
+				var prof: float = sin(u * PI)
+				var dir := Vector2(cos(ang), sin(ang))
+				outer_pts.append(Vector2(-r * 0.35, 0.0) + dir * (r + thick * 0.5 * prof))
+				inner_pts.append(Vector2(-r * 0.35, 0.0) + dir * maxf(2.0, r - thick * 0.5 * prof))
+			var poly := PackedVector2Array()
+			for pt in outer_pts:
+				poly.append(pt)
+			for j in range(inner_pts.size() - 1, -1, -1):
+				poly.append(inner_pts[j])
+			draw_colored_polygon(poly, col)
+
+	elif behavior_mode == "fire_lotus_ult":
+		var ring_cols: Array = active_ring_colors if not active_ring_colors.is_empty() else [Color("#2EC4B6"), Color("#9D4EDD")]
+
+		# Vũng dung nham Thanh Liên (#19) / thảm mây lửa Hỏa Vân (#16) đang cháy trên mặt đất!
 		if lotus_detonated and post_zone_timer > 0.0:
-			var z_a: float = clampf(post_zone_timer / 3.0, 0.15, 0.72)
+			var z_a: float = clampf(post_zone_timer / 3.0, 0.15, 0.78)
 			var z_rad: float = explosion_radius * 0.88
 			var pool_col: Color = Color("#2EC4B6") if _has_flame("di_hoa_19_thanh_lien") else Color("#FF6B6B")
-			draw_circle(Vector2.ZERO, z_rad, Color(pool_col.r, pool_col.g, pool_col.b, 0.18 * z_a))
-			draw_arc(Vector2.ZERO, z_rad, elapsed * 1.8, elapsed * 1.8 + TAU * 0.88, 48, Color(pool_col.r, pool_col.g, pool_col.b, 0.72 * z_a), 3.6)
-			draw_arc(Vector2.ZERO, z_rad * 0.56, -elapsed * 2.5, -elapsed * 2.5 + TAU * 0.80, 36, Color(0.88, 1.0, 0.92, 0.52 * z_a), 2.2)
+			draw_circle(Vector2.ZERO, z_rad, Color(pool_col.r, pool_col.g, pool_col.b, 0.22 * z_a))
+			draw_arc(Vector2.ZERO, z_rad, elapsed * 2.2, elapsed * 2.2 + TAU * 0.88, 48, Color(pool_col.r, pool_col.g, pool_col.b, 0.80 * z_a), 4.0)
+			draw_arc(Vector2.ZERO, z_rad * 0.58, -elapsed * 3.0, -elapsed * 3.0 + TAU * 0.80, 36, Color(0.90, 1.0, 0.94, 0.62 * z_a), 2.6)
 
-		# Vẽ đủ tới 4 vòng lửa đồng tâm theo số Hỏa dung hợp (2–4 Hỏa)!
-		if not lotus_detonated or elapsed < 1.55:
-			var alpha_v: float = 0.55 if not lotus_detonated else clampf((1.55 - elapsed) * 2.4, 0.0, 0.92)
+		# Khi Hỏa Liên đang bay & tích tụ năng lượng: Đóa sen 2 tầng cánh nhọn xoay ngược chiều + vòng lửa 2–4 ngọn Hỏa!
+		if not lotus_detonated:
+			var charge_k: float = clampf(elapsed / 1.15, 0.0, 1.0)
+			var pulse_sc: float = 0.88 + charge_k * 0.42 + sin(elapsed * 26.0) * 0.08
 			var radii_mults: Array = [1.0, 0.76, 0.56, 0.38]
 			for idx in range(mini(4, ring_cols.size())):
 				var rc: Color = ring_cols[idx] as Color
 				var dir_s: float = 1.0 if (idx % 2 == 0) else -1.0
-				var ang0: float = dir_s * elapsed * (3.0 + float(idx) * 1.1)
-				draw_arc(Vector2.ZERO, explosion_radius * float(radii_mults[idx]), ang0, ang0 + TAU * 0.84, 48, Color(rc.r, rc.g, rc.b, alpha_v), 4.0 - float(idx) * 0.45)
+				var ang0: float = dir_s * elapsed * (3.6 + float(idx) * 1.4)
+				draw_arc(Vector2.ZERO, explosion_radius * float(radii_mults[idx]) * (0.45 + 0.55 * charge_k), ang0, ang0 + TAU * 0.82, 48, Color(rc.r, rc.g, rc.b, 0.72), 4.2 - float(idx) * 0.45)
 
-			# 8 cánh sen lửa mang màu xoay vòng của toàn bộ các ngọn Hỏa dung hợp!
-			var petal_r: float = explosion_radius * (0.42 if not lotus_detonated else 0.88)
+			# Tầng cánh sen ngoài (8 cánh nhọn sắc nét đổi màu luân phiên theo các ngọn Hỏa dung hợp!)
+			var outer_len: float = 54.0 * pulse_sc
 			for k in range(8):
-				var ang: float = elapsed * 5.2 + float(k) * (TAU / 8.0)
-				var p_pos: Vector2 = Vector2(cos(ang), sin(ang)) * petal_r
+				var ang: float = elapsed * 5.8 + float(k) * (TAU / 8.0)
 				var pc: Color = ring_cols[k % ring_cols.size()] as Color
-				draw_circle(p_pos, 14.0 if not lotus_detonated else 28.0, Color(pc.r, pc.g, pc.b, 0.42 * alpha_v))
-				draw_circle(p_pos, 7.0 if not lotus_detonated else 14.0, Color(1.0, 0.96, 0.85, 0.78 * alpha_v))
+				_draw_pointed_petal(Vector2.ZERO, ang, outer_len, outer_len * 0.42, Color(pc.r, pc.g, pc.b, 0.78))
 
-			if lotus_detonated:
-				draw_circle(Vector2.ZERO, explosion_radius * 0.92, Color(c1.r, c1.g, c1.b, 0.20 * alpha_v))
-				draw_circle(Vector2.ZERO, explosion_radius * 0.50, Color(c2.r, c2.g, c2.b, 0.28 * alpha_v))
+			# Tầng cánh sen trong (8 cánh sáng rực xoay ngược chiều!)
+			var inner_len: float = 34.0 * pulse_sc
+			for k2 in range(8):
+				var ang2: float = -elapsed * 7.6 + float(k2) * (TAU / 8.0) + 0.39
+				var pc2: Color = ring_cols[(k2 + 1) % ring_cols.size()] as Color
+				_draw_pointed_petal(Vector2.ZERO, ang2, inner_len, inner_len * 0.46, Color(pc2.r, pc2.g, pc2.b, 0.90).lerp(Color.WHITE, 0.35))
 
-	# Vẽ 6 thiên thạch nham thạch (#17 Hỏa Sơn Thạch Diễm)
+			# Nhụy sen lửa trắng rực
+			draw_circle(Vector2.ZERO, 16.0 * pulse_sc, Color(core_col.r, core_col.g, core_col.b, 0.88))
+			draw_circle(Vector2.ZERO, 8.5 * pulse_sc, Color(1.0, 1.0, 0.96, 0.98))
+
+	# 6 thiên thạch nham thạch (#17 Hỏa Sơn Thạch Diễm)
 	for sb in sub_bolts:
 		var lp: Vector2 = (sb["pos"] as Vector2) - global_position
 		var sc: Color = sb["color"] as Color
-		draw_circle(lp, 12.0, Color(sc.r, sc.g, sc.b, 0.48))
-		draw_circle(lp, 7.0, sc)
-		draw_circle(lp, 3.5, Color("#FFF3B0"))
+		var vel_v: Vector2 = (sb["vel"] as Vector2).normalized()
+		draw_line(lp, lp - vel_v * 26.0, Color(sc.r, sc.g, sc.b, 0.65), 8.0)
+		draw_circle(lp, 13.0, Color(sc.r, sc.g, sc.b, 0.55))
+		draw_circle(lp, 7.5, sc)
+		draw_circle(lp, 3.8, Color("#FFF3B0"))
 
-	# Vẽ tia lửa tím nảy lan (Tử Hỏa) & vết cắn bầy thú lửa (#22 Vạn Thú)
+	# Tia lửa tím nảy lan (Tử Hỏa) & vết cắn bầy thú lửa (#22 Vạn Thú)
 	for ca in chain_arcs:
 		var p1: Vector2 = (ca["p1"] as Vector2) - global_position
 		var p2: Vector2 = (ca["p2"] as Vector2) - global_position
 		var cc: Color = ca["color"] as Color
-		var mid: Vector2 = (p1 + p2) * 0.5 + Vector2(randf_range(-12, 12), randf_range(-12, 12))
-		draw_polyline(PackedVector2Array([p1, mid, p2]), Color(cc.r, cc.g, cc.b, 0.92), 4.0)
-		draw_polyline(PackedVector2Array([p1, mid, p2]), Color(1.0, 0.96, 0.90, 0.85), 1.8)
+		var mid: Vector2 = (p1 + p2) * 0.5 + Vector2(randf_range(-14, 14), randf_range(-14, 14))
+		draw_polyline(PackedVector2Array([p1, mid, p2]), Color(cc.r, cc.g, cc.b, 0.95), 5.0)
+		draw_polyline(PackedVector2Array([p1, mid, p2]), Color(1.0, 0.98, 0.92, 0.92), 2.0)
