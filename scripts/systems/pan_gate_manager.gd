@@ -259,6 +259,9 @@ static func send_ziyan_forage(pd: Node, use_candy: bool = true) -> Dictionary:
 	if is_viem_minh_evolved(pd):
 		pd.add_item("herb_hu_cot_thao", 1 + int(a_lvl >= 2))
 		extra_notes.append("%dx Hủ Cốt Thảo" % (1 + int(a_lvl >= 2)))
+	if pd.has_flag("ch08_broke_dau_tong") or pd.is_demo_mode:
+		pd.add_item("herb_bach_cot_linh_chi", 1)
+		extra_notes.append("1x Bạch Cốt Linh Chi")
 	EventBus.audio_sfx_requested.emit("chest_open")
 	EventBus.stats_changed.emit()
 	pd.trigger_auto_save("Tử Nghiên tầm bảo", true)
@@ -284,4 +287,8 @@ static func get_strong_ranking_roster_for(pd: Node) -> Array:
 		roster.append({ "rank": 1, "name": "[VIÊM MINH] Lão Tông Chủ Vân Sơn (Tái Chiến)", "boss_id": "van_son_boss", "diff": "normal", "realm": "Tam Tinh Đấu Tông", "reward_fe": 240 })
 		roster.append({ "rank": 0, "name": "[VIÊM MINH] Lão Tổ Vạn Hạt Môn Hạt Tất Nham", "boss_id": "hat_tat_nham_boss", "diff": "normal", "realm": "Tam Tinh Đấu Tông", "reward_fe": 280 })
 		roster.append({ "rank": -1, "name": "[ĐỈNH QUYỂN II] Địa Ma Lão Quỷ (Ác Mộng Đấu Tông 7★)", "boss_id": "dia_ma_lao_quy_boss", "diff": "nightmare", "realm": "Thất Tinh Đấu Tông", "reward_fe": 380 })
+	if pd.has_flag("ch08_broke_dau_tong") or pd.is_demo_mode:
+		roster.append({ "rank": -2, "name": "[TRUNG CHÂU] Thiên Kiêu Phượng Thanh Nhi (Phong Lôi Các #1)", "boss_id": "phuong_thanh_nhi_boss", "diff": "normal", "realm": "Ngũ Tinh Đấu Tông", "reward_fe": 440 })
+		roster.append({ "rank": -3, "name": "[ĐAN HỘI] Đại Nghịch Đồ Mộ Cốt Lão Nhân (Hồn Điện)", "boss_id": "mo_cot_lao_nhan_boss", "diff": "normal", "realm": "Tam Tinh Đấu Tôn", "reward_fe": 520 })
+		roster.append({ "rank": -4, "name": "[ĐỈNH CH.08] Thái Hư Tử Hắc Cự Long #9 (Ác Mộng)", "boss_id": "tam_thien_diem_viem_boss", "diff": "nightmare", "realm": "Chuẩn Đấu Tôn · Dị Hỏa #9", "reward_fe": 680 })
 	return roster

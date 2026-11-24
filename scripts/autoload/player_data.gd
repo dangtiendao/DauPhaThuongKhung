@@ -87,6 +87,9 @@ var player_slow_timer: float = 0.0
 var player_slow_ratio: float = 0.0
 var ma_doc_ban_stacks: int = 0
 var is_nhi_bien_active: bool = false
+var is_tam_bien_active: bool = false
+var immortal_revive_cd: float = 0.0
+var tam_thien_regen_tick: float = 0.0
 
 # Kho Đấu Kỹ đã học & Tùy biến gắn phím Q / E / R / F / T
 var unlocked_skills: Array = []
@@ -233,6 +236,10 @@ func reset_for_new_game(slot_idx: int = 1) -> void:
 	all_quests_done = false
 	completed_quest_ids = {}
 	kim_viem_revive_used = false
+	is_nhi_bien_active = false
+	is_tam_bien_active = false
+	immortal_revive_cd = 0.0
+	tam_thien_regen_tick = 0.0
 	inventory = { "pill_ngung_huyet_tan": 1 }
 	quick_hp_pill_id = "pill_ngung_huyet_tan"
 	quick_qi_pill_id = "pill_hoi_khi_dan"
@@ -265,13 +272,13 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	auto_save_timer = 0.0
 	current_map_id = "ch01_tieu_gia"
 
-	realm_index = 7 # Đấu Hoàng 9 Tinh Đỉnh Phong (Điều Động Thiên Địa Năng Lượng, sẵn sàng bấm [B] đột phá Đấu Tông & trải nghiệm trọn Quyển I & II: Ch01–Ch07!)
+	realm_index = 8 # Đấu Tông 9 Tinh Đỉnh Phong (Đạp Hư Không · Không Gian Phong Tỏa · Trọn Quyển I–II & Mở Màn Quyển III Ch01–Ch08!)
 	stage = 9
-	bonus_soul = 310
-	gold = 180000
+	bonus_soul = 980 # Thiên Cảnh Linh Hồn (Luyện Bát Phẩm Ngũ Sắc Đan Lôi!)
+	gold = 380000
 	enhance_stones = 999
 
-	# Mở toàn bộ cờ cốt truyện để đi tất cả 38 bản đồ Ch01–Ch07 & Viêm Minh / Hắc Hoàng Tông / Lò Đan / Dị Hỏa!
+	# Mở toàn bộ cờ cốt truyện để đi tất cả 46 bản đồ Ch01–Ch08 & Viêm Minh / Thiên Bảo Phường / Lò Đan Bát Phẩm / 28 Hỏa!
 	story_flags = {
 		"tu_hon_done": true,
 		"duoc_lao_awake": true,
@@ -351,6 +358,28 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 		"ch07_dia_yeu_khoi_forged": true,
 		"ch07_thai_lan_farewell_done": true,
 		"ch07_completed": true,
+		"ch08_han_tuyet_saved": true,
+		"ch08_han_nguyet_met": true,
+		"ch08_escaped_phi_thien": true,
+		"ch08_helped_kim_thach": true,
+		"ch08_killed_vuong_tran": true,
+		"ch08_kim_thu_secret_done": true,
+		"ch08_broke_dau_tong": true,
+		"ch08_han_secret_gift_done": true,
+		"ch08_phong_ton_ally": true,
+		"ch08_beat_phuong_thanh_nhi": true,
+		"ch08_ma_doc_ban_cured": true,
+		"ch08_beat_bang_ha_thanh_hai": true,
+		"ch08_huan_nhi_de_an_done": true,
+		"ch08_passed_cuu_long_trial": true,
+		"ch08_got_tam_huyen_tam_bien": true,
+		"ch08_stele_shattered": true,
+		"ch08_huyen_y_memory_done": true,
+		"ch08_dan_hoi_champion": true,
+		"ch08_hung_chien_oath_done": true,
+		"ch08_repelled_mo_cot": true,
+		"ch08_killed_tam_thien_dragon": true,
+		"ch08_completed": true,
 		"FLAG_ZI_YAN_COMPANION": true,
 		"FLAG_MEDUSA_SOUL_BOND": true,
 		"FLAG_FALLING_HEART_FLAME": true,
@@ -360,11 +389,23 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 		"FLAG_VAN_LAM_DISBANDED": true,
 		"FLAG_HAN_FENG_CAPTURED_JAR": true,
 		"FLAG_DIA_YEU_KHOI_FORGED": true,
-		"FLAG_BOOK_02_COMPLETED": true
+		"FLAG_BOOK_02_COMPLETED": true,
+		"FLAG_ESCAPED_FEI_TIAN": true,
+		"FLAG_DAU_TONG_AWAKENED": true,
+		"FLAG_MA_DOC_BAN_CURED": true,
+		"FLAG_THIEN_HOA_REVIVED": true,
+		"FLAG_GU_CLAN_INTERVENTION": true,
+		"FLAG_PHAN_VIEM_ALLY": true,
+		"FLAG_SOUL_PEAK_LINH_CANH": true,
+		"FLAG_DAN_HOI_CHAMPION": true,
+		"FLAG_THIEN_YEU_KHOI_EVOLVED": true,
+		"FLAG_CH08_COMPLETED": true,
+		"FLAG_TAM_THIEN_IMMORTAL_BODY": true,
+		"FLAG_FOUR_FLAME_LOTUS": true
 	}
 	affection = { "huan_nhi": 100, "tieu_y_tien": 100, "van_chi": 100, "thanh_lan": 100, "my_do_toa": 100 }
 	story_relics = [
-		"Chế Độ DEMO — Mở Khóa Toàn Bộ Quyển I & II (%d Map · Ch01–Ch07 · 28 Hỏa)" % GameDatabase.maps_ordered.size(),
+		"Chế Độ DEMO — Mở Khóa Trọn Quyển I–II & Ch.08 Quyển III (%d Map · Ch01–Ch08 · 28 Hỏa)" % GameDatabase.maps_ordered.size(),
 		"Ấn Ký Tôn Nghiêm (+5% Công Kích)",
 		"Hắc Ảnh Phù (+8% Tốc Chạy)",
 		"Thanh Liên Đài (+15% EXP & +40% Hồi QI)",
@@ -376,36 +417,41 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 		"Hỏa Năng Tinh Tạp · Tân Sinh Vương Già Nam",
 		"Lưu Ly Liên Tâm Hỏa (#19 + #14) · Đấu Khí Hóa Dực",
 		"Minh Chủ Đế Quốc VIÊM MINH · Tam Sắc Dị Hỏa",
-		"Vệ Sĩ Bất Tử: Địa Yêu Khôi & Thiên Độc Nữ Tiểu Y Tiên"
+		"Vệ Sĩ Bất Tử: Chuẩn Thiên Yêu Khôi & Thiên Hỏa Tôn Giả (#7)",
+		"ĐỘT PHÁ ĐẤU TÔNG · Đạp Hư Không · Không Gian Phong Tỏa",
+		"Quán Quân Đan Hội Trung Châu · #9 Tam Thiên Diễm Viêm Hỏa (Bất Tử Chi Thể)"
 	]
 
-	# Mở toàn bộ 28 ngọn Hỏa (từ Phàm Hỏa tới #1 Đế Viêm!), vận chuyển #14 Vẫn Lạc Tâm Viêm & ghép sẵn 4 Dị Hỏa Liên!
+	# Mở toàn bộ 28 ngọn Hỏa (từ Phàm Hỏa tới #1 Đế Viêm!), vận chuyển #9 Tam Thiên Diễm Viêm Hỏa & ghép sẵn Tứ Sắc Hủy Diệt Hỏa Liên!
 	unlocked_flames = []
 	for fl in GameDatabase.flames_ordered:
 		if fl is Dictionary:
 			var fid: String = str(fl.get("id", ""))
 			if fid != "":
 				unlocked_flames.append(fid)
-	equipped_flame_id = "di_hoa_14_van_lac"
-	lotus_fusion_flames = ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_15_hai_tam"]
+	equipped_flame_id = "di_hoa_09_tam_thien"
+	lotus_fusion_flames = ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_09_tam_thien"]
 
-	# Mở toàn bộ 19 Đấu Kỹ + [F] Tam/Tứ Sắc Hỏa Liên + [T] Địa Yêu Khôi!
+	# Mở toàn bộ 24/24 Đấu Kỹ + [F] Tứ Sắc Hủy Diệt Hỏa Liên + [T] Chuẩn Thiên Yêu Khôi!
 	unlocked_skills = []
 	for sid in GameDatabase.skills_by_id.keys():
 		unlocked_skills.append(str(sid))
-	slot_q_skill = "de_an_quyet"
-	slot_e_skill = "thien_hoa_nhi_bien"
-	slot_r_skill = "phien_hai_an"
+	slot_q_skill = "khong_gian_phong_toa"
+	slot_e_skill = "thien_hoa_tam_bien"
+	slot_r_skill = "de_an_co_de_an"
 	slot_f_skill = "phat_no_hoa_lien"
 	duoc_lao_assist_unlocked = true
 
-	# Mở toàn bộ 6 Đồng Hành AI [G] (Dược Lão, Thiên Độc Nữ, Thải Lân, Huân Nhi, Tử Nghiên & Địa Yêu Khôi!)
-	unlocked_companions = ["duoc_lao_phantom", "tieu_y_tien", "thai_lan", "huan_nhi", "tu_nghien", "dia_yeu_khoi"]
-	active_companion_id = "dia_yeu_khoi"
-	weapon_core_sockets = ["core_doc_6", "core_bang_5", "core_loi_5"]
-	fire_energy = 850
-	ma_doc_ban_stacks = 6
+	# Mở toàn bộ 7 Đồng Hành AI [G] (Dược Lão, Thiên Độc Nữ, Thải Lân, Huân Nhi, Tử Nghiên, Chuẩn Thiên Yêu Khôi & Thiên Hỏa Tôn Giả!)
+	unlocked_companions = ["duoc_lao_phantom", "tieu_y_tien", "thai_lan", "huan_nhi", "tu_nghien", "dia_yeu_khoi", "thien_hoa_ton_gia"]
+	active_companion_id = "thien_hoa_ton_gia"
+	weapon_core_sockets = ["core_tinh_7", "core_loi_7", "core_doc_6"]
+	fire_energy = 1500
+	ma_doc_ban_stacks = 0
 	is_nhi_bien_active = false
+	is_tam_bien_active = false
+	immortal_revive_cd = 0.0
+	tam_thien_regen_tick = 0.0
 	tower_active_buffs.clear()
 	pan_gate_state = {
 		"dan_duong": 2,
@@ -420,33 +466,33 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	van_lac_cultivation_tick = 0.0
 	am_duong_buff_timer = 0.0
 
-	# Trang bị 10 Ô Full Bộ Viêm Minh Chi Chủ (Đế Phẩm) + Bảo Vật trong Nạp Giới!
+	# Trang bị 10 Ô Full Bộ #8 Trung Châu Đan Vương (Đế Phẩm) + Bảo Vật trong Nạp Giới!
 	equipped_gear = {
-		"weapon": EquipmentSystem.roll_equipment_instance("wpn_xich_tam_sac_viem", "de"),
-		"armor": EquipmentSystem.roll_equipment_instance("arm_viem_minh_hoang_bao", "de"),
+		"weapon": EquipmentSystem.roll_equipment_instance("wpn_xich_tam_thien_tinh_viem", "de"),
+		"armor": EquipmentSystem.roll_equipment_instance("arm_dan_hoi_quan_quan_bao", "de"),
 		"legs": EquipmentSystem.roll_equipment_instance("leg_bi_giap_kho", "de"),
 		"boots": EquipmentSystem.roll_equipment_instance("boot_phong_hanh_hai", "de"),
 		"gloves": EquipmentSystem.roll_equipment_instance("glv_ho_thu_am_thiet", "de"),
 		"necklace": EquipmentSystem.roll_equipment_instance("neck_bang_hoang_tam", "de"),
-		"pendant": EquipmentSystem.roll_equipment_instance("pend_bo_de_hoa_the_tien", "de"),
+		"pendant": EquipmentSystem.roll_equipment_instance("pend_huyen_tam_ho_hon", "de"),
 		"ring": EquipmentSystem.roll_equipment_instance("ring_cot_viem_ton_gioi", "de"),
-		"wings": EquipmentSystem.roll_equipment_instance("wing_thien_yeu_hoang_canh", "de"),
-		"cauldron": EquipmentSystem.roll_equipment_instance("caul_hai_tam_dinh", "de")
+		"wings": EquipmentSystem.roll_equipment_instance("wing_dap_hu_khong_anh", "de"),
+		"cauldron": EquipmentSystem.roll_equipment_instance("caul_thien_dinh_dan_thap", "de")
 	}
 	gear_bag = [
-		EquipmentSystem.roll_equipment_instance("wpn_xich_luu_ly_viem", "de"),
-		EquipmentSystem.roll_equipment_instance("wpn_thiet_kiem", "thien"),
-		EquipmentSystem.roll_equipment_instance("arm_luu_ly_dau_vuong_bao", "de"),
-		EquipmentSystem.roll_equipment_instance("wing_dau_khi_hoa_duc", "de")
+		EquipmentSystem.roll_equipment_instance("wpn_xich_tam_sac_viem", "de"),
+		EquipmentSystem.roll_equipment_instance("arm_viem_minh_hoang_bao", "de"),
+		EquipmentSystem.roll_equipment_instance("wing_thien_yeu_hoang_canh", "de"),
+		EquipmentSystem.roll_equipment_instance("caul_hai_tam_dinh", "de")
 	]
 	is_ruler_sealed = false
 
-	# Nguyên liệu luyện đan, Ma Hạch & Đan Dược x20 mỗi loại!
+	# Nguyên liệu luyện đan, Ma Hạch Cấp 7 & Đan Dược Bát Phẩm x20 mỗi loại!
 	inventory = {}
 	for iid in GameDatabase.items_by_id.keys():
 		inventory[str(iid)] = 20
-	quick_hp_pill_id = "pill_viem_minh_linh_dan"
-	quick_qi_pill_id = "pill_thanh_hon_hoa_sinh"
+	quick_hp_pill_id = "pill_hoa_bo_dan"
+	quick_qi_pill_id = "pill_thang_linh_dan"
 	enemies_killed_total = 40
 	claimed_affection_milestones = {}
 
@@ -933,6 +979,8 @@ func cycle_companion() -> String:
 
 func get_companion_display_name(comp_id: String) -> String:
 	if comp_id == "tieu_y_tien":
+		if has_flag("ch08_ma_doc_ban_cured"):
+			return "Thiên Độc Nữ Tiểu Y Tiên (Tam Tinh Đấu Tôn · Bổn Mệnh Độc Đan)"
 		if has_flag("ch07_thien_doc_nu_joined"):
 			return "Thiên Độc Nữ Tiểu Y Tiên (Đấu Tông Tóc Bạc · Độc Cầu & Trị Liệu)"
 		return "Tiểu Y Tiên (Hồi Máu & Độc Châm)"
@@ -945,12 +993,24 @@ func get_companion_display_name(comp_id: String) -> String:
 	elif comp_id == "tu_nghien":
 		return "Tử Nghiên (Thái Hư Cổ Long · Choáng & Tầm Bảo)"
 	elif comp_id == "dia_yeu_khoi":
+		if has_flag("ch08_dan_hoi_champion"):
+			return "Chuẩn Thiên Yêu Khôi (Khôi Lỗi Hoàng Kim Ngũ Lôi · Đấu Tôn Đỉnh)"
 		return "Địa Yêu Khôi (Khôi Lỗi Đấu Tông Bất Hoại · Lôi Bộc & Phá Thế)"
+	elif comp_id == "thien_hoa_ton_gia":
+		return "Thiên Hỏa Tôn Giả (Đấu Tôn · Ngũ Luân Ly Hỏa Pháp & Hồi Đấu Khí)"
 	return "Thu Hồi"
 
 
 func has_van_lac_passive() -> bool:
 	return unlocked_flames.has("di_hoa_14_van_lac") or has_flag("ch06_absorbed_van_lac")
+
+
+func has_tam_thien_immortal_body() -> bool:
+	return unlocked_flames.has("di_hoa_09_tam_thien") or has_flag("ch08_completed")
+
+
+func has_dau_tong_void_step() -> bool:
+	return realm_index >= 8 or has_flag("ch08_broke_dau_tong")
 
 
 func has_ma_doc_ban() -> bool:
@@ -969,7 +1029,7 @@ func has_dau_vuong_wings() -> bool:
 	var wg = equipped_gear.get("wings", {})
 	if wg is Dictionary and not wg.is_empty():
 		var tid: String = str(wg.get("template_id", ""))
-		return tid in ["wing_dau_khi_hoa_duc", "wing_thien_yeu_hoang_canh"]
+		return tid in ["wing_dau_khi_hoa_duc", "wing_thien_yeu_hoang_canh", "wing_dap_hu_khong_anh"]
 	return false
 
 
@@ -1126,6 +1186,12 @@ func set_story_flag(flag_name: String) -> void:
 		for fid_tri in ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh"]:
 			if fid_tri == "di_hoa_11_cot_linh" or unlocked_flames.has(fid_tri):
 				lotus_fusion_flames.append(fid_tri)
+	elif flag_name == "ch08_completed":
+		# Thôn phệ #9 Tam Thiên Diễm Viêm Hỏa -> tự động hợp nhất TỨ SẮC HỦY DIỆT HỎA LIÊN!
+		lotus_fusion_flames = []
+		for fid_quad in ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_09_tam_thien"]:
+			if fid_quad == "di_hoa_09_tam_thien" or unlocked_flames.has(fid_quad):
+				lotus_fusion_flames.append(fid_quad)
 	var fe: Dictionary = GameDatabase.get_flag_effect(flag_name)
 	if not fe.is_empty():
 		execute_story_effect(fe, flag_name)
@@ -1317,6 +1383,8 @@ func execute_story_effect(eff: Dictionary, skip_flag_id: String = "") -> Diction
 
 
 func get_assist_mode() -> String:
+	if has_flag("ch08_dan_hoi_champion"):
+		return "thien_yeu_khoi"
 	if has_flag("ch07_dia_yeu_khoi_forged"):
 		return "dia_yeu_khoi"
 	if has_flag("ch04_medusa_saved"):
@@ -1339,9 +1407,24 @@ func get_enemy_damage_bonus_mult(target_enemy_id: String, target_enemy_name: Str
 		if low_id.find("han_phong") != -1 or low_id.find("hon_dien") != -1 or low_id.find("vu_ho_phap") != -1 or low_nm.find("hàn phong") != -1 or low_nm.find("hồn điện") != -1:
 			mult *= 1.25 # Ký Ức Phản Sư Dược Lão (+25% ATK vs Hàn Phong & Hồn Điện!)
 	if has_flag("ch07_tieu_chien_relic_done"):
-		if low_id.find("hon_dien") != -1 or low_id.find("vu_ho_phap") != -1 or low_id.find("am_anh_hon_su") != -1 or low_id.find("han_phong") != -1 or low_nm.find("hồn điện") != -1 or low_nm.find("hồn sứ") != -1:
+		if low_id.find("hon_dien") != -1 or low_id.find("vu_ho_phap") != -1 or low_id.find("am_anh_hon_su") != -1 or low_id.find("han_phong") != -1 or low_id.find("mo_cot") != -1 or low_id.find("thanh_hai") != -1 or low_nm.find("hồn điện") != -1 or low_nm.find("hồn sứ") != -1:
 			mult *= 1.15 # Di Nguyện Phụ Thân Tiêu Chiến (+15% ATK vs Hồn Điện!)
+	if has_flag("ch08_huyen_y_memory_done"):
+		if low_id.find("hon_dien") != -1 or low_id.find("mo_cot") != -1 or low_id.find("thanh_hai") != -1 or low_id.find("vu_ho_phap") != -1 or low_nm.find("hồn điện") != -1 or low_nm.find("mộ cốt") != -1:
+			mult *= 1.15 # Hồi Ức Dược Trần & Huyền Y (+15% ATK vs Hồn Điện & Mộ Cốt!)
 	return mult
+
+
+func get_enemy_damage_taken_mult(attacker_id: String, attacker_name: String = "") -> float:
+	var low_id: String = attacker_id.to_lower()
+	var low_nm: String = attacker_name.to_lower()
+	var is_hon_dien: bool = (low_id.find("hon_dien") != -1 or low_id.find("mo_cot") != -1 or low_id.find("thanh_hai") != -1 or low_id.find("vu_ho_phap") != -1 or low_id.find("am_anh_hon_su") != -1 or low_nm.find("hồn điện") != -1 or low_nm.find("mộ cốt") != -1 or low_nm.find("thanh hải") != -1)
+	if is_hon_dien:
+		var pend = equipped_gear.get("pendant", {})
+		var has_pend: bool = (pend is Dictionary and str(pend.get("template_id", "")) == "pend_huyen_tam_ho_hon")
+		if has_flag("ch08_huyen_y_memory_done") or has_pend:
+			return 0.75 # Huyền Tâm Hộ Hồn Bội (-25% sát thương Hồn Điện!)
+	return 1.0
 
 
 func is_alchemy_unlocked() -> bool:
@@ -1361,7 +1444,7 @@ func has_huyen_trong_xich_equipped() -> bool:
 	var w = equipped_gear.get("weapon", {})
 	if w is Dictionary and not w.is_empty():
 		var tid: String = str(w.get("template_id", ""))
-		return tid in ["wpn_huyen_trong_xich", "wpn_xich_ngung_vat", "wpn_xich_luu_ly_viem", "wpn_xich_tam_sac_viem"]
+		return tid in ["wpn_huyen_trong_xich", "wpn_xich_ngung_vat", "wpn_xich_luu_ly_viem", "wpn_xich_tam_sac_viem", "wpn_xich_tam_thien_tinh_viem"]
 	return false
 
 
@@ -1369,7 +1452,7 @@ func has_tu_van_duc_equipped() -> bool:
 	var wg = equipped_gear.get("wings", {})
 	if wg is Dictionary and not wg.is_empty():
 		var tid: String = str(wg.get("template_id", ""))
-		return tid in ["wing_tu_van_duc", "wing_hac_diem_tu_van_duc", "wing_dau_khi_hoa_duc", "wing_thien_yeu_hoang_canh"]
+		return tid in ["wing_tu_van_duc", "wing_hac_diem_tu_van_duc", "wing_dau_khi_hoa_duc", "wing_thien_yeu_hoang_canh", "wing_dap_hu_khong_anh"]
 	return false
 
 
@@ -1437,10 +1520,14 @@ func get_atk() -> float:
 		mult *= 1.05 # Đệ Nhất Tân Sinh Vương!
 	if has_flag("ch07_lien_quan_aura"):
 		mult *= 1.15 # Liên Quân Già Nam (Tô Thiên áp trận Ma Viêm Cốc)!
+	if has_flag("ch08_ma_doc_ban_cured"):
+		mult *= 1.15 # Cộng Hưởng Bổn Mệnh Độc Đan (Giải Ma Độc Ban -> +15% ATK vĩnh viễn!)
 	if is_duoc_lao_active:
 		var amode: String = get_assist_mode()
-		mult *= 2.70 if amode == "dia_yeu_khoi" else (2.45 if amode == "medusa_dau_tong" else 2.2)
-	if is_nhi_bien_active:
+		mult *= 3.05 if amode == "thien_yeu_khoi" else (2.70 if amode == "dia_yeu_khoi" else (2.45 if amode == "medusa_dau_tong" else 2.2))
+	if is_tam_bien_active:
+		mult *= 1.85 # Thiên Hỏa Tam Huyền Biến — Tam Biến (Phần Viêm Cốc)!
+	elif is_nhi_bien_active:
 		mult *= 1.65 # Thiên Hỏa Tam Huyền Biến — Nhị Biến!
 	elif is_flame_buff_active:
 		mult *= 1.45
@@ -1459,7 +1546,9 @@ func get_def() -> float:
 	total *= (1.0 + (get_affection_bonus("def_pct") + float(tower_active_buffs.get("def_pct", 0.0))) / 100.0)
 	if has_flag("ch06_got_dia_tam_nhu"):
 		total *= 1.15 # Địa Tâm Tôi Thể Nhũ (+15% DEF vĩnh viễn!)
-	if realm_index >= 7:
+	if realm_index >= 8:
+		total *= 1.78 # Đấu Tông — Không Gian Chi Lực Hộ Thể!
+	elif realm_index >= 7:
 		total *= 1.64 # Đấu Hoàng — Điều Động Thiên Địa Năng Lượng Hộ Thể!
 	elif realm_index >= 6:
 		total *= 1.52 # Đấu Vương — Đấu Khí Hóa Dực & Hộ Thể Cương Khí!
@@ -1482,28 +1571,36 @@ func get_move_speed() -> float:
 		base_spd += float(st_dict.get("spd", 2.0)) * float(stages_cnt) * 1.15
 	base_spd = minf(base_spd, 485.0)
 	base_spd *= (1.0 + (get_affection_bonus("spd_pct") + float(tower_active_buffs.get("spd_pct", 0.0))) / 100.0)
-	if realm_index >= 7:
+	if realm_index >= 8:
+		base_spd *= 1.30 # Đấu Tông: Đạp Hư Không (+30% SPD)!
+	elif realm_index >= 7:
 		base_spd *= 1.22 # Đấu Hoàng: Điều Động Thiên Địa Năng Lượng ngự phong (+22% SPD)!
 	elif has_dau_vuong_wings():
 		base_spd *= 1.15 # Đấu Vương: Đấu Khí Hóa Dực ngự không phi hành (+15% SPD)!
 	if has_flag("secret_lang_anh_done"):
 		base_spd *= 1.08 # Hắc Ảnh Phù!
+	if has_flag("ch08_escaped_phi_thien"):
+		base_spd *= 1.03 # Lôi Trung Chi Độn: Thoát truy sát Phí Thiên (+3% SPD)!
 	if is_ruler_sealed and has_huyen_trong_xich_equipped():
 		base_spd *= 0.85
 	if is_duoc_lao_active:
 		var amode: String = get_assist_mode()
-		base_spd *= 1.45 if amode == "dia_yeu_khoi" else (1.40 if amode == "medusa_dau_tong" else 1.35)
-	if is_nhi_bien_active:
+		base_spd *= 1.52 if amode == "thien_yeu_khoi" else (1.45 if amode == "dia_yeu_khoi" else (1.40 if amode == "medusa_dau_tong" else 1.35))
+	if is_tam_bien_active:
+		base_spd *= 1.45 # Thiên Hỏa Tam Biến (+45% SPD)!
+	elif is_nhi_bien_active:
 		base_spd *= 1.30 # Thiên Hỏa Nhị Biến (+30% SPD)!
 	elif is_flame_buff_active:
 		base_spd *= 1.20
-	if player_slow_timer > 0.0 and not (is_duoc_lao_active and get_assist_mode() == "dia_yeu_khoi"):
+	var amode_slow: String = get_assist_mode()
+	if player_slow_timer > 0.0 and not (is_duoc_lao_active and (amode_slow == "dia_yeu_khoi" or amode_slow == "thien_yeu_khoi")):
 		base_spd *= (1.0 - clampf(player_slow_ratio, 0.0, 0.55))
 	return base_spd
 
 
 func get_soul() -> int:
-	var total: int = 5 + bonus_soul + int(round(get_gear_bonus("soul") + get_affection_bonus("soul")))
+	var core_t: Dictionary = get_core_socket_totals()
+	var total: int = 5 + bonus_soul + int(round(get_gear_bonus("soul") + get_affection_bonus("soul") + float(core_t.get("soul", 0.0))))
 	for r_idx in range(1, realm_index + 1):
 		var r_def: Dictionary = GameDatabase.get_realm_def(r_idx)
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
@@ -1527,14 +1624,17 @@ func get_lifesteal_ratio() -> float:
 
 func get_cooldown_multiplier() -> float:
 	var core_t: Dictionary = get_core_socket_totals()
-	var cdr: float = clampf((get_gear_bonus("cooldown_red") + get_affection_bonus("cooldown_red") + float(core_t.get("cd_red_pct", 0.0)) + float(tower_active_buffs.get("cd_red_pct", 0.0))) / 100.0, 0.0, 0.65)
+	var tam_bien_cdr: float = 30.0 if is_tam_bien_active else 0.0
+	var cdr: float = clampf((get_gear_bonus("cooldown_red") + get_affection_bonus("cooldown_red") + float(core_t.get("cd_red_pct", 0.0)) + float(tower_active_buffs.get("cd_red_pct", 0.0)) + tam_bien_cdr) / 100.0, 0.0, 0.72)
 	return 1.0 - cdr
 
 
 func get_poise_dmg_multiplier() -> float:
 	var core_t: Dictionary = get_core_socket_totals()
 	var bonus_pct: float = float(core_t.get("poise_pct", 0.0)) + float(tower_active_buffs.get("poise_pct", 0.0))
-	if realm_index >= 7:
+	if realm_index >= 8:
+		bonus_pct += 48.0 # Đấu Tông: Không Gian Nghiền Ép phá thế!
+	elif realm_index >= 7:
 		bonus_pct += 35.0 # Đấu Hoàng: Thiên Địa Uy Áp phá thế!
 	elif realm_index >= 6:
 		bonus_pct += 25.0 # Đấu Vương: Đấu Khí Hóa Dực & Bá Khí Phá Thế!
@@ -1544,6 +1644,8 @@ func get_poise_dmg_multiplier() -> float:
 
 
 func get_attack_reach_multiplier() -> float:
+	if realm_index >= 8:
+		return 1.42
 	if realm_index >= 7:
 		return 1.35
 	if realm_index >= 6:
@@ -1573,7 +1675,8 @@ func get_soul_radar_radius() -> float:
 
 
 func get_flame_dmg_multiplier() -> float:
-	var bonus_pct: float = get_gear_bonus("flame_dmg") + get_affection_bonus("flame_dmg")
+	var core_t: Dictionary = get_core_socket_totals()
+	var bonus_pct: float = get_gear_bonus("flame_dmg") + get_affection_bonus("flame_dmg") + float(core_t.get("flame_dmg_pct", 0.0))
 	if has_flag("ch06_luu_ly_tinh_done"):
 		bonus_pct += 15.0 # Địa Hỏa Lưu Ly Tinh!
 	return 1.0 + bonus_pct / 100.0
@@ -1591,7 +1694,8 @@ func get_loot_magnet_radius() -> float:
 
 
 func get_heal_effectiveness_mult() -> float:
-	return 1.0 + get_affection_bonus("heal_pct") / 100.0
+	var bonus_han: float = 10.0 if has_flag("ch08_han_secret_gift_done") else 0.0
+	return 1.0 + (get_affection_bonus("heal_pct") + bonus_han) / 100.0
 
 
 func get_gold_reward_mult() -> float:
@@ -1639,7 +1743,9 @@ func get_weapon_attack_speed_mult() -> float:
 	if w_inst is Dictionary and not w_inst.is_empty():
 		var tdef: Dictionary = GameDatabase.get_equipment_template(str(w_inst.get("template_id", "")))
 		base_m = float(tdef.get("attack_speed_mult", 1.0))
-	if is_nhi_bien_active:
+	if is_tam_bien_active:
+		base_m *= 1.35
+	elif is_nhi_bien_active:
 		base_m *= 1.25
 	elif is_flame_buff_active:
 		base_m *= 1.20
@@ -1967,14 +2073,14 @@ func get_effective_quick_pill(slot_num: int) -> String:
 	if slot_num == 1:
 		if get_item_count(quick_hp_pill_id) > 0:
 			return quick_hp_pill_id
-		for cand in ["pill_viem_minh_linh_dan", "pill_hoa_lien_dan", "pill_huyet_ngung_dan", "pill_bang_tam_dan", "pill_ngung_huyet_tan"]:
+		for cand in ["pill_hoa_bo_dan", "pill_thanh_hon_dan", "pill_viem_minh_linh_dan", "pill_hoa_lien_dan", "pill_huyet_ngung_dan", "pill_bang_tam_dan", "pill_ngung_huyet_tan"]:
 			if get_item_count(cand) > 0:
 				return cand
 		return quick_hp_pill_id
 	elif slot_num == 2:
 		if get_item_count(quick_qi_pill_id) > 0:
 			return quick_qi_pill_id
-		for cand in ["pill_thanh_hon_hoa_sinh", "pill_dan_hoan_ngot", "pill_thanh_lien_tu", "pill_hoi_khi_dan"]:
+		for cand in ["pill_thang_linh_dan", "pill_thanh_hon_hoa_sinh", "pill_dan_hoan_ngot", "pill_thanh_lien_tu", "pill_hoi_khi_dan"]:
 			if get_item_count(cand) > 0:
 				return cand
 		return quick_qi_pill_id
@@ -1982,9 +2088,9 @@ func get_effective_quick_pill(slot_num: int) -> String:
 
 
 func set_quick_pill_slot(slot_num: int, item_id: String) -> void:
-	if slot_num == 1 and item_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_huyet_ngung_dan", "pill_hoa_lien_dan", "pill_viem_minh_linh_dan"]:
+	if slot_num == 1 and item_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_huyet_ngung_dan", "pill_hoa_lien_dan", "pill_viem_minh_linh_dan", "pill_thanh_hon_dan", "pill_hoa_bo_dan"]:
 		quick_hp_pill_id = item_id
-	elif slot_num == 2 and item_id in ["pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_dan_hoan_ngot", "pill_thanh_hon_hoa_sinh"]:
+	elif slot_num == 2 and item_id in ["pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_dan_hoan_ngot", "pill_thanh_hon_hoa_sinh", "pill_thang_linh_dan"]:
 		quick_qi_pill_id = item_id
 	EventBus.audio_sfx_requested.emit("ui_click")
 	EventBus.inventory_changed.emit()
@@ -2356,6 +2462,10 @@ func get_core_socket_def(core_id: String) -> Dictionary:
 			return { "id": core_id, "name": "Băng Ma Hạch Tuyết Ma (Cấp 5)", "atk": 55.0, "hp": 320.0, "cd_red_pct": 10.0, "color": Color("#72EFDD"), "desc": "+55 ATK · +320 HP · -10% Hồi Chiêu" }
 		"core_doc_6":
 			return { "id": core_id, "name": "Vạn Hạt Độc Hạch (Cấp 6)", "atk": 75.0, "hp": 420.0, "crit_pct": 10.0, "burn_dps": 28.0, "color": Color("#70E000"), "desc": "+75 ATK · +420 HP · +10% Crit · +28 Độc/Hỏa Thiêu Đốt/s" }
+		"core_loi_7":
+			return { "id": core_id, "name": "Lôi Hoàng Ma Hạch (Cấp 7)", "atk": 105.0, "hp": 580.0, "crit_pct": 14.0, "cd_red_pct": 14.0, "color": Color("#C77DFF"), "desc": "+105 ATK · +580 HP · +14% Crit · -14% Hồi Chiêu" }
+		"core_tinh_7":
+			return { "id": core_id, "name": "Tinh Thần Cổ Long Hạch (Cấp 7)", "atk": 120.0, "hp": 720.0, "soul": 80.0, "flame_dmg_pct": 35.0, "color": Color("#9D4EDD"), "desc": "+120 ATK · +720 HP · +80 SOUL · +35% Sát Thương Dị Hỏa" }
 		_:
 			return {}
 
@@ -2364,7 +2474,8 @@ func get_core_socket_totals() -> Dictionary:
 	var totals: Dictionary = {
 		"atk": 0.0, "hp": 0.0, "spd": 0.0, "crit_pct": 0.0,
 		"burn_dps": 0.0, "hp_regen": 0.0, "cd_red_pct": 0.0,
-		"poise_pct": 0.0, "lifesteal_pct": 0.0
+		"poise_pct": 0.0, "lifesteal_pct": 0.0,
+		"soul": 0.0, "flame_dmg_pct": 0.0
 	}
 	for cid in weapon_core_sockets:
 		var cid_s: String = str(cid)

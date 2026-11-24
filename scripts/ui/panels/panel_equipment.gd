@@ -93,7 +93,7 @@ func build_modal() -> void:
 	core_bag_row.add_theme_constant_override("v_separation", 4)
 	cv.add_child(core_bag_row)
 	var has_any_core: bool = false
-	for core_k in ["core_hoa_1", "core_moc_2", "core_hoa_3", "core_phong_4", "core_loi_5", "core_huyet_5", "core_bang_5", "core_doc_6"]:
+	for core_k in ["core_hoa_1", "core_moc_2", "core_hoa_3", "core_phong_4", "core_loi_5", "core_huyet_5", "core_bang_5", "core_doc_6", "core_loi_7", "core_tinh_7"]:
 		var cnt: int = PlayerData.get_item_count(core_k)
 		if cnt <= 0:
 			continue

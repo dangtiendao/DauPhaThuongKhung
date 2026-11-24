@@ -1184,10 +1184,25 @@ func _refresh_moba_dock() -> void:
 				mi.get("color", Color("#FFD166")) as Color
 			)
 
-	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa Đấu Tông / Địa Yêu Khôi Bất Tử
+	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa / Địa Yêu Khôi / Chuẩn Thiên Yêu Khôi
 	var btn_t: MobaSlotButton = skill_slots["T"]
 	var t_mode: String = PlayerData.get_assist_mode()
-	if t_mode == "dia_yeu_khoi":
+	if t_mode == "thien_yeu_khoi":
+		btn_t.set_slot_visual(
+			_get_cached_tex("res://assets/sprites/npcs/npc_dia_yeu_khoi.png"),
+			"THIÊN KHÔI",
+			false,
+			PlayerData.is_duoc_lao_active,
+			false,
+			Color("#FFD166")
+		)
+		btn_t.set_tooltip_info(
+			"[T] Vệ Sĩ Hoàng Kim — Chuẩn Thiên Yêu Khôi (Ngũ Sắc Thiên Lôi)",
+			"Hồi 45s · Duy trì 12s · ATK x3.05 · SPD +52% · Khiên 30% HP · Phá Khiên & Choáng 2.2s",
+			"Hấp thu trọn vẹn Ngũ Sắc Đan Lôi Chung Kết Đan Hội! Giáng cột Thiên Lôi Hoàng Kim 300px, tạo Khiên 30% Max HP, miễn làm chậm & tăng +205% ATK suốt 12 giây!",
+			Color("#FFD166")
+		)
+	elif t_mode == "dia_yeu_khoi":
 		btn_t.set_slot_visual(
 			_get_cached_tex("res://assets/sprites/npcs/npc_dia_yeu_khoi.png"),
 			"YÊU KHÔI",
@@ -1321,9 +1336,14 @@ func _refresh_moba_dock() -> void:
 			c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_tieu_y_tien.png")
 			c_sub = "Y Tiên"
 	elif cur_c == "dia_yeu_khoi":
+		var is_tyk_ic: bool = PlayerData.has_flag("ch08_dan_hoi_champion")
 		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_dia_yeu_khoi.png")
-		c_sub = "Yêu Khôi"
-		c_col = Color("#CAF0F8")
+		c_sub = "Thiên Khôi" if is_tyk_ic else "Yêu Khôi"
+		c_col = Color("#FFD166") if is_tyk_ic else Color("#CAF0F8")
+	elif cur_c == "thien_hoa_ton_gia":
+		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_thien_hoa_ton_gia.png")
+		c_sub = "Thiên Hỏa"
+		c_col = Color("#FF9F1C")
 	elif cur_c == "thai_lan":
 		c_tex = _get_cached_tex("res://assets/sprites/enemies/pet_thai_lan.png")
 		c_sub = "Thải Lân"

@@ -201,6 +201,18 @@ func _draw() -> void:
 			_draw_flame_buff_tier2(t)
 		"dia_yeu_khoi_assist":
 			_draw_dia_yeu_khoi_assist(t)
+		"space_lock":
+			_draw_space_lock(t)
+		"emperor_five_seals":
+			_draw_emperor_five_seals(t)
+		"flame_buff_tier3":
+			_draw_flame_buff_tier3(t)
+		"soul_shock_palm":
+			_draw_soul_shock_palm(t)
+		"thunder_clone":
+			_draw_thunder_clone(t)
+		"thien_yeu_khoi_assist":
+			_draw_thien_yeu_khoi_assist(t)
 		_:
 			_draw_generic_ring(t)
 
@@ -1127,6 +1139,139 @@ func _draw_dia_yeu_khoi_assist(t: float) -> void:
 		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(cyan.r, cyan.g, cyan.b, 0.85 * fade), 4.6 * fade)
 		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(1.0, 1.0, 1.0, 0.98 * fade), 1.8 * fade)
 	draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(silver.r, silver.g, silver.b, 0.90 * fade), 5.6 * fade)
+
+
+func _draw_space_lock(t: float) -> void:
+	# KHÔNG GIAN PHONG TỎA (Đặc Quyền Đấu Tông Ch.08): Lồng giam không gian bạc-ngọc co siết + lưới nứt hư không!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 2.0), 0.0, 1.0)
+	var jade := Color("#72EFDD")
+	var sky := Color("#48BFE3")
+	var r_outer: float = radius_px * (1.12 - 0.16 * ease_t)
+	draw_circle(Vector2.ZERO, r_outer * 0.88, Color(sky.r, sky.g, sky.b, 0.14 * fade))
+	# Khung bát giác không gian phong ấn
+	var oct := PackedVector2Array()
+	for i in range(9):
+		var a: float = float(i) * (TAU / 8.0) + elapsed * 0.9
+		oct.append(Vector2(cos(a), sin(a)) * r_outer)
+	draw_polyline(oct, Color(jade.r, jade.g, jade.b, 0.92 * fade), 4.2 * fade)
+	draw_arc(Vector2.ZERO, r_outer * 0.72, -elapsed * 2.2, -elapsed * 2.2 + TAU * 0.82, 42, Color(1.0, 1.0, 1.0, 0.88 * fade), 2.8 * fade)
+	# Các đường nứt không gian xuyên tâm
+	for j in range(6):
+		var ca: float = float(j) * (TAU / 6.0) + 0.35
+		var d := Vector2(cos(ca), sin(ca))
+		var prp := Vector2(-d.y, d.x)
+		var p1: Vector2 = d * (r_outer * 0.45) + prp * 12.0
+		var p2: Vector2 = d * r_outer
+		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(1.0, 1.0, 1.0, 0.84 * fade), 2.2 * fade)
+
+
+func _draw_emperor_five_seals(t: float) -> void:
+	# ĐẾ ẤN QUYẾT — NGŨ ẤN HỢP NHẤT: CỔ ĐẾ ẤN (Chuẩn Thiên Giai Ch.08): 5 Ấn Cổ Tộc xoay hội tụ nổ vàng-đỏ rực trời!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.75), 0.0, 1.0)
+	var gold := Color("#FFD166")
+	var crim := Color("#FF595E")
+	var r: float = radius_px * (0.24 + 0.84 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.82, Color(crim.r, crim.g, crim.b, 0.16 * fade))
+	draw_circle(Vector2.ZERO, r * 0.46, Color(gold.r, gold.g, gold.b, 0.28 * fade))
+	# 5 Ấn Đế Tộc xoay quanh tâm
+	for k in range(5):
+		var a: float = float(k) * (TAU / 5.0) + elapsed * 3.8
+		var p := Vector2(cos(a), sin(a)) * (r * 0.62)
+		var sq := PackedVector2Array([
+			p + Vector2(-18, -18), p + Vector2(18, -18),
+			p + Vector2(18, 18), p + Vector2(-18, 18), p + Vector2(-18, -18)
+		])
+		draw_polyline(sq, Color(gold.r, gold.g, gold.b, 0.92 * fade), 3.4 * fade)
+		draw_circle(p, 7.0 * fade, Color(1.0, 1.0, 1.0, 0.95 * fade))
+		draw_line(Vector2.ZERO, p, Color(crim.r, crim.g, crim.b, 0.72 * fade), 3.0 * fade)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 56, Color(gold.r, gold.g, gold.b, 0.94 * fade), 6.2 * fade)
+	draw_arc(Vector2.ZERO, r * 0.86, 0.0, TAU, 48, Color(1.0, 1.0, 1.0, 0.90 * fade), 2.8 * fade)
+
+
+func _draw_flame_buff_tier3(t: float) -> void:
+	# THIÊN HỎA TAM HUYỀN BIẾN — TAM BIẾN (Phần Viêm Cốc Ch.08): 3 Cột Thần Hỏa (Thanh Liên · Vẫn Lạc · Tam Thiên Tinh) + Vòng Thiên Địa!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.75), 0.0, 1.0)
+	var cols: Array = [Color("#00F5D4"), Color("#C77DFF"), Color("#FFD166")]
+	var spin: float = elapsed * 9.5
+	var r: float = radius_px * (0.28 + 0.82 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.78, Color(0.82, 0.52, 1.0, 0.16 * fade))
+	for k in range(3):
+		var c: Color = cols[k]
+		var a0: float = spin + float(k) * (TAU / 3.0)
+		_draw_tapered_arc_ribbon(Vector2.ZERO, r * (0.98 - float(k) * 0.14), 26.0 * fade, a0 - 1.75, a0, Color(c.r, c.g, c.b, 0.90 * fade), 20)
+		var px: float = cos(a0) * (r * 0.36)
+		var p_top := Vector2(px, -radius_px * (0.85 + 0.65 * ease_t))
+		var p_bot := Vector2(px, 18.0)
+		draw_line(p_bot, p_top, Color(c.r, c.g, c.b, 0.82 * fade), 18.0 * fade)
+		draw_line(p_bot, p_top, Color(1.0, 1.0, 1.0, 0.96 * fade), 6.0 * fade)
+	draw_arc(Vector2.ZERO, r * 1.08, 0.0, TAU, 52, Color(1.0, 0.86, 0.40, 0.92 * fade), 5.6 * fade)
+
+
+func _draw_soul_shock_palm(t: float) -> void:
+	# HỒN KỸ: KINH HỒN CHƯỞNG (Linh Cảnh Đỉnh Phong Ch.08): Chưởng ấn Linh Hồn tím-bạc + 3 vòng sóng chấn động tinh thần!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.85), 0.0, 1.0)
+	var vio := Color("#E0AAFF")
+	var deep := Color("#7B2CBF")
+	var r: float = radius_px * (0.22 + 0.85 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.72, Color(deep.r, deep.g, deep.b, 0.18 * fade))
+	for ring_i in range(3):
+		var rr: float = r * (0.48 + float(ring_i) * 0.28)
+		draw_arc(Vector2.ZERO, rr, 0.0, TAU, 44, Color(vio.r, vio.g, vio.b, (0.92 - float(ring_i) * 0.22) * fade), (4.8 - float(ring_i)) * fade)
+	# Ấn bàn tay linh hồn phát sáng tại tâm
+	var palm_dir := Vector2(cos(aim_angle), sin(aim_angle))
+	var palm_perp := Vector2(-palm_dir.y, palm_dir.x)
+	draw_circle(Vector2.ZERO, 24.0 * (0.7 + 0.4 * ease_t), Color(1.0, 1.0, 1.0, 0.82 * fade))
+	for fi in range(-2, 3):
+		var f_start: Vector2 = palm_perp * (float(fi) * 9.0)
+		var f_end: Vector2 = f_start + palm_dir * (38.0 + (12.0 - absf(float(fi)) * 4.0) * ease_t)
+		draw_line(f_start, f_end, Color(vio.r, vio.g, vio.b, 0.92 * fade), 5.2 * fade)
+		draw_line(f_start, f_end, Color(1.0, 1.0, 1.0, 0.96 * fade), 2.0 * fade)
+
+
+func _draw_thunder_clone(t: float) -> void:
+	# TAM THIÊN LÔI HUYỄN THÂN (Ch.08): Vòng Lôi Điện Tím-Vàng + 6 tia thiên lôi hội tụ tạo phân thân!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.7), 0.0, 1.0)
+	var l_cols: Array = [Color("#C77DFF"), Color("#FFD166"), Color("#48CAE4")]
+	var r: float = radius_px * (0.26 + 0.84 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.68, Color(0.78, 0.49, 1.0, 0.16 * fade))
+	for i in range(9):
+		var a: float = float(i) * (TAU / 9.0) + elapsed * 3.6
+		var d := Vector2(cos(a), sin(a))
+		var prp := Vector2(-d.y, d.x)
+		var c: Color = l_cols[i % 3]
+		var p1: Vector2 = d * (r * 0.46) + prp * (16.0 if (i % 2 == 0) else -16.0)
+		var p2: Vector2 = d * (r * 1.04)
+		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(c.r, c.g, c.b, 0.90 * fade), 4.4 * fade)
+		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(1.0, 1.0, 1.0, 0.98 * fade), 1.6 * fade)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(1.0, 0.86, 0.40, 0.88 * fade), 4.6 * fade)
+
+
+func _draw_thien_yeu_khoi_assist(t: float) -> void:
+	# CHUẨN THIÊN YÊU KHÔI — NGŨ SẮC THIÊN LÔI (Hỗ Trợ [T] Ch.08): Cột Thiên Lôi Ngũ Sắc Hoàng Kim + 10 tia lôi điện đánh sập hư không!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.6), 0.0, 1.0)
+	var five_cols: Array = [Color("#FF595E"), Color("#4CC9F0"), Color("#FFFFFF"), Color("#FFD166"), Color("#C77DFF")]
+	var r: float = radius_px * (0.26 + 0.92 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.88, Color(1.0, 0.82, 0.36, 0.20 * fade))
+	draw_line(Vector2(0, -radius_px * 1.55), Vector2(0, 14.0), Color(1.0, 0.82, 0.36, 0.70 * fade), 46.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.55), Vector2(0, 14.0), Color(0.84, 0.56, 1.0, 0.82 * fade), 26.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.55), Vector2(0, 14.0), Color(1.0, 1.0, 1.0, 0.98 * fade), 12.0 * fade)
+	for i in range(10):
+		var a: float = float(i) * (TAU / 10.0) + elapsed * 2.1
+		var d := Vector2(cos(a), sin(a))
+		var prp := Vector2(-d.y, d.x)
+		var c: Color = five_cols[i % 5]
+		var p1: Vector2 = d * (r * 0.50) + prp * (18.0 if (i % 2 == 0) else -18.0)
+		var p2: Vector2 = d * (r * 1.08)
+		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(c.r, c.g, c.b, 0.92 * fade), 5.0 * fade)
+		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(1.0, 1.0, 1.0, 0.98 * fade), 1.9 * fade)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 54, Color(1.0, 0.86, 0.40, 0.95 * fade), 6.2 * fade)
+	draw_arc(Vector2.ZERO, r * 0.84, 0.0, TAU, 48, Color(0.84, 0.56, 1.0, 0.84 * fade), 3.4 * fade)
 
 
 func _draw_generic_ring(t: float) -> void:

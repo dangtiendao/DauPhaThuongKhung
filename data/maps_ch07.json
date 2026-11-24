@@ -561,13 +561,13 @@
           "require_flag": ""
         },
         {
-          "id": "to_ch08_bac_vuc_trung_chau_future",
-          "label": "Không Gian Trùng Động -> [QUYỂN III · CH.08] Bắc Vực Trung Châu & Phong Lôi Các",
+          "id": "to_ch08_bac_vuc_trung_chau",
+          "label": "Không Gian Trùng Động -> [QUYỂN III · CH.08] Hoang Mạc Bắc Vực & Vạn Phong Giản",
           "pos": [1810, 560],
-          "target_map": "ch07_thien_nhai_trung_dong",
-          "target_spawn": [1620, 560],
-          "require_flag": "ch08_unlocked_future",
-          "locked_hint": "CHÚC MỪNG HOÀN TẤT TRỌN VẸN QUYỂN II (CHƯƠNG 01–07)!! Quyển III — Chương 08: Bắc Vực Trung Châu, Phong Lôi Các & Giải Ma Độc Ban Đột Phá Đấu Tông đang chờ phía trước!"
+          "target_map": "ch08_hoang_mac_van_phong",
+          "target_spawn": [190, 560],
+          "require_flag": "ch07_completed",
+          "locked_hint": "Hãy đối thoại tạm biệt Thải Lân & cùng Đội Hình Trung Châu [V] khởi động Không Gian Trùng Động hoàn tất Quyển II để tiến vào Đại Lục Trung Châu!"
         }
       ]
     }

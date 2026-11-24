@@ -10,6 +10,8 @@ extends RefCounted
 
 
 static func get_venue_name(venue_id: String) -> String:
+	if venue_id == "thien_bao_phuong":
+		return "Đấu Giá Ngầm Thiên Bảo Phường — Thánh Đan Thành (Ch.08)"
 	if venue_id == "hac_hoang_tong":
 		return "Đại Đấu Giá Hội Hắc Hoàng Tông — Hắc Hoàng Thành (Ch.07)"
 	if venue_id == "bat_phien_mon":
@@ -19,7 +21,16 @@ static func get_venue_name(venue_id: String) -> String:
 
 static func _make_rivals(venue_id: String, start_price: int) -> Array:
 	var pool: Array = []
-	if venue_id == "hac_hoang_tong":
+	if venue_id == "thien_bao_phuong":
+		pool = [
+			"Yêu Nữ Tào Dĩnh (Tào Gia Đan Vực)",
+			"Mộ Cốt Lão Nhân (Hồn Điện)",
+			"Đan Thần (Ngũ Đại Đan Gia)",
+			"Băng Hà Cốc Trưởng Lão",
+			"Phần Viêm Cốc Hỏa Trưởng Lão",
+			"Thiên Minh Tông Hắc Bào Khách"
+		]
+	elif venue_id == "hac_hoang_tong":
 		pool = [
 			"Mạc Thiên Hành (Hắc Hoàng Tông)",
 			"Hàn Phong (Đấu Tông Ma Viêm)",
@@ -113,9 +124,72 @@ static func _build_lot_dict(
 
 
 static func generate_auction_lots(venue_id: String) -> Array:
-	var v_id: String = venue_id if (venue_id == "bat_phien_mon" or venue_id == "hac_hoang_tong") else "nha_phi"
+	var v_id: String = venue_id if (venue_id == "bat_phien_mon" or venue_id == "hac_hoang_tong" or venue_id == "thien_bao_phuong") else "nha_phi"
 	var realm_idx: int = clampi(PlayerData.realm_index, 1, 12)
 	var lots: Array = []
+
+	if v_id == "thien_bao_phuong":
+		var scale_t: float = 1.0 + maxf(0.0, float(realm_idx - 7) * 0.16)
+		var tp1: int = int(round(3200.0 * scale_t / 10.0)) * 10
+		var tp2: int = int(round(4600.0 * scale_t / 10.0)) * 10
+		var tp3: int = int(round(6800.0 * scale_t / 10.0)) * 10
+
+		lots.append(_build_lot_dict(
+			v_id,
+			"lot_tbp_core7",
+			"Song Tinh Hạch Cấp 7 · Lôi Hoàng & Tinh Thần Cổ Long Hạch",
+			"Cực phẩm Ma Hạch Cấp 7 Đấu Tông (Lôi Hoàng Ma Hạch x1 + Tinh Thần Cổ Long Hạch x1) khảm vũ khí (+225 ATK, +1300 HP, +80 SOUL, +35% Dị Hỏa)!",
+			"res://assets/sprites/pickups/monster_core.png",
+			"#C77DFF",
+			"item",
+			"core_loi_7",
+			"",
+			"de",
+			1,
+			tp1,
+			{ "extra_items": { "core_tinh_7": 1 } }
+		))
+
+		lots.append(_build_lot_dict(
+			v_id,
+			"lot_tbp_bat_pham_duoc",
+			"Bát Phẩm Chủ Dược Vạn Dặm Đan Giới · Huyết Tinh Yêu Quả & Bạch Cốt Linh Chi",
+			"Bộ chủ dược tối thượng (Huyết Tinh Yêu Quả x3 + Bạch Cốt Linh Chi x3) luyện Bát Phẩm [Sinh Cốt Dung Huyết Đan] độ Ngũ Sắc Đan Lôi!",
+			"res://assets/sprites/icons/pill_exp_jade.png",
+			"#FF595E",
+			"item",
+			"herb_huyet_tinh_yeu_qua",
+			"",
+			"de",
+			3,
+			tp2,
+			{ "extra_items": { "herb_bach_cot_linh_chi": 3 } }
+		))
+
+		var tbp_tpl: String = "caul_thien_dinh_dan_thap"
+		if GameDatabase.get_equipment_template(tbp_tpl).is_empty():
+			tbp_tpl = "caul_hai_tam_dinh"
+		lots.append(_build_lot_dict(
+			v_id,
+			"lot_tbp_thien_dinh",
+			"Chí Bảo Đan Tháp · Thiên Đỉnh Đan Tháp & Bát Phẩm Sinh Cốt Đan",
+			"Gói Trấn Phường Thiên Bảo Phường: [Thiên Đỉnh Đan Tháp (Đế Phẩm)] + [Sinh Cốt Dung Huyết Đan x1] + 20 Đá Cường Hóa + +35 Linh Hồn Lực (SOUL)!",
+			"res://assets/sprites/icons/icon_cauldron.png",
+			"#FFD166",
+			"relic_pack",
+			"",
+			tbp_tpl,
+			"de",
+			1,
+			tp3,
+			{
+				"relic_title": "Chí Bảo Đan Vực: Thiên Đỉnh Đan Tháp (Đấu Giá Thiên Bảo Phường)",
+				"extra_items": { "pill_sinh_cot_dung_huyet": 1 },
+				"bonus_stones": 20,
+				"bonus_soul": 35
+			}
+		))
+		return lots
 
 	if v_id == "hac_hoang_tong":
 		var scale_h: float = 1.0 + maxf(0.0, float(realm_idx - 6) * 0.14)

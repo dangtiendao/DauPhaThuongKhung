@@ -244,6 +244,10 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 	pd.is_flame_buff_active = false
 	if "is_nhi_bien_active" in pd:
 		pd.is_nhi_bien_active = false
+	if "is_tam_bien_active" in pd:
+		pd.is_tam_bien_active = false
+	if "immortal_revive_cd" in pd:
+		pd.immortal_revive_cd = 0.0
 	pd.equipped_flame_id = str(d.get("equipped_flame_id", ""))
 	pd.unlocked_flames = d.get("unlocked_flames", [])
 	pd.lotus_fusion_flames = d.get("lotus_fusion_flames", [])

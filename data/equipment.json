@@ -86,6 +86,14 @@
         { "pieces": 2, "desc": "+340 Công kích, +95 Linh Hồn & +38% Sát thương Hỏa", "stats": { "atk": 340, "soul": 95, "flame_dmg": 38 } },
         { "pieces": 4, "desc": "+2.600 Sinh lực, +26% Chí mạng, +14% Hút máu & -22% Hồi chiêu", "stats": { "hp": 2600, "crit_chance": 26, "lifesteal": 14, "cooldown_red": 22 } }
       ]
+    },
+    "set_trung_chau_dan_vuong": {
+      "id": "set_trung_chau_dan_vuong",
+      "name": "Bộ Trung Châu Đấu Tông · Đan Hội Quán Quân",
+      "bonuses": [
+        { "pieces": 2, "desc": "+520 Công kích, +160 Linh Hồn & +52% Sát thương Hỏa", "stats": { "atk": 520, "soul": 160, "flame_dmg": 52 } },
+        { "pieces": 4, "desc": "+4.400 Sinh lực, +32% Chí mạng, +18% Hút máu & -26% Hồi chiêu", "stats": { "hp": 4400, "crit_chance": 32, "lifesteal": 18, "cooldown_red": 26 } }
+      ]
     }
   },
   "templates": {
@@ -478,6 +486,54 @@
       "icon": "res://assets/sprites/icons/icon_pendant.png",
       "base_stats": { "atk": 98, "soul": 125, "hp": 960, "flame_dmg": 38, "cooldown_red": 16 },
       "description": "Kỳ vật Thượng Cổ đoạt tại Đấu Giá Hội Hắc Hoàng Tông — ẩn chứa Bồ Đề Tâm giúp cường hóa Linh Hồn Cảnh & mở đường lên Đấu Tông!"
+    },
+    "wpn_xich_tam_thien_tinh_viem": {
+      "id": "wpn_xich_tam_thien_tinh_viem",
+      "name": "Huyền Trọng Xích · Tam Thiên Tinh Viêm",
+      "slot": "weapon",
+      "set_id": "set_trung_chau_dan_vuong",
+      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
+      "attack_speed_mult": 1.12,
+      "base_stats": { "atk": 380, "hp": 1200, "crit_chance": 28, "flame_dmg": 72 },
+      "description": "Huyền Trọng Xích tôi luyện giữa Ngân Hà Tinh Vực, khắc ấn Bất Tử Chi Hỏa [#9 Tam Thiên Diễm Viêm Hỏa] — uy áp chấn nhiếp Đấu Tông Đỉnh Phong!"
+    },
+    "arm_dan_hoi_quan_quan_bao": {
+      "id": "arm_dan_hoi_quan_quan_bao",
+      "name": "Thánh Đan Quán Quân · Đấu Tông Pháp Bào",
+      "slot": "armor",
+      "set_id": "set_trung_chau_dan_vuong",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 2500, "def": 360, "atk": 160, "soul": 150, "cooldown_red": 18 },
+      "description": "Thánh bào vinh dự của Quán Quân Đan Hội Trung Châu do Tam Cự Đầu Đan Tháp ban tặng!"
+    },
+    "wing_dap_hu_khong_anh": {
+      "id": "wing_dap_hu_khong_anh",
+      "name": "Đạp Hư Không · Lôi Phượng Thánh Dực",
+      "slot": "wings",
+      "set_id": "set_trung_chau_dan_vuong",
+      "icon": "res://assets/sprites/icons/icon_wings.png",
+      "base_stats": { "spd": 135, "crit_chance": 30, "cooldown_red": 25, "atk": 185, "flame_dmg": 46 },
+      "description": "Đạp Hư Không kết hợp tinh huyết Thiên Yêu Hoàng trên Lôi Sơn — lướt nhanh như tia sét xuyên không!"
+    },
+    "pend_huyen_tam_ho_hon": {
+      "id": "pend_huyen_tam_ho_hon",
+      "name": "Huyền Tâm Hộ Hồn Bội (Cự Đầu Huyền Y)",
+      "slot": "pendant",
+      "set_id": "set_trung_chau_dan_vuong",
+      "icon": "res://assets/sprites/icons/icon_pendant.png",
+      "base_stats": { "atk": 150, "soul": 220, "hp": 1650, "flame_dmg": 52, "cooldown_red": 20 },
+      "description": "Pháp bảo hộ hồn Cự Đầu Huyền Y trao tặng đệ tử Dược Trần — giảm 25% sát thương từ Hồn Điện & mở rộng Radar Linh Hồn!"
+    },
+    "caul_thien_dinh_dan_thap": {
+      "id": "caul_thien_dinh_dan_thap",
+      "name": "Vạn Thú Thánh Đỉnh · Quán Quân Đan Tháp",
+      "slot": "cauldron",
+      "set_id": "set_trung_chau_dan_vuong",
+      "icon": "res://assets/sprites/icons/icon_cauldron.png",
+      "base_stats": { "soul": 185, "alchemy_bonus": 65, "flame_dmg": 62, "qi": 360 },
+      "description": "Thánh đỉnh Bát Phẩm thưởng Quán Quân Đan Hội Trung Châu — chịu trọn Ngũ Sắc Đan Lôi & luyện Sinh Cốt Dung Huyết Đan!"
     }
   }
 }

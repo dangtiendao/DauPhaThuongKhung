@@ -1,0 +1,575 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 08",
+  "dialogues": {
+    "ch08_han_tuyet_caravan": {
+      "marker_when": { "missing_flag": "ch08_han_tuyet_saved" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_han_tuyet_saved" },
+          "speaker": "Nhị Tiểu Thư Hàn Tuyết (Hàn Gia Thiên Bắc)",
+          "sfx": "radar_ping",
+          "lines": [
+            "Nhị Tiểu Thư Hàn Tuyết (ánh mắt lo âu): 'Công tử tỉnh rồi sao? Ta nhặt được huynh ngất lịm giữa bão cát Bắc Vực, kinh mạch bị không gian phong bạo chấn thương nặng nề...'",
+            "Hàn Tuyết: 'Phía trước là Hẻm Núi Vạn Phong Giản đầy Vạn Xà Độc Mãng và phục binh của Hồng Gia đang chặn cướp xe hàng nhà ta!'",
+            "Tiêu Viêm (khẽ nắm chặt Huyền Trọng Xích, nén đau cười nhạt): 'Ân cứu mạng của Hàn Tuyết cô nương, tại hạ Nham Kiêu xin dùng thanh trọng xích này hộ tống đoàn xe bình an tới Thiên Bắc Thành!'"
+          ],
+          "choices": [
+            {
+              "label": "Hộ tống đoàn xe Hàn Gia phá vòng vây Vạn Phong Giản (Mở đường Thiên Bắc Thành)",
+              "action": "effect:eff_ch08_save_han_tuyet"
+            },
+            {
+              "label": "Điều tức hồi phục kinh mạch trước khi xuất phát",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Nhị Tiểu Thư Hàn Tuyết",
+          "lines": [
+            "Nhị Tiểu Thư Hàn Tuyết (mỉm cười cảm kích): 'Nhờ có Nham Kiêu đại ca ra tay, đoàn xe Hàn Gia đã an toàn vượt qua Hẻm Núi Vạn Phong Giản! Phía Đông là Thiên Bắc Thành — đại tỷ Hàn Nguyệt của ta chắc chắn sẽ mừng rỡ khi gặp lại huynh!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_han_nguyet_reunion": {
+      "marker_when": { "missing_flag": "ch08_han_nguyet_met" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_han_nguyet_met" },
+          "speaker": "Học Tỷ Hàn Nguyệt (Đại Tiểu Thư Hàn Gia)",
+          "sfx": "level_up",
+          "lines": [
+            "Học Tỷ Hàn Nguyệt (kinh ngạc run giọng): 'Nham Kiêu?! Không... ánh mắt này, thanh Huyền Trọng Xích này... NGƯƠI LÀ TIÊU VIÊM ĐỆ TỪ NỘI VIỆN GIÀ NAM SAO?!'",
+            "Hàn Nguyệt: 'Hồng Gia cấu kết Phong Lôi Bắc Các đang bức ép muội muội Hàn Tuyết lên Sinh Tử Đài! Trưởng lão Bắc Các Trầm Vân còn ngang nhiên nhảy xuống đài ỷ lớn hiếp nhỏ!'",
+            "Tiêu Viêm (bước lên Sinh Tử Đài, Địa Yêu Khôi tỏa ánh bạc lạnh lẽo): 'Học tỷ yên tâm — chỉ một đấm của Địa Yêu Khôi cũng đủ nghiền nát Trầm Vân! Còn lão già Thiên Lôi Tử Phí Thiên, ta sẽ tự tay phá vây trước mắt toàn thành!'"
+          ],
+          "choices": [
+            {
+              "label": "Bước lên Sinh Tử Đài Thiên Bắc Thành nghênh chiến Phí Thiên!",
+              "action": "effect:eff_ch08_han_nguyet_met"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch08_escaped_phi_thien" },
+          "speaker": "Học Tỷ Hàn Nguyệt",
+          "lines": [
+            "Học Tỷ Hàn Nguyệt (gấp gáp): 'Hồng Thần bại trận kéo theo Các Chủ Bắc Các — Thiên Lôi Tử Phí Thiên đích thân giáng lâm! Mau đẩy lùi phân thân lôi điện của hắn ở phía Đông để mở Cổ Trận Không Gian!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "speaker": "Học Tỷ Hàn Nguyệt",
+          "lines": [
+            "Học Tỷ Hàn Nguyệt (tự hào): 'Tiêu Viêm đệ thật sự đã thoát khỏi cuộc truy sát của Bát Tinh Đấu Tông Phí Thiên — Thiên Bắc Thành này suốt trăm năm chưa từng chấn động đến thế! Cổ Trận Không Gian phía Đông đã mở sẵn hướng về Thiên Mục Sơn Mạch!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_han_secret_gift": {
+      "marker_when": { "has_flag": "ch08_broke_dau_tong", "missing_flag": "ch08_han_secret_gift_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_broke_dau_tong" },
+          "speaker": "Bàn Đá Đình Viện Hàn Gia",
+          "lines": [
+            "Hương trà đêm vẫn còn vương trong phủ Hàn Gia... (Kỳ ngộ bí mật mở khóa sau khi bạn đột phá ĐẤU TÔNG tại Thiên Sơn Huyết Đàm!)"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch08_han_secret_gift_done" },
+          "speaker": "Kỳ Ngộ Thiên Bắc — Ân Tình Thầm Lặng",
+          "sfx": "loot_rare",
+          "lines": [
+            "Sau khi đột phá Đấu Tông tại Thiên Sơn Huyết Đàm, Tiêu Viêm bí mật quay lại phủ Hàn Gia trong đêm tĩnh lặng.",
+            "Bạn đặt 3 bình Đấu Linh Đan cực phẩm cùng quyển trục Đấu Kỹ Địa Giai lên bàn phòng Hàn Tuyết & Hàn Nguyệt để báo đáp ân cứu mạng ngày mới đặt chân tới Trung Châu."
+          ],
+          "choices": [
+            {
+              "label": "Âm thầm để lại đan dược & bí tịch tri ân Hàn Gia (+10% Hồi Phục Vĩnh Viễn)",
+              "action": "effect:eff_ch08_han_secret_gift"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Hàn Tuyết & Hàn Nguyệt",
+          "lines": [
+            "Hàn Tuyết & Hàn Nguyệt: 'Những bình Đấu Linh Đan & quyển trục Địa Giai huynh bí mật để lại đã giúp Hàn Gia chấn hưng tại Thiên Bắc Thành! Chúc huynh thượng lộ bình an!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_yanran_kim_thach": {
+      "marker_when": { "missing_flag": "ch08_helped_kim_thach" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_helped_kim_thach" },
+          "speaker": "Nạp Lan Yên Nhiên & Tộc Trưởng Kim Thạch (Thiên Mục Sơn)",
+          "sfx": "radar_ping",
+          "lines": [
+            "Nạp Lan Yên Nhiên (khẽ run giữa rừng trúc mù sương): 'Tiêu Viêm... Không ngờ giữa chốn Trung Châu mênh mông lại gặp lại huynh! Sư phụ Vân Vận hiện đang bình an tại Hoa Tông — nếu không có huynh chấn lui Vương Trần, ta đã khó toàn mạng...'",
+            "Tộc Trưởng Kim Thạch (Phệ Kim Thử Tộc): 'Chàng trai trẻ, trên người ngươi có hơi thở của Dị Hỏa cực thuần! Nếu chịu giúp lão phu rút sạch Hỏa Độc Huyết Đàm, ta lập tức trao suất vào Đáy Thiên Sơn Huyết Đàm đột phá Đấu Tông!'"
+          ],
+          "choices": [
+            {
+              "label": "Vận chuyển Dị Hỏa thanh lọc Hỏa Độc cho Kim Thạch (Nhận Huyết Đàm Ngọc Bài)",
+              "action": "effect:eff_ch08_help_kim_thach"
+            },
+            {
+              "label": "Chuẩn bị thêm trước khi rút độc",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Nạp Lan Yên Nhiên & Tộc Trưởng Kim Thạch",
+          "lines": [
+            "Kim Thạch: 'Dị Hỏa của tiểu hữu đã rút sạch Hỏa Độc Huyết Đàm ăn sâu trong phổi lão phu — hai tấm Huyết Đàm Ngọc Bài này thuộc về các ngươi!'",
+            "Nạp Lan Yên Nhiên: 'Tên sát nhân Vương Trần của Hoàng Tuyền Các đang chặn cửa Huyết Đàm phía Đông — huynh nhớ cẩn thận!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_kim_thu_secret": {
+      "marker_when": { "missing_flag": "ch08_kim_thu_secret_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_kim_thu_secret_done" },
+          "speaker": "Kỳ Ngộ Đáy Hồ — Chí Tinh Phệ Kim Thử Thượng Cổ",
+          "sfx": "loot_rare",
+          "lines": [
+            "Trong hang ngầm hướng Tây Nam đáy Thiên Sơn Huyết Đàm, một con Phệ Kim Thử ánh vàng cổ đại đang thoi thóp vì hấp thu quá lượng Hỏa Độc dung nham.",
+            "Bạn khẽ truyền một luồng Lưu Ly Liên Tâm Hỏa ôn hòa giúp nó bài trừ hỏa độc..."
+          ],
+          "choices": [
+            {
+              "label": "Thanh lọc hỏa độc nhận [Kim Thử Âm Ba Phù] & [Lôi Hoàng Ma Hạch Cấp 7]",
+              "action": "effect:eff_ch08_kim_thu_secret"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Chí Tinh Phệ Kim Thử Cổ",
+          "lines": [
+            "Chuột chúa thượng cổ rít lên một tiếng vui sướng — sức mạnh Kim Thử Âm Ba Phù luôn sẵn sàng trợ chiến cho bạn!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_blood_pool_altar": {
+      "marker_when": { "has_flag": "ch08_killed_vuong_tran", "missing_flag": "ch08_broke_dau_tong" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_killed_vuong_tran" },
+          "speaker": "Lõi Đáy Sâu Thiên Sơn Huyết Đàm",
+          "lines": [
+            "Huyết Sát Vương Trần của Hoàng Tuyền Các vẫn đang phong tỏa lối xuống Đáy Sâu Huyết Đàm! Hãy thanh lọc Hỏa Độc cho Kim Thạch [V] rồi đánh bại Vương Trần trước!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch08_broke_dau_tong" },
+          "speaker": "Lõi Đáy Sâu Thiên Sơn Huyết Đàm",
+          "sfx": "breakthrough",
+          "shake": [16.0, 0.70],
+          "lines": [
+            "Trong khi Phượng Thanh Nhi và Yên Nhiên dừng lại ở tầng trên hồ máu, bạn một mình lặn sâu xuống tận miệng núi lửa dưới đáy Thiên Sơn Huyết Đàm!",
+            "Năng lượng huyết tinh tích tụ vạn năm cuộn trào điên cuồng — thời khắc phá vỡ bình cảnh Đấu Hoàng Đỉnh Phong, ĐẠP HƯ KHÔNG ĐỘT PHÁ ĐẤU TÔNG đã tới!!"
+          ],
+          "choices": [
+            {
+              "label": "Hấp thu trọn vẹn Tinh Hoa Huyết Đàm — ĐỘT PHÁ ĐẤU TÔNG & Mở [Không Gian Phong Tỏa]!",
+              "action": "effect:eff_ch08_break_dau_tong"
+            },
+            {
+              "label": "Tạm nổi lên chuẩn bị thêm",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Đáy Sâu Thiên Sơn Huyết Đàm",
+          "lines": [
+            "Tinh hoa ngàn năm của Thiên Sơn Huyết Đàm đã hòa vào cốt tủy, đưa bạn chính thức bước lên cảnh giới ĐẤU TÔNG! Giờ bạn đã có thể ĐẠP HƯ KHÔNG tiến sang Đỉnh Lôi Sơn dự Đại Hội Tứ Phương Các!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_phong_ton_gia": {
+      "marker_when": { "missing_flag": "ch08_phong_ton_ally" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_phong_ton_ally" },
+          "speaker": "Phong Tôn Giả — Phong Nhàn (Võ Đài Đỉnh Lôi Sơn)",
+          "sfx": "breakthrough",
+          "shake": [12.0, 0.45],
+          "lines": [
+            "Lôi Tôn Giả (cười lạnh): 'Phong Nhàn, lão già Dược Trần rơi vào tay Hồn Điện tám chín phần đã hồn phi phách tán! Ngươi vì một kẻ chết mà chống lại ba các, đáng sao?'",
+            "Tiêu Viêm (xé toạc hắc bào, giậm chân Đạp Hư Không đáp xuống chắn trước Phong Tôn Giả, Huyền Trọng Xích cắm nứt toạc sàn đá!): 'Lão sư của ta vẫn còn sống sờ sờ trên đời, chưa tới phiên Phong Lôi Các phán xét sống chết! Đệ tử chân truyền của Dược Trần — TIÊU VIÊM, hôm nay đứng tại Lôi Sơn lãnh giáo thiên kiêu Phong Lôi Các!'",
+            "Phong Tôn Giả (ánh mắt rực sáng xúc động): 'Tốt! Tốt lắm!! Đệ tử của lão hữu ta quả nhiên khí phách kinh thiên!'"
+          ],
+          "choices": [
+            {
+              "label": "Kết minh Tinh Vẫn Các & bước lên võ đài quyết chiến Phượng Thanh Nhi!",
+              "action": "effect:eff_ch08_phong_ton_ally"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch08_beat_phuong_thanh_nhi" },
+          "speaker": "Phong Tôn Giả — Phong Nhàn",
+          "lines": [
+            "Phong Tôn Giả: 'Phượng Thanh Nhi mang huyết mạch Thiên Yêu Hoàng cực kỳ đáng gờm — hãy dùng [Không Gian Phong Tỏa] khóa thân pháp Tam Thiên Lôi Động của nàng trên võ đài phía Đông!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "speaker": "Phong Tôn Giả — Phong Nhàn (Tinh Vẫn Các)",
+          "lines": [
+            "Phong Tôn Giả (cười sảng khoái): 'Ha ha ha! Đệ tử của Dược Trần quả nhiên bất phàm — một chiêu đánh phục cả thiên kiêu số 1 Phong Lôi Các! Ta vừa nhận mật báo Băng Hà Cốc đang vây khốn Tiểu Y Tiên tại Lạc Thần Giản phía Nam — mau dùng Trùng Động tới cứu nàng ngay!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_cure_ma_doc_ban": {
+      "marker_when": { "missing_flag": "ch08_ma_doc_ban_cured" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_ma_doc_ban_cured" },
+          "speaker": "Mật Động Thác Băng — Nghi Thức Hóa Độc & Phục Sinh Đấu Tôn",
+          "sfx": "breakthrough",
+          "shake": [14.0, 0.55],
+          "lines": [
+            "Tiểu Y Tiên hôn mê ngàn cân treo sợi tóc vì Ma Độc Ban của Hạt Tất Nham phát tác chạm tim; đồng thời tàn hồn tiền bối Thiên Hỏa Tôn Giả đã hội đủ điều kiện tái tạo nhục thân!",
+            "Đặt Địa Yêu Khôi canh cửa thác băng — bạn kích hoạt Song Dị Hỏa suốt 7 ngày đêm để bóc tách hoàn toàn Ma Độc Ban, ngưng tụ [Bổn Mệnh Độc Đan] cho Tiểu Y Tiên và phục sinh [Thiên Hỏa Tôn Giả]!"
+          ],
+          "choices": [
+            {
+              "label": "Bắt đầu nghi thức: Giải [Ma Độc Ban] & Phục Sinh [Thiên Hỏa Tôn Giả #7 [G]]!",
+              "action": "effect:eff_ch08_cure_ma_doc_ban"
+            },
+            {
+              "label": "Kiểm tra lại đội hình trước khi bế quan",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Tiểu Y Tiên (Tam Tinh Đấu Tôn) & Thiên Hỏa Tôn Giả",
+          "lines": [
+            "Tiểu Y Tiên (mắt ánh lệ mỉm cười): 'Huynh lại liều mạng vì ta nữa rồi... Từ nay về sau, dù là núi đao biển lửa hay Cửu U Hồn Điện, mạng của Tiểu Y Tiên vĩnh viễn đi theo huynh!'",
+            "Thiên Hỏa Tôn Giả (cười vang): 'Ha ha! Lão phu cuối cùng cũng có lại nhục thân Đấu Tôn! Bọn Băng Hà Cốc & Thanh Hải Tôn Giả đang vây bầu trời Diệp Thành phía Đông — để lão phu cùng ngươi đập tan chúng!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_huan_nhi_arrival": {
+      "marker_when": { "has_flag": "ch08_beat_bang_ha_thanh_hai", "missing_flag": "ch08_huan_nhi_de_an_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_beat_bang_ha_thanh_hai" },
+          "speaker": "Đình Viện Diệp Thành",
+          "lines": [
+            "Liên quân Băng Hà Cốc Chủ & Thanh Hải Tôn Giả vẫn đang áp sát bầu trời Diệp Thành! Hãy hóa giải Ma Độc Ban [V] rồi đánh bại chúng trước!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch08_huan_nhi_de_an_done" },
+          "speaker": "Cổ Huân Nhi & Hắc Yên Quân Cổ Tộc (Bầu Trời Diệp Thành)",
+          "sfx": "breakthrough",
+          "shake": [16.0, 0.70],
+          "lines": [
+            "Thương khung Trung Châu bỗng rách toạc thành biển lửa vàng kim thần thánh — Cổ Huân Nhi cùng hai Thống Lĩnh Đấu Tôn Cổ Tộc giáng lâm, chỉ một búng tay Kim Đế Phần Thiên Viêm (#4) đã thiêu tan băng phong, quát lui cả Băng Hà Cốc lẫn Thanh Hải Tôn Giả!",
+            "Cổ Huân Nhi (nắm chặt tay Tiêu Viêm dưới trăng sáng đình viện Diệp Gia): 'Tiêu Viêm ca ca... Huân Nhi tới muộn, để huynh chịu ấm ức rồi! Quyển ngọc chứa 3 ấn cuối cùng của Đế Ấn Quyết — Phúc Địa, Nhân Hoàng, Cổ Đế Ấn — huynh hãy nhận lấy để bảo vệ bản thân nhé!'"
+          ],
+          "choices": [
+            {
+              "label": "Ôm chặt Huân Nhi & lĩnh ngộ trọn bộ [Đế Ấn Quyết — Cổ Đế Ấn]!",
+              "action": "effect:eff_ch08_huan_nhi_de_an"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Cổ Huân Nhi (Kim Đế Phần Thiên Viêm)",
+          "lines": [
+            "Cổ Huân Nhi (dịu dàng): 'Tiêu Viêm ca ca, trọn bộ 5 ấn Đế Ấn Quyết đã giao cho huynh! Hãy tới Phần Viêm Cốc lĩnh ngộ Thiên Hỏa Tam Huyền Biến rồi đoạt Quán Quân Đan Hội Trung Châu nhé — Huân Nhi chờ ngày gặp lại huynh tại Cổ Giới!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_duong_chan_valley": {
+      "marker_when": { "has_flag": "ch08_passed_cuu_long_trial", "missing_flag": "ch08_got_tam_huyen_tam_bien" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_passed_cuu_long_trial" },
+          "speaker": "Cốc Chủ Đường Chấn (Ngũ Tinh Đấu Tôn — Phần Viêm Cốc)",
+          "lines": [
+            "Cốc Chủ Đường Chấn: 'Tiêu Viêm tiểu hữu muốn học trọn bộ trấn cốc bí pháp [Thiên Hỏa Tam Huyền Biến] sao? Tốt!'",
+            "Đường Chấn: 'Nhưng trước hết hãy bước vào Hỏa Đàn phía Đông đón trọn khảo nghiệm 10 hiệp của [#12 Cửu Long Lôi Cương Hỏa] — nếu vượt qua, lão phu đích thân cùng ngươi luyện Hỏa Bồ Đan và truyền thụ toàn bộ bí pháp!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch08_got_tam_huyen_tam_bien" },
+          "speaker": "Cốc Chủ Đường Chấn (Hỏa Đàn Cửu Long)",
+          "sfx": "breakthrough",
+          "shake": [15.0, 0.60],
+          "lines": [
+            "Đường Chấn (tán thưởng nhiệt liệt): 'Tuyệt vời!! Vượt trọn 10 hiệp Ngân Long Lôi Hỏa của [#12 Cửu Long Lôi Cương Hỏa] bằng Tam Sắc Hỏa Liên — ngay cả Xích Hỏa Lão Tổ cũng phải gật đầu khen ngợi!'",
+            "Đường Chấn: 'Nào, hãy cùng lão phu hợp lực khống chế 4 ngọn lửa luyện thành [Hỏa Bồ Đan] cứu Hỏa Nhi — trọn bộ bí pháp [Thiên Hỏa Tam Huyền Biến — Tam Biến] sẽ thuộc về ngươi!'"
+          ],
+          "choices": [
+            {
+              "label": "Hợp luyện Hỏa Bồ Đan -> Lĩnh ngộ [Thiên Hỏa Tam Biến] & Ấn Ký #12 Cửu Long!",
+              "action": "effect:eff_ch08_tam_huyen_tam_bien"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Cốc Chủ Đường Chấn & Đường Hỏa Nhi (Phần Viêm Cốc)",
+          "lines": [
+            "Đường Chấn: 'Hỏa Bồ Đan đã chữa lành nội thương cho Hỏa Nhi — quyển trục gốc Thiên Hỏa Tam Huyền Biến xứng đáng nằm trong tay tiểu hữu! Đan Hội Trung Châu sắp khai mạc tại Thánh Đan Thành phía Đông rồi — chúc huynh đoạt ngôi Quán Quân!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_diep_han_lam_stele": {
+      "marker_when": { "missing_flag": "ch08_stele_shattered" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_stele_shattered" },
+          "speaker": "Diệp Hân Lam & Cự Đầu Huyền Không Tử (Nội Vực Đan Tháp)",
+          "sfx": "breakthrough",
+          "shake": [14.0, 0.55],
+          "lines": [
+            "Diệp Hân Lam (cầu khẩn): 'Tiêu Viêm đại ca! Tào Gia và Đan Gia đang chèn ép muốn gạch tên Diệp Gia khỏi Ngũ Đại Gia Tộc — chỉ cần huynh khơi dậy Dương Hỏa Cổ Đàn và bước lên Trắc Hồn Bi là cứu được cả gia tộc ta!'",
+            "Yêu Nữ Tào Dĩnh (cười mỉa): 'Ồ? Một tên vô danh đại diện Diệp Gia mà cũng dám thử sức với Bia Trắc Hồn Đan Tháp sao?'",
+            "Bạn bước lên đặt bàn tay vững chãi lên Trắc Hồn Bi — linh hồn lực cuồn cuộn chuẩn bị bùng nổ!"
+          ],
+          "choices": [
+            {
+              "label": "Bộc phát toàn bộ Linh Hồn Lực — LÀM NỔ TUNG BIA TRẮC HỒN (Linh Cảnh Đỉnh & Kinh Hồn Chưởng)!",
+              "action": "effect:eff_ch08_shatter_stele"
+            },
+            {
+              "label": "Điều tức thêm trước khi đo Hồn Lực",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Cự Đầu Huyền Không Tử & Diệp Hân Lam (Đan Tháp)",
+          "lines": [
+            "Huyền Không Tử (kính nể): 'Linh Cảnh Đỉnh Phong — hơn 12.000 điểm Hồn Trị làm nổ tung cả Trắc Hồn Bi cổ đại! Quả không hổ là đệ tử chân truyền của Dược Trần!'",
+            "Diệp Hân Lam: 'Diệp Gia đã giữ vững ngôi Ngũ Đại Gia Tộc nhờ có huynh! Đài Chung Kết Đan Hội Trung Châu phía Đông đã mở cửa rồi!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_thien_bao_auction": {
+      "branches": [
+        {
+          "default": true,
+          "speaker": "Chưởng Quỹ Thiên Bảo Phường (Đấu Giá Ngầm Đan Vực)",
+          "lines": [
+            "Chưởng Quỹ Thiên Bảo Phường (chắp tay cung kính): 'Chào mừng vị Hắc Bào đại sư tới phiên Đấu Giá Ngầm lớn nhất Thánh Đan Thành — Thiên Bảo Phường!'",
+            "Chưởng Quỹ: 'Đêm nay có Lôi Hoàng Ma Hạch Cấp 7, Tinh Thần Cổ Long Hạch, Bát Phẩm Chủ Dược Vạn Dặm Đan Giới cùng Bảo Bào Đấu Tông — đại sư muốn vào sảnh đấu trí chứ?'"
+          ],
+          "choices": [
+            {
+              "label": "Mở Đấu Trường Đấu Giá Ngầm Thiên Bảo Phường (#4 Venue)",
+              "action": "effect:eff_ch08_open_thien_bao_auction"
+            },
+            {
+              "label": "Để lát nữa quay lại",
+              "action": "heal_full"
+            }
+          ]
+        }
+      ]
+    },
+    "ch08_huyen_y_garden": {
+      "marker_when": { "missing_flag": "ch08_huyen_y_memory_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_huyen_y_memory_done" },
+          "speaker": "Nữ Cự Đầu Huyền Y (Hoa Viên Đan Tháp)",
+          "sfx": "loot_rare",
+          "lines": [
+            "Nữ Cự Đầu Huyền Y (ánh mắt thoáng run rẩy khi trông thấy chiếc Hắc Giới Cốt Linh trên tay bạn): 'Chiếc nhẫn đó... Là của Dược Trần! Trăm năm trôi qua, lão ấy vẫn giữ nó cẩn thận đến vậy sao...'",
+            "Huyền Y (mỉm cười dịu dàng mà kiên quyết): 'Nếu con là truyền nhân duy nhất của lão ấy và quyết chí đánh vào Hồn Điện cứu sư phụ — hãy nhận lấy [Huyền Tâm Hộ Hồn Bội] này của ta!'"
+          ],
+          "choices": [
+            {
+              "label": "Bái tạ Cự Đầu Huyền Y & nhận [Huyền Tâm Hộ Hồn Bội] (+65 SOUL · -25% Sát Thương Hồn Điện!)",
+              "action": "effect:eff_ch08_huyen_y_memory"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Nữ Cự Đầu Huyền Y (Đan Tháp Tam Cự Đầu)",
+          "lines": [
+            "Huyền Y: 'Huyền Tâm Hộ Hồn Bội sẽ che chở linh hồn con trước xiềng xích Hồn Điện — hãy cứu lão già Dược Trần bình an trở về gặp ta một lần nữa...'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_dan_hoi_finals": {
+      "marker_when": { "has_flag": "ch08_stele_shattered", "missing_flag": "ch08_dan_hoi_champion" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_stele_shattered" },
+          "speaker": "Thánh Đan Quảng Trường — Đan Hội Trung Châu",
+          "lines": [
+            "Bạn cần vượt qua khảo hạch Nội Vực Đan Tháp & Bia Trắc Hồn cùng Diệp Hân Lam [V] phía Tây trước khi đăng đài Chung Kết Đan Hội!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch08_dan_hoi_champion" },
+          "speaker": "Thánh Đan Quảng Trường — Chung Kết Đan Hội Trung Châu",
+          "sfx": "breakthrough",
+          "shake": [18.0, 0.80],
+          "lines": [
+            "Mộ Cốt Lão Nhân (ánh mắt rắn độc): 'Chiếc nhẫn Cốt Linh đó... Ngươi là tiểu súc sinh đệ tử của Dược Trần?! Hừ, Tứ Sắc Đan Lôi của lão phu đã đủ đè bẹp toàn trường!'",
+            "Tiêu Viêm (vận chuyển Tam Sắc Dị Hỏa, Hồn Lực Linh Cảnh Đỉnh Phong bùng phát): 'Mộ Cốt! Hôm nay ngay trước vạn tu giả Trung Châu, ta dùng chính y thuật chân truyền của Sư Tôn đạp nát sự kiêu ngạo đê tiện của ngươi! LÊN ĐI — BÁT PHẨM THƯỢNG HẠNG: SINH CỐT DUNG HUYẾT ĐAN · NGŨ SẮC ĐAN LÔI!!'",
+            "Năm màu thiên lôi (Hồng - Lam - Bạch - Kim - Hắc) giáng xuống bị Địa Yêu Khôi toàn thân hấp thu, tiến hóa thành [CHUẨN THIÊN YÊU KHÔI] ánh vàng rực rỡ!!"
+          ],
+          "choices": [
+            {
+              "label": "Độ Ngũ Sắc Đan Lôi — Đoạt [QUÁN QUÂN ĐAN HỘI] · [Chuẩn Thiên Yêu Khôi] · [Tam Thiên Lôi Huyễn Thân]!",
+              "action": "effect:eff_ch08_dan_hoi_champion"
+            },
+            {
+              "label": "Tạm chuẩn bị thêm đan dược",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Thánh Đan Quảng Trường — Quán Quân Đan Hội",
+          "lines": [
+            "Danh hiệu ĐAN HỘI QUÁN QUÂN Trung Châu đã vang vọng khắp đại lục! Cổng Ngân Hà dẫn vào Vạn Dặm Đan Giới & Tinh Vực Phong Ấn (#9) phía Đông đã rộng mở!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_hung_chien_oath": {
+      "marker_when": { "missing_flag": "ch08_hung_chien_oath_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_hung_chien_oath_done" },
+          "speaker": "Viễn Cổ Long Hùng Hoàng — Hùng Chiến (Bát Giai Ma Thú)",
+          "sfx": "level_up",
+          "lines": [
+            "Hùng Chiến (gầm rung trời rồi chợt khựng lại): 'Ai dám xâm phạm Vạn Dặm Đan Giới — khoan đã... mùi huyết mạch Thái Hư Cổ Long thượng cổ trên ngọc bội Tử Nghiên kia?!'",
+            "Hùng Chiến (hào sảng): 'Nhân loại tiểu tử, nếu ngươi dùng Dị Hỏa giúp ta nhổ mũi tên tà độc cắm sau lưng suốt ngàn năm này, kho linh dược Bát Phẩm của Hùng Chiến ta tặng hết cho ngươi!'"
+          ],
+          "choices": [
+            {
+              "label": "Dùng Dị Hỏa nhổ tên độc & kết nghĩa huynh đệ cùng Hùng Chiến!",
+              "action": "effect:eff_ch08_hung_chien_oath"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Viễn Cổ Long Hùng Hoàng — Hùng Chiến",
+          "lines": [
+            "Hùng Chiến (cười sảng khoái): 'Ha ha ha! Khi nào huynh đệ đánh Vong Hồn Điện cứu sư phụ, chỉ cần gọi một tiếng, Hùng Chiến ta lập tức dẫn quân thú tới trợ trận!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch08_tam_thien_core": {
+      "marker_when": { "has_flag": "ch08_killed_tam_thien_dragon", "missing_flag": "ch08_completed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch08_killed_tam_thien_dragon" },
+          "speaker": "Bản Nguyên Long Châu — #9 Tam Thiên Diễm Viêm Hỏa",
+          "lines": [
+            "Phân thân Mộ Cốt Lão Nhân và Thái Hư Tử Hắc Cự Long vẫn đang cuồng nộ giữa Ngân Hà Tinh Vực! Hãy đánh bại chúng trước rồi tiến tới hấp thu Bản Nguyên Long Châu!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch08_completed" },
+          "speaker": "Bản Nguyên Long Châu — #9 Tam Thiên Diễm Viêm Hỏa",
+          "sfx": "breakthrough",
+          "shake": [20.0, 0.90],
+          "lines": [
+            "Ấn Ký Cốt Linh Lãnh Hỏa của Sư Tôn Dược Trần đã đánh thức ký ức xưa của Thái Hư Tử Hắc Cự Long, cùng bạn đập nát phân thân Mộ Cốt Lão Nhân!",
+            "Giữa dải ngân hà tím thẫm lấp lánh sao rơi, Cự Long cúi đầu hiến dâng Bản Nguyên Long Châu — thời khắc thôn phệ ngọn Dị Hỏa thứ 3 [#9 Tam Thiên Diễm Viêm Hỏa], luyện thành [Bất Tử Chi Thân] và đột phá ĐẤU TÔNG 9 TINH ĐỈNH PHONG đã điểm!!"
+          ],
+          "choices": [
+            {
+              "label": "Vận chuyển Phần Quyết Thôn Phệ [#9 TAM THIÊN DIỄM VIÊM HỎA] (Hoàn Tất Chương 08!)",
+              "action": "effect:eff_ch08_complete_chapter"
+            },
+            {
+              "label": "Ở lại Tinh Vực rèn luyện thêm",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Bản Nguyên Long Châu — Tam Thiên Tinh Thể",
+          "lines": [
+            "CHÚC MỪNG HOÀN TẤT CHƯƠNG 08 (QUYỂN III — BẮC VỰC TRUNG CHÂU & ĐAN HỘI)!! Bạn đã thu phục [#9 Tam Thiên Diễm Viêm Hỏa — Bất Tử Chi Thể], mở [Tứ Sắc Hủy Diệt Hỏa Liên] và đạt [ĐẤU TÔNG 9 TINH ĐỈNH PHONG] — sẵn sàng cho Chương 09: Huyết Chiến Vong Hồn Điện Cứu Sư Tôn Dược Lão!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    }
+  },
+  "effects": {
+    "eff_ch08_save_han_tuyet": { "set_flag": "ch08_han_tuyet_saved", "heal_full": true },
+    "eff_ch08_han_nguyet_met": { "set_flag": "ch08_han_nguyet_met", "heal_full": true },
+    "eff_ch08_han_secret_gift": { "set_flag": "ch08_han_secret_gift_done", "heal_full": true },
+    "eff_ch08_help_kim_thach": { "set_flag": "ch08_helped_kim_thach", "heal_full": true },
+    "eff_ch08_kim_thu_secret": { "set_flag": "ch08_kim_thu_secret_done", "heal_full": true },
+    "eff_ch08_break_dau_tong": { "set_flag": "ch08_broke_dau_tong", "heal_full": true },
+    "eff_ch08_phong_ton_ally": { "set_flag": "ch08_phong_ton_ally", "heal_full": true },
+    "eff_ch08_cure_ma_doc_ban": { "set_flag": "ch08_ma_doc_ban_cured", "heal_full": true },
+    "eff_ch08_huan_nhi_de_an": { "set_flag": "ch08_huan_nhi_de_an_done", "heal_full": true },
+    "eff_ch08_tam_huyen_tam_bien": { "set_flag": "ch08_got_tam_huyen_tam_bien", "heal_full": true },
+    "eff_ch08_shatter_stele": { "set_flag": "ch08_stele_shattered", "heal_full": true },
+    "eff_ch08_open_thien_bao_auction": { "open_auction": "thien_bao_phuong" },
+    "eff_ch08_huyen_y_memory": { "set_flag": "ch08_huyen_y_memory_done", "heal_full": true },
+    "eff_ch08_dan_hoi_champion": { "set_flag": "ch08_dan_hoi_champion", "heal_full": true },
+    "eff_ch08_hung_chien_oath": { "set_flag": "ch08_hung_chien_oath_done", "heal_full": true },
+    "eff_ch08_complete_chapter": { "set_flag": "ch08_completed", "heal_full": true }
+  }
+}
