@@ -167,6 +167,24 @@
       "description": "Đốt cháy hỏa lực kích phát Bí Pháp trong 10 giây: Tăng +45% Công Kích & +20% Tốc Độ xuất chiêu!"
     },
     {
+      "id": "lac_doc_am_chuong",
+      "name": "Lạc Độc Ám Chưởng",
+      "grade": "Huyền Giai Đỉnh · Độc Ấn",
+      "slot_hint": "E",
+      "icon": "res://assets/sprites/icons/skill_su_tu_ngam.png",
+      "behavior": "poison_palm",
+      "qi_cost": 22,
+      "cooldown": 6.0,
+      "atk_ratio": 2.35,
+      "soul_ratio": 0.65,
+      "radius_px": 175,
+      "knockback": 240,
+      "realm_pen": 0.36,
+      "unlocked_start": false,
+      "unlock_source": "Chương 04 — Rút Lạc Độc cho Nguyên Soái Nạp Lan Kiệt tại Nạp Lan Vương Phủ",
+      "description": "Phóng luồng Lạc Độc đen nén từ Thanh Liên Hỏa: Ăn mòn -30% DEF mục tiêu trong 10 giây & gây Độc Nổ Lan khi hạ địch!"
+    },
+    {
       "id": "phat_no_hoa_lien",
       "name": "Phật Nộ Hỏa Liên",
       "grade": "Thiên Giai Tiến Hóa",

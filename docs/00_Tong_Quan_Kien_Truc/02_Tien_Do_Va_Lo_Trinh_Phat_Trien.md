@@ -2,7 +2,7 @@
 
 > **Dự án**: Đấu Phá Thương Khung — Top-down 2D HD Pixel Action RPG (Godot Engine 4)
 > **Cập nhật lần cuối**: 24/11/2026
-> **Phiên bản hiện tại**: **v0.3.5 (Quyển I: Ch.01–03 · Hoàn tất Mốc M1 & M2 — Full 28 Hiệu Ứng Hỏa Liên, Buff/Tặng Quà Hồng Nhan, 12 Boss Độc Chiêu + 12/12 Sprite 4-Frame)**
+> **Phiên bản hiện tại**: **v0.4.0 (Trọn Bộ Quyển I: Ch.01–04 · Data-Driven Story Engine + Đế Đô & Ước Hẹn 3 Năm Vân Lam Sơn — 19 Bản Đồ, 31 Nhiệm Vụ Chính, 19 Boss Độc Chiêu)**
 > **Mục đích**: Theo dõi đối chiếu giữa **Hồ sơ thiết kế (GDD — 11 Chương)** và **Trạng thái thực thi trong mã nguồn**, quản lý backlog lỗi kỹ thuật và lộ trình phát triển các mốc tiếp theo.
 
 ---
@@ -12,17 +12,17 @@
 | Hạng mục | Đã hoàn thiện trong game | Mục tiêu GDD | Tỷ lệ / Ghi chú |
 | :--- | :---: | :---: | :--- |
 | **Tài liệu Thiết kế (GDD)** | 25 file + 2 concept art | 25 file | **100%** — Đã viết trọn 11 Chương, hệ thống & roadmap tiến độ |
-| **Cốt truyện chơi được** | **3 Chương** (NV 1–21) | 11 Chương (4 Quyển) | **27%** — Xong Ch.01, Ch.02, Ch.03 (Sa Mạc Tháp Qua Nhĩ) |
-| **Bản đồ liên thông** | **11 bản đồ** (14 rương, 21 cổng) | Toàn Đấu Khí Đại Lục | Ch.01 (3), Ch.02 (4), Ch.03 (4) |
-| **Đấu Kỹ chủ động** | **10 chiêu** (`skills.json`) | 24 chiêu | **42%** — Đủ bộ Ch.01–03 + Phật Nộ Hỏa Liên `[F]` |
-| **Dị Hỏa & Thú Hỏa** | **28/28** dữ liệu & **28/28 `lotus_effect`** · **3/28** thu phục cốt truyện | 28 ngọn Hỏa | Cả 28 hiệu ứng đặc biệt Hỏa Liên đã hoạt động; 25 ngọn còn lại hiện thử qua DEMO |
-| **Cảnh giới & Đột phá** | **12/12** dữ liệu · Đột phá cốt truyện tới **Đại Đấu Sư** | 12 Đại Cảnh Giới | Thiếu đan phương & cơ chế đặc thù từ bậc 4 → 12 |
-| **Quái & Boss** | **20** (8 quái + **12/12 Boss có chiêu riêng & `anim_sheet` 4 frame**) | 25+ Đại Boss | Đã tách 12 bộ pattern chiến đấu riêng + `BossHazardZone` |
-| **Luyện Đan** | **17** vật phẩm · **7** đan phương (Phẩm 1–4) | 36 đan phương · 13 Thiên Đỉnh | Mini-game Khống Hỏa + Đan Lôi có thưởng Dị Hỏa / Dược Đỉnh / Tiểu Y Tiên |
-| **Trang Bị 10 Ô** | **21** mẫu · **3** bộ Set · 6 phẩm chất · +0→+15 | Trang bị + Yêu Khôi + Khảm Hạch | Chưa có Yêu Khôi, khảm Ma Hạch, Cổ Đế Ngọc |
-| **Đồng Hành AI & Hồng Nhan** | **3** Đồng hành `[G]` · **5 Hồng Nhan** có 4 mốc Buff (25/50/75/100) & Tặng Quà | 17 Đồng hành & Khách khanh | Đã mở tặng quà x2 sở thích, nhận Quà Tri Kỷ & cộng thẳng chỉ số |
+| **Cốt truyện chơi được** | **4 Chương — Trọn Quyển I** (NV 1–31 + 3 tuyến phụ Ch.04 + Easter Egg) | 11 Chương (4 Quyển) | **36%** — Xong Ch.01, Ch.02, Ch.03 & **Ch.04 (Đế Đô & Vân Lam Sơn)** |
+| **Bản đồ liên thông** | **19 bản đồ** (22 rương, BFS tìm đường tự động) | Toàn Đấu Khí Đại Lục | Ch.01 (3), Ch.02 (4), Ch.03 (4), **Ch.04 (8)** |
+| **Đấu Kỹ chủ động** | **11 chiêu** (`skills.json`) | 24 chiêu | **46%** — Đủ bộ Quyển I + `Lạc Độc Ám Chưởng` + Phật Nộ Hỏa Liên `[F]` |
+| **Dị Hỏa & Thú Hỏa** | **28/28** dữ liệu & **28/28 `lotus_effect`** · **3/28** thu phục cốt truyện | 28 ngọn Hỏa | Cả 28 hiệu ứng đặc biệt Hỏa Liên đã hoạt động; 25 ngọn còn lại thử qua DEMO |
+| **Cảnh giới & Đột phá** | **12/12** dữ liệu · Đột phá cốt truyện tới **Đại Đấu Sư 9 Tinh Đỉnh Phong** | 12 Đại Cảnh Giới | Đã có **Đấu Khí Sa Y** (Đấu Sư) & **Đấu Khí Khải Giáp + Ngoại Phóng** (Đại Đấu Sư) |
+| **Quái & Boss** | **33** (14 quái + **19/19 Boss có chiêu riêng & `anim_sheet` 4 frame**) | 25+ Đại Boss | 12 Boss Ch.01–03 + **7 Boss Ch.04** (Mặc Thừa → Đấu Tông Vân Sơn) |
+| **Luyện Đan** | **20** vật phẩm · **9** đan phương (Phẩm 1–6) | 36 đan phương · 13 Thiên Đỉnh | Đã thêm `Phá Ách Đan`, `Tam Văn Thanh Linh Đan` & `Thất Huyễn Thanh Linh Tiên` |
+| **Trang Bị 10 Ô** | **25** mẫu · **4** bộ Set · 6 phẩm chất · +0→+15 | Trang bị + Yêu Khôi + Khảm Hạch | Đã thêm Bộ Quán Quân Đế Đô, `Xích Dương Đỉnh`, `Pháp Bào Trưởng Lão`, `Kim Viêm Hộ Hồn Ngọc` |
+| **Đồng Hành AI & Hồng Nhan** | **3** Đồng hành `[G]` · **`[T]` Dược Lão → Mỹ Đỗ Toa Đấu Tông** · **5 Hồng Nhan** Buff & Tặng Quà | 17 Đồng hành & Khách khanh | Đã nối biến cố Dược Lão ngủ say -> Mỹ Đỗ Toa Đấu Tông Hộ Pháp |
 | **Thế Lực & Phó Bản Endgame** | **0 / 8** Phó bản · chưa có Tông Môn | 8 Phó bản + Bàn Môn → Thiên Phủ | Dự kiến triển khai từ Quyển II trở đi |
-| **Mã nguồn & Hạ tầng** | **18 script** · 9 scene · 8 JSON · **Đã khởi tạo Git** | — | Đã qua kiểm thử Godot headless 0 lỗi; chưa tạo `export_presets.cfg` |
+| **Mã nguồn & Hạ tầng** | **18 script** · 9 scene · **12 JSON (Data-Driven Story Engine)** · Git | — | Nạp động `maps/quests/dialogues/enemies_chXX.json`, lưu theo `quest_id`, kiểm thử headless `0` lỗi |
 
 ---
 
@@ -33,7 +33,7 @@
 | **Quyển I**<br>*Gia Mã Đế Quốc* | **Ch.01**: Ô Thản Thành | ✅ Hoàn tất | 3 map, NV 1–9, Từ Hôn, Dược Lão, Nhã Phi, Tiêu Ngọc, Tiêu Ninh, Nhược Lâm, Lăng Ảnh, Liễu Tịch, Gia Liệt Áo, Huyền Trọng Xích. *(GDD nâng cao chưa làm: đấu giá đấu trí, ngâm bồn gỗ mini-game, né thước 30 ngày, stealth ám sát).* |
 | **Quyển I** | **Ch.02**: Ma Thú Sơn Mạch | ✅ Hoàn tất | 4 map, NV 10–15, Tiểu Y Tiên, 3 Thạch Thất (Tử Vân Dực, Tàn Đồ 1/4, Sư Tử Ngâm), Vân Chi, Tiểu Tử Tinh Sư Vương & Tử Hỏa, Mục Lực, Mục Xà, Chia ly Thung Lũng U Lan. |
 | **Quyển I** | **Ch.03**: Sa Mạc Tháp Qua Nhĩ | ✅ Hoàn tất | 4 map, NV 16–21, Tiêu Đỉnh/Tiêu Lệ, Hải Ba Đông (Tàn Đồ 2/4), Thanh Lân, Địa Huyệt Dung Nham (Song Đầu Hỏa Linh Xà, Thanh Liên Đài), Mặc Ba Tư, Cổ Hà, Vân Vận, Mỹ Đỗ Toa độ kiếp, Thôn phệ `#19 Thanh Liên Địa Tâm Hỏa`, Thải Lân & Phật Nộ Hỏa Liên `[F]`. |
-| **Quyển I** | **Ch.04**: Đế Đô & Ước Hẹn 3 Năm | ⏳ Chưa làm | Cổng chờ `ch04_unlocked_future` đã đặt ở cuối Ốc Đảo Diêm Lệ. Cần làm: Mặc Gia Bảo (Boss Mặc Thừa), cải trang Nham Kiêu, Đan Hội Gia Mã (`Tam Văn Thanh Linh Đan`), Vân Lam Sơn (Boss Nạp Lan Yên Nhiên, Vân Lăng & Hộ Tông Đại Trận). |
+| **Quyển I** | **Ch.04**: Đế Đô & Ước Hẹn 3 Năm | ✅ Hoàn tất | 8 map (Diêm Thành Mặc Gia Trang, Gia Mã Thánh Thành, Nạp Lan Vương Phủ, Quảng Trường Đan Hội, Thiên Thang 999 Bậc, Đỉnh Vân Lam Sơn, Phế Tích Tiêu Gia, Rừng Phong Tỏa & Trấn Quỷ Quan), NV 22–31, 3 tuyến phụ + Easter Egg Mỹ Đỗ Toa, 7 Boss độc chiêu (Mặc Thừa → Nạp Lan Yên Nhiên → Vân Lăng → Đấu Tông Vân Sơn), Đấu Khí Khải Giáp & Ngoại Phóng, `Lạc Độc Ám Chưởng`, `[T]` Mỹ Đỗ Toa Đấu Tông, hồi sinh `Kim Viêm Hộ Hồn Ngọc`. *(Ghi chú: đồ họa map/Boss Ch.04 tạm tái sử dụng tileset/sprite sẵn có để hoàn thiện art & UI ở đợt polish sau).* |
 | **Quyển II**<br>*Hắc Giác Vực & Già Nam* | **Ch.05**: Hắc Giác Vực & Ngoại Viện | ⏳ Chưa làm | Hắc Ấn Thành (đấu giá ngầm), Tam Thiên Lôi Động, khảo thí Già Nam, săn Hỏa Năng. |
 | **Quyển II** | **Ch.06**: Nội Viện & Thiên Phần Tháp | ⏳ Chưa làm | Bàn Môn, Tử Nghiên, Đấu Trường Cường Bảng (Boss Liễu Kình), Đáy Tháp Thiên Phần (Boss Vẫn Lạc Tâm Viêm `#14`, Hàn Phong). |
 | **Quyển II** | **Ch.07**: Tam Thượng Vân Lam & Độc Tông | ⏳ Chưa làm | Boss Vân Sơn & Vụ Hộ Pháp (Dược Lão bị bắt), lập Viêm Minh, `#15 Hải Tâm Diễm`, Xuất Vân Độc Tông (Boss Hạt Tất Nham, Ma Độc Ban). |
@@ -132,10 +132,11 @@
 * [x] Kích hoạt **Hảo Cảm Hồng Nhan** (4 mốc Buff 25/50/75/100, Quà Tri Kỷ & Tặng Quà x2 sở thích) ngay trong `[M]`.
 * [ ] *(Tùy chọn bổ sung)* Idle 4 frame Tiêu Viêm, nhạc nền Sa Mạc/Dung Nham & nút Fullscreen trong cài đặt.
 
-### Mốc M3 — Chương 04: Đế Đô & Ước Hẹn 3 Năm (`v0.4.0` — Trọn Quyển I)
-* [ ] Thêm các bản đồ Chương 04: Diêm Thành / Mặc Gia Bảo, Đế Đô Gia Mã (Công Hội Luyện Dược Sư & Mễ Đặc Nhĩ), Quảng Trường Vân Lam Sơn.
-* [ ] Thêm cơ chế Cải Trang Hắc Bào (**Nham Kiêu**), Mini-game Đấu Giá & **Đan Hội Gia Mã** (công thức `Tam Văn Thanh Linh Đan` đột phá lên **Đấu Linh**).
-* [ ] Thêm Boss **Mặc Thừa**, **Nạp Lan Yên Nhiên** (Ước Hẹn 3 Năm), **Vân Lăng & Hộ Tông Đại Trận**, mở cổng sang Quyển II (Hắc Giác Vực).
+### Mốc M3 — Data-Driven Story Engine & Chương 04: Đế Đô & Ước Hẹn 3 Năm (`v0.4.0` — Trọn Quyển I) — ✅ HOÀN TẤT (cốt truyện & gameplay)
+* [x] Nâng cấp **Data-Driven Story Engine**: nạp động `maps/quests/dialogues/enemies_chXX.json`, trình chạy hội thoại/nhánh chọn JSON, BFS tìm đường tự động qua toàn bộ đồ thị cổng bản đồ, và lưu tiến độ theo `quest_id` tự động nâng cấp bản lưu cũ.
+* [x] Thêm trọn bộ **8 bản đồ Chương 04** (`ch04_mac_gia_trang` → `ch04_rung_phong_toa`), **10 mốc nhiệm vụ chính (NV 22–31)**, **3 nhiệm vụ phụ / kỳ ngộ ẩn** (Mễ Đặc Nhĩ, Thề Máu Tiêu Tộc Nộ Huyết, Mật Thư Lăng Ảnh `Kim Viêm Hộ Hồn Ngọc`) và **Easter Egg Khách Điếm Đế Đô**.
+* [x] Thêm cơ chế **Đấu Khí Khải Giáp & Ngoại Phóng** (Đại Đấu Sư), Đấu Kỹ **`Lạc Độc Ám Chưởng`**, đan phương **`Phá Ách Đan` & `Tam Văn Thanh Linh Đan`**, biến cố **Dược Lão ngủ say → `[T]` Đấu Tông Mỹ Đỗ Toa Hộ Pháp**, và **7 Boss độc chiêu** (Mặc Thừa, Mộc Chiến, Viêm Lợi, Nạp Lan Yên Nhiên, Vân Yên Đại Trận, Vân Lăng & Đấu Tông Vân Sơn), mở cổng chờ sang Quyển II (`ch05_unlocked_future`).
+* [ ] *(Đợt polish Đồ họa & UI sau)* Vẽ tileset Đế Đô / Vân Lam Sơn và sprite 4-frame riêng cho 7 Boss & NPC mới Chương 04.
 
 ### Mốc M4 — Quyển II: Hắc Giác Vực, Già Nam & Tam Thượng Vân Lam (`v0.5.0 – v0.6.0`)
 * [ ] Triển khai Chương 05–07, Đấu Kỹ bậc Địa Giai (`Tam Thiên Lôi Động`, `Khai Sơn Ấn`...), cơ chế **Đấu Khí Hóa Dực** (Đấu Vương) & **Ma Độc Ban**.
@@ -160,3 +161,4 @@
 | *Trước 24/11/2026* | `v0.3.0` | Mở rộng trọn vẹn **Chương 03 — Sa Mạc Tháp Qua Nhĩ** (tổng 11 map, 21 mốc NV, 20 quái/Boss, 6 `anim_sheet` Boss, Thần Thú Thải Lân, Phật Nộ Hỏa Liên `[F]`), bổ sung **Chế Độ DEMO** và **Auto-Save / Auto-Continue**. |
 | **24/11/2026** | `v0.3.0` | Rà soát toàn bộ mã nguồn (`9.333` dòng GDScript) đối chiếu GDD; khởi tạo tài liệu theo dõi tiến độ & danh sách lỗi (`BUG-01` → `OPS-01`) này. |
 | **24/11/2026** | `v0.3.5` | Hoàn tất **Mốc M1 & M2**: Khởi tạo Git, sửa `BUG-01`→`BUG-06`, hiện thực hóa trọn bộ **28 hiệu ứng `lotus_effect`**, mở khóa **Buff & Tặng Quà Hồng Nhan**, xây dựng **12 bộ chiêu thức Boss riêng + `BossHazardZone`**, và hoàn thiện **6 `anim_sheet` 4 frame còn lại** (`12/12` Boss). Đã kiểm thử Godot headless `0` lỗi. |
+| **24/11/2026** | `v0.4.0` | Hoàn tất **Data-Driven Story Engine & Mốc M3 (Chương 04 — Trọn Quyển I)**: Nạp động file JSON từng chương, hội thoại/nhánh chọn JSON, BFS tìm đường đa bản đồ, lưu nhiệm vụ theo `quest_id` tự động tương thích bản lưu cũ; xây dựng **8 bản đồ mới (tổng 19)**, **10 NV chính (NV 22–31)**, 3 tuyến phụ + Easter Egg, **7 Boss độc chiêu (tổng 19)**, Đấu Khí Khải Giáp & Ngoại Phóng, `Lạc Độc Ám Chưởng`, `[T]` Mỹ Đỗ Toa Đấu Tông và hồi sinh `Kim Viêm Hộ Hồn Ngọc`. Đã kiểm thử tự động toàn luồng Ch.01–04 trên Godot headless (`0` lỗi). |

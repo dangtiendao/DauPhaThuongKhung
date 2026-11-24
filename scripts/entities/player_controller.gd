@@ -626,6 +626,27 @@ func _execute_melee_strike_impact() -> void:
 	if hit_any:
 		hitstop_timer = 0.030 if combo_step == 3 else 0.018
 
+	# ĐẠI ĐẤU SƯ (Cảnh giới >= 4): ĐẤU KHÍ NGOẠI PHÓNG — mỗi cú vung vũ khí khi QI > 40% phóng kiếm khí/xích khí lửa xuyên địch!
+	if PlayerData.realm_index >= 4 and has_wpn and PlayerData.current_qi > PlayerData.get_max_qi() * 0.40:
+		var packed_w: PackedScene = load(SKILL_SCENE_PATH)
+		if packed_w != null and get_parent() != null:
+			var wave_proj: Area2D = packed_w.instantiate() as Area2D
+			get_parent().add_child(wave_proj)
+			var use_fl: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("di_hoa_19_thanh_lien")
+			if wave_proj.has_method("configure_skill"):
+				wave_proj.configure_skill(
+					"flame_wave",
+					global_position + attack_aim_dir * 34.0 + Vector2(0, -24),
+					global_position + attack_aim_dir * 320.0,
+					dmg * 0.58,
+					160.0,
+					0.16,
+					52.0,
+					540.0,
+					use_fl,
+					[]
+				)
+
 
 func _trigger_skill_attack_pose(aim_dir: Vector2) -> void:
 	if attack_tex == null:
@@ -812,6 +833,30 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 					if enemy_node.has_method("receive_hit"):
 						enemy_node.receive_hit(dmg, push_d * kb, r_pen, burn_val)
 
+	elif behavior == "poison_palm":
+		# LẠC ĐỘC ÁM CHƯỞNG (Chương 04 — Nạp Lan Vương Phủ): Phá 30% DEF Boss trong 10s + Độc Nổ Lan!
+		_trigger_skill_attack_pose(aim_dir)
+		burst_ring_radius = rad_px
+		burst_ring_color = Color("#52B788")
+		burst_ring_timer = 0.36
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.screen_shake_requested.emit(6.0, 0.18)
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -78), "LẠC ĐỘC ÁM CHƯỞNG! (-30% DEF)", Color("#52B788"))
+		var palm_center: Vector2 = global_position + aim_dir * 72.0
+		_spawn_hit_sparks(palm_center + Vector2(0, -20), Color("#52B788"))
+		for en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if palm_center.distance_to(enemy_node.global_position) <= rad_px:
+					var push_d: Vector2 = (enemy_node.global_position - global_position).normalized()
+					if enemy_node.has_method("apply_def_shred"):
+						enemy_node.apply_def_shred(0.30, 10.0)
+					if enemy_node.has_method("apply_poison_detonate"):
+						enemy_node.apply_poison_detonate(dmg * 0.65, 6.0)
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(dmg, push_d * kb, r_pen, burn_val)
+						_spawn_hit_sparks(enemy_node.global_position + Vector2(0, -24), Color("#2EC4B6"))
+
 	elif behavior == "flame_wave" or behavior == "fire_lotus_ult":
 		if behavior == "flame_wave":
 			_trigger_skill_attack_pose(aim_dir)
@@ -831,9 +876,15 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 
 
 func _activate_duoc_lao_assist() -> void:
-	if not PlayerData.duoc_lao_assist_unlocked:
+	var mode: String = PlayerData.get_assist_mode()
+	if mode == "locked":
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Chưa mở Cốt Linh Phụ Thể [T]!", Color("#ADB5BD"))
 		EventBus.banter_triggered.emit("Gợi ý cốt truyện: Hoàn thành trận diệt Gia Liệt Áo (cuối Chương 01) để mở khóa Cốt Linh Phụ Thể [T]!")
+		return
+	if mode == "sleeping":
+		EventBus.audio_sfx_requested.emit("alchemy_fail")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -74), "Dược Lão Đang Ngủ Say Trong Nhẫn Đen!", Color("#A8DADC"))
+		EventBus.banter_triggered.emit("Cốt truyện Chương 04: Dược Lão đã tiêu hao tàn hồn sau vụ nổ Mặc Gia! Hãy tự lực chinh phục Đế Đô & Vân Lam Sơn!")
 		return
 	if float(skill_cooldowns.get("T", 0.0)) > 0.0:
 		return
@@ -845,9 +896,26 @@ func _activate_duoc_lao_assist() -> void:
 	_refresh_flame_shader()
 	EventBus.audio_sfx_requested.emit("breakthrough")
 	EventBus.stats_changed.emit()
-	EventBus.screen_shake_requested.emit(8.5, 0.28)
-	EventBus.floating_text_requested.emit(global_position + Vector2(0, -78), "CỐT LINH PHỤ THỂ!", Color("#A8DADC"))
-	EventBus.banter_triggered.emit("Dược Lão: 'Giao thân thể cho vi sư! Để chúng chiêm ngưỡng uy lực Cốt Linh Lãnh Hỏa!'")
+	EventBus.screen_shake_requested.emit(10.0 if mode == "medusa_dau_tong" else 8.5, 0.30)
+	if mode == "medusa_dau_tong":
+		burst_ring_radius = 235.0
+		burst_ring_color = Color("#E0AAFF")
+		burst_ring_timer = 0.50
+		var m_dmg: float = PlayerData.get_atk() * 2.4
+		for en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var en_nd: Node2D = en as Node2D
+				if global_position.distance_to(en_nd.global_position) <= 235.0:
+					var push_d: Vector2 = (en_nd.global_position - global_position).normalized()
+					if en_nd.has_method("receive_hit"):
+						en_nd.receive_hit(m_dmg, push_d * 540.0, 0.75, 0.0)
+					if en_nd.has_method("apply_stun"):
+						en_nd.apply_stun(1.4)
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -82), "ĐẤU TÔNG MỸ ĐỖ TOA HỘ PHÁP!", Color("#E0AAFF"))
+		EventBus.banter_triggered.emit("Mỹ Đỗ Toa Nữ Vương (Đạp Hư Không): 'Kẻ giữ đan phương của bổn vương, đám sâu kiến các ngươi cũng dám động vào sao?!'")
+	else:
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -78), "CỐT LINH PHỤ THỂ!", Color("#A8DADC"))
+		EventBus.banter_triggered.emit("Dược Lão: 'Giao thân thể cho vi sư! Để chúng chiêm ngưỡng uy lực Cốt Linh Lãnh Hỏa!'")
 
 
 func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector2) -> void:
@@ -857,11 +925,15 @@ func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector
 	var taken_per_realm: float = float(GameDatabase.suppression_rules.get("damage_taken_bonus_per_major_realm", 0.30))
 	var suppression_bonus: float = 1.0 + float(realm_diff) * taken_per_realm
 	var raw_after_def: float = maxf(1.0, (raw_dmg * suppression_bonus) - PlayerData.get_def() * 0.45)
-	# Đấu Khí Sa Y của Đấu Sư (realm >= 3): giảm 18% sát thương khi còn > 25% Đấu Khí!
-	var sa_y_mult: float = 0.82 if (PlayerData.realm_index >= 3 and PlayerData.current_qi > PlayerData.get_max_qi() * 0.25) else 1.0
+	# Đấu Khí Khải Giáp (Đại Đấu Sư >= 4): giảm 30% sát thương! Đấu Khí Sa Y (Đấu Sư == 3): giảm 18%!
+	var armor_mult: float = 1.0
+	if PlayerData.realm_index >= 4 and PlayerData.current_qi > PlayerData.get_max_qi() * 0.20:
+		armor_mult = 0.70
+	elif PlayerData.realm_index >= 3 and PlayerData.current_qi > PlayerData.get_max_qi() * 0.25:
+		armor_mult = 0.82
 	# Giảm 30% sát thương nhận vào trong 4s từ #13 Quy Linh Địa Hỏa!
 	var quy_linh_mult: float = 0.70 if PlayerData.lotus_dmg_red_timer > 0.0 else 1.0
-	var final_dmg: float = maxf(1.0, raw_after_def * sa_y_mult * quy_linh_mult)
+	var final_dmg: float = maxf(1.0, raw_after_def * armor_mult * quy_linh_mult)
 
 	# Khiên đất Huyền Hoàng (#23) hấp thụ sát thương trước HP!
 	if PlayerData.lotus_shield_hp > 0.0:
@@ -883,6 +955,27 @@ func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector
 	EventBus.stats_changed.emit()
 
 	if PlayerData.current_hp <= 0.0:
+		# Kỳ Ngộ Ẩn Chương 04: KIM VIÊM HỘ HỒN NGỌC (Huân Nhi) — Tự động hồi sinh 1 lần 50% HP!
+		if PlayerData.has_flag("ch04_kim_viem_ngoc") and not PlayerData.kim_viem_revive_used:
+			PlayerData.kim_viem_revive_used = true
+			PlayerData.current_hp = PlayerData.get_max_hp() * 0.50
+			PlayerData.current_qi = maxf(PlayerData.current_qi, PlayerData.get_max_qi() * 0.50)
+			invuln_timer = 2.5
+			burst_ring_radius = 210.0
+			burst_ring_color = Color("#FFD166")
+			burst_ring_timer = 0.55
+			EventBus.audio_sfx_requested.emit("breakthrough")
+			EventBus.screen_shake_requested.emit(10.0, 0.35)
+			for en in get_tree().get_nodes_in_group("enemies"):
+				if is_instance_valid(en) and en is Node2D and global_position.distance_to((en as Node2D).global_position) <= 210.0:
+					var pd: Vector2 = ((en as Node2D).global_position - global_position).normalized()
+					if en.has_method("receive_hit"):
+						en.receive_hit(PlayerData.get_atk() * 2.0, pd * 480.0, 0.5, 0.0)
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -86), "KIM VIÊM HỘ HỒN NGỌC — HỒI SINH 50% HP!", Color("#FFD166"))
+			EventBus.banter_triggered.emit("Lá Ngọc Vàng Cổ Tộc của Huân Nhi bùng cháy cứu mạng bạn (Hồi 50% HP & 2.5s Bất Tử)!")
+			EventBus.stats_changed.emit()
+			return
+
 		PlayerData.recalculate_and_clamp(true)
 		var m_def: Dictionary = GameDatabase.get_map_def(PlayerData.current_map_id)
 		var sp: Array = m_def.get("default_spawn", [340, 520])
@@ -906,8 +999,12 @@ func _draw() -> void:
 		var aura_col: Color = Color("#FF4D6D") if PlayerData.is_flame_buff_active else (Color(str(f_def.get("mid_hex", "#FFE599"))) if not f_def.is_empty() else Color("#FFE599"))
 		aura_col.a = 0.58 if (PlayerData.is_duoc_lao_active or PlayerData.is_flame_buff_active) else 0.28
 		draw_arc(Vector2(0, 12), 34.0, 0.0, TAU, 36, aura_col, 2.8)
-	# Vòng sáng Đấu Khí Sa Y hộ thân (Đấu Sư trở lên!)
-	if PlayerData.realm_index >= 3:
+	# Vòng sáng Đấu Khí Khải Giáp (Đại Đấu Sư >= 4) hoặc Đấu Khí Sa Y (Đấu Sư == 3)!
+	if PlayerData.realm_index >= 4:
+		var kg_col: Color = Color(0.18, 0.88, 0.78, 0.62)
+		draw_arc(Vector2(0, -24), 36.0, 0.0, TAU, 40, kg_col, 3.0)
+		draw_arc(Vector2(0, -24), 31.0, 0.0, TAU, 32, Color(1.0, 0.86, 0.40, 0.38), 1.8)
+	elif PlayerData.realm_index >= 3:
 		var sy_col: Color = Color(0.78, 0.48, 1.0, 0.42)
 		draw_arc(Vector2(0, -24), 34.0, 0.0, TAU, 36, sy_col, 2.2)
 	# Vòng Khiên Đất Huyền Hoàng (#23) hoặc Khiên Quy Linh (#13)

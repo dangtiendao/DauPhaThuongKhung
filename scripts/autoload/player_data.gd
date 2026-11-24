@@ -89,8 +89,11 @@ var quick_hp_pill_id: String = "pill_ngung_huyet_tan"
 var quick_qi_pill_id: String = "pill_hoi_khi_dan"
 
 var active_quest_idx: int = 0
+var active_quest_id: String = ""
 var quest_progress: int = 0
 var all_quests_done: bool = false
+var completed_quest_ids: Dictionary = {}
+var kim_viem_revive_used: bool = false
 
 
 func _ready() -> void:
@@ -224,8 +227,11 @@ func reset_for_new_game(slot_idx: int = 1) -> void:
 	gold = 35
 	enhance_stones = 0
 	active_quest_idx = 0
+	active_quest_id = str(GameDatabase.all_quests[0].get("id", "")) if not GameDatabase.all_quests.is_empty() else ""
 	quest_progress = 0
 	all_quests_done = false
+	completed_quest_ids = {}
+	kim_viem_revive_used = false
 	inventory = { "pill_ngung_huyet_tan": 1 }
 	quick_hp_pill_id = "pill_ngung_huyet_tan"
 	quick_qi_pill_id = "pill_hoi_khi_dan"
@@ -253,13 +259,13 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	auto_save_timer = 0.0
 	current_map_id = "ch01_tieu_gia"
 
-	realm_index = 3 # Đấu Sư 9 Tinh Đỉnh Phong (sẵn sàng bấm [B] lên Đại Đấu Sư!)
+	realm_index = 4 # Đại Đấu Sư 9 Tinh Đỉnh Phong (sẵn sàng bấm [B] lên Đấu Linh & trải nghiệm Ch01–Ch04!)
 	stage = 9
-	bonus_soul = 120
+	bonus_soul = 160
 	gold = 50000
 	enhance_stones = 999
 
-	# Mở toàn bộ cờ cốt truyện để đi tất cả 11 bản đồ & Lò Đan/Dị Hỏa (giữ Boss Hải Ba Đông để test đánh Boss!)
+	# Mở toàn bộ cờ cốt truyện để đi tất cả bản đồ Ch01–Ch04 & Lò Đan/Dị Hỏa (giữ Boss trọng điểm để test đánh Boss!)
 	story_flags = {
 		"tu_hon_done": true,
 		"duoc_lao_awake": true,
@@ -287,16 +293,32 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 		"got_thanh_lien_dai": true,
 		"beat_co_ha_mac_ba_tu": true,
 		"snatched_thanh_lien_hoa": true,
-		"ch03_completed": true
+		"ch03_completed": true,
+		"ch04_pha_ach_done": true,
+		"ch04_mac_gia_done": true,
+		"ch04_nham_kieu_mask": true,
+		"ch04_cured_nap_lan_kiet": true,
+		"ch04_dan_hoi_champion": true,
+		"ch04_uoc_hen_revealed": true,
+		"ch04_van_yen_started": true,
+		"ch04_medusa_saved": true,
+		"ch04_hon_dien_clue": true,
+		"ch04_second_van_lam_ready": true,
+		"ch04_killed_van_lang": true,
+		"ch04_tieu_toc_no_huyet": true,
+		"ch04_kim_viem_ngoc": true
 	}
 	affection = { "huan_nhi": 100, "tieu_y_tien": 100, "van_chi": 100, "thanh_lan": 100, "my_do_toa": 100 }
 	story_relics = [
-		"Chế Độ DEMO — Mở Khóa Toàn Bộ (11 Map · 10 Đấu Kỹ · 28 Hỏa)",
+		"Chế Độ DEMO — Mở Khóa Toàn Bộ (%d Map · Ch01–Ch04 · 28 Hỏa)" % GameDatabase.maps_ordered.size(),
 		"Ấn Ký Tôn Nghiêm (+5% Công Kích)",
 		"Hắc Ảnh Phù (+8% Tốc Chạy)",
 		"Thanh Liên Đài (+15% EXP & +40% Hồi QI)",
-		"Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (2/4)",
-		"Sơ Hình Phật Nộ Hỏa Liên & Thần Thú Thải Lân"
+		"Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (2/4 Đủ)",
+		"Sơ Hình Phật Nộ Hỏa Liên & Thần Thú Thải Lân",
+		"Quán Quân Đan Hội Gia Mã · Lạc Độc Ấn",
+		"Tàn Dư Hắc Vụ Xiềng Xích (Manh Mối Hồn Điện)",
+		"Kim Viêm Hộ Hồn Ngọc (Hồi Sinh 1 Lần 50% HP)"
 	]
 
 	# Mở toàn bộ 28 ngọn Hỏa (từ Phàm Hỏa tới #1 Đế Viêm!), vận chuyển #19 Thanh Liên Địa Tâm Hỏa & ghép sẵn 4 Hỏa Liên!
@@ -353,9 +375,12 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	enemies_killed_total = 40
 	claimed_affection_milestones = {}
 
-	active_quest_idx = GameDatabase.quests_ch01.size()
+	active_quest_idx = GameDatabase.all_quests.size()
+	active_quest_id = ""
 	quest_progress = 0
 	all_quests_done = true
+	completed_quest_ids = {}
+	kim_viem_revive_used = false
 
 	_rebuild_gear_cache()
 	_rebuild_affection_cache()
@@ -410,6 +435,10 @@ func _init_canon_starter_state() -> void:
 	is_flame_buff_active = false
 	unlocked_companions = []
 	active_companion_id = ""
+	active_quest_idx = 0
+	active_quest_id = str(GameDatabase.all_quests[0].get("id", "")) if not GameDatabase.all_quests.is_empty() else ""
+	completed_quest_ids = {}
+	kim_viem_revive_used = false
 
 
 func _rebuild_gear_cache() -> void:
@@ -966,9 +995,200 @@ func set_story_flag(flag_name: String) -> void:
 		EventBus.stats_changed.emit()
 		EventBus.banter_triggered.emit("HOÀN TẤT CHƯƠNG 03! Thu phục [#19 THANH LIÊN ĐỊA TÂM HỎA] + Đồng Hành [G] THẢI LÂN + KHAI SINH TUYỆT KỸ [F] PHẬT NỘ HỎA LIÊN!!")
 
+	# Data-Driven Story Engine: tự động thi hành hiệu ứng cấu hình trong JSON của từng chương (Ch04 -> Ch11)!
+	var fe: Dictionary = GameDatabase.get_flag_effect(flag_name)
+	if not fe.is_empty():
+		execute_story_effect(fe, flag_name)
+
 	EventBus.story_flag_changed.emit(flag_name)
 	_check_quest_flag(flag_name)
 	trigger_auto_save("cốt truyện")
+
+
+# =========================================================
+# DATA-DRIVEN STORY ENGINE — ĐIỀU KIỆN & HIỆU ỨNG JSON
+# =========================================================
+func evaluate_story_condition(cond: Dictionary) -> bool:
+	if cond.is_empty():
+		return true
+	var hf: String = str(cond.get("has_flag", ""))
+	if hf != "" and not has_flag(hf):
+		return false
+	var haf: Array = cond.get("has_all_flags", [])
+	for f in haf:
+		if not has_flag(str(f)):
+			return false
+	var mf: String = str(cond.get("missing_flag", ""))
+	if mf != "" and has_flag(mf):
+		return false
+	var maf: Array = cond.get("missing_all_flags", [])
+	for f in maf:
+		if has_flag(str(f)):
+			return false
+	var min_r: int = int(cond.get("min_realm", 0))
+	if min_r > 0 and realm_index < min_r:
+		return false
+	var max_r: int = int(cond.get("max_realm", 0))
+	if max_r > 0 and realm_index > max_r:
+		return false
+	var min_st: int = int(cond.get("min_stage", 0))
+	if min_st > 0 and stage < min_st:
+		return false
+	var hi: String = str(cond.get("has_item", ""))
+	if hi != "" and get_item_count(hi) <= 0:
+		return false
+	var his: Dictionary = cond.get("has_items", {})
+	for ik in his.keys():
+		if get_item_count(str(ik)) < int(his[ik]):
+			return false
+	var mi: String = str(cond.get("missing_item", ""))
+	if mi != "" and get_item_count(mi) > 0:
+		return false
+	var cq: String = str(cond.get("current_quest", ""))
+	if cq != "":
+		var cur_q: Dictionary = get_current_quest()
+		if str(cur_q.get("id", "")) != cq:
+			return false
+	var ma: Dictionary = cond.get("min_affection", {})
+	for hk in ma.keys():
+		if get_affection(str(hk)) < int(ma[hk]):
+			return false
+	return true
+
+
+func execute_story_effect(eff: Dictionary, skip_flag_id: String = "") -> Dictionary:
+	var result: Dictionary = { "heal_full": false, "banter": "", "open_shop": "" }
+	if eff.is_empty():
+		return result
+
+	var consume_d: Dictionary = eff.get("consume_items", {})
+	for ik in consume_d.keys():
+		remove_item(str(ik), int(consume_d[ik]))
+
+	var give_d: Dictionary = eff.get("give_items", {})
+	for ik in give_d.keys():
+		add_item(str(ik), int(give_d[ik]))
+
+	var g_gold: int = int(eff.get("give_gold", 0))
+	if g_gold != 0:
+		gold = max(0, gold + g_gold)
+
+	var g_stones: int = int(eff.get("give_stones", 0))
+	if g_stones != 0:
+		enhance_stones = max(0, enhance_stones + g_stones)
+
+	var g_soul: int = int(eff.get("give_soul", 0))
+	if g_soul != 0:
+		bonus_soul += g_soul
+
+	var g_exp: int = int(eff.get("give_exp", 0))
+	if g_exp > 0:
+		add_exp(g_exp)
+
+	var aff_d: Dictionary = eff.get("affection", {})
+	for hk in aff_d.keys():
+		add_affection(str(hk), int(aff_d[hk]))
+
+	var rel_s: String = str(eff.get("relic", ""))
+	if rel_s != "":
+		add_story_relic(rel_s)
+	var rel_arr: Array = eff.get("relics", [])
+	for rs in rel_arr:
+		add_story_relic(str(rs))
+
+	var sk_u = eff.get("unlock_skill", {})
+	if sk_u is Dictionary and not sk_u.is_empty():
+		unlock_skill(str(sk_u.get("id", "")), str(sk_u.get("slot", "")))
+
+	var fl_u = eff.get("unlock_flame", {})
+	if fl_u is Dictionary and not fl_u.is_empty():
+		unlock_flame(str(fl_u.get("id", "")), bool(fl_u.get("auto_equip", false)))
+
+	var cmp_u = eff.get("unlock_companion", {})
+	if cmp_u is Dictionary and not cmp_u.is_empty():
+		unlock_companion(str(cmp_u.get("id", "")), bool(cmp_u.get("auto_summon", true)))
+
+	var gear_arr: Array = eff.get("give_gear", [])
+	for gd in gear_arr:
+		if gd is Dictionary:
+			var tpl_id: String = str(gd.get("template", ""))
+			var rar_id: String = str(gd.get("rarity", "dia"))
+			if tpl_id != "":
+				var inst: Dictionary = EquipmentSystem.roll_equipment_instance(tpl_id, rar_id)
+				if not inst.is_empty():
+					add_gear_to_bag(inst)
+					if bool(gd.get("auto_equip", false)):
+						equip_gear_from_bag(str(inst.get("uid", "")))
+
+	var realm_min = eff.get("set_realm_min", {})
+	if realm_min is Dictionary and not realm_min.is_empty():
+		var target_r: int = int(realm_min.get("realm", realm_index))
+		var target_s: int = int(realm_min.get("stage", stage))
+		if realm_index < target_r:
+			realm_index = target_r
+			stage = target_s
+			current_exp = 0
+		elif realm_index == target_r and stage < target_s:
+			stage = target_s
+		recalculate_and_clamp(true)
+		EventBus.realm_updated.emit(get_realm_display_title(), "Bạo cấp đột phá cốt truyện!")
+		_check_quest_realm()
+
+	if bool(eff.get("reset_duoc_lao_active", false)):
+		is_duoc_lao_active = false
+
+	var sf: String = str(eff.get("set_flag", ""))
+	if sf != "" and sf != skip_flag_id:
+		set_story_flag(sf)
+	var sf_arr: Array = eff.get("set_flags", [])
+	for f in sf_arr:
+		var fs: String = str(f)
+		if fs != "" and fs != skip_flag_id:
+			set_story_flag(fs)
+
+	var sfx_s: String = str(eff.get("sfx", ""))
+	if sfx_s != "":
+		EventBus.audio_sfx_requested.emit(sfx_s)
+
+	var sh_arr: Array = eff.get("shake", [])
+	if sh_arr.size() >= 2:
+		EventBus.screen_shake_requested.emit(float(sh_arr[0]), float(sh_arr[1]))
+
+	var b_txt: String = str(eff.get("banter", ""))
+	if b_txt != "":
+		EventBus.banter_triggered.emit(b_txt)
+		result["banter"] = b_txt
+
+	if bool(eff.get("heal_full", false)):
+		recalculate_and_clamp(true)
+		result["heal_full"] = true
+
+	var oshop: String = str(eff.get("open_shop", ""))
+	if oshop != "":
+		result["open_shop"] = oshop
+
+	EventBus.stats_changed.emit()
+	return result
+
+
+func get_assist_mode() -> String:
+	if has_flag("ch04_medusa_saved"):
+		return "medusa_dau_tong"
+	if has_flag("ch04_duoc_lao_sleeping"):
+		return "sleeping"
+	if duoc_lao_assist_unlocked:
+		return "duoc_lao"
+	return "locked"
+
+
+func get_enemy_damage_bonus_mult(target_enemy_id: String, target_enemy_name: String = "") -> float:
+	var mult: float = 1.0
+	if has_flag("ch04_tieu_toc_no_huyet"):
+		var low_id: String = target_enemy_id.to_lower()
+		var low_nm: String = target_enemy_name.to_lower()
+		if low_id.find("van_lam") != -1 or low_id.find("van_yen") != -1 or low_id.find("van_lang") != -1 or low_id.find("van_son") != -1 or low_id.find("nap_lan") != -1 or low_id.find("mac_thua") != -1 or low_id.find("hon_dien") != -1 or low_nm.find("vân lam") != -1 or low_nm.find("hồn điện") != -1:
+			mult *= 1.15 # Tiêu Tộc Nộ Huyết (+15% ATK vs Vân Lam Tông & Hồn Điện!)
+	return mult
 
 
 func is_alchemy_unlocked() -> bool:
@@ -1049,7 +1269,7 @@ func get_atk() -> float:
 	if has_flag("tu_hon_done"):
 		mult *= 1.05 # Ấn Ký Tôn Nghiêm!
 	if is_duoc_lao_active:
-		mult *= 2.2
+		mult *= 2.45 if get_assist_mode() == "medusa_dau_tong" else 2.2
 	if is_flame_buff_active:
 		mult *= 1.45
 	return base_atk * mult
@@ -1063,7 +1283,9 @@ func get_def() -> float:
 		var stages_cnt: int = int(r_def.get("max_stage", 9)) if r_idx < realm_index else stage
 		total += float(st_dict.get("def", 2.0)) * float(stages_cnt)
 	total *= (1.0 + get_affection_bonus("def_pct") / 100.0)
-	if realm_index >= 3:
+	if realm_index >= 4:
+		total *= 1.32 # Đấu Khí Khải Giáp của Đại Đấu Sư!
+	elif realm_index >= 3:
 		total *= 1.18 # Đấu Khí Sa Y của Đấu Sư!
 	return total
 
@@ -1082,7 +1304,7 @@ func get_move_speed() -> float:
 	if is_ruler_sealed and has_huyen_trong_xich_equipped():
 		base_spd *= 0.85
 	if is_duoc_lao_active:
-		base_spd *= 1.35
+		base_spd *= 1.40 if get_assist_mode() == "medusa_dau_tong" else 1.35
 	if is_flame_buff_active:
 		base_spd *= 1.20
 	if player_slow_timer > 0.0:
@@ -1189,7 +1411,7 @@ func get_soul_realm_name() -> String:
 
 
 func get_active_flame_def() -> Dictionary:
-	if is_duoc_lao_active:
+	if is_duoc_lao_active and get_assist_mode() == "duoc_lao":
 		return GameDatabase.get_flame_def("di_hoa_11_cot_linh")
 	if equipped_flame_id == "":
 		return {}
@@ -1569,22 +1791,55 @@ func heal_from_lifesteal(damage_dealt: float) -> void:
 		EventBus.stats_changed.emit()
 
 
-# --- NHIỆM VỤ TUYẾN TÍNH 15 MỐC CHUẨN CHƯƠNG 01 & 02 ---
+# --- HỆ THỐNG NHIỆM VỤ CHÍNH TUYẾN DATA-DRIVEN (THEO ID, TƯƠNG THÍCH MỌI CHƯƠNG) ---
 func get_current_quest() -> Dictionary:
-	if all_quests_done or active_quest_idx >= GameDatabase.quests_ch01.size():
+	if all_quests_done or GameDatabase.all_quests.is_empty():
 		return {}
-	var q = GameDatabase.quests_ch01[active_quest_idx]
+	if active_quest_id != "":
+		var idx_by_id: int = GameDatabase.get_quest_index(active_quest_id)
+		if idx_by_id >= 0:
+			active_quest_idx = idx_by_id
+	if active_quest_idx < 0 or active_quest_idx >= GameDatabase.all_quests.size():
+		return {}
+	var q = GameDatabase.all_quests[active_quest_idx]
 	if q is Dictionary:
+		active_quest_id = str(q.get("id", ""))
 		return q
 	return {}
+
+
+func _is_current_quest_auto_satisfied(q: Dictionary) -> bool:
+	if q.is_empty():
+		return false
+	var q_type: String = str(q.get("type", ""))
+	if q_type == "story_flag":
+		return has_flag(str(q.get("flag_name", "")))
+	elif q_type == "all_flags":
+		var flist: Array = q.get("flag_names", [])
+		if flist.is_empty():
+			return false
+		for f in flist:
+			if not has_flag(str(f)):
+				return false
+		return true
+	elif q_type == "reach_realm":
+		return realm_index >= int(q.get("target_realm_index", 2))
+	elif q_type == "craft_pill":
+		var allow_inv: bool = bool(q.get("auto_pass_if_owned", false))
+		return allow_inv and get_item_count(str(q.get("target_id", ""))) > 0
+	return false
 
 
 func _check_quest_flag(flag_name: String) -> void:
 	var q: Dictionary = get_current_quest()
 	if q.is_empty():
 		return
-	if str(q.get("type", "")) == "story_flag" and str(q.get("flag_name", "")) == flag_name:
+	var q_type: String = str(q.get("type", ""))
+	if q_type == "story_flag" and str(q.get("flag_name", "")) == flag_name:
 		_advance_quest_progress(1)
+	elif q_type == "all_flags":
+		if _is_current_quest_auto_satisfied(q):
+			_advance_quest_progress(1)
 
 
 func _on_enemy_killed(enemy_id: String, _is_boss: bool) -> void:
@@ -1614,6 +1869,26 @@ func _on_enemy_killed(enemy_id: String, _is_boss: bool) -> void:
 		if has_flag("killed_mac_ba_tu"):
 			set_story_flag("beat_co_ha_mac_ba_tu")
 
+	# Data-Driven enemy kill rules (Ch04 -> Ch11)!
+	var k_rule: Dictionary = GameDatabase.get_enemy_kill_rule(enemy_id)
+	if not k_rule.is_empty():
+		var sf: String = str(k_rule.get("set_flag", ""))
+		if sf != "":
+			set_story_flag(sf)
+		for f in k_rule.get("set_flags", []):
+			set_story_flag(str(f))
+		for combo in k_rule.get("combo_flags", []):
+			if combo is Dictionary:
+				var all_ok: bool = true
+				for rf in combo.get("require_flags", []):
+					if not has_flag(str(rf)):
+						all_ok = false
+						break
+				if all_ok:
+					var gf: String = str(combo.get("grant_flag", ""))
+					if gf != "":
+						set_story_flag(gf)
+
 	var q: Dictionary = get_current_quest()
 	if q.is_empty():
 		return
@@ -1622,6 +1897,8 @@ func _on_enemy_killed(enemy_id: String, _is_boss: bool) -> void:
 
 
 func notify_pill_crafted(pill_id: String) -> void:
+	if pill_id == "pill_tam_van_thanh_linh" and has_flag("ch04_beat_viem_loi"):
+		set_story_flag("ch04_dan_hoi_champion")
 	var q: Dictionary = get_current_quest()
 	if q.is_empty():
 		return
@@ -1645,24 +1922,30 @@ func _advance_quest_progress(delta_cnt: int) -> void:
 	quest_progress += delta_cnt
 	var goal: int = int(q.get("target_count", 1))
 	if quest_progress >= goal:
+		var done_id: String = str(q.get("id", ""))
+		if done_id != "":
+			completed_quest_ids[done_id] = true
 		var rew_exp: int = int(q.get("reward_exp", 50))
 		add_exp(rew_exp)
 		gold += int(q.get("reward_gold", 0))
 		var rew_items: Dictionary = q.get("reward_items", {})
 		for k in rew_items.keys():
 			add_item(str(k), int(rew_items[k]))
+		var comp_eff = q.get("on_complete_effect", {})
+		if comp_eff is Dictionary and not comp_eff.is_empty():
+			execute_story_effect(comp_eff)
 		active_quest_idx += 1
 		quest_progress = 0
-		if active_quest_idx >= GameDatabase.quests_ch01.size():
+		if active_quest_idx >= GameDatabase.all_quests.size():
 			all_quests_done = true
-			EventBus.banter_triggered.emit("CHÚC MỪNG! Bạn đã chinh phục trọn vẹn 21 mốc cốt truyện Chương 01, Chương 02 & Chương 03 Sa Mạc Tháp Qua Nhĩ!")
+			active_quest_id = ""
+			EventBus.banter_triggered.emit("CHÚC MỪNG! Bạn đã chinh phục trọn vẹn %d mốc cốt truyện Quyển 01 (Chương 01 – 04: Ô Thản Thành -> Đỉnh Vân Lam Sơn -> Trấn Quỷ Quan)!" % GameDatabase.all_quests.size())
 		else:
-			var next_q: Dictionary = get_current_quest()
+			var next_q: Dictionary = GameDatabase.all_quests[active_quest_idx]
+			active_quest_id = str(next_q.get("id", ""))
 			EventBus.banter_triggered.emit(str(next_q.get("intro_log", "")))
-			if str(next_q.get("type", "")) == "story_flag" and has_flag(str(next_q.get("flag_name", ""))):
+			if _is_current_quest_auto_satisfied(next_q):
 				_advance_quest_progress(1)
-			elif str(next_q.get("type", "")) == "reach_realm":
-				_check_quest_realm()
 		trigger_auto_save("hoàn thành nhiệm vụ")
 	EventBus.quest_updated.emit()
 
@@ -1762,6 +2045,9 @@ func save_game(slot_idx: int = -1, silent: bool = false) -> bool:
 		"active_companion_id": active_companion_id,
 		"inventory": inventory,
 		"active_quest_idx": active_quest_idx,
+		"active_quest_id": active_quest_id,
+		"completed_quest_ids": completed_quest_ids,
+		"kim_viem_revive_used": kim_viem_revive_used,
 		"quest_progress": quest_progress,
 		"all_quests_done": all_quests_done
 	}
@@ -1852,8 +2138,25 @@ func load_game(slot_idx: int = -1) -> bool:
 	active_companion_id = str(d.get("active_companion_id", ""))
 	inventory = d.get("inventory", {})
 	active_quest_idx = int(d.get("active_quest_idx", 0))
+	active_quest_id = str(d.get("active_quest_id", ""))
+	if d.has("completed_quest_ids") and d["completed_quest_ids"] is Dictionary:
+		completed_quest_ids = d["completed_quest_ids"]
+	else:
+		completed_quest_ids = {}
+	kim_viem_revive_used = bool(d.get("kim_viem_revive_used", false))
 	quest_progress = int(d.get("quest_progress", 0))
 	all_quests_done = bool(d.get("all_quests_done", false))
+	# Tương thích tự động khi thêm chương mới: định vị lại active_quest_idx theo ID & tự mở tiếp chương mới cho bản lưu cũ!
+	if active_quest_id != "":
+		var mapped_idx: int = GameDatabase.get_quest_index(active_quest_id)
+		if mapped_idx >= 0:
+			active_quest_idx = mapped_idx
+	if all_quests_done and not is_demo_mode and active_quest_idx < GameDatabase.all_quests.size():
+		all_quests_done = false
+		active_quest_id = str(GameDatabase.all_quests[active_quest_idx].get("id", ""))
+		quest_progress = 0
+	elif not all_quests_done and active_quest_idx >= 0 and active_quest_idx < GameDatabase.all_quests.size():
+		active_quest_id = str(GameDatabase.all_quests[active_quest_idx].get("id", ""))
 	_rebuild_gear_cache()
 	_rebuild_affection_cache()
 	recalculate_and_clamp(true)

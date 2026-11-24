@@ -54,6 +54,14 @@
         { "pieces": 2, "desc": "+22 Công kích & +25% Sát thương Hỏa", "stats": { "atk": 22, "flame_dmg": 25 } },
         { "pieces": 3, "desc": "+22 Linh Hồn Lực & -18% Hồi chiêu Đấu Kỹ", "stats": { "soul": 22, "cooldown_red": 18 } }
       ]
+    },
+    "set_de_do": {
+      "id": "set_de_do",
+      "name": "Bộ Quán Quân Đế Đô Gia Mã",
+      "bonuses": [
+        { "pieces": 2, "desc": "+35 Công kích, +35 Phòng ngự & +25 Linh Hồn", "stats": { "atk": 35, "def": 35, "soul": 25 } },
+        { "pieces": 3, "desc": "+18% Chí mạng, +30% Sát thương Hỏa & -20% Hồi chiêu", "stats": { "crit_chance": 18, "flame_dmg": 30, "cooldown_red": 20 } }
+      ]
     }
   },
   "templates": {
@@ -254,6 +262,45 @@
       "icon": "res://assets/sprites/icons/icon_pendant.png",
       "base_stats": { "hp": 110, "qi": 75, "exp_bonus": 25, "soul": 20, "flame_dmg": 22 },
       "description": "Tọa đài sen ngọc bích ngàn năm đào từ đáy hồ dung nham Sa Mạc Tháp Qua Nhĩ — bảo vật tu luyện cực phẩm!"
+    },
+    "wpn_chien_phu_thanh_moc": {
+      "id": "wpn_chien_phu_thanh_moc",
+      "name": "Chiến Phủ Thanh Mộc (Mộc Gia)",
+      "slot": "weapon",
+      "set_id": "set_de_do",
+      "icon": "res://assets/sprites/weapons/tinh_cuong_dao.png",
+      "weapon_sprite": "res://assets/sprites/weapons/tinh_cuong_dao.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_sabre.png",
+      "attack_speed_mult": 0.96,
+      "base_stats": { "atk": 34, "hp": 85, "crit_chance": 12, "lifesteal": 5 },
+      "description": "Chiến lợi phẩm đánh gục thiếu gia Mộc Chiến tại Tổng Bộ Mễ Đặc Nhĩ — chém nặng đầy sinh khí Mộc!"
+    },
+    "caul_xich_duong_dinh": {
+      "id": "caul_xich_duong_dinh",
+      "name": "Xích Dương Dược Đỉnh (Tứ Phẩm)",
+      "slot": "cauldron",
+      "set_id": "set_de_do",
+      "icon": "res://assets/sprites/icons/icon_cauldron.png",
+      "base_stats": { "soul": 26, "alchemy_bonus": 24, "flame_dmg": 22, "qi": 45 },
+      "description": "Bảo đỉnh Tứ Phẩm Nhã Phi thưởng sau khi chỉnh đốn nội tộc Mễ Đặc Nhĩ — tăng cực mạnh vùng Đan Tâm!"
+    },
+    "arm_phap_bao_truong_lao": {
+      "id": "arm_phap_bao_truong_lao",
+      "name": "Pháp Bào Trưởng Lão Đan Hội",
+      "slot": "armor",
+      "set_id": "set_de_do",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 310, "def": 48, "soul": 28, "qi": 80, "cooldown_red": 10 },
+      "description": "Pháp bào danh dự Quán Quân Đan Hội Gia Mã — biểu tượng bảo hộ của Pháp Mã & Gia Hình Thiên!"
+    },
+    "pend_kim_viem_ho_hon_ngoc": {
+      "id": "pend_kim_viem_ho_hon_ngoc",
+      "name": "Kim Viêm Hộ Hồn Ngọc (Cổ Tộc)",
+      "slot": "pendant",
+      "set_id": "set_de_do",
+      "icon": "res://assets/sprites/icons/icon_pendant.png",
+      "base_stats": { "hp": 180, "soul": 36, "atk": 24, "flame_dmg": 28, "exp_bonus": 25 },
+      "description": "Lá Ngọc Vàng Cổ Tộc Huân Nhi nhờ Lăng Ảnh gửi tặng — mang sức mạnh hồi sinh hộ mệnh trước đòn chí mạng!"
     }
   }
 }

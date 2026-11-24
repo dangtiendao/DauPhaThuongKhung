@@ -141,6 +141,30 @@
       "tier": 4,
       "color_hex": "#80ED99",
       "description": "Đan dược giúp Tiêu Viêm đăng quang Quán Quân Đan Hội Gia Mã — Đột phá lên Đấu Linh."
+    },
+    "herb_that_huyen_tien": {
+      "id": "herb_that_huyen_tien",
+      "name": "Thất Huyễn Thanh Linh Tiên",
+      "type": "herb",
+      "tier": 5,
+      "color_hex": "#72EFDD",
+      "description": "Chí bảo dưỡng hồn của Nạp Lan Vương Phủ: ổn định tàn hồn Dược Lão & nguyên liệu đúc Tam Văn Thanh Linh Đan!"
+    },
+    "core_phong_4": {
+      "id": "core_phong_4",
+      "name": "Phong Ma Hạch (Cấp 4)",
+      "type": "monster_core",
+      "tier": 4,
+      "color_hex": "#70D6FF",
+      "description": "Tinh hạch Ma Thú Cấp 4 thu từ Mặc Gia Trang, Đế Đô và Truy Binh Vân Lam Tông."
+    },
+    "pill_pha_ach_dan": {
+      "id": "pill_pha_ach_dan",
+      "name": "Phá Ách Đan (Lục Phẩm)",
+      "type": "breakthrough",
+      "tier": 6,
+      "color_hex": "#70D6FF",
+      "description": "Lục phẩm bảo đan phá giải Xà Chi Phong Ấn Chú khôi phục thực lực Đấu Hoàng cho Băng Hoàng Hải Ba Đông!"
     }
   },
   "recipes": [
@@ -213,6 +237,26 @@
       "base_success_rate": 0.75,
       "soul_exp_gain": 22,
       "ingredients": { "herb_sa_chi_man_da_la": 2, "herb_hoat_khi_qua": 2, "core_hoa_3": 1 }
+    },
+    {
+      "id": "recipe_pha_ach_dan",
+      "output_item": "pill_pha_ach_dan",
+      "output_count": 1,
+      "tier": 5,
+      "req_soul": 42,
+      "base_success_rate": 0.74,
+      "soul_exp_gain": 26,
+      "ingredients": { "herb_sa_chi_man_da_la": 3, "core_hoa_3": 1 }
+    },
+    {
+      "id": "recipe_tam_van_thanh_linh",
+      "output_item": "pill_tam_van_thanh_linh",
+      "output_count": 1,
+      "tier": 5,
+      "req_soul": 45,
+      "base_success_rate": 0.72,
+      "soul_exp_gain": 35,
+      "ingredients": { "herb_that_huyen_tien": 1, "herb_sa_chi_man_da_la": 2, "core_phong_4": 1 }
     }
   ]
 }

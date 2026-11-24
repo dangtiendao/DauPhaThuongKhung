@@ -64,7 +64,7 @@ func _ready() -> void:
 
 func _announce_initial_quest() -> void:
 	if PlayerData.is_demo_mode:
-		EventBus.banter_triggered.emit("CHẾ ĐỘ DEMO FULL: Mở toàn bộ 11 Map (bấm [M] Dịch Chuyển Nhanh), 10 Đấu Kỹ, [F] Phật Nộ Hỏa Liên 4 Hỏa, 28 Dị Hỏa [H] & 3 Đồng Hành [G]!")
+		EventBus.banter_triggered.emit("CHẾ ĐỘ DEMO FULL: Mở toàn bộ %d Map (bấm [M] Dịch Chuyển Nhanh), Đấu Kỹ, [F] Phật Nộ Hỏa Liên 4 Hỏa, 28 Dị Hỏa [H] & 3 Đồng Hành [G]!" % GameDatabase.maps_ordered.size())
 		EventBus.quest_updated.emit()
 	else:
 		PlayerData.trigger_initial_quest_banter()
@@ -626,7 +626,10 @@ func _sync_conditional_npcs() -> void:
 		sp.centered = true
 		sp.offset = Vector2(0.0, off_y)
 		sp.position = Vector2(0.0, 8.0)
-		if role_str == "story_duoc_lao" or role_str == "story_devour_thanh_lien":
+		var tint_hex: String = str(d.get("tint_hex", ""))
+		if tint_hex != "":
+			sp.modulate = Color(tint_hex)
+		elif role_str == "story_duoc_lao" or role_str == "story_devour_thanh_lien":
 			sp.modulate = Color(0.86, 0.96, 1.08, 0.92)
 		elif role_str == "secret_lang_anh":
 			sp.modulate = Color(0.88, 0.85, 0.96, 0.84)
@@ -635,8 +638,12 @@ func _sync_conditional_npcs() -> void:
 		var glow := PointLight2D.new()
 		glow.texture = light_tex
 		glow.texture_scale = 2.4
-		glow.energy = 1.08 if (role_str == "story_duoc_lao" or role_str == "story_van_chi" or role_str == "story_my_do_toa" or role_str == "story_devour_thanh_lien") else 0.72
-		if role_str == "story_duoc_lao" or role_str == "story_hai_ba_dong":
+		var is_floating: bool = bool(d.get("float_anim", false))
+		glow.energy = 1.08 if (is_floating or role_str == "story_duoc_lao" or role_str == "story_van_chi" or role_str == "story_my_do_toa" or role_str == "story_devour_thanh_lien") else 0.72
+		var glow_hex: String = str(d.get("glow_hex", ""))
+		if glow_hex != "":
+			glow.color = Color(glow_hex)
+		elif role_str == "story_duoc_lao" or role_str == "story_hai_ba_dong":
 			glow.color = Color("#70D6FF")
 		elif role_str == "story_van_chi" or role_str == "story_thanh_lan" or role_str == "story_devour_thanh_lien":
 			glow.color = Color("#2EC4B6")
@@ -655,13 +662,14 @@ func _sync_conditional_npcs() -> void:
 		name_lbl.custom_minimum_size = Vector2(280, 0)
 		name_lbl.position = Vector2(-140, -118)
 		name_lbl.add_theme_font_size_override("font_size", 13)
-		var nm_col: Color = Color("#FFE599")
-		if role_str == "story_duoc_lao":
-			nm_col = Color("#A8DADC")
-		elif role_str == "story_van_chi":
-			nm_col = Color("#80ED99")
-		elif role_str == "secret_lang_anh":
-			nm_col = Color("#C77DFF")
+		var nm_col: Color = Color(str(d.get("name_hex", "#FFE599"))) if str(d.get("name_hex", "")) != "" else Color("#FFE599")
+		if str(d.get("name_hex", "")) == "":
+			if role_str == "story_duoc_lao":
+				nm_col = Color("#A8DADC")
+			elif role_str == "story_van_chi":
+				nm_col = Color("#80ED99")
+			elif role_str == "secret_lang_anh":
+				nm_col = Color("#C77DFF")
 		name_lbl.add_theme_color_override("font_color", nm_col)
 		name_lbl.add_theme_color_override("font_outline_color", Color("#07060B"))
 		name_lbl.add_theme_constant_override("outline_size", 4)
@@ -680,7 +688,8 @@ func _sync_conditional_npcs() -> void:
 		npc_root.add_child(marker_lbl)
 
 		var prompt_lbl := Label.new()
-		prompt_lbl.text = "[V] Phòng Đấu Giá" if role_str == "shop_nha_phi" else "[V] Nói chuyện"
+		var custom_prompt: String = str(d.get("prompt_text", ""))
+		prompt_lbl.text = custom_prompt if custom_prompt != "" else ("[V] Phòng Đấu Giá" if role_str == "shop_nha_phi" else "[V] Nói chuyện")
 		prompt_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		prompt_lbl.custom_minimum_size = Vector2(180, 0)
 		prompt_lbl.position = Vector2(-90, 18)
@@ -698,6 +707,7 @@ func _sync_conditional_npcs() -> void:
 			"sprite": sprite_path,
 			"pos": pos_v,
 			"hide_if_flag": hide_f,
+			"float_anim": is_floating,
 			"node": npc_root,
 			"sprite_node": sp,
 			"marker_node": marker_lbl,
@@ -723,7 +733,17 @@ func _refresh_npc_quest_markers() -> void:
 			continue
 		var role_str: String = str(entry.get("role", ""))
 		var show_bang: bool = false
-		if role_str == "story_tu_hon" and q_flag == "tu_hon_done":
+		var dlg_def: Dictionary = GameDatabase.get_dialogue_def(role_str)
+		if not dlg_def.is_empty() and dlg_def.has("marker_when"):
+			var mw = dlg_def.get("marker_when")
+			if mw is Dictionary:
+				show_bang = PlayerData.evaluate_story_condition(mw)
+			elif mw is Array:
+				for cond in mw:
+					if cond is Dictionary and PlayerData.evaluate_story_condition(cond):
+						show_bang = true
+						break
+		elif role_str == "story_tu_hon" and q_flag == "tu_hon_done":
 			show_bang = true
 		elif role_str == "story_duoc_lao" and q_flag == "duoc_lao_awake":
 			show_bang = true
@@ -821,7 +841,7 @@ func _physics_process(delta: float) -> void:
 		var sp_node: Sprite2D = entry.get("sprite_node", null) as Sprite2D
 		if sp_node != null and is_instance_valid(sp_node):
 			var r_str: String = str(entry.get("role", ""))
-			if r_str == "story_duoc_lao" or r_str == "story_devour_thanh_lien" or r_str == "story_hai_ba_dong" or r_str == "story_my_do_toa":
+			if bool(entry.get("float_anim", false)) or r_str == "story_duoc_lao" or r_str == "story_devour_thanh_lien" or r_str == "story_hai_ba_dong" or r_str == "story_my_do_toa":
 				sp_node.position.y = 4.0 + sin(t_sec * 2.8 + float(k)) * 4.5
 				var br_f: float = sin(t_sec * 2.4 + float(k)) * 0.018
 				sp_node.scale = Vector2(1.0 - br_f * 0.5, 1.0 + br_f)
@@ -957,7 +977,7 @@ func _try_interact_nearest() -> void:
 func _is_portal_unlocked(req_f: String) -> bool:
 	if req_f == "":
 		return true
-	if req_f == "ch04_unlocked_future":
+	if req_f.ends_with("_future"):
 		return false
 	return PlayerData.is_demo_mode or PlayerData.has_flag(req_f)
 
@@ -1054,6 +1074,40 @@ func get_quest_waypoint_world_pos() -> Vector2:
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		return Vector2.ZERO
+
+	# Data-Driven Waypoints trong JSON (hỗ trợ đa điều kiện cho Chương 04 -> 11 & sửa cốt truyện không cần đụng code!)
+	if q.has("waypoint") and q["waypoint"] is Array:
+		for step in q["waypoint"]:
+			if not (step is Dictionary):
+				continue
+			var sd: Dictionary = step
+			var is_def: bool = bool(sd.get("default", false))
+			var cond_d: Dictionary = sd.get("when", {}) if (sd.get("when", {}) is Dictionary) else {}
+			if is_def or PlayerData.evaluate_story_condition(cond_d):
+				var kind: String = str(sd.get("kind", "npc"))
+				var t_map: String = str(sd.get("map", current_map_id))
+				var target_s: String = str(sd.get("target", ""))
+				if kind == "breakthrough_ready":
+					var req_pill: String = str(sd.get("pill_id", ""))
+					if PlayerData.is_at_bottleneck() and (req_pill == "" or PlayerData.get_item_count(req_pill) > 0):
+						return Vector2.ZERO
+					if t_map != current_map_id:
+						return _find_portal_towards(t_map)
+					var pa: Array = sd.get("pos", [0, 0])
+					return Vector2(float(pa[0]), float(pa[1])) if pa.size() >= 2 else Vector2.ZERO
+				elif kind == "npc":
+					return _find_npc_pos_or_portal(target_s, t_map)
+				elif kind == "boss":
+					return _find_boss_pos_or_portal(target_s, t_map)
+				elif kind == "pos":
+					if current_map_id == t_map:
+						var pa: Array = sd.get("pos", [0, 0])
+						return Vector2(float(pa[0]), float(pa[1])) if pa.size() >= 2 else Vector2.ZERO
+					return _find_portal_towards(t_map)
+				elif kind == "none":
+					return Vector2.ZERO
+		return Vector2.ZERO
+
 	var qid: String = str(q.get("id", ""))
 
 	if qid == "q01_dai_sanh_tu_hon":
@@ -1137,57 +1191,119 @@ func _find_boss_pos_or_portal(boss_id: String, target_map: String) -> Vector2:
 
 
 func _find_portal_towards(target_map: String) -> Vector2:
-	if current_map_id == target_map:
+	if target_map == "" or current_map_id == target_map:
 		return Vector2.ZERO
 	for pt in portal_entries:
 		if str(pt.get("target_map", "")) == target_map:
 			return pt.get("pos", Vector2.ZERO)
 
-	# Tìm bước trung gian qua đồ thị 11 bản đồ (Chương 01 -> Chương 02 -> Chương 03):
-	var ch03_maps: Array = ["ch03_thach_mac_thanh", "ch03_dia_huyet_dung_nham", "ch03_thanh_thanh_xa_nhan", "ch03_oc_dao_diem_le"]
-	var ch02_subs: Array = ["ch02_huyen_nhai_dong", "ch02_noi_vi_su_vuong", "ch02_thac_nuoc_muc_xa"]
-	var target_in_ch03: bool = ch03_maps.has(target_map)
-	var hop: String = ""
-
-	if current_map_id == "ch03_oc_dao_diem_le":
-		hop = "ch03_thanh_thanh_xa_nhan"
-	elif current_map_id == "ch03_thanh_thanh_xa_nhan":
-		hop = "ch03_oc_dao_diem_le" if target_map == "ch03_oc_dao_diem_le" else "ch03_thach_mac_thanh"
-	elif current_map_id == "ch03_dia_huyet_dung_nham":
-		hop = "ch03_thach_mac_thanh"
-	elif current_map_id == "ch03_thach_mac_thanh":
-		if target_map == "ch03_dia_huyet_dung_nham":
-			hop = "ch03_dia_huyet_dung_nham"
-		elif target_map == "ch03_thanh_thanh_xa_nhan" or target_map == "ch03_oc_dao_diem_le":
-			hop = "ch03_thanh_thanh_xa_nhan"
-		else:
-			hop = "ch02_thac_nuoc_muc_xa"
-	elif current_map_id == "ch02_thac_nuoc_muc_xa":
-		hop = "ch03_thach_mac_thanh" if target_in_ch03 else "ch02_ma_thu_son_mach"
-	elif ch02_subs.has(current_map_id):
-		hop = "ch02_ma_thu_son_mach"
-	elif current_map_id == "ch01_hau_son":
-		hop = "ch01_tieu_gia"
-	elif current_map_id == "ch01_tieu_gia":
-		hop = "ch01_o_than_thanh"
-	elif current_map_id == "ch01_o_than_thanh":
-		hop = "ch02_ma_thu_son_mach" if (target_map == "ch02_ma_thu_son_mach" or ch02_subs.has(target_map) or target_in_ch03) else "ch01_tieu_gia"
-	elif current_map_id == "ch02_ma_thu_son_mach":
-		hop = "ch02_thac_nuoc_muc_xa" if target_in_ch03 else "ch01_o_than_thanh"
-
-	for pt in portal_entries:
-		if str(pt.get("target_map", "")) == hop:
-			return pt.get("pos", Vector2.ZERO)
+	# Thuật toán BFS tự động tìm đường ngắn nhất qua đồ thị cổng của toàn bộ bản đồ trong GameDatabase!
+	# Ưu tiên đi qua cổng đã mở khóa trước; nếu chưa mở, tự tìm đường tổng quát để chỉ về cổng chốt cần mở.
+	var hop: String = _bfs_next_hop_map(current_map_id, target_map, true)
+	if hop == "":
+		hop = _bfs_next_hop_map(current_map_id, target_map, false)
+	if hop != "":
+		for pt in portal_entries:
+			if str(pt.get("target_map", "")) == hop:
+				return pt.get("pos", Vector2.ZERO)
 	return Vector2.ZERO
 
 
+func _bfs_next_hop_map(start_id: String, goal_id: String, unlocked_only: bool) -> String:
+	if start_id == goal_id or not GameDatabase.maps_by_id.has(goal_id):
+		return ""
+	var queue: Array = [start_id]
+	var visited: Dictionary = { start_id: true }
+	var first_hop: Dictionary = {}
+	var head: int = 0
+
+	while head < queue.size():
+		var cur: String = str(queue[head])
+		head += 1
+		var m_def: Dictionary = GameDatabase.get_map_def(cur)
+		var portals_arr: Array = m_def.get("portals", [])
+		for pt in portals_arr:
+			if not (pt is Dictionary):
+				continue
+			var req_f: String = str(pt.get("require_flag", ""))
+			if req_f.ends_with("_future"):
+				continue
+			if unlocked_only and not _is_portal_unlocked(req_f):
+				continue
+			var nxt: String = str(pt.get("target_map", ""))
+			if nxt == "" or visited.has(nxt) or not GameDatabase.maps_by_id.has(nxt):
+				continue
+			visited[nxt] = true
+			var fh: String = nxt if cur == start_id else str(first_hop.get(cur, nxt))
+			first_hop[nxt] = fh
+			if nxt == goal_id:
+				return fh
+			queue.append(nxt)
+	return ""
+
+
 # =========================================================
-# TOÀN BỘ KỊCH BẢN ĐỐI THOẠI & CHỌN NHÁNH CHƯƠNG 01 & CHƯƠNG 02
+# DATA-DRIVEN DIALOGUE RUNNER (CH.04 -> CH.11) + KỊCH BẢN CH.01–03
 # =========================================================
+func _run_data_driven_dialogue(dlg_def: Dictionary, npc_name: String, sprite_p: String) -> bool:
+	var branches: Array = dlg_def.get("branches", [])
+	if branches.is_empty():
+		return false
+	for br in branches:
+		if not (br is Dictionary):
+			continue
+		var bd: Dictionary = br
+		var is_def: bool = bool(bd.get("default", false))
+		var cond_d: Dictionary = bd.get("when", {}) if (bd.get("when", {}) is Dictionary) else {}
+		if not is_def and not PlayerData.evaluate_story_condition(cond_d):
+			continue
+
+		var sfx_s: String = str(bd.get("sfx", ""))
+		if sfx_s != "":
+			EventBus.audio_sfx_requested.emit(sfx_s)
+		var sh_arr: Array = bd.get("shake", [])
+		if sh_arr.size() >= 2:
+			EventBus.screen_shake_requested.emit(float(sh_arr[0]), float(sh_arr[1]))
+
+		var q_cur: Dictionary = PlayerData.get_current_quest()
+		var q_hint: String = str(q_cur.get("objective", "Tiếp tục tu luyện nâng cao cảnh giới!"))
+		var raw_lines: Array = bd.get("lines", [])
+		var resolved_lines: Array = []
+		for ln in raw_lines:
+			resolved_lines.append(str(ln).replace("{quest_objective}", q_hint))
+
+		var sp_override: String = str(bd.get("speaker", npc_name))
+		var choices_raw: Array = bd.get("choices", [])
+		if not choices_raw.is_empty():
+			var filtered_choices: Array = []
+			for ch in choices_raw:
+				if not (ch is Dictionary):
+					continue
+				var ch_cond: Dictionary = ch.get("when", {}) if (ch.get("when", {}) is Dictionary) else {}
+				if PlayerData.evaluate_story_condition(ch_cond):
+					filtered_choices.append({
+						"label": str(ch.get("label", "Tiếp tục")),
+						"action": str(ch.get("action", ""))
+					})
+			if not filtered_choices.is_empty():
+				EventBus.dialogue_choice_requested.emit(sp_override, sprite_p, resolved_lines, filtered_choices)
+				return true
+
+		EventBus.dialogue_requested.emit(sp_override, sprite_p, resolved_lines, str(bd.get("action", "")))
+		return true
+	return false
+
+
 func _trigger_npc_interaction(npc_entry: Dictionary) -> void:
 	var role_str: String = str(npc_entry.get("role", ""))
 	var npc_name: String = str(npc_entry.get("name", "NPC"))
 	var sprite_p: String = str(npc_entry.get("sprite", ""))
+
+	# Ưu tiên đọc kịch bản Data-Driven JSON (dialogues_chXX.json) nếu tồn tại!
+	var dlg_def: Dictionary = GameDatabase.get_dialogue_def(role_str)
+	if not dlg_def.is_empty():
+		if _run_data_driven_dialogue(dlg_def, npc_name, sprite_p):
+			return
 
 	if role_str == "story_tieu_chien":
 		if not PlayerData.has_flag("tu_hon_done"):

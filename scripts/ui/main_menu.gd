@@ -102,14 +102,14 @@ func _build_title_ui() -> void:
 	menu_col.add_theme_constant_override("separation", 8)
 	add_child(menu_col)
 
-	var badge_lbl := _make_label("FAN-GAME 2D HD PIXEL ACTION RPG  •  CHƯƠNG 01–03", 12, Color("#70D6FF"))
+	var badge_lbl := _make_label("FAN-GAME 2D HD PIXEL ACTION RPG  •  TRỌN BỘ QUYỂN I (CHƯƠNG 01–04)", 12, Color("#70D6FF"))
 	menu_col.add_child(badge_lbl)
 
 	var title_lbl := _make_label("ĐẤU PHÁ\nTHƯƠNG KHUNG", 40, Color("#FFD166"))
 	title_lbl.add_theme_constant_override("outline_size", 8)
 	menu_col.add_child(title_lbl)
 
-	var sub_lbl := _make_label("Quyển I: Ô Thản Thành · Ma Thú Sơn Mạch · Sa Mạc Tháp Qua Nhĩ", 13, Color("#E9ECEF"))
+	var sub_lbl := _make_label("Quyển I: Ô Thản Thành · Ma Thú Sơn Mạch · Tháp Qua Nhĩ · Đế Đô & Vân Lam Sơn", 13, Color("#E9ECEF"))
 	sub_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	menu_col.add_child(sub_lbl)
 
@@ -129,7 +129,7 @@ func _build_title_ui() -> void:
 	menu_col.add_child(new_btn)
 
 	# Nút 3: OPTION 1 — CHẾ ĐỘ DEMO (MỞ KHÓA TẤT CẢ!)
-	var demo_btn := _make_menu_button("★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (11 MAP · FULL ĐỒ)", Color("#E0AAFF"))
+	var demo_btn := _make_menu_button("★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (%d MAP · FULL ĐỒ)" % GameDatabase.maps_ordered.size(), Color("#E0AAFF"))
 	demo_btn.pressed.connect(_on_demo_unlock_all_pressed)
 	menu_col.add_child(demo_btn)
 

@@ -1,0 +1,682 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 04",
+  "dialogues": {
+    "ch04_hai_ba_dong_mac_gia": {
+      "marker_when": { "missing_flag": "ch04_pha_ach_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_pha_ach_done", "max_realm": 3 },
+          "lines": [
+            "Hải Ba Đông (nhíu mày đứng trước cổng Mặc Gia Trang phủ băng): 'Khoan đã tiểu tử! Đại trưởng lão Mặc Thừa ở trong kia là Ngũ Tinh Đấu Linh — ngươi đã gom đủ Hỏa lực Thanh Liên ở Đỉnh Phong Đấu Sư rồi, hãy dùng Phá Chướng Đan bấm [B] đột phá lên ĐẠI ĐẤU SƯ mở Đấu Khí Khải Giáp trước đã!'",
+            "Hải Ba Đông: 'Còn viên Lục phẩm Phá Ách Đan của lão phu đâu? Đột phá Đại Đấu Sư xong quay lại gặp ta giải phong ấn ngay!'"
+          ],
+          "action": ""
+        },
+        {
+          "when": { "missing_flag": "ch04_pha_ach_done" },
+          "sfx": "breakthrough",
+          "shake": [9.0, 0.35],
+          "lines": [
+            "Tiêu Viêm trao viên Lục phẩm [Phá Ách Đan] vừa xuất lò! Ngay khi Hải Ba Đông nuốt đan, đôi cánh băng khổng lồ chọc thủng tầng mây — Băng Hoàng Đấu Hoàng chính thức tái xuất giang hồ!",
+            "Hải Ba Đông (cười sảng khoái trao nốt nửa sau Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa #2): 'Hahahaha! Hai mươi năm phong ấn rốt cuộc đã phá! Lão phu giữ đúng lời hứa: 1 năm bảo tiêu miễn phí cho ngươi!'",
+            "Hải Ba Đông (phất tay đóng băng toàn bộ sảnh Thọ Yến Mặc Gia): 'Đám chấp sự Vân Lam Tông cứ để lão phu đóng băng chúng! Ngươi mau xông vào Địa Lao phía Đông Bắc cứu Thanh Lân, rồi xuống Sân Nam lấy mạng tên quái vật Mặc Thừa!'"
+          ],
+          "action": "effect:eff_ch04_pha_ach_release"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Hải Ba Đông (khoanh tay dưới đôi cánh băng xanh): 'Băng trận của lão phu đã phong kín đám khách mời Vân Lam Tông rồi! Hãy giải cứu Thanh Lân và đập tan xác Mặc Thừa đi — để ta hồi đầy HP & Đấu Khí cho ngươi!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_thanh_lan_rescue": {
+      "marker_when": { "missing_flag": "ch04_rescued_thanh_lan" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_rescued_thanh_lan" },
+          "lines": [
+            "Tiêu Viêm chém tan lồng sắt Địa Lao Ngầm Mặc Phủ! Cô bé Thanh Lân toàn thân run rẩy, đôi mắt Bích Xà Tam Hoa Đồng ngấn lệ lao vào lòng bạn: 'Tiêu Viêm thiếu gia!! Huynh thật sự tới cứu Thanh Lân rồi...'",
+            "Tiêu Viêm (cởi áo choàng khoác lên vai cô bé, sát khí lạnh buốt): 'Có tam ca ở đây, không ai được phép chạm vào mắt muội! Đứng sau lưng Hải Ba Đông — ta xuống sân lấy đầu Mặc Thừa ngay bây giờ!'"
+          ],
+          "choices": [
+            { "label": "Dịu dàng lau nước mắt cho Thanh Lân: 'Đừng sợ, ta đốt sạch Mặc Gia Trang cho muội!' (+25 Hảo Cảm Thanh Lân!)", "action": "effect:eff_ch04_rescue_tl_warm" },
+            { "label": "Giao Thanh Lân cho Hải Ba Đông che chở rồi lập tức rút Huyền Trọng Xích xung trận (+15 Hảo Cảm & +300 EXP!)", "action": "effect:eff_ch04_rescue_tl_fierce" }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Thanh Lân (nắm chặt vạt áo, mắt xanh long lanh): 'Tiêu Viêm thiếu gia cẩn thận! Mặc Thừa ở sân Đông Nam đã cấy ghép nội tạng Ma Thú Cấp 5, biến thành quái vật rất đáng sợ — hãy dùng [F] Song Sắc Phật Nộ Hỏa Liên tiêu diệt hắn!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_duoc_lao_sleep": {
+      "marker_when": { "has_flag": "ch04_killed_mac_thua", "missing_flag": "ch04_mac_gia_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_mac_gia_done" },
+          "sfx": "level_up",
+          "lines": [
+            "Đóa Song Sắc Phật Nộ Hỏa Liên (Thanh Liên Hỏa + Cốt Linh Lãnh Hỏa) đã nổ tan xác Mặc Thừa thành tro bụi! Ngay khoảnh khắc ấy, hai cường giả Đấu Hoàng Đỉnh Phong của Thiên Xà Phủ (Lục Man & Bát Dực Hắc Xà Hoàng Bạch Nha) xé rách bầu trời xuất hiện đón Thanh Lân về bồi dưỡng Thánh Nữ!",
+            "Để che mạng cho Tiêu Viêm trước đòn dư chấn của Bát Dực Hắc Xà Hoàng, tàn hồn Dược Lão bùng cháy tia Cốt Linh cuối cùng rồi bỗng mờ nhạt tới mức gần như trong suốt...",
+            "Dược Lão (mỉm cười hiền từ xoa đầu Tiêu Viêm đang hoảng loạn gọi tên mình): 'Đừng gào nữa tiểu gia hỏa... Lão già ta chỉ hơi mệt cần ngủ một giấc thôi. Chặng đường lên Đế Đô và Vân Lam Sơn sắp tới, vi sư không thể đứng chắn gió mưa cho con được nữa rồi...'",
+            "Dược Lão (hóa thành đốm sáng trắng chui vào chiếc nhẫn đen im lìm): 'Hãy tìm [Thất Huyễn Thanh Linh Tiên] ở Đế Đô để bảo toàn hồn phách cho vi sư... Tự chăm sóc mình cho tốt, đừng làm mất mặt đồ đệ của Dược Trần ta...'"
+          ],
+          "action": "effect:eff_ch04_duoc_lao_sleep_done"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Chiếc nhẫn đen trên ngón tay lạnh ngắt im lìm... Tiêu Viêm lau nước mắt, tiến về Cổng Đông sang Gia Mã Thánh Thành (Đế Đô)!"
+          ],
+          "action": ""
+        }
+      ]
+    },
+    "ch04_nha_phi_de_do": {
+      "marker_when": [
+        { "missing_flag": "ch04_nham_kieu_mask" },
+        { "has_flag": "ch04_beat_moc_chien", "missing_flag": "ch04_sq_mdn_started" },
+        { "has_flag": "ch04_sq_mdn_cleared", "missing_flag": "ch04_sq_mdn_done" }
+      ],
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_nham_kieu_mask" },
+          "lines": [
+            "Nhã Phi (mắt sáng rực khi thấy Tiêu Viêm giữa Tổng Bộ Mễ Đặc Nhĩ Đế Đô): 'Tiêu Viêm đệ đệ?! Không ngờ mới hai năm không gặp, chàng thiếu niên Ô Thản Thành năm nào nay đã là Đại Đấu Sư khí thế bức người thế này!'",
+            "Nhã Phi (đưa một tấm Mặt Nạ Dịch Dung tơ tằm): 'Vân Lam Sơn chỉ cách Đế Đô vài chục dặm, tai mắt Vân Lam Tông dày đặc. Đệ đeo mặt nạ này vào lấy hóa danh [Nham Kiêu] để hành sự cho kín đáo nhé!'",
+            "Đúng lúc đó, tên công tử ngang ngược Mộc Chiến (Đại Đấu Sư 2 Tinh) đạp cửa sảnh Mễ Đặc Nhĩ gào lên ép Nhã Phi thành hôn! Tiêu Viêm lạnh mặt bước ra chắn trước nàng!"
+          ],
+          "action": "effect:eff_ch04_nham_kieu_mask"
+        },
+        {
+          "when": { "has_flag": "ch04_sq_mdn_cleared", "missing_flag": "ch04_sq_mdn_done" },
+          "lines": [
+            "Nhã Phi (cười rạng rỡ nắm tay Tiêu Viêm): 'Tuyệt vời quá Nham Kiêu tiên sinh! Nhờ đệ và Hải Ba Đông lão tổ ra tay dẹp đám trưởng lão thân Vân Lam Tông, từ nay toàn bộ mạng lưới tình báo Mễ Đặc Nhĩ nằm gọn trong tay tỷ — bất cứ khi nào Tiêu Gia gặp nguy, Mễ Đặc Nhĩ sẽ liều mạng ứng cứu!'",
+            "Nhã Phi: 'Đây là thù lao đặc biệt dành riêng cho đệ: 2.500 Kim Tệ, Thẻ Chí Tôn Kim Cương và bảo đỉnh Tứ Phẩm [Xích Dương Dược Đỉnh] hỗ trợ đệ đăng quang Đại Hội Luyện Đan Sư!'"
+          ],
+          "action": "effect:eff_ch04_sq_mdn_reward"
+        },
+        {
+          "when": { "has_flag": "ch04_beat_moc_chien", "missing_flag": "ch04_sq_mdn_started" },
+          "lines": [
+            "Nhã Phi (khẽ hạ giọng): 'Cảm ơn đệ đã dạy cho Mộc Chiến một bài học! À đúng rồi, ở Cổng Bắc là Nạp Lan Vương Phủ — nghe nói Nạp Lan Kiệt đang trúng Lạc Độc và treo thưởng bảo dược [Thất Huyễn Thanh Linh Tiên] đấy!'",
+            "Nhã Phi: 'Ngoài ra, trong nội tộc Mễ Đặc Nhĩ hiện có vài trưởng lão thân Vân Lam Tông đang phá rối ở Đại Lộ phía Nam — đệ có muốn tiện tay giúp tỷ chỉnh đốn nội tộc (Nhiệm Vụ Phụ: thưởng Xích Dương Dược Đỉnh & 2.500 Kim Tệ) hoặc ghé xem hàng Đấu Giá Đế Đô không?'"
+          ],
+          "choices": [
+            { "label": "[Nhiệm Vụ Phụ] Nhận lời giúp Nhã Phi trấn áp Trưởng Lão Mễ Đặc Nhĩ (Thưởng Xích Dương Đỉnh!)", "action": "effect:eff_ch04_sq_mdn_start" },
+            { "label": "Mở Phòng Đấu Giá Mễ Đặc Nhĩ Đế Đô (Mua thảo dược & Ma Hạch cao cấp)", "action": "open_shop:nha_phi" },
+            { "label": "Tạm biệt — Để ta sang Nạp Lan Vương Phủ cứu Nạp Lan Kiệt trước!", "action": "heal_full" }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Nhã Phi (mỉm cười dịu dàng): 'Chào mừng đệ về Tổng Bộ Mễ Đặc Nhĩ! Đệ muốn mua nguyên liệu Luyện Đan Đế Đô hay nghỉ ngơi hồi phục thể lực?'"
+          ],
+          "choices": [
+            { "label": "Mở Phòng Đấu Giá VIP Mễ Đặc Nhĩ", "action": "open_shop:nha_phi" },
+            { "label": "Nghỉ ngơi hồi đầy HP & Đấu Khí", "action": "heal_full" }
+          ]
+        }
+      ]
+    },
+    "ch04_hai_ba_dong_de_do": {
+      "branches": [
+        {
+          "default": true,
+          "lines": [
+            "Hải Ba Đông (nheo mắt nhìn lên đỉnh Vân Lam Sơn xa xa): 'Cứ yên tâm hành sự với thân phận Nham Kiêu đi tiểu tử! Có Băng Hoàng ta đứng sau lưng, ở Gia Mã Thánh Thành này chưa ai dám đụng vào một sợi tóc của ngươi đâu!'",
+            "Hải Ba Đông: 'Mục tiêu hiện tại của ngươi: {quest_objective}'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_nap_lan_kiet": {
+      "marker_when": { "missing_flag": "ch04_cured_nap_lan_kiet" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_cured_nap_lan_kiet" },
+          "sfx": "skill_fire",
+          "shake": [7.5, 0.3],
+          "lines": [
+            "Nguyên Soái Nạp Lan Kiệt (hấp hối trên giường bệnh, toàn thân tím đen vì Lạc Độc của Lạc Độc Hạt Vương): 'Khụ khụ... Ngay cả Đan Vương Cổ Hà cũng bó tay vì không có Dị Hỏa... Vị Nham Kiêu tiên sinh trẻ tuổi này thật sự cứu được lão phu sao?'",
+            "Tiêu Viêm thản nhiên búng ngón tay — một đóa [#19 Thanh Liên Địa Tâm Hỏa] xanh ngọc bùng lên chấn động cả Nạp Lan Vương Phủ! Từng luồng Lạc Độc đen kịt bị Dị Hỏa hút gọn ra khỏi tim phổi Nạp Lan Kiệt!",
+            "Tinh quái thay, Tiêu Viêm không đốt bỏ mà dùng Dị Hỏa nén trọn luồng Lạc Độc kịch liệt ấy thành một ấn ký đầu lâu đen trong lòng bàn tay — sáng tạo sát chiêu phòng thân: [LẠC ĐỘC ÁM CHƯỞNG] (Phá 30% DEF Boss trong 10 giây)!",
+            "Nạp Lan Kiệt (bật dậy vái tạ cảm kích): 'Ân tái tạo của Nham Kiêu tiên sinh, Nạp Lan gia tộc khắc cốt ghi tâm! Xin hai tay dâng lên chí bảo [Thất Huyễn Thanh Linh Tiên] — Yên Nhiên, mau tiễn tiên sinh!'"
+          ],
+          "action": "effect:eff_ch04_cure_nap_lan"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Nạp Lan Kiệt (khí sắc hồng hào phấn chấn): 'Nham Kiêu tiên sinh quả là kỳ tài trăm năm có một của Gia Mã Đế Quốc! Ngày mai tại Đại Hội Luyện Đan Sư, lão phu nhất định tới cổ vũ cho tiên sinh!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_yen_nhien_vuong_phu": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_cured_nap_lan_kiet" },
+          "lines": [
+            "Nạp Lan Yên Nhiên (ánh mắt cảnh giác nhưng ẩn chứa hy vọng): 'Vị Nham Kiêu công tử này... chỉ cần ngươi cứu được ông nội ta, Thất Huyễn Thanh Linh Tiên lập tức thuộc về ngươi!'"
+          ],
+          "action": ""
+        },
+        {
+          "default": true,
+          "lines": [
+            "Nạp Lan Yên Nhiên (dịu dàng rót trà, ánh mắt thoáng nét ngưỡng mộ bối rối): 'Đa tạ Nham Kiêu tiên sinh đã cứu mạng ông nội! Không ngờ trên đời lại có người trẻ tuổi kiệt xuất đến vậy... Tiếc thay mấy ngày nữa ta phải lên Vân Lam Sơn giải quyết một Ước Hẹn 3 Năm phiền phức với tên phế vật Tiêu Gia năm xưa...'",
+            "Tiêu Viêm (sau lớp mặt nạ Nham Kiêu nhếch mép cười lạnh thầm): 'Ồ? Vậy tới ngày đó, ta nhất định cũng sẽ lên Vân Lam Sơn xem trò hay!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_medusa_inn": {
+      "marker_when": { "has_flag": "ch04_cured_nap_lan_kiet", "missing_flag": "ch04_medusa_inn_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_medusa_inn_done" },
+          "sfx": "boss_roar",
+          "shake": [8.0, 0.3],
+          "lines": [
+            "[EASTER EGG KHÁCH ĐIẾM ĐẾ ĐÔ] Mùi hương của [Thất Huyễn Thanh Linh Tiên] vừa tỏa ra đã bất ngờ đánh thức bản thể linh hồn Đấu Tông của Mỹ Đỗ Toa Nữ Vương trong cơ thể Thải Lân!",
+            "Ánh sáng bảy màu bùng nổ — Mỹ Đỗ Toa hiện nguyên hình mỹ nhân kiêu diễm lạnh lùng dẫm chân lên ngực định bóp cổ Tiêu Viêm: 'Nhân loại ti tiện! Dám coi bổn vương làm thú cưng vuốt ve suốt nửa năm nay?!'",
+            "Bất ngờ thay, ý thức bé bỏng của Thải Lân giành lại cơ thể khiến Nữ Vương lảo đảo ngã nhào vào lòng Tiêu Viêm rồi đỏ bừng mặt biến lại thành con rắn nhỏ 7 màu chui tọt vào chăn trốn xấu hổ!",
+            "Mỹ Đỗ Toa (nghiến răng truyền âm lập giao kèo): 'Nghe đây tiểu tử! Đoạt lấy [Lục phẩm Dung Linh Đan Phương] ở Đan Hội rồi luyện [Phục Linh Tử Đan] dung hợp hoàn chỉnh linh hồn cho bổn vương — đổi lại, ta sẽ bảo vệ mạng chó của ngươi!'"
+          ],
+          "choices": [
+            { "label": "Cười khẽ vuốt đầu Thải Lân: 'Thành giao Nữ Vương bệ hạ! Ta nhất định đoạt Dung Linh Đan Phương!' (+25 Hảo Cảm Mỹ Đỗ Toa!)", "action": "effect:eff_ch04_medusa_inn_warm" },
+            { "label": "Gật đầu nghiêm túc ký ước sinh tử: 'Chỉ cần lúc lâm nguy cô chịu ra tay cứu mạng!' (+15 Hảo Cảm & +6 SOUL!)", "action": "effect:eff_ch04_medusa_inn_pact" }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Thải Lân thò đầu khỏi tay áo kêu 'Xì xì~', còn giọng Mỹ Đỗ Toa lạnh lùng vang trong tâm trí: 'Đừng quên lời hứa Dung Linh Đan Phương ở Đại Hội Luyện Đan Sư đấy tiểu tử!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_phap_ma": {
+      "marker_when": { "missing_flag": "ch04_dan_hoi_champion" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_dan_hoi_started" },
+          "lines": [
+            "Hội Trưởng Pháp Mã (sắc mặt nghiêm trọng trước biển người vạn khán giả): 'Nham Kiêu tiểu hữu! Nguy to rồi — lão già áo xám Viêm Lợi trên đài kia chính là Phó Hội Trưởng Luyện Đan của Xuất Vân Đế Quốc cải trang sang phá hoại quốc thể Gia Mã!'",
+            "Pháp Mã (mật trao cuốn đan phương cổ): 'Hắn đang dùng Tà Hỏa Chấn Đỉnh phá nổ lò của Liễu Linh và Tiểu Công Chúa! Tiểu hữu hãy ra mặt đập tan sóng âm tà hỏa của Viêm Lợi trước, sau đó dùng [Tam Tầng Chuyển Hỏa] luyện viên [Tam Văn Thanh Linh Đan] trong Lò Đan [L] để giữ thể diện cho Gia Mã Đế Quốc!'"
+          ],
+          "action": "effect:eff_ch04_start_dan_hoi"
+        },
+        {
+          "when": { "missing_flag": "ch04_beat_viem_loi" },
+          "lines": [
+            "Hội Trưởng Pháp Mã: 'Mau đánh bại tên gian tế Viêm Lợi (Xuất Vân) ngay giữa Quảng Trường Đan Hội trước khi hắn bỏ trốn!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "has_flag": "ch04_beat_viem_loi", "missing_flag": "ch04_dan_hoi_champion", "has_item": "pill_tam_van_thanh_linh" },
+          "sfx": "breakthrough",
+          "shake": [10.0, 0.4],
+          "lines": [
+            "Hội Trưởng Pháp Mã (vỡ òa nước mắt nâng cao viên Tam Văn Thanh Linh Đan tỏa ba vầng sáng xanh-tím-vàng): 'THÀNH CÔNG RỒI!! Tam Tầng Chuyển Hỏa — Phàm Hỏa, Tử Hỏa, Thanh Liên Địa Tâm Hỏa — viên Tứ Phẩm Đỉnh Phong Tam Văn Thanh Linh Đan hoàn mỹ đã xuất thế!!'",
+            "Toàn thể vạn khán giả Quảng Trường Đế Đô gầm vang như sấm rền: 'QUÁN QUÂN NHAM KIÊU! QUÁN QUÂN NHAM KIÊU!!'",
+            "Pháp Mã trao [Lục Phẩm Dung Linh Đan Phương], [Pháp Bào Trưởng Lão Danh Dự] & tuyên bố: 'Từ hôm nay Nham Kiêu là Trưởng Lão Danh Dự Hiệp Hội! Cổng Đông lên Thiên Thang 999 Bậc Vân Lam Sơn đã sẵn sàng cho Ước Hẹn Ba Năm!'"
+          ],
+          "action": "effect:eff_ch04_crown_champion"
+        },
+        {
+          "when": { "has_flag": "ch04_beat_viem_loi", "missing_flag": "ch04_dan_hoi_champion" },
+          "lines": [
+            "Hội Trưởng Pháp Mã (phấn khích): 'Tuyệt lắm! Viêm Lợi đã bị đập tan âm mưu! Ta đã gửi đủ nguyên liệu vào Nạp Giới của con — giờ hãy bấm phím [L] mở Lò Luyện Đan, chọn công thức [Tam Văn Thanh Linh Đan] đúc nên kỳ tích đăng quang Quán Quân Đan Hội ngay!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Hội Trưởng Pháp Mã (mỉm cười tự hào): 'Độc bộ Đan Hội ở tuổi 18 — ngay cả Cổ Hà năm xưa cũng không làm nổi! Ngày lên Vân Lam Sơn, lão phu và Gia Hình Thiên sẽ đích thân làm chứng cho con!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_gia_hinh_thien": {
+      "branches": [
+        {
+          "default": true,
+          "lines": [
+            "Lão Tổ Gia Hình Thiên (Đấu Hoàng Đỉnh Phong Hoàng Thất Gia Mã gật đầu tán thưởng): 'Đánh bại gian tế Xuất Vân Đế Quốc lại sở hữu Dị Hỏa! Nham Kiêu tiểu hữu, Hoàng thất Gia Mã nợ ngươi một đại ân tình — cứ yên tâm lên Vân Lam Sơn, có lão phu tọa trấn!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_thien_thang_oath": {
+      "marker_when": { "missing_flag": "ch04_thien_thang_inspected" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_thien_thang_inspected" },
+          "sfx": "level_up",
+          "shake": [7.0, 0.28],
+          "lines": [
+            "Tiêu Viêm khoác Hắc Bào, lưng vác Huyền Trọng Xích bước lên 999 Bậc Đá Trắng xuyên biển mây! Hai bên hàng ngàn đệ tử áo trắng Vân Lam Tông đồng loạt rút kiếm tạo nên luồng Kiếm Ý áp bách nặng như núi!",
+            "Trong tâm trí vang vọng tiếng gầm Đại Sảnh Tiêu Gia 3 năm trước: 'Tam thập niên Hà Đông, tam thập niên Hà Tây — Mạc Khi Thiếu Niên Cùng!!'",
+            "ẦM!! Đấu Khí Đại Đấu Sư bộc phát như thủy triều xanh ngọc chấn văng kiếm khí hai bên — Tiêu Viêm sải bước không lùi nửa tấc tiến thẳng lên Đỉnh Vân Lam Sơn! (+1500 EXP & Hồi đầy HP/QI!)"
+          ],
+          "action": "effect:eff_ch04_thien_thang_boost"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Bia Kiếm Ý Vân Lam rung nhẹ dưới áp lực Đấu Khí Khải Giáp xanh ngọc của bạn — Quảng Trường Cự Kiếm đã ở ngay phía Bắc!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_uoc_hen_reveal": {
+      "marker_when": { "missing_flag": "ch04_uoc_hen_revealed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_uoc_hen_revealed" },
+          "sfx": "boss_roar",
+          "shake": [10.0, 0.38],
+          "lines": [
+            "Giữa Quảng Trường Cự Kiếm chật kín anh hào toàn Đế Quốc (Hải Ba Đông, Pháp Mã, Gia Hình Thiên, Cổ Hà, Nhã Phi, Tông chủ Vân Vận), Tiêu Viêm cắm phập thanh Huyền Trọng Xích làm nứt toác mặt đá cẩm thạch rồi thản nhiên XÉ TOẠC LỚP MẶT NẠ DỊCH DUNG NHAM KIÊU!",
+            "Tiêu Viêm (giọng sang sảng vang dội chín tầng mây): 'Ô THẢN THÀNH — TIÊU GIA — TIÊU VIÊM! Hôm nay bước lên Vân Lam Sơn, ứng ước ba năm trước!!'",
+            "Toàn trường nổ tung kinh hoàng! Nạp Lan Yên Nhiên lùi lại nửa bước sắc mặt trắng bệch: 'Ngươi... ngươi chính là Nham Kiêu?! Không thể nào... Sao ngươi lại là Tiêu Viêm được?!'",
+            "Trên bảo tọa Tông chủ, Vân Vận bóp nát tay vịn ngọc thạch — thiếu niên Dược Nham ở sơn động, kẻ đoạt Dị Hỏa sa mạc và kẻ thù 3 năm của đồ đệ nàng... hóa ra đều là một người!!",
+            "Nạp Lan Yên Nhiên rút trường kiếm thanh phong gầm lên: 'Dù ngươi là ai — hôm nay vì tôn nghiêm Vân Lam Tông, hãy tiếp chiêu!!'"
+          ],
+          "action": "effect:eff_ch04_reveal_mask"
+        }
+      ]
+    },
+    "ch04_return_huu_thu": {
+      "marker_when": { "has_flag": "ch04_beat_yen_nhien", "missing_flag": "ch04_van_yen_started" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_van_yen_started" },
+          "sfx": "boss_roar",
+          "shake": [11.0, 0.4],
+          "lines": [
+            "Đóa Phật Nộ Hỏa Liên xé nát tuyệt kỹ Phong Chi Cực: Lạc Nhật Diệu! Nạp Lan Yên Nhiên bại trận tuyệt vọng định kề kiếm tự sát tạ tội sư môn — Tiêu Viêm lướt Tử Vân Dực tay không chụp chặt lưỡi kiếm, rút Tờ Hưu Thư Máu 3 năm trước ném bay lả tả trước mặt nàng!",
+            "Tiêu Viêm: 'Nạp Lan Yên Nhiên! Ba năm trước ngươi tới Tiêu Gia từ hôn; ba năm sau ta đường hoàng đánh bại ngươi ngay trên đỉnh Vân Lam Sơn! Tờ giấy này là Tiêu Viêm ta chính thức HƯU ngươi — từ giây phút này, hai bên không ai nợ ai nữa!'",
+            "Bỗng Chấp sự Cát Diệp chỉ tay hét toáng lên: 'ĐẠI TRƯỞNG LÃO! Hắn chính là tên Hắc Bào Nhân đã nổ xác Mặc Thừa ở Mặc Gia Trang!!'",
+            "Đại Trưởng Lão Vân Lăng (Đấu Vương Đỉnh Phong) mặt mày hung ác trở mặt phất lệnh bài: 'Hạ sát ngoại thích Vân Lam Tông mà đòi bước xuống núi sao?! TOÀN THỂ ĐỆ TỬ KHỞI ĐỘNG [VÂN YÊN PHÚC NHẬT ĐẠI TRẬN] — BẮT SỐNG HẮN CHO TA!!'"
+          ],
+          "action": "effect:eff_ch04_start_van_yen"
+        }
+      ]
+    },
+    "ch04_van_van_summit": {
+      "branches": [
+        {
+          "when": { "has_flag": "ch04_second_van_lam_ready" },
+          "lines": [
+            "Vân Vận (mắt phượng ngấn lệ đứng giữa giông bão): 'Tiêu Viêm... ta biết Vân Lăng đã phạm tội tày đình với Tiêu Gia, nhưng sư phụ Vân Sơn đã xuất quan... Xin huynh đừng liều mạng trước Đấu Tông!'"
+          ],
+          "action": ""
+        },
+        {
+          "when": { "has_flag": "ch04_uoc_hen_revealed" },
+          "lines": [
+            "Vân Vận (bàn tay siết chặt cổ kiếm, đôi mắt phượng đong đầy chấn động & đau xót): 'Dược Nham... hóa ra ngay từ đầu là ngươi... Hải Tâm Giáp trên ngực ngươi ta tặng vẫn còn đó... Hãy cẩn thận Đại Trưởng Lão Vân Lăng!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tông Chủ Vân Vận ngồi lặng lẽ trên bảo tọa mây trắng, ánh mắt hướng về giữa Quảng Trường Cự Kiếm nơi Nạp Lan Yên Nhiên đang chờ đợi..."
+          ],
+          "action": ""
+        }
+      ]
+    },
+    "ch04_medusa_break_array": {
+      "marker_when": { "has_flag": "ch04_beat_van_yen_array", "missing_flag": "ch04_medusa_saved" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_medusa_saved" },
+          "sfx": "breakthrough",
+          "shake": [13.0, 0.5],
+          "lines": [
+            "Giữa lúc Hải Ba Đông, Pháp Mã và Gia Hình Thiên đang giằng co với Đại Trận — từ tay áo Tiêu Viêm phóng lên một cột sáng BẢY MÀU xé toạc tầng mây Vân Lam Sơn!",
+            "Đôi chân ngọc thản nhiên ĐẠP BƯỚC TRÊN HƯ KHÔNG (dấu hiệu tối thượng của CƯỜNG GIẢ ĐẤU TÔNG!) — Mỹ Đỗ Toa Nữ Vương lạnh lùng phẩy nhẹ cổ tay: Vân Yên Phúc Nhật Đại Trận ngàn người vỡ vụn như bọt nước, Vân Lăng cùng ba vị Đấu Vương phun máu tươi bắn ngược!",
+            "Mỹ Đỗ Toa (ánh mắt uy quyền liếc nhìn toàn sơn môn câm lặng rồi nắm cổ áo Tiêu Viêm): 'Kẻ giữ Dung Linh Đan Phương của bổn vương, đám sâu kiến các ngươi cũng dám động vào sao? Đi theo ta!'",
+            "Đúng lúc vừa thoát xuống chân núi, mật báo Mễ Đặc Nhĩ hộc máu chạy tới báo tin sét đánh: 'Vân Lăng đã lén phái người tập kích Ô THẢN THÀNH — Tiêu Gia cháy rụi, Phụ thân Tiêu Chiến MẤT TÍCH!!' (Mở [T] Đấu Tông Mỹ Đỗ Toa Hộ Pháp & Cổng Tây bay về Phế Tích Tiêu Gia!)"
+          ],
+          "action": "effect:eff_ch04_medusa_rescue"
+        }
+      ]
+    },
+    "ch04_tieu_dinh_ruins": {
+      "marker_when": { "missing_flag": "ch04_met_tieu_dinh_ruins" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_met_tieu_dinh_ruins" },
+          "lines": [
+            "Tiêu Đỉnh (ngồi trên xe lăn giữa màn mưa tro xám, đôi chân bị chấp sự Vân Lam đánh gãy nát gân): 'Tam đệ... Đệ về rồi sao... Bọn chó săn Vân Lam Tông tập kích bất ngờ trong đêm — đại ca vô dụng không bảo vệ được gia tộc...'",
+            "Tiêu Đỉnh (nước mắt lăn dài): 'Phụ thân lúc đoạn hậu cho tộc nhân rút vào hầm ngầm bỗng bị một luồng Hắc Vụ kỳ dị nuốt chửng rồi MẤT TÍCH KHÔNG DẤU VẾT ngay giữa sân sau! Mau lại gần chỗ Ma Thạch Bi sân sau kiểm tra luồng Hắc Vụ đó đi tam đệ!'"
+          ],
+          "action": "effect:eff_ch04_met_tieu_dinh"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Đỉnh (cố gượng cười): 'Gia tộc đã có Hải Ba Đông và Mễ Đặc Nhĩ che chở an toàn rồi. Đệ cứ kiểm tra dấu vết Hắc Vụ nơi phụ thân biến mất và nói chuyện với Nhị ca Tiêu Lệ nhé!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_tieu_le_ruins": {
+      "marker_when": { "missing_flag": "ch04_tieu_toc_no_huyet" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_tieu_toc_no_huyet", "has_item": "pill_ho_mach_dan" },
+          "lines": [
+            "Nhị Ca Tiêu Lệ (toàn thân nhuốm máu nắm chặt Huyết Thương, đôi mắt đỏ rực căm hận): 'Tam đệ! Kinh mạch đại ca đang đứt đoạn — đệ có mang theo [Hộ Mạch Đan] cứu mạng đại ca không?!'",
+            "Tiêu Viêm lập tức trao viên [Hộ Mạch Đan] bảo vệ tâm mạch Tiêu Đỉnh rồi cùng Nhị ca cắt máu thề ước trước từ đường đổ nát: 'Huyết thù này, huynh đệ Tiêu Gia ta thề lấy máu Vân Lam Tông & kẻ đứng sau màn gột rửa!!'"
+          ],
+          "action": "effect:eff_ch04_sq_no_huyet"
+        },
+        {
+          "when": { "missing_flag": "ch04_tieu_toc_no_huyet" },
+          "lines": [
+            "Nhị Ca Tiêu Lệ (giọng khàn đặc đau đớn): '[NHIỆM VỤ PHỤ: Thề Máu Trước Từ Đường] Tam đệ! Kinh mạch đại ca đang nguy kịch — hãy tìm hoặc mở Hộp Kỷ Vật phía Tây / Lò Đan [L] mang 1 viên [Hộ Mạch Đan] về đây cứu đại ca, hai anh em ta sẽ thề huyết thù mở nội tại [Tiêu Tộc Nộ Huyết +15% ATK vs Vân Lam & Hồn Điện]!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Lệ (nắm chặt vai em trai, ánh mắt quyết tuyệt): 'Đại ca đã qua cơn nguy kịch nhờ Hộ Mạch Đan của đệ! Đi đi tam đệ — lấy mạng lão cẩu Vân Lăng về tế từ đường Tiêu Gia!!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_hon_dien_clue": {
+      "marker_when": { "missing_flag": "ch04_second_van_lam_ready" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_second_van_lam_ready" },
+          "sfx": "breakthrough",
+          "shake": [11.0, 0.45],
+          "lines": [
+            "Quỳ sụp giữa mưa tro nơi Tiêu Chiến biến mất, Tiêu Viêm bật cảm ứng SOUL cực đại — từ khe gạch vỡ bốc lên một sợi HẮC VỤ lạnh buốt phát ra tiếng xiềng xích sắt kéo lê rợn người!",
+            "Từ chiếc nhẫn đen đang ngủ say, ý thức mơ màng của Dược Lão bỗng chấn động truyền ra hai chữ đầy căm hận thấu xương: 'Hồn... Điện...!!'",
+            "Chính thế lực hắc ám bí ẩn Hồn Điện đã thừa nước đục thả câu bắt cóc Tiêu Chiến để đoạt mảnh Đà Xá Cổ Đế Ngọc — nhưng kẻ châm ngòi dẫn sói vào nhà hủy nát Tiêu Gia chính là Đại Trưởng Lão Vân Lăng!",
+            "Tiêu Viêm hai mắt đỏ ngầu như tu la, ngửa cổ NUỐT CHỬNG viên bảo đan [Tam Văn Thanh Linh Đan]! Dược lực cuồng bạo xé rách kinh mạch đẩy cảnh giới bạo tăng điên cuồng thẳng lên ĐẠI ĐẤU SƯ BÁT TINH — ĐỆ NHỊ THƯỢNG VÂN LAM SƠN, MÁU NỢ MÁU TRẢ!!"
+          ],
+          "action": "effect:eff_ch04_hon_dien_enrage"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Sợi Hắc Vụ Xiềng Xích đã được thu giữ làm vật chứng truy lùng Hồn Điện! Quay ngay qua Cổng Đông trở lại Đỉnh Vân Lam Sơn nổ xác Đại Trưởng Lão Vân Lăng!"
+          ],
+          "action": ""
+        }
+      ]
+    },
+    "ch04_van_son_summit": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_killed_van_lang" },
+          "lines": [
+            "Đấu Tông Vân Sơn (lơ lửng trên hư không, ánh mắt băng lạnh như nhìn kiến hôi): 'Chỉ là một con kiến hôi Đại Đấu Sư mà dám xông lên Vân Lam Sơn đòi giết Đại trưởng lão ngay trước mặt bổn tọa sao?!'",
+            "Tiêu Viêm (khóe mắt chảy máu đỏ rực, hai tay rực sáng đóa Phật Nộ Hỏa Liên): 'Vân Lăng lão cẩu! Hôm nay dù có Thiên Vương Lão Tử hay Đấu Tông đứng đây, mạng chó của ngươi ta cũng bắt phải đền!!'"
+          ],
+          "action": ""
+        },
+        {
+          "default": true,
+          "lines": [
+            "Đấu Tông Vân Sơn gầm lên rung chuyển chín tầng mây: 'SÚC SINH! DÁM NỔ XÁC VÂN LĂNG TRƯỚC MẶT BỔN TỌA — PHONG TỎA TOÀN QUỐC TRUY SÁT TIÊU VIÊM!!' (Mau chạy qua Cổng Đông vào Rừng Phong Tỏa!)"
+          ],
+          "action": ""
+        }
+      ]
+    },
+    "ch04_lang_anh_escape": {
+      "marker_when": { "missing_flag": "ch04_lang_anh_met_escape" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_lang_anh_met_escape", "has_flag": "secret_lang_anh_done" },
+          "sfx": "chest_open",
+          "lines": [
+            "ẦM!! Ngay khi bàn tay Không Gian của Đấu Tông Vân Sơn chụp xuống, từ bóng tối hư vô lao ra Đấu Hoàng Đỉnh Phong Lăng Ảnh tung Ám Ảnh Quyết cứng rắn cản chân Vân Sơn đúng 3 nhịp thở quý giá!",
+            "Lăng Ảnh (cười khẽ nhìn bạn): 'Tiêu Viêm thiếu gia, còn nhớ đêm Hậu Sơn Ô Thản Thành năm xưa không? Tiểu thư Huân Nhi đang chờ thiếu gia ở Nội Viện Học Viện Già Nam!'",
+            "[KỲ NGỘ ẨN CỔ TỘC!] Vì bạn từng gặp Lăng Ảnh ở Chương 01, ông lén ném vào tay bạn một Lá Ngọc Vàng ấm áp: 'Đây là [Kim Viêm Hộ Hồn Ngọc] cùng mật thư của Huân Nhi — khi gặp đòn chí mạng ở Hắc Giác Vực, ngọc sẽ tự hồi sinh thiếu gia 1 lần với 50% HP! Mau đột phá vòng vây phía trước!'"
+          ],
+          "action": "effect:eff_ch04_lang_anh_secret"
+        },
+        {
+          "when": { "missing_flag": "ch04_lang_anh_met_escape" },
+          "lines": [
+            "ẦM!! Từ bóng tối lao ra Đấu Hoàng Đỉnh Phong Lăng Ảnh cứng rắn cản chân Đấu Tông Vân Sơn đúng 3 nhịp thở!",
+            "Lăng Ảnh (truyền âm gấp gáp): 'Tiêu Viêm thiếu gia mau chạy về phía Đông vượt Trấn Quỷ Quan sang Hắc Giác Vực! Tiểu thư Huân Nhi dặn thiếu gia nhất định phải sống sót tới Học Viện Già Nam!'"
+          ],
+          "action": "effect:eff_ch04_lang_anh_normal"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Lăng Ảnh (ẩn mình trong bóng lá đỏ): 'Ta đang cầm chân phân thân chủ lực của Vân Sơn — thiếu gia mau hạ gục Hư Ảnh Không Gian phía trước rồi tiến qua Hẻm Núi tới Trấn Quỷ Quan!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_van_van_farewell": {
+      "marker_when": { "has_flag": "ch04_escaped_van_son", "missing_flag": "ch04_van_van_farewell_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_escaped_van_son" },
+          "lines": [
+            "Vân Vận đứng lặng giữa hẻm núi lá đỏ, nhìn về phía sau lưng bạn nơi Hư Ảnh Không Gian của Đấu Tông Vân Sơn vẫn đang truy sát... Hãy đánh tan Hư Ảnh Vân Sơn trước đã!"
+          ],
+          "action": ""
+        },
+        {
+          "when": { "missing_flag": "ch04_van_van_farewell_done" },
+          "lines": [
+            "Ngay trước cửa ải biên giới, bóng trắng cầm kiếm đứng chặn giữa đường mòn lá đỏ chính là Vân Vận! Đôi mắt vị nữ Tông chủ đỏ hoe ngấn lệ: sau lưng nàng là tông môn ngàn năm tan hoang và thi thể Đại trưởng lão, trước mũi kiếm nàng là chàng thiếu niên Dược Nham khắc cốt ghi tâm.",
+            "Tiêu Viêm (hắc bào đẫm máu, rút mảnh vỡ Hải Tâm Giáp trên ngực): 'Vân Tông Chủ... ân tình sơn động hôm nay trả lại bằng mảnh giáp vỡ này! Từ giờ Tiêu Gia và Vân Lam Tông chỉ còn huyết hải thâm thù...'",
+            "Khí tức khủng khiếp của Đấu Tông Vân Sơn áp sát chân trời! Vân Vận nhắm chặt hai hàng lệ, đau đớn kháng mệnh sư phụ thu kiếm nghiêng người nhường đường máu cho Tiêu Viêm lao qua..."
+          ],
+          "choices": [
+            { "label": "Siết chặt mảnh Hải Tâm Giáp thì thầm: 'Bảo trọng... Vân Chi. Đừng đứng giữa ta và Vân Sơn!' (+35 Hảo Cảm Vân Vận!)", "action": "effect:eff_ch04_van_van_keep" },
+            { "label": "Lạnh lùng để lại mảnh giáp vỡ rồi quay lưng sải bước tiến về Trấn Quỷ Quan (+15 Hảo Cảm & +8 SOUL!)", "action": "effect:eff_ch04_van_van_cut" }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Vân Vận đứng lặng giữa mưa lá đỏ nhìn theo bóng lưng bạn khuất dần về phía Trấn Quỷ Quan..."
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch04_tran_quy_quan_oath": {
+      "marker_when": { "has_flag": "ch04_van_van_farewell_done", "missing_flag": "ch04_completed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch04_van_van_farewell_done" },
+          "lines": [
+            "Biên Ải Trấn Quỷ Quan sừng sững trước mặt! Hãy vượt qua Hư Ảnh Vân Sơn và đối mặt Vân Vận tại Hẻm Núi Lá Đỏ trước khi lập Lời Thề Biên Ải khép lại Quyển 01!"
+          ],
+          "action": ""
+        },
+        {
+          "when": { "missing_flag": "ch04_completed" },
+          "sfx": "breakthrough",
+          "shake": [12.0, 0.5],
+          "lines": [
+            "Bước chân đẫm máu vượt qua Biên Ải Trấn Quỷ Quan! Ngoái đầu nhìn lại bầu trời Gia Mã Đế Quốc mù mịt mây đen truy sát, thiếu niên 18 tuổi chống thanh Huyền Trọng Xích gầm vang lời thề xé rách tầng mây:",
+            "Tiêu Viêm: 'VÂN SƠN! VÂN LAM TÔNG! Cứ rửa sạch cổ mà đợi đó... Đợi ngày Tiêu Viêm ta từ Hắc Giác Vực bước chân trở lại Gia Mã Đế Quốc, chính là ngày Vân Lam Tông các ngươi máu chảy thành sông, gà chó không còn!!'",
+            "[HOÀN TẤT QUYỂN 01: GIA MÃ ĐẾ QUỐC — CHƯƠNG 01 ĐẾN CHƯƠNG 04!] Tiêu Viêm chạm ngưỡng ĐẠI ĐẤU SƯ CỬU TINH ĐỈNH PHONG, mang theo Tàn Dư Hắc Vụ Hồn Điện, Dung Linh Đan Phương & Thải Lân chính thức bước vào QUYỂN 02: HẮC GIÁC VỰC & HỌC VIỆN GIÀ NAM!!"
+          ],
+          "action": "effect:eff_ch04_complete_book1"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Bia Biên Giới Trấn Quỷ Quan khắc sâu lời thề huyết hận của Tiêu Viêm! Hành trình Quyển 02 (Chương 05 — Hắc Giác Vực & Học Viện Già Nam) đang chờ phía trước!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    }
+  },
+  "effects": {
+    "eff_ch04_pha_ach_release": {
+      "consume_items": { "pill_pha_ach_dan": 1 },
+      "set_flag": "ch04_pha_ach_done",
+      "heal_full": true
+    },
+    "eff_ch04_rescue_tl_warm": {
+      "affection": { "thanh_lan": 25 },
+      "set_flag": "ch04_rescued_thanh_lan",
+      "heal_full": true,
+      "banter": "Thanh Lân bật khóc cảm động (+25 Hảo Cảm)! Mau xuống sân Đông Nam tiêu diệt [BOSS] Quái Nhân Mặc Thừa!"
+    },
+    "eff_ch04_rescue_tl_fierce": {
+      "affection": { "thanh_lan": 15 },
+      "give_exp": 300,
+      "set_flag": "ch04_rescued_thanh_lan",
+      "heal_full": true,
+      "banter": "Đã đưa Thanh Lân ra khỏi Địa Lao (+15 Hảo Cảm, +300 EXP)! Quyết chiến [BOSS] Quái Nhân Mặc Thừa ngay!"
+    },
+    "eff_ch04_duoc_lao_sleep_done": {
+      "set_flag": "ch04_mac_gia_done",
+      "heal_full": true
+    },
+    "eff_ch04_nham_kieu_mask": {
+      "set_flag": "ch04_nham_kieu_mask",
+      "heal_full": true
+    },
+    "eff_ch04_sq_mdn_start": {
+      "set_flag": "ch04_sq_mdn_started",
+      "banter": "[NHIỆM VỤ PHỤ] Hạ gục nhóm Trưởng Lão Mễ Đặc Nhĩ thân Vân Lam ở Đại Lộ phía Nam rồi báo lại Nhã Phi để nhận Xích Dương Dược Đỉnh!"
+    },
+    "eff_ch04_sq_mdn_reward": {
+      "set_flag": "ch04_sq_mdn_done",
+      "give_gold": 2500,
+      "give_stones": 12,
+      "relic": "Thẻ Chí Tôn Kim Cương Mễ Đặc Nhĩ (Tình Báo Cứu Mạng Tiêu Gia)",
+      "give_gear": [{ "template": "caul_xich_duong_dinh", "rarity": "thien", "auto_equip": true }],
+      "sfx": "breakthrough",
+      "banter": "HOÀN THÀNH NHIỆM VỤ PHỤ MỄ ĐẶC NHĨ! Nhận +2.500 Kim Tệ & Đan Đỉnh Tứ Phẩm [XÍCH DƯƠNG DƯỢC ĐỈNH] (+24% Luyện Đan)!"
+    },
+    "eff_ch04_cure_nap_lan": {
+      "set_flag": "ch04_cured_nap_lan_kiet",
+      "heal_full": true
+    },
+    "eff_ch04_medusa_inn_warm": {
+      "set_flag": "ch04_medusa_inn_done",
+      "affection": { "my_do_toa": 25 },
+      "relic": "Kỷ Niệm Ẩn: Cuộc Chiến Linh Hồn Mỹ Đỗ Toa & Thải Lân",
+      "heal_full": true,
+      "banter": "Mỹ Đỗ Toa đỏ mặt thu mình biến lại thành Thải Lân chui vào tay áo (+25 Hảo Cảm)! Hẹn đoạt Dung Linh Đan Phương tại Đan Hội!"
+    },
+    "eff_ch04_medusa_inn_pact": {
+      "set_flag": "ch04_medusa_inn_done",
+      "affection": { "my_do_toa": 15 },
+      "give_soul": 6,
+      "relic": "Giao Ước Phục Linh Tử Đan Với Nữ Vương Mỹ Đỗ Toa",
+      "heal_full": true,
+      "banter": "Ký giao ước sinh tử với Mỹ Đỗ Toa (+15 Hảo Cảm, +6 SOUL)! Tiến xuống Quảng Trường Đan Hội phía Nam ngay!"
+    },
+    "eff_ch04_start_dan_hoi": {
+      "set_flag": "ch04_dan_hoi_started",
+      "heal_full": true,
+      "banter": "CHUNG KẾT ĐAN HỘI KHAI MÀN! Đánh bại tên gian tế Xuất Vân [BOSS] Viêm Lợi rồi luyện Tam Văn Thanh Linh Đan trong [L]!"
+    },
+    "eff_ch04_crown_champion": {
+      "set_flag": "ch04_dan_hoi_champion",
+      "heal_full": true
+    },
+    "eff_ch04_thien_thang_boost": {
+      "set_flag": "ch04_thien_thang_inspected",
+      "give_exp": 1500,
+      "heal_full": true,
+      "banter": "Đấu Khí Khải Giáp chấn tan Kiếm Ý 999 Bậc (+1.500 EXP)! Tiến thẳng qua Sơn Môn Bắc lên Đỉnh Vân Lam Sơn!"
+    },
+    "eff_ch04_reveal_mask": {
+      "set_flag": "ch04_uoc_hen_revealed",
+      "heal_full": true
+    },
+    "eff_ch04_start_van_yen": {
+      "set_flag": "ch04_van_yen_started",
+      "heal_full": true
+    },
+    "eff_ch04_medusa_rescue": {
+      "set_flag": "ch04_medusa_saved",
+      "heal_full": true
+    },
+    "eff_ch04_met_tieu_dinh": {
+      "set_flag": "ch04_met_tieu_dinh_ruins",
+      "heal_full": true,
+      "banter": "Tiến ra sân sau kiểm tra [Tàn Dư Hắc Vụ Xiềng Xích] nơi Phụ thân Tiêu Chiến biến mất!"
+    },
+    "eff_ch04_sq_no_huyet": {
+      "consume_items": { "pill_ho_mach_dan": 1 },
+      "set_flag": "ch04_tieu_toc_no_huyet",
+      "give_exp": 3000,
+      "heal_full": true
+    },
+    "eff_ch04_hon_dien_enrage": {
+      "consume_items": { "pill_tam_van_thanh_linh": 1 },
+      "set_flags": ["ch04_hon_dien_clue", "ch04_second_van_lam_ready"],
+      "heal_full": true
+    },
+    "eff_ch04_lang_anh_secret": {
+      "set_flags": ["ch04_lang_anh_met_escape", "ch04_kim_viem_ngoc"],
+      "give_gear": [{ "template": "pend_kim_viem_ho_hon_ngoc", "rarity": "de", "auto_equip": false }],
+      "heal_full": true
+    },
+    "eff_ch04_lang_anh_normal": {
+      "set_flag": "ch04_lang_anh_met_escape",
+      "affection": { "huan_nhi": 10 },
+      "heal_full": true,
+      "banter": "Lăng Ảnh cản chân Đấu Tông Vân Sơn! Đánh tan Hư Ảnh Không Gian phía trước để tiến về Trấn Quỷ Quan!"
+    },
+    "eff_ch04_van_van_keep": {
+      "set_flag": "ch04_van_van_farewell_done",
+      "affection": { "van_chi": 35 },
+      "relic": "Kỷ Niệm Đẫm Lệ: Hẻm Núi Lá Đỏ & Mảnh Hải Tâm Giáp",
+      "heal_full": true,
+      "banter": "Vân Vận rơi lệ thu kiếm nhường đường (+35 Hảo Cảm Vân Vận)! Tiến về Bia Biên Giới Trấn Quỷ Quan phía Đông!"
+    },
+    "eff_ch04_van_van_cut": {
+      "set_flag": "ch04_van_van_farewell_done",
+      "affection": { "van_chi": 15 },
+      "give_soul": 8,
+      "heal_full": true,
+      "banter": "Đoạn tình giữa hẻm núi lá đỏ (+15 Hảo Cảm, +8 SOUL)! Bước tới Bia Biên Giới Trấn Quỷ Quan lập lời thề!"
+    },
+    "eff_ch04_complete_book1": {
+      "set_flag": "ch04_completed",
+      "heal_full": true
+    }
+  }
+}

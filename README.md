@@ -1,6 +1,6 @@
 # Đấu Phá Thương Khung — Top-down 2D HD Pixel Action RPG (Godot 4)
 
-Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn vẹn từ tiểu thuyết **Đấu Phá Thương Khung** (Thiên Tằm Thổ Đậu), phát triển trên **Godot Engine 4 (GDScript)** với đồ họa **32-bit HD Pixel Art (`1280x720`)**, giao diện **nút bấm MOBA trực quan**, chiến đấu **liền thân nhân vật + vũ khí**, **10 ô trang bị ARPG**, và **tiến trình mở khóa chuẩn 100% nguyên tác qua 11 bản đồ — 21 mốc nhiệm vụ (Chương 01 -> Chương 02 -> Chương 03 Sa Mạc Tháp Qua Nhĩ)**.
+Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn vẹn từ tiểu thuyết **Đấu Phá Thương Khung** (Thiên Tằm Thổ Đậu), phát triển trên **Godot Engine 4 (GDScript)** với đồ họa **32-bit HD Pixel Art (`1280x720`)**, giao diện **nút bấm MOBA trực quan**, chiến đấu **liền thân nhân vật + vũ khí**, **10 ô trang bị ARPG**, **Data-Driven Story Engine**, và **tiến trình mở khóa chuẩn 100% nguyên tác qua trọn bộ Quyển I: 19 bản đồ — 31 mốc nhiệm vụ chính (Chương 01 -> Chương 04 Đế Đô & Ước Hẹn 3 Năm Vân Lam Sơn)**.
 
 ---
 
@@ -11,7 +11,7 @@ Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn v�
 
 ---
 
-## 2. Lộ Trình Chuẩn Nguyên Tác (11 Bản Đồ — 21 Mốc Cốt Truyện — 15 NPC — 20 Quái & Boss)
+## 2. Lộ Trình Chuẩn Nguyên Tác (19 Bản Đồ — 31 Mốc Cốt Truyện — 33 Quái & 19 Boss Độc Chiêu)
 
 Khởi đầu **Phút 0**, Tiêu Viêm đứng tại **Quảng Trường Tiêu Gia** với **Đấu Chi Khí 3 Đoạn**, **Tay Không** (chưa có vũ khí, chưa thức tỉnh Dược Lão, chưa mở Lò Luyện Đan `[L]` / Dị Hỏa `[H]`, chưa có Đấu Kỹ hay Phật Nộ Hỏa Liên):
 
@@ -57,7 +57,16 @@ Khởi đầu **Phút 0**, Tiêu Viêm đứng tại **Quảng Trường Tiêu G
     - Gặp lại cố nhân **Vân Vận (Tông Chủ Vân Lam Tông)** giữa bão cát với **2 lựa chọn xúc động** khi nàng nhận ra chiếc *Hải Tâm Giáp* và nghiêng mũi kiếm mở lối!
     - Tiến lên Đảo Thánh Trì chứng kiến **Nữ Vương Mỹ Đỗ Toa Độ Kiếp Thiên Lôi**, cướp gọn **Hỏa Chủng Thanh Liên Địa Tâm Hỏa** & con **Thất Thải Thôn Thiên Mãng**!
 11. **Ốc Đảo Diêm Lệ — Thôn Phệ Dị Hỏa (`ch03_oc_dao_diem_le`)**:
-    - Gặp **Dược Lão `[V]`** cử hành **Nghi Thức Thôn Phệ #19 Thanh Liên Địa Tâm Hỏa** (2 lựa chọn *Băng Tâm Đan* hoặc *Ý Chí Ước Hẹn 3 Năm*) -> lột xác thành lửa Xanh Ngọc Bích (*Phần Quyết Huyền Giai Trung Cấp*), mở khóa **Thần Thú Đồng Hành `[G]` Thải Lân** (bắn tia 7 màu & Hộ Chủ cứu nguy khi HP < 35%), và **KHAI SINH TUYỆT KỸ TỐI THƯỢNG `[F]` PHẬT NỘ HỎA LIÊN** (tự động dung hợp Song Hỏa *Tử Hỏa + Thanh Liên Hỏa*!). Có sẵn Bãi Thử phía Đông để bắn thử ngay tại chỗ!
+    - Gặp **Dược Lão `[V]`** cử hành **Nghi Thức Thôn Phệ #19 Thanh Liên Địa Tâm Hỏa** (2 lựa chọn *Băng Tâm Đan* hoặc *Ý Chí Ước Hẹn 3 Năm*) -> lột xác thành lửa Xanh Ngọc Bích (*Phần Quyết Huyền Giai Trung Cấp*), mở khóa **Thần Thú Đồng Hành `[G]` Thải Lân** (bắn tia 7 màu & Hộ Chủ cứu nguy khi HP < 35%), và **KHAI SINH TUYỆT KỸ TỐI THƯỢNG `[F]` PHẬT NỘ HỎA LIÊN** (tự động dung hợp Song Hỏa *Tử Hỏa + Thanh Liên Hỏa*!).
+
+### Chương 04 — Đế Đô Phong Vân & Ước Hẹn 3 Năm Vân Lam Sơn (8 Bản Đồ · NV 22–31 · Kết Quyển I)
+12. **Diêm Thành — Mặc Gia Trang & Địa Lao Ngầm (`ch04_mac_gia_trang`)**: Đột phá **Đại Đấu Sư** mở **Đấu Khí Khải Giáp & Kiếm Khí Ngoại Phóng**, dùng *Phá Ách Đan* giải phong ấn Băng Hoàng Hải Ba Đông, cứu Thanh Lân, nổ xác **[BOSS] Quái Nhân Mặc Thừa** bằng Song Sắc Hỏa Liên & chứng kiến **Dược Lão chìm vào giấc ngủ say** (tạm khóa `[T]`).
+13. **Gia Mã Thánh Thành — Tổng Bộ Mễ Đặc Nhĩ (`ch04_gia_ma_de_do`)**: Trùng phùng Nhã Phi nhận Mặt Nạ Dịch Dung **"Nham Kiêu"**, đánh gục **[MINI-BOSS] Mộc Chiến**, nhận Nhiệm Vụ Phụ chỉnh đốn nội tộc Mễ Đặc Nhĩ (thưởng *Xích Dương Dược Đỉnh*), và mở **Easter Egg Khách Điếm Mỹ Đỗ Toa / Thải Lân**.
+14. **Nạp Lan Vương Phủ (`ch04_nap_lan_vuong_phu`)**: Dùng Thanh Liên Hỏa rút Lạc Độc cứu Nạp Lan Kiệt -> nhận *Thất Huyễn Thanh Linh Tiên* & lĩnh ngộ Đấu Kỹ **`Lạc Độc Ám Chưởng`** (`-30% DEF` 10s + Độc Nổ Lan).
+15. **Quảng Trường Đại Hội Luyện Đan Sư (`ch04_quang_truong_dan_hoi`)**: Lật tẩy đánh bại **[BOSS] Viêm Lợi (Xuất Vân)** & luyện thành công **`Tam Văn Thanh Linh Đan`** trong `[L]` đăng quang **Quán Quân Đan Hội Gia Mã**!
+16. **Thiên Thang 999 Bậc (`ch04_thien_thang_van_lam`)** & **Đỉnh Vân Lam Sơn (`ch04_dinh_van_lam_son`)**: Xé mặt nạ *Nham Kiêu* chấn động toàn Đế Quốc, 1v1 đánh bại **[BOSS] Nạp Lan Yên Nhiên** trả tờ Hưu Thư, phá **[BOSS] Vân Yên Phúc Nhật Đại Trận** triệu hồi **Đấu Tông Mỹ Đỗ Toa** giáng thế (nâng cấp **`[T]` Đấu Tông Mỹ Đỗ Toa Hộ Pháp**!), và **Đệ Nhị Thượng Vân Lam** nổ xác **[BOSS] Đại Trưởng Lão Vân Lăng** dưới áp lực Đấu Tông Vân Sơn!
+17. **Phế Tích Tiêu Gia (`ch04_phe_tich_tieu_gia`)**: Điều tra **Tàn Dư Hắc Vụ Xiềng Xích (Manh Mối Hồn Điện)**, làm Nhiệm Vụ Phụ cùng Tiêu Lệ mở nội tại vĩnh viễn **`Tiêu Tộc Nộ Huyết` (+15% ATK vs Vân Lam & Hồn Điện)**.
+18. **Rừng Phong Tỏa & Biên Ải Trấn Quỷ Quan (`ch04_rung_phong_toa`)**: Lăng Ảnh cản chân Đấu Tông Vân Sơn (Kỳ Ngộ Ẩn từ Chương 01 trao **`Kim Viêm Hộ Hồn Ngọc`** tự động hồi sinh 1 lần 50% HP!), phá vòng vây **[BOSS] Hư Ảnh Đấu Tông Vân Sơn**, đoạn tình **Vân Vận** ở Hẻm Núi Lá Đỏ & lập **Lời Thề Thệ Diệt Vân Lam** khép lại Quyển I!
 
 ---
 

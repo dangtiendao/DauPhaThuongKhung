@@ -981,12 +981,12 @@
         },
         {
           "id": "to_ch04_de_do_preview",
-          "label": "Cổng Đông -> [CHƯƠNG 04] Đế Đô & Vân Lam Sơn",
+          "label": "Cổng Đông -> [CHƯƠNG 04] Diêm Thành (Mặc Gia Trang) & Đế Đô",
           "pos": [1510, 512],
-          "target_map": "ch01_tieu_gia",
-          "target_spawn": [340, 520],
-          "require_flag": "ch04_unlocked_future",
-          "locked_hint": "Chúc mừng phá đảo trọn vẹn Chương 01 – 03 và khai sinh Phật Nộ Hỏa Liên [F]! Chương 04 (Đế Đô Gia Mã & Ước Hẹn 3 Năm Vân Lam Sơn) sẽ mở tiếp theo!"
+          "target_map": "ch04_mac_gia_trang",
+          "target_spawn": [195, 560],
+          "require_flag": "ch03_completed",
+          "locked_hint": "Hãy hoàn tất Nghi Thức Thôn Phệ #19 Thanh Liên Địa Tâm Hỏa cùng Dược Lão tại Ốc Đảo Diêm Lệ trước khi tiến sang Chương 04!"
         }
       ]
     }

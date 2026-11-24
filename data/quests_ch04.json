@@ -1,0 +1,290 @@
+{
+  "version": "1.0",
+  "chapter_title": "Chương 04 — Đế Đô Phong Vân & Ước Hẹn Ba Năm Vân Lam Sơn",
+  "quests": [
+    {
+      "id": "q22_dot_pha_dai_dau_su",
+      "title": "22. [CHƯƠNG 04] Đấu Khí Hóa Tinh — Đột Phá Đại Đấu Sư!",
+      "objective": "Dùng [Phá Chướng Đan] (hoặc luyện tại [L]) rồi bấm [B] Đột Phá lên Nhất Tinh Đại Đấu Sư mở khóa Đấu Khí Khải Giáp & Ngoại Phóng!",
+      "type": "reach_realm",
+      "target_realm_index": 4,
+      "target_count": 1,
+      "reward_exp": 3200,
+      "reward_gold": 1200,
+      "reward_items": { "herb_sa_chi_man_da_la": 2, "pill_pha_ach_dan": 1 },
+      "intro_log": "Dược Lão: 'Khá lắm đồ nhi! Hỏa lực Thanh Liên đã đẩy Đấu Khí lên Đỉnh Phong Đấu Sư — hãy bấm [B] đột phá ĐẠI ĐẤU SƯ mở khóa Đấu Khí Khải Giáp & Kiếm Khí Ngoại Phóng, rồi sang Diêm Thành cứu Thanh Lân!'",
+      "waypoint": [
+        { "default": true, "kind": "breakthrough_ready", "pill_id": "pill_pha_chuong_dan", "map": "ch03_oc_dao_diem_le", "pos": [1325, 512] }
+      ]
+    },
+    {
+      "id": "q23_mac_gia_pha_ach",
+      "title": "23. Huyết Tẩy Mặc Gia Trang — Song Sắc Hỏa Liên & Giấc Ngủ Dược Lão",
+      "objective": "Qua Cổng Đông sang Diêm Thành giải ấn Hải Ba Đông [V], cứu Thanh Lân ở Địa Lao, nổ xác [BOSS] Mặc Thừa rồi tiễn biệt Dược Lão [V]!",
+      "type": "story_flag",
+      "flag_name": "ch04_mac_gia_done",
+      "target_count": 1,
+      "reward_exp": 6500,
+      "reward_gold": 2200,
+      "reward_items": { "pill_bang_tam_dan": 2, "pill_thanh_lien_tu": 2 },
+      "intro_log": "Tin dữ từ Tiêu Đỉnh: Thanh Lân đã bị đại trưởng lão Mặc Thừa (Diêm Thành) bắt cóc mổ cướp Bích Xà Tam Hoa Đồng! Mau qua Cổng Đông Ốc Đảo tới Mặc Gia Trang!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch04_pha_ach_done" }, "kind": "npc", "target": "ch04_hai_ba_dong_mac_gia", "map": "ch04_mac_gia_trang" },
+        { "when": { "missing_flag": "ch04_rescued_thanh_lan" }, "kind": "npc", "target": "ch04_thanh_lan_rescue", "map": "ch04_mac_gia_trang" },
+        { "when": { "missing_flag": "ch04_killed_mac_thua" }, "kind": "boss", "target": "mac_thua_boss", "map": "ch04_mac_gia_trang" },
+        { "default": true, "kind": "npc", "target": "ch04_duoc_lao_sleep", "map": "ch04_mac_gia_trang" }
+      ]
+    },
+    {
+      "id": "q24_de_do_nham_kieu",
+      "title": "24. Gia Mã Thánh Thành — Hóa Danh 'Nham Kiêu' & Dằn Mặt Mộc Chiến",
+      "objective": "Vào Tổng Bộ Mễ Đặc Nhĩ gặp Nhã Phi [V] nhận Mặt Nạ Dịch Dung 'Nham Kiêu', sau đó hạ [MINI-BOSS] Mộc Chiến ngay tại sảnh!",
+      "type": "story_flag",
+      "flag_name": "ch04_beat_moc_chien",
+      "target_count": 1,
+      "reward_exp": 5800,
+      "reward_gold": 2000,
+      "reward_items": { "herb_sa_chi_man_da_la": 2, "core_hoa_3": 1 },
+      "intro_log": "Tiêu Viêm (vuốt chiếc nhẫn đen im lìm): 'Sư phụ cứ yên tâm nghỉ ngơi... Con sẽ tự mình bước vào Gia Mã Thánh Thành gặp Nhã Phi trước ngày Ước Hẹn!'",
+      "waypoint": [
+        { "when": { "missing_flag": "ch04_nham_kieu_mask" }, "kind": "npc", "target": "ch04_nha_phi_de_do", "map": "ch04_gia_ma_de_do" },
+        { "default": true, "kind": "boss", "target": "moc_chien_boss", "map": "ch04_gia_ma_de_do" }
+      ]
+    },
+    {
+      "id": "q25_nap_lan_khu_doc",
+      "title": "25. Nạp Lan Vương Phủ — Khu Lạc Độc Lấy Thất Huyễn Thanh Linh Tiên",
+      "objective": "Qua Cổng Bắc vào Nạp Lan Vương Phủ gặp Nguyên Soái Nạp Lan Kiệt [V] rút Lạc Độc (nhận Thất Huyễn Tiên & học [Lạc Độc Ám Chưởng]!).",
+      "type": "story_flag",
+      "flag_name": "ch04_cured_nap_lan_kiet",
+      "target_count": 1,
+      "reward_exp": 6800,
+      "reward_gold": 2400,
+      "reward_items": { "herb_that_huyen_tien": 1, "core_phong_4": 1 },
+      "intro_log": "Nhã Phi: 'Nạp Lan Vương Phủ ở phía Bắc đang treo thưởng bảo dược [Thất Huyễn Thanh Linh Tiên] cho ai cứu được Nạp Lan Kiệt! Hãy dùng hóa danh Nham Kiêu bước vào xem sao!'",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch04_nap_lan_kiet", "map": "ch04_nap_lan_vuong_phu" }
+      ]
+    },
+    {
+      "id": "q26_dan_hoi_gia_ma",
+      "title": "26. Đỉnh Cao Đại Hội Luyện Đan Sư — Tam Văn Thanh Linh Đan!",
+      "objective": "Xuống Quảng Trường Đan Hội (Nam Đế Đô) gặp Hội Trưởng Pháp Mã [V], hạ [BOSS] Viêm Lợi rồi luyện [Tam Văn Thanh Linh Đan] trong [L]!",
+      "type": "story_flag",
+      "flag_name": "ch04_dan_hoi_champion",
+      "target_count": 1,
+      "reward_exp": 9500,
+      "reward_gold": 3800,
+      "reward_items": { "pill_tam_van_thanh_linh": 1, "pill_bang_tam_dan": 2 },
+      "intro_log": "Tiêu Viêm: 'Thất Huyễn Thanh Linh Tiên đã ổn định tàn hồn sư phụ (và còn đánh thức bản thể Mỹ Đỗ Toa ở Khách Điếm Đế Đô!). Giờ xuống Quảng Trường Đan Hội đoạt Quán Quân & Dung Linh Đan Phương!'",
+      "waypoint": [
+        { "when": { "missing_flag": "ch04_dan_hoi_started" }, "kind": "npc", "target": "ch04_phap_ma", "map": "ch04_quang_truong_dan_hoi" },
+        { "when": { "missing_flag": "ch04_beat_viem_loi" }, "kind": "boss", "target": "viem_loi_boss", "map": "ch04_quang_truong_dan_hoi" },
+        { "default": true, "kind": "npc", "target": "ch04_phap_ma", "map": "ch04_quang_truong_dan_hoi" }
+      ]
+    },
+    {
+      "id": "q27_uoc_hen_ba_nam",
+      "title": "27. Đệ Nhất Thượng Vân Lam Sơn — Ước Hẹn Ba Năm & Trả Hưu Thư!",
+      "objective": "Vượt Thiên Thang 999 Bậc lên Đỉnh Vân Lam Sơn, gặp Nạp Lan Yên Nhiên [V] xé mặt nạ Nham Kiêu, đánh bại nàng 1v1 rồi trả Hưu Thư [V]!",
+      "type": "story_flag",
+      "flag_name": "ch04_van_yen_started",
+      "target_count": 1,
+      "reward_exp": 12000,
+      "reward_gold": 4200,
+      "reward_items": { "pill_bang_tam_dan": 2, "pill_thanh_lien_tu": 3 },
+      "intro_log": "Bình minh ngày Ước Hẹn Ba Năm đã điểm! Quán Quân Đan Hội 18 tuổi vác Huyền Trọng Xích tiến về Cổng Đông — Thiên Thang 999 Bậc Vân Lam Sơn!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch04_uoc_hen_revealed" }, "kind": "npc", "target": "ch04_uoc_hen_reveal", "map": "ch04_dinh_van_lam_son" },
+        { "when": { "missing_flag": "ch04_beat_yen_nhien" }, "kind": "boss", "target": "nap_lan_yen_nhien_boss", "map": "ch04_dinh_van_lam_son" },
+        { "default": true, "kind": "npc", "target": "ch04_return_huu_thu", "map": "ch04_dinh_van_lam_son" }
+      ]
+    },
+    {
+      "id": "q28_van_yen_nu_vuong",
+      "title": "28. Phá Vân Yên Phúc Nhật Đại Trận — Đấu Tông Mỹ Đỗ Toa Giáng Thế!",
+      "objective": "Đánh phá [BOSS] Vân Yên Phúc Nhật Đại Trận của Đại Trưởng Lão Vân Lăng, sau đó chứng kiến Đấu Tông Mỹ Đỗ Toa đạp hư không phá trận [V]!",
+      "type": "story_flag",
+      "flag_name": "ch04_medusa_saved",
+      "target_count": 1,
+      "reward_exp": 11000,
+      "reward_gold": 3600,
+      "reward_items": { "pill_thanh_lien_tu": 2 },
+      "intro_log": "Cát Diệp tố cáo Hắc Bào Mặc Gia! Đại Trưởng Lão Vân Lăng trở mặt khởi động Vân Yên Phúc Nhật Đại Trận phong tỏa Vân Lam Sơn — đánh vỡ mắt trận ngay!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch04_beat_van_yen_array" }, "kind": "boss", "target": "van_yen_dai_tran_boss", "map": "ch04_dinh_van_lam_son" },
+        { "default": true, "kind": "npc", "target": "ch04_medusa_break_array", "map": "ch04_dinh_van_lam_son" }
+      ]
+    },
+    {
+      "id": "q29_bi_kich_tieu_gia",
+      "title": "29. Bi Kịch Phế Tích Tiêu Gia — Dấu Vết Hắc Vụ Hồn Điện!",
+      "objective": "Bay đêm qua Cổng Tây về Phế Tích Tiêu Gia thăm Đại ca Tiêu Đỉnh, dùng SOUL điều tra [Tàn Dư Hắc Vụ Xiềng Xích] & nuốt Tam Văn Thanh Linh Đan bạo cấp!",
+      "type": "story_flag",
+      "flag_name": "ch04_second_van_lam_ready",
+      "target_count": 1,
+      "reward_exp": 10000,
+      "reward_gold": 3000,
+      "reward_items": { "pill_bang_tam_dan": 3, "pill_thanh_lien_tu": 3 },
+      "intro_log": "Mật báo Mễ Đặc Nhĩ: Vân Lăng đã lén phái người tập kích Ô Thản Thành! Phụ thân Tiêu Chiến mất tích, Tiêu Đỉnh trọng thương — bay về Phế Tích Tiêu Gia ngay lập tức!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch04_met_tieu_dinh_ruins" }, "kind": "npc", "target": "ch04_tieu_dinh_ruins", "map": "ch04_phe_tich_tieu_gia" },
+        { "default": true, "kind": "npc", "target": "ch04_hon_dien_clue", "map": "ch04_phe_tich_tieu_gia" }
+      ]
+    },
+    {
+      "id": "q30_huyet_nhiem_van_lam",
+      "title": "30. Đệ Nhị Thượng Vân Lam Sơn — Nổ Tan Xác Đại Trưởng Lão Vân Lăng!",
+      "objective": "Quay lại Đỉnh Vân Lam Sơn hạ gục [BOSS] Đại Trưởng Lão Vân Lăng dưới áp lực Không Gian Đại Thủ Ấn của Đấu Tông Vân Sơn!",
+      "type": "story_flag",
+      "flag_name": "ch04_killed_van_lang",
+      "target_count": 1,
+      "reward_exp": 16000,
+      "reward_gold": 5500,
+      "reward_items": { "pill_bang_tam_dan": 2, "pill_thanh_lien_tu": 3 },
+      "intro_log": "Tiêu Viêm (hai mắt đỏ ngầu như tu la): 'Vân Lăng lão cẩu! Đụng vào phụ thân ta, hủy nát Tiêu Gia ta — hôm nay dù Đấu Tông Vân Sơn đứng đây, mạng chó ngươi cũng phải đền!'",
+      "waypoint": [
+        { "default": true, "kind": "boss", "target": "van_lang_boss", "map": "ch04_dinh_van_lam_son" }
+      ]
+    },
+    {
+      "id": "q31_tran_quy_quan",
+      "title": "31. [KẾT QUYỂN 01] Đường Máu Đào Vong & Lời Thề Trấn Quỷ Quan!",
+      "objective": "Qua Cổng Đông vào Rừng Phong Tỏa gặp Lăng Ảnh [V], phá vòng vây [BOSS] Đấu Tông Vân Sơn, đoạn tình Vân Vận [V] & lập lời thề tại Trấn Quỷ Quan [V]!",
+      "type": "story_flag",
+      "flag_name": "ch04_completed",
+      "target_count": 1,
+      "reward_exp": 20000,
+      "reward_gold": 8000,
+      "reward_items": { "pill_tam_van_thanh_linh": 1, "pill_bang_tam_dan": 3, "pill_thanh_lien_tu": 3 },
+      "intro_log": "Vân Lăng đã nổ tan xác thành tro bụi! Đấu Tông Vân Sơn nổi giận phong tỏa toàn quốc — mau vượt qua Rừng Phong Tỏa phía Đông tiến tới Biên Ải Trấn Quỷ Quan!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch04_lang_anh_met_escape" }, "kind": "npc", "target": "ch04_lang_anh_escape", "map": "ch04_rung_phong_toa" },
+        { "when": { "missing_flag": "ch04_escaped_van_son" }, "kind": "boss", "target": "van_son_phan_than_boss", "map": "ch04_rung_phong_toa" },
+        { "when": { "missing_flag": "ch04_van_van_farewell_done" }, "kind": "npc", "target": "ch04_van_van_farewell", "map": "ch04_rung_phong_toa" },
+        { "default": true, "kind": "npc", "target": "ch04_tran_quy_quan_oath", "map": "ch04_rung_phong_toa" }
+      ]
+    }
+  ],
+  "enemy_kill_flags": {
+    "mac_thua_boss": { "set_flag": "ch04_killed_mac_thua" },
+    "moc_chien_boss": { "set_flag": "ch04_beat_moc_chien" },
+    "truong_lao_me_dac_nhi": { "set_flag": "ch04_sq_mdn_cleared" },
+    "viem_loi_boss": { "set_flag": "ch04_beat_viem_loi" },
+    "nap_lan_yen_nhien_boss": { "set_flag": "ch04_beat_yen_nhien" },
+    "van_yen_dai_tran_boss": { "set_flag": "ch04_beat_van_yen_array" },
+    "van_lang_boss": { "set_flag": "ch04_killed_van_lang" },
+    "van_son_phan_than_boss": { "set_flag": "ch04_escaped_van_son" }
+  },
+  "flag_effects": {
+    "ch04_pha_ach_done": {
+      "relic": "Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (2/4 Đủ) & Giao Ước Băng Hoàng",
+      "sfx": "breakthrough",
+      "shake": [9.0, 0.35],
+      "banter": "Băng Hoàng Hải Ba Đông phá ấn tái xuất Đấu Hoàng! Cổng Địa Lao giải cứu Thanh Lân & Sân Quyết Chiến Mặc Thừa đã mở!"
+    },
+    "ch04_killed_mac_thua": {
+      "relic": "Thành Tựu: Song Sắc Diệt Quái (Nổ Xác Mặc Thừa)",
+      "sfx": "breakthrough",
+      "shake": [12.0, 0.45],
+      "banter": "SONG SẮC PHẬT NỘ HỎA LIÊN NỔ TAN XÁC QUÁI NHÂN MẶC THỪA! Tàn hồn Dược Lão bỗng mờ đi giữa sân — mau tới gặp sư phụ [V]!"
+    },
+    "ch04_mac_gia_done": {
+      "set_flags": ["ch04_duoc_lao_sleeping"],
+      "reset_duoc_lao_active": true,
+      "affection": { "thanh_lan": 25 },
+      "sfx": "level_up",
+      "banter": "Dược Lão chìm vào giấc ngủ say trong nhẫn đen ([T] tạm khóa theo cốt truyện)! Cổng Đông sang GIA MÃ THÁNH THÀNH (ĐẾ ĐÔ) đã mở!"
+    },
+    "ch04_nham_kieu_mask": {
+      "relic": "Mặt Nạ Dịch Dung Tơ Tằm ('Nham Kiêu')",
+      "sfx": "ui_click",
+      "banter": "Đeo Mặt Nạ Dịch Dung hóa thân 'Nham Kiêu'! Thiếu gia Mộc Chiến vừa xông vào đại sảnh Mễ Đặc Nhĩ — cho hắn một bài học!"
+    },
+    "ch04_beat_moc_chien": {
+      "relic": "Danh Hiệu: Cuồng Khách Đế Đô",
+      "give_gold": 1500,
+      "give_gear": [{ "template": "wpn_chien_phu_thanh_moc", "rarity": "thien", "auto_equip": false }],
+      "sfx": "level_up",
+      "banter": "Đánh gục Mộc Chiến chấn động Hoàng Thành! Cổng Bắc sang NẠP LAN VƯƠNG PHỦ đã mở!"
+    },
+    "ch04_cured_nap_lan_kiet": {
+      "relic": "Thất Huyễn Thanh Linh Tiên & Lạc Độc Ấn",
+      "unlock_skill": { "id": "lac_doc_am_chuong", "slot": "" },
+      "give_items": { "herb_that_huyen_tien": 1 },
+      "sfx": "breakthrough",
+      "banter": "Rút sạch Lạc Độc cho Nạp Lan Kiệt! Nhận [Thất Huyễn Thanh Linh Tiên] + lĩnh ngộ Đấu Kỹ [Lạc Độc Ám Chưởng] (lắp trong [K])! Cổng Nam sang ĐAN HỘI & Khách Điếm Đế Đô đã mở!"
+    },
+    "ch04_beat_viem_loi": {
+      "give_items": { "herb_that_huyen_tien": 1, "herb_sa_chi_man_da_la": 2, "core_phong_4": 1 },
+      "sfx": "level_up",
+      "banter": "Đập tan Tà Hỏa của Viêm Lợi (Xuất Vân)! Pháp Mã mật trao đủ nguyên liệu — hãy mở Lò Đan [L] luyện [Tam Văn Thanh Linh Đan] đăng quang Quán Quân!"
+    },
+    "ch04_dan_hoi_champion": {
+      "relic": "Quán Quân Đan Hội Gia Mã · Lục Phẩm Dung Linh Đan Phương",
+      "give_gear": [{ "template": "arm_phap_bao_truong_lao", "rarity": "thien", "auto_equip": false }],
+      "give_soul": 12,
+      "sfx": "breakthrough",
+      "shake": [10.0, 0.4],
+      "banter": "ĐỘC BỘ ĐAN HỘI! 'Nham Kiêu' 18 tuổi đăng quang Quán Quân Đan Hội Gia Mã! Nhận Pháp Bào Trưởng Lão & mở Cổng Đông lên THIÊN THANG 999 BẬC VÂN LAM SƠN!"
+    },
+    "ch04_uoc_hen_revealed": {
+      "sfx": "boss_roar",
+      "shake": [10.0, 0.35],
+      "banter": "XÉ MẶT NẠ NHAM KIÊU! 'Ô Thản Thành — Tiêu Gia — Tiêu Viêm! Hôm nay lên Vân Lam Sơn ứng ước ba năm!' — Quyết chiến 1v1 Nạp Lan Yên Nhiên!"
+    },
+    "ch04_beat_yen_nhien": {
+      "relic": "Thành Tựu: Mạc Khi Thiếu Niên Cùng! (Ứng Ước 3 Năm)",
+      "sfx": "breakthrough",
+      "banter": "ĐÁNH BẠI THIẾU TÔNG CHỦ NẠP LAN YÊN NHIÊN! Mau tiến lên trả lại Tờ Hưu Thư 3 năm trước [V]!"
+    },
+    "ch04_van_yen_started": {
+      "sfx": "boss_roar",
+      "shake": [11.0, 0.4],
+      "banter": "Đại Trưởng Lão Vân Lăng trở mặt khởi động VÂN YÊN PHÚC NHẬT ĐẠI TRẬN! Đánh phá mắt trận ngay giữa quảng trường!"
+    },
+    "ch04_beat_van_yen_array": {
+      "sfx": "breakthrough",
+      "shake": [12.0, 0.45],
+      "banter": "Cột sáng bảy màu xé toạc bầu trời Vân Lam Sơn — Bản thể ĐẤU TÔNG MỸ ĐỖ TOA giáng thế! Tiến lên gặp Nữ Vương [V]!"
+    },
+    "ch04_medusa_saved": {
+      "relic": "Hộ Pháp Đấu Tông: Mỹ Đỗ Toa ([T] Đấu Tông Giáng Lâm!)",
+      "affection": { "my_do_toa": 25 },
+      "sfx": "breakthrough",
+      "shake": [12.0, 0.5],
+      "banter": "ĐẤU TÔNG MỸ ĐỖ TOA PHÁ TAN VÂN YÊN ĐẠI TRẬN! Mở khóa [T] Mỹ Đỗ Toa Hộ Pháp! Tin dữ từ Ô Thản Thành vừa tới — Cổng Tây về PHẾ TÍCH TIÊU GIA đã mở!"
+    },
+    "ch04_second_van_lam_ready": {
+      "relic": "Tàn Dư Hắc Vụ Xiềng Xích (Manh Mối Hồn Điện)",
+      "set_realm_min": { "realm": 4, "stage": 8 },
+      "sfx": "breakthrough",
+      "shake": [11.0, 0.45],
+      "banter": "Nuốt Tam Văn Thanh Linh Đan bạo tăng thẳng lên ĐẠI ĐẤU SƯ BÁT TINH! Quay lại Đỉnh Vân Lam Sơn bắt Vân Lăng đền mạng!"
+    },
+    "ch04_killed_van_lang": {
+      "relic": "Thành Tựu: Huyết Trả Huyết (Nổ Xác Vân Lăng Trước Đấu Tông!)",
+      "sfx": "breakthrough",
+      "shake": [14.0, 0.55],
+      "banter": "ĐẠI TRƯỞNG LÃO VÂN LĂNG ĐÃ NỔ TAN XÁC THÀNH TRO BỤI! Đấu Tông Vân Sơn nổi giận truy sát — mau lao qua Cổng Đông vào RỪNG PHONG TỎA đào vong!"
+    },
+    "ch04_tieu_toc_no_huyet": {
+      "relic": "Nội Tại Huyết Thống: Tiêu Tộc Nộ Huyết (+15% ATK vs Vân Lam & Hồn Điện)",
+      "sfx": "breakthrough",
+      "banter": "Thề máu cùng Nhị ca Tiêu Lệ giữa tro tàn! Mở khóa vĩnh viễn nội tại [TIÊU TỘC NỘ HUYẾT: +15% Sát Thương vs Vân Lam Tông & Hồn Điện]!"
+    },
+    "ch04_kim_viem_ngoc": {
+      "relic": "Kim Viêm Hộ Hồn Ngọc (Cổ Tộc Huân Nhi — Tự Hồi Sinh 1 Lần 50% HP!)",
+      "affection": { "huan_nhi": 20 },
+      "sfx": "chest_open",
+      "banter": "KỲ NGỘ ẨN! Lăng Ảnh trao mật thư Huân Nhi & [KIM VIÊM HỘ HỒN NGỌC] — tự động hồi sinh 1 lần với 50% HP khi gặp đòn chí mạng!"
+    },
+    "ch04_completed": {
+      "relic": "Hoàn Thành Quyển 01: Thệ Diệt Vân Lam (Mở Đường Hắc Giác Vực!)",
+      "set_realm_min": { "realm": 4, "stage": 9 },
+      "sfx": "breakthrough",
+      "shake": [12.0, 0.5],
+      "banter": "CHÚC MỪNG HOÀN TẤT TRỌN VẸN QUYỂN 01 (CHƯƠNG 01–04)! Tiêu Viêm đạt Đại Đấu Sư 9 Tinh Đỉnh Phong bước qua Trấn Quỷ Quan tiến vào Quyển 02: Hắc Giác Vực!"
+    }
+  }
+}

@@ -953,23 +953,55 @@ func _refresh_moba_dock() -> void:
 				Color("#FFD166")
 			)
 
-	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể
+	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa Đấu Tông Hộ Pháp
 	var btn_t: MobaSlotButton = skill_slots["T"]
-	var t_unl: bool = PlayerData.duoc_lao_assist_unlocked
-	btn_t.set_slot_visual(
-		load("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
-		"PHỤ THỂ" if t_unl else "KHÓA",
-		not t_unl,
-		PlayerData.is_duoc_lao_active,
-		false,
-		Color("#A8DADC")
-	)
-	btn_t.set_tooltip_info(
-		"[T] Cốt Linh Phụ Thể (Dược Lão)" + ("" if t_unl else " — Chưa Mở Khóa"),
-		"Hồi 45s · Duy trì 12s · ATK x2.2 & Cốt Linh Lãnh Hỏa" if t_unl else "Mở khóa khi hạ Boss Chương 01: Gia Liệt Áo",
-		"Dược Lão mượn thân thể Tiêu Viêm xuất chiến trong 12 giây, bùng phát ngọn Cốt Linh Lãnh Hỏa (#11)!" if t_unl else "Hoàn thành trận đánh bại Gia Liệt Áo cuối Chương 01 để mở khóa chiêu này.",
-		Color("#70D6FF") if t_unl else Color("#ADB5BD")
-	)
+	var t_mode: String = PlayerData.get_assist_mode()
+	if t_mode == "medusa_dau_tong":
+		btn_t.set_slot_visual(
+			load("res://assets/sprites/npcs/npc_my_do_toa.png"),
+			"ĐẤU TÔNG",
+			false,
+			PlayerData.is_duoc_lao_active,
+			false,
+			Color("#E0AAFF")
+		)
+		btn_t.set_tooltip_info(
+			"[T] Đấu Tông Mỹ Đỗ Toa Hộ Pháp",
+			"Hồi 45s · Duy trì 12s · ATK x2.45 · SPD +40% · Sóng Không Gian",
+			"Thỏa thuận Phục Linh Tử Đan! Triệu hồi bản thể Đấu Tông Mỹ Đỗ Toa bộc phát sóng xung kích Thất Thải & tăng cường chiến lực cực hạn!",
+			Color("#E0AAFF")
+		)
+	elif t_mode == "sleeping":
+		btn_t.set_slot_visual(
+			load("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
+			"NGỦ SAY",
+			true,
+			false,
+			false,
+			Color("#ADB5BD")
+		)
+		btn_t.set_tooltip_info(
+			"[T] Dược Lão Đang Ngủ Say Trong Nhẫn Đen",
+			"Tạm khóa theo cốt truyện Chương 04 (sau vụ nổ Song Sắc Hỏa Liên tại Mặc Gia)",
+			"Dược Lão đã tiêu hao toàn bộ tàn hồn che chở cho bạn trước Mặc Thừa & Bát Dực Hắc Xà Hoàng! Hãy tự lực chinh phục Đế Đô & Vân Lam Sơn (tới khi Đấu Tông Mỹ Đỗ Toa xuất thế bảo hộ)!",
+			Color("#ADB5BD")
+		)
+	else:
+		var t_unl: bool = (t_mode == "duoc_lao")
+		btn_t.set_slot_visual(
+			load("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
+			"PHỤ THỂ" if t_unl else "KHÓA",
+			not t_unl,
+			PlayerData.is_duoc_lao_active,
+			false,
+			Color("#A8DADC")
+		)
+		btn_t.set_tooltip_info(
+			"[T] Cốt Linh Phụ Thể (Dược Lão)" + ("" if t_unl else " — Chưa Mở Khóa"),
+			"Hồi 45s · Duy trì 12s · ATK x2.2 & Cốt Linh Lãnh Hỏa" if t_unl else "Mở khóa khi hạ Boss Chương 01: Gia Liệt Áo",
+			"Dược Lão mượn thân thể Tiêu Viêm xuất chiến trong 12 giây, bùng phát ngọn Cốt Linh Lãnh Hỏa (#11)!" if t_unl else "Hoàn thành trận đánh bại Gia Liệt Áo cuối Chương 01 để mở khóa chiêu này.",
+			Color("#70D6FF") if t_unl else Color("#ADB5BD")
+		)
 
 	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Tử Vân Dực khi trang bị!)
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped()
@@ -1210,7 +1242,25 @@ func _close_dialogue(run_finish_action: bool) -> void:
 
 
 func _execute_dialogue_action(act: String) -> void:
-	if act.begins_with("flag:"):
+	if act.begins_with("effect:"):
+		var eff_id: String = act.substr(7)
+		var eff: Dictionary = GameDatabase.get_story_effect(eff_id)
+		if not eff.is_empty():
+			var res: Dictionary = PlayerData.execute_story_effect(eff)
+			if bool(res.get("heal_full", false)):
+				_heal_player_full("")
+			var oshop: String = str(res.get("open_shop", ""))
+			if oshop != "":
+				_open_nha_phi_shop()
+			var warp_m: String = str(eff.get("warp_map", ""))
+			if warp_m != "":
+				var w: Node = _find_world()
+				if w != null and w.has_method("load_map"):
+					var wsp_arr: Array = eff.get("warp_spawn", [])
+					var wsp: Vector2 = Vector2(float(wsp_arr[0]), float(wsp_arr[1])) if wsp_arr.size() >= 2 else Vector2.ZERO
+					w.load_map(warp_m, wsp, true)
+		return
+	elif act.begins_with("flag:"):
 		var flag_id: String = act.substr(5)
 		PlayerData.set_story_flag(flag_id)
 		if flag_id == "met_tieu_y_tien" or flag_id == "met_tieu_dinh_le" or flag_id == "pact_hai_ba_dong":
@@ -1356,9 +1406,9 @@ func _refresh_quest_ui() -> void:
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		if PlayerData.is_demo_mode:
-			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ ★\nBấm [M] Dịch Chuyển Nhanh 11 Map, thử [F] Hỏa Liên, [H] 28 Hỏa & [K] 10 Đấu Kỹ!"
+			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ ★\nBấm [M] Dịch Chuyển Nhanh %d Map (Ch01–Ch04), thử [F] Hỏa Liên, [H] 28 Hỏa & [K] Đấu Kỹ!" % GameDatabase.maps_ordered.size()
 		else:
-			quest_lbl.text = "★ HOÀN TẤT CHƯƠNG 01–03 (QUYỂN I) ★\nTự do săn Boss, thử [F] Hỏa Liên, mở Rương ẩn & chuẩn bị Ước Hẹn 3 Năm!"
+			quest_lbl.text = "★ HOÀN TẤT QUYỂN I (CHƯƠNG 01–04) ★\nTự do săn Boss, hoàn thành Nhiệm Vụ Phụ & chuẩn bị tiến vào Quyển II: Hắc Giác Vực!"
 	else:
 		var goal: int = int(q.get("target_count", 1))
 		quest_lbl.text = "★ %s (%d/%d)\n%s" % [
@@ -1533,7 +1583,7 @@ func _build_pause_menu_content(vbox: VBoxContainer) -> void:
 		_close_modal()
 		_sync_world_after_load()
 		_refresh_all()
-		_on_banter("ĐÃ BẬT CHẾ ĐỘ DEMO FULL (Ô 3)! Bấm [M] Dịch Chuyển Nhanh 11 bản đồ, bấm [F] thử Phật Nộ Hỏa Liên 4 Hỏa!")
+		_on_banter("ĐÃ BẬT CHẾ ĐỘ DEMO FULL (Ô 3)! Bấm [M] Dịch Chuyển Nhanh %d bản đồ (Ch01–Ch04), bấm [F] thử Phật Nộ Hỏa Liên 4 Hỏa!" % GameDatabase.maps_ordered.size())
 	)
 	top_btns.add_child(demo_b)
 
@@ -1644,7 +1694,8 @@ func _build_pause_menu_content(vbox: VBoxContainer) -> void:
 # [M] BẢN ĐỒ THẾ GIỚI (11 BẢN ĐỒ CH.01–03) & HỒNG NHAN (BUFF · TẶNG QUÀ)
 # =========================================================
 func _build_world_map_content(vbox: VBoxContainer) -> void:
-	modal_title_lbl.text = "[M] BẢN ĐỒ THẾ GIỚI (11 KHU VỰC) • HỒNG NHAN (BUFF & TẶNG QUÀ) • KỲ VẬT"
+	var total_maps: int = GameDatabase.maps_ordered.size()
+	modal_title_lbl.text = "[M] BẢN ĐỒ THẾ GIỚI (%d KHU VỰC) • HỒNG NHAN (BUFF & TẶNG QUÀ) • KỲ VẬT" % total_maps
 	vbox.add_theme_constant_override("separation", 6)
 
 	# Thanh chuyển tab gọn gàng giữa Bản Đồ Thế Giới & Hồng Nhan Tri Kỷ
@@ -1662,7 +1713,7 @@ func _build_world_map_content(vbox: VBoxContainer) -> void:
 				unclaimed_gifts += 1
 
 	var tab_maps_btn := Button.new()
-	tab_maps_btn.text = "★ Bản Đồ Thế Giới (11 Khu Vực)" if world_map_tab == "maps" else "Bản Đồ Thế Giới (11 Khu Vực)"
+	tab_maps_btn.text = ("★ " if world_map_tab == "maps" else "") + "Bản Đồ Thế Giới (%d Khu Vực)" % total_maps
 	tab_maps_btn.disabled = (world_map_tab == "maps")
 	tab_maps_btn.add_theme_font_size_override("font_size", 13)
 	tab_maps_btn.pressed.connect(func() -> void:
@@ -1714,23 +1765,16 @@ func _build_world_map_content(vbox: VBoxContainer) -> void:
 	rl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lv.add_child(rl)
 
-	var order: Array = [
-		"ch01_tieu_gia",
-		"ch01_hau_son",
-		"ch01_o_than_thanh",
-		"ch02_ma_thu_son_mach",
-		"ch02_huyen_nhai_dong",
-		"ch02_noi_vi_su_vuong",
-		"ch02_thac_nuoc_muc_xa",
-		"ch03_thach_mac_thanh",
-		"ch03_dia_huyet_dung_nham",
-		"ch03_thanh_thanh_xa_nhan",
-		"ch03_oc_dao_diem_le"
-	]
-	for mid in order:
+	var last_chapter: String = ""
+	for mid in GameDatabase.maps_ordered:
 		var m_def: Dictionary = GameDatabase.get_map_def(str(mid))
 		if m_def.is_empty():
 			continue
+		var ch_lbl: String = str(m_def.get("chapter", ""))
+		if ch_lbl != "" and ch_lbl != last_chapter:
+			last_chapter = ch_lbl
+			var ch_hdr := _make_label("═══ %s ═══" % ch_lbl.to_upper(), 13, Color("#70D6FF"))
+			vbox.add_child(ch_hdr)
 		var is_here: bool = (PlayerData.current_map_id == str(mid))
 		var ch_list: Array = m_def.get("chests", [])
 		var opened_cnt: int = 0
@@ -2400,6 +2444,56 @@ func _build_nha_phi_shop_content(vbox: VBoxContainer) -> void:
 			"color": "#4CC9F0"
 		}
 	]
+
+	# Hàng cao cấp tại Tổng Bộ Mễ Đặc Nhĩ (mở từ cuối Chương 03 / Chương 04 Đế Đô!)
+	if PlayerData.has_flag("ch03_completed") or PlayerData.is_demo_mode:
+		catalog.append_array([
+			{
+				"kind": "item",
+				"id": "herb_sa_chi_man_da_la",
+				"name": "[Đế Đô VIP] Sa Chi Mạn Đà La x1",
+				"desc": "Dược liệu quý luyện Phá Ách Đan (giải phong ấn Hải Ba Đông), Băng Tâm Đan & Phá Chướng Đan!",
+				"price": 140,
+				"icon": "res://assets/sprites/pickups/herb_item.png",
+				"color": "#FFD166"
+			},
+			{
+				"kind": "item",
+				"id": "core_hoa_3",
+				"name": "[Đế Đô VIP] Viêm Xà Ma Hạch (Cấp 3) x1",
+				"desc": "Ma Hạch cấp 3 dùng luyện Phá Chướng Đan & Tam Văn Thanh Linh Đan.",
+				"price": 180,
+				"icon": "res://assets/sprites/pickups/monster_core.png",
+				"color": "#FF4D6D"
+			},
+			{
+				"kind": "item",
+				"id": "core_phong_4",
+				"name": "[Đế Đô VIP] Phong Ma Hạch (Cấp 4) x1",
+				"desc": "Tinh hạch Ma Thú Cấp 4 nguyên liệu đúc Tam Văn Thanh Linh Đan tại Đại Hội Luyện Đan!",
+				"price": 240,
+				"icon": "res://assets/sprites/pickups/monster_core.png",
+				"color": "#72EFDD"
+			},
+			{
+				"kind": "item",
+				"id": "pill_bang_tam_dan",
+				"name": "[Đế Đô VIP] Băng Tâm Đan (Tứ Phẩm) x1",
+				"desc": "Hồi ngay +185 HP! Cực kỳ hữu ích khi đánh Boss Đế Đô & Vân Lam Sơn.",
+				"price": 120,
+				"icon": "res://assets/sprites/icons/pill_hp_red.png",
+				"color": "#70D6FF"
+			},
+			{
+				"kind": "item",
+				"id": "pill_thanh_lien_tu",
+				"name": "[Đế Đô VIP] Hạt Thanh Liên Tử x1",
+				"desc": "Hồi ngay +140 Đấu Khí (QI) — xả liên hoàn Phật Nộ Hỏa Liên!",
+				"price": 120,
+				"icon": "res://assets/sprites/icons/pill_qi_blue.png",
+				"color": "#2EC4B6"
+			}
+		])
 
 	for entry in catalog:
 		var item_d: Dictionary = entry
