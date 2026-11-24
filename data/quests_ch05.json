@@ -1,0 +1,213 @@
+{
+  "version": "1.0",
+  "chapter_title": "Chương 05 — Hắc Giác Vực & Ngoại Viện Già Nam (Quyển II)",
+  "quests": [
+    {
+      "id": "q32_ch05_dot_pha_dau_linh",
+      "title": "32. [CHƯƠNG 05] Đấu Khí Ngưng Vật — Đột Phá Đấu Linh!",
+      "objective": "Dùng [Tam Văn Thanh Linh Đan] rồi bấm [B] Đột Phá lên Nhất Tinh Đấu Linh mở khóa Đấu Khí Ngưng Vật (+20% tầm đánh), sau đó qua Cổng Đông Trấn Quỷ Quan vào Hẻm Núi Hắc Phong!",
+      "type": "reach_realm",
+      "target_realm_index": 5,
+      "target_count": 1,
+      "reward_exp": 8500,
+      "reward_gold": 2800,
+      "reward_items": { "herb_huyet_tinh_thao": 2, "pill_huyet_ngung_dan": 2 },
+      "intro_log": "Lời thề Trấn Quỷ Quan đã vang vọng trời đất! Đại Đấu Sư Cửu Tinh Đỉnh Phong — hãy dùng [Tam Văn Thanh Linh Đan] bấm [B] đột phá ĐẤU LINH rồi bước qua Cổng Đông tiến vào Quyển II: Hắc Giác Vực!",
+      "waypoint": [
+        { "default": true, "kind": "breakthrough_ready", "pill_id": "pill_tam_van_thanh_linh", "map": "ch05_hem_nui_hac_phong", "pos": [430, 455] }
+      ]
+    },
+    {
+      "id": "q33_ch05_hem_nui_hac_phong",
+      "title": "33. Hẻm Núi Hắc Phong — Phá Phục Kích Truy Binh Vân Lam",
+      "objective": "Bước vào Hẻm Núi Hắc Phong gặp Ám Vệ Lăng Ảnh [V], phá trận Pháo Kích Vân Lam và trảm [BOSS] Trưởng Lão Vân Phàn (Đấu Linh 7 Tinh)!",
+      "type": "story_flag",
+      "flag_name": "ch05_killed_van_phan",
+      "target_count": 1,
+      "reward_exp": 12000,
+      "reward_gold": 3800,
+      "reward_items": { "herb_huyet_tinh_thao": 3, "core_loi_5": 1 },
+      "intro_log": "Đấu Khí Ngưng Vật đã thành! Nhưng đội truy sát tinh nhuệ của Vân Lam Tông do Trưởng Lão Vân Phàn dẫn đầu đã mai phục ngay Hẻm Núi Hắc Phong — giết sạch mở đường máu vào Hắc Giác Vực!",
+      "waypoint": [
+        { "default": true, "kind": "boss", "target": "van_phan_boss", "map": "ch05_hem_nui_hac_phong" }
+      ]
+    },
+    {
+      "id": "q34_ch05_rung_dem_huyet_vu",
+      "title": "34. Rừng Đêm Huyết Vụ — Trảm Phạm Lăng Đoạt Tam Thiên Lôi Động!",
+      "objective": "Qua Cổng Đông vào Rừng Đêm Huyết Vụ, đập tan thích khách Độn Thổ Huyết Tông và trảm [BOSS] Phạm Lăng đoạt Địa Giai Thân Pháp [Tam Thiên Lôi Động]!",
+      "type": "story_flag",
+      "flag_name": "ch05_killed_pham_lang",
+      "target_count": 1,
+      "reward_exp": 15000,
+      "reward_gold": 4800,
+      "reward_items": { "core_huyet_5": 1, "pill_huyet_ngung_dan": 2 },
+      "intro_log": "Huyết khí nồng nặc phía Đông! Thiếu Tông Chủ Huyết Tông Phạm Lăng đang truy lùng quyển trục Phong Lôi Các giữa Rừng Đêm Huyết Vụ — hạ gục hắn cướp trọn bí tịch [Tam Thiên Lôi Động]!",
+      "waypoint": [
+        { "default": true, "kind": "boss", "target": "pham_lang_boss", "map": "ch05_rung_dem_huyet_vu" }
+      ]
+    },
+    {
+      "id": "q35_ch05_hac_an_dau_gia",
+      "title": "35. Hắc Ấn Thành — Dược Lão Tái Tỉnh & Đấu Giá Bát Phiến Môn",
+      "objective": "Tiến vào Hắc Ấn Thành bái kiến Dược Lão vừa tỉnh giấc [V], rồi tới Đại Đấu Giá Trường Bát Phiến Môn [V] đoạt Mảnh Tàn Đồ #3 & Âm Dương Huyền Long Đan!",
+      "type": "story_flag",
+      "flag_name": "ch05_auction_done",
+      "target_count": 1,
+      "reward_exp": 14000,
+      "reward_gold": 5500,
+      "reward_items": { "herb_huyet_tinh_thao": 3, "pill_huyet_ngung_dan": 2 },
+      "intro_log": "Chiếc nhẫn đen bỗng phát sáng rực rỡ — Dược Lão đã thức tỉnh nhờ Thất Huyễn Thanh Linh Tiên! Mau tiến vào Hắc Ấn Thành dự Đại Đấu Giá Trường Bát Phiến Môn đoạt Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa #3!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch05_duoc_lao_awakened_ch05" }, "kind": "npc", "target": "ch05_duoc_lao_hac_an", "map": "ch05_hac_an_thanh" },
+        { "default": true, "kind": "npc", "target": "ch05_bat_phien_auctioneer", "map": "ch05_hac_an_thanh" }
+      ]
+    },
+    {
+      "id": "q36_ch05_hoa_binh_huan_nhi",
+      "title": "36. Hòa Bình Trấn -> Ngoại Viện Già Nam — Hội Ngộ Tiêu Huân Nhi!",
+      "objective": "Vượt Hòa Bình Trấn tiến vào Ngoại Viện Học Viện Già Nam, hội ngộ [Tiêu Huân Nhi] [V] sau 2 năm xa cách để mở Đồng Hành #4 [G] & bí kỹ [Đế Ấn Quyết]!",
+      "type": "story_flag",
+      "flag_name": "ch05_huan_nhi_reunited",
+      "target_count": 1,
+      "reward_exp": 15500,
+      "reward_gold": 4800,
+      "reward_items": { "pill_huyet_ngung_dan": 2, "pill_thanh_lien_tu": 3 },
+      "intro_log": "Mảnh Tàn Đồ #3 (3/4) & Âm Dương Huyền Long Đan đã vào Nạp Giới! Rời khỏi chốn chém giết Hắc Ấn Thành, tiến qua Hòa Bình Trấn thẳng tới Ngoại Viện Học Viện Già Nam gặp Huân Nhi!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch05_huan_nhi_reunion", "map": "ch05_ngoai_vien_gia_nam" }
+      ]
+    },
+    {
+      "id": "q37_ch05_ty_thi_ngo_hao",
+      "title": "37. Tuyển Chọn Nội Viện Top 5 — Quyết Đấu Tu La Huyết Kiếm Ngô Hạo",
+      "objective": "Bước lên Lôi Đài Ngoại Viện Già Nam tỷ thí đánh bại [TỶ THÍ TOP 5] Tu La Huyết Kiếm Ngô Hạo để giành quyền bước vào Tàng Thư Các!",
+      "type": "story_flag",
+      "flag_name": "ch05_beat_ngo_hao",
+      "target_count": 1,
+      "reward_exp": 18000,
+      "reward_gold": 6000,
+      "reward_items": { "core_huyet_5": 1, "herb_huyet_tinh_thao": 3 },
+      "intro_log": "Cuộc thi Tuyển Chọn Nội Viện Top 5 khai màn! Đội trưởng Chấp Pháp Đội — Tu La Huyết Kiếm Ngô Hạo — đang vung Huyết Trùng Kiếm đợi bạn trên Lôi Đài Ngoại Viện!",
+      "waypoint": [
+        { "default": true, "kind": "boss", "target": "ngo_hao_boss", "map": "ch05_ngoai_vien_gia_nam" }
+      ]
+    },
+    {
+      "id": "q38_ch05_tang_thu_cac",
+      "title": "38. Tàng Thư Các Ngoại Viện — Lĩnh Ngộ Sư Hổ Toái Kim Ngâm",
+      "objective": "Tiến lên Tàng Thư Các phía Bắc Ngoại Viện gặp Phó Viện Trưởng Hổ Càn [V] nhận phần thưởng Top 5: Âm Ba Đấu Kỹ [Sư Hổ Toái Kim Ngâm]!",
+      "type": "story_flag",
+      "flag_name": "ch05_got_su_ho",
+      "target_count": 1,
+      "reward_exp": 16000,
+      "reward_gold": 5000,
+      "reward_items": { "pill_huyet_ngung_dan": 3, "pill_thanh_lien_tu": 2 },
+      "intro_log": "Đánh bại Ngô Hạo chấn động toàn Ngoại Viện! Phó Viện Trưởng Hổ Càn đã mở cửa Tàng Thư Các — mau tới gặp ông lĩnh ngộ Âm Ba Đấu Kỹ [Sư Hổ Toái Kim Ngâm]!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch05_ho_can_tang_thu", "map": "ch05_ngoai_vien_gia_nam" }
+      ]
+    },
+    {
+      "id": "q39_ch05_nhap_noi_vien",
+      "title": "39. [KẾT CHƯƠNG 05] Rừng Săn Hỏa Năng — Phản Sát La Hầu & Nhập Nội Viện!",
+      "objective": "Vào Rừng Săn Hỏa Năng gặp Biểu Tỷ Tiêu Ngọc [V], phản sát [BOSS] Thủ Lĩnh Hắc Bạch Quan Sát La Hầu rồi trình Hắc Tinh Thẻ cho Đại Trưởng Lão Tô Thiên [V]!",
+      "type": "story_flag",
+      "flag_name": "ch05_completed",
+      "target_count": 1,
+      "reward_exp": 26000,
+      "reward_gold": 10000,
+      "reward_items": { "pill_dau_linh_dan": 1, "pill_am_duong_huyen_long": 1, "pill_huyet_ngung_dan": 3 },
+      "intro_log": "Cuộc Thi Săn Hỏa Năng chính thức khởi động! Đám lão sinh Nội Viện định cướp sạch Hỏa Năng của tân sinh — hãy lập đội cùng Huân Nhi & Tiêu Ngọc PHẢN SÁT Hắc Bạch Quan Sát La Hầu đoạt ngôi Đệ Nhất Tân Sinh Vương!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch05_hunt_briefed" }, "kind": "npc", "target": "ch05_tieu_ngoc_scout", "map": "ch05_rung_san_hoa_nang" },
+        { "when": { "missing_flag": "ch05_killed_la_hau" }, "kind": "boss", "target": "la_hau_boss", "map": "ch05_rung_san_hoa_nang" },
+        { "default": true, "kind": "npc", "target": "ch05_to_thien_gate", "map": "ch05_rung_san_hoa_nang" }
+      ]
+    }
+  ],
+  "enemy_kill_flags": {
+    "van_phan_boss": { "set_flag": "ch05_killed_van_phan" },
+    "pham_lang_boss": { "set_flag": "ch05_killed_pham_lang" },
+    "ngo_hao_boss": { "set_flag": "ch05_beat_ngo_hao" },
+    "la_hau_boss": { "set_flag": "ch05_killed_la_hau" }
+  },
+  "flag_effects": {
+    "ch05_killed_van_phan": {
+      "relic": "Chiến Tích Hắc Phong: Trảm Trưởng Lão Vân Phàn (Đấu Linh 7 Tinh)",
+      "sfx": "breakthrough",
+      "shake": [11.0, 0.4],
+      "banter": "TRẢM GỤC TRƯỞNG LÃO VÂN PHÀN! Đội truy sát Vân Lam Tông bị xóa sổ tại Hẻm Núi Hắc Phong — Cổng Đông tiến vào RỪNG ĐÊM HUYẾT VỤ đã mở!"
+    },
+    "ch05_killed_pham_lang": {
+      "relic": "Quyển Trục Phong Lôi Các: Tam Thiên Lôi Động (Địa Giai Thân Pháp)",
+      "unlock_skill": { "id": "tam_thien_loi_dong", "slot": "" },
+      "sfx": "thunder_blink",
+      "shake": [12.0, 0.45],
+      "banter": "TRẢM THIẾU TÔNG CHỦ HUYẾT TÔNG PHẠM LĂNG! Đoạt & lĩnh ngộ Địa Giai Thân Pháp [TAM THIÊN LÔI ĐỘNG] (lắp tại [K]) — Cổng Đông vào HẮC ẤN THÀNH đã mở!"
+    },
+    "ch05_duoc_lao_awakened_ch05": {
+      "relic": "Dược Lão Tái Xuất Hắc Giác Vực (+20 SOUL)",
+      "give_soul": 20,
+      "give_items": { "pill_huyet_ngung_dan": 2 },
+      "sfx": "breakthrough",
+      "shake": [9.0, 0.35],
+      "banter": "Sư phụ DƯỢC LÃO đã chính thức thức tỉnh sau giấc ngủ dài! Linh hồn lực tăng vọt +20 SOUL — mau lên Đại Đấu Giá Trường Bát Phiến Môn dự đấu giá!"
+    },
+    "ch05_auction_done": {
+      "relic": "Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (3/4) & Âm Dương Huyền Long Đan",
+      "give_items": { "pill_am_duong_huyen_long": 1 },
+      "give_soul": 15,
+      "sfx": "breakthrough",
+      "shake": [10.0, 0.4],
+      "banter": "ĐOẠT THÀNH CÔNG [MẢNH TÀN ĐỒ TỊNH LIÊN YÊU HỎA #3 (3/4)] & THẤT PHẨM [ÂM DƯƠNG HUYỀN LONG ĐAN]! Cổng Đông sang HÒA BÌNH TRẤN & HỌC VIỆN GIÀ NAM đã mở!"
+    },
+    "ch05_read_mang_thien_xich": {
+      "relic": "Bí Sử Lôi Tôn: Bia Cổ Viện Trưởng Mang Thiên Xích (+15 SOUL)",
+      "give_soul": 15,
+      "give_exp": 3500,
+      "give_items": { "core_loi_5": 1 },
+      "sfx": "radar_ping",
+      "banter": "KỲ NGỘ HÒA BÌNH TRẤN! Lĩnh hội Lôi Ý trên Bia Cổ Viện Trưởng Mang Thiên Xích: +15 SOUL, +3.500 EXP & 1 viên [Lôi Ma Hạch Cấp 5]!"
+    },
+    "ch05_huan_nhi_reunited": {
+      "relic": "Bí Kỹ Cổ Tộc: Đế Ấn Quyết — Khai Sơn Ấn & Đồng Hành #4 Tiêu Huân Nhi",
+      "unlock_companion": { "id": "huan_nhi", "auto_summon": true },
+      "unlock_skill": { "id": "de_an_quyet", "slot": "" },
+      "sfx": "breakthrough",
+      "shake": [10.0, 0.4],
+      "banter": "HỘI NGỘ TIÊU HUÂN NHI TẠI NGOẠI VIỆN GIÀ NAM! Mở khóa Đồng Hành #4 [G] TIÊU HUÂN NHI & Địa Giai Cao Cấp [ĐẾ ẤN QUYẾT — KHAI SƠN ẤN] (lắp tại [K])! Lôi Đài Top 5 Ngô Hạo đã khai chiến!"
+    },
+    "ch05_beat_ngo_hao": {
+      "relic": "Danh Hiệu: Top 5 Ngoại Viện Già Nam (Phá Huyết Kiếm Ngô Hạo)",
+      "sfx": "level_up",
+      "shake": [10.0, 0.35],
+      "banter": "ĐÁNH BẠI TU LA HUYẾT KIẾM NGÔ HẠO! Bước lên Tàng Thư Các phía Bắc gặp Phó Viện Trưởng Hổ Càn [V] lĩnh ngộ [Sư Hổ Toái Kim Ngâm]!"
+    },
+    "ch05_got_su_ho": {
+      "relic": "Tàng Thư Các Bí Tịch: Sư Hổ Toái Kim Ngâm (Âm Ba Công)",
+      "unlock_skill": { "id": "su_ho_toai_kim_ngam", "slot": "" },
+      "give_soul": 18,
+      "sfx": "skill_stun",
+      "shake": [9.0, 0.35],
+      "banter": "LĨNH NGỘ ÂM BA ĐẤU KỸ [SƯ HỔ TOÁI KIM NGÂM] (lắp tại [K]) & +18 SOUL! Cổng Đông vào RỪNG SĂN HỎA NĂNG (Cuộc Thi Nhập Nội Viện) đã mở!"
+    },
+    "ch05_killed_la_hau": {
+      "relic": "Chiến Tích Săn Hỏa Năng: Phản Sát Thủ Lĩnh Hắc Bạch Quan Sát La Hầu",
+      "sfx": "breakthrough",
+      "shake": [13.0, 0.5],
+      "banter": "PHẢN SÁT THÀNH CÔNG THỦ LĨNH LA HẦU! Đoạt sạch 240 ngày Tinh Hỏa Năng của Hắc Bạch Quan Sát — mau tiến tới Sơn Môn Nội Viện gặp Đại Trưởng Lão Tô Thiên [V]!"
+    },
+    "ch05_completed": {
+      "relic": "Đệ Nhất Tân Sinh Vương Già Nam (+5% ATK · 240 Tinh Hỏa Năng · Hỏa Liên Phân Thân)",
+      "unlock_skill": { "id": "hoa_lien_phan_than", "slot": "" },
+      "give_fire_energy": 240,
+      "set_realm_min": { "realm": 5, "stage": 6 },
+      "give_gear": [{ "template": "pend_hac_tinh_the_gia_nam", "rarity": "de", "auto_equip": false }],
+      "affection": { "huan_nhi": 20 },
+      "sfx": "breakthrough",
+      "shake": [14.0, 0.55],
+      "banter": "CHÚC MỪNG HOÀN TẤT CHƯƠNG 05 — ĐỆ NHẤT TÂN SINH VƯƠNG GIÀ NAM! Lĩnh ngộ [Hỏa Liên Phân Thân], nhận +240 Tinh Hỏa Năng, Hắc Tinh Thẻ Đế Phẩm & đột phá ĐẤU LINH 6 TINH!!"
+    }
+  }
+}

@@ -1,0 +1,328 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 05",
+  "dialogues": {
+    "ch05_hem_nui_guide": {
+      "marker_when": { "missing_flag": "ch05_killed_van_phan" },
+      "branches": [
+        {
+          "when": { "max_realm": 4, "missing_item": "pill_tam_van_thanh_linh" },
+          "sfx": "chest_open",
+          "lines": [
+            "Ám Vệ Lăng Ảnh (ẩn mình sau tảng đá đen giữa Hẻm Núi Hắc Phong): 'Tiêu Viêm thiếu gia! Vượt qua Trấn Quỷ Quan là chính thức bước vào vùng đất hỗn loạn nhất đại lục — Hắc Giác Vực!'",
+            "Lăng Ảnh (lấy ra một viên đan dược tỏa ba vầng sáng): 'Đội truy sát tinh nhuệ Vân Lam Tông do Trưởng Lão Vân Phàn (Đấu Linh 7 Tinh) cầm đầu đã phục kích phía Đông hẻm núi! Thiếu gia lỡ dùng mất Tam Văn Thanh Linh Đan rồi sao? Hãy cầm lấy viên dự phòng này của Cổ Tộc, bấm [B] đột phá Đấu Linh rồi hãy tiến lên!'"
+          ],
+          "action": "effect:eff_ch05_backup_tam_van"
+        },
+        {
+          "when": { "max_realm": 4 },
+          "lines": [
+            "Ám Vệ Lăng Ảnh (chắp tay báo cáo): 'Tiêu Viêm thiếu gia! Phía trước là trận địa Pháo Kích của Trưởng Lão Vân Phàn (Đấu Linh 7 Tinh) cùng đám Chấp Sự Vân Lam Tông!'",
+            "Lăng Ảnh: 'Thiếu gia đã mang sẵn [Tam Văn Thanh Linh Đan] trong Nạp Giới — hãy bấm phím [B] đột phá lên ĐẤU LINH mở khóa Đấu Khí Ngưng Vật (+20% tầm đánh), rồi ta giúp thiếu gia hồi đầy thể lực trước khi khai chiến!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch05_killed_van_phan" },
+          "lines": [
+            "Ám Vệ Lăng Ảnh (ánh mắt tán thưởng trước luồng Đấu Khí Ngưng Vật sắc tím-xanh quanh thân bạn): 'Đột phá Đấu Linh rồi! Khí thế thật kinh người! Trưởng Lão Vân Phàn và đám Pháo Thủ Phong Kiếm đang canh chặt phía Đông — hãy chú ý né các vệt pháo kích tầm xa của chúng rồi trảm gọn Vân Phàn!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Ám Vệ Lăng Ảnh (gật đầu hài lòng): 'Đội truy sát Vân Lam đã bị thiếu gia diệt sạch! Phía Đông là Rừng Đêm Huyết Vụ — địa bàn của Huyết Tông hung tàn, nghe nói chúng vừa cướp được một quyển trục thân pháp hệ Lôi cực hiếm. Ta chỉ có thể hộ tống tới đây, chúc thiếu gia bình an tới Học Viện Già Nam gặp Tiểu thư Huân Nhi!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch05_thai_lan_huyet_vu": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_killed_pham_lang" },
+          "lines": [
+            "Thải Lân (thò đầu khỏi tay áo kêu 'Xì xì~', trong tâm thức vang lên giọng Mỹ Đỗ Toa lạnh lùng): 'Cẩn thận dưới chân ngươi tiểu tử! Đám Huyết Y Đao Khách và Huyết Ảnh Chấp Sự của Huyết Tông có tà công Độn Thổ đột kích bất ngờ từ mặt đất!'",
+            "Mỹ Đỗ Toa: 'Tên Thiếu Tông Chủ Phạm Lăng ở doanh trại phía Đông đang giữ Địa Giai Thân Pháp [Tam Thiên Lôi Động] — giết hắn đoạt quyển trục đó đi, bổn vương hồi đầy HP & Đấu Khí cho ngươi!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Thải Lân vui vẻ quấn quanh cổ tay Tiêu Viêm, giọng Mỹ Đỗ Toa khẽ hừ nhẹ: 'Hừ, lĩnh ngộ [Tam Thiên Lôi Động] nhanh phết đấy! Đừng quên lắp nó vào ô [Q] trong bảng [K], rồi tiến qua Cổng Đông vào Hắc Ấn Thành dự Đại Đấu Giá!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch05_duoc_lao_hac_an": {
+      "marker_when": { "missing_flag": "ch05_duoc_lao_awakened_ch05" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_duoc_lao_awakened_ch05" },
+          "sfx": "breakthrough",
+          "shake": [9.0, 0.35],
+          "lines": [
+            "Giữa phòng tĩnh tu Khách Điếm Hắc Ấn Thành, chiếc Cốt Viêm Giới đen tuyền bỗng tỏa ra luồng sương trắng ấm áp — hư ảnh bạch bào quen thuộc của DƯỢC LÃO từ từ ngưng tụ rõ nét như xưa!",
+            "Dược Lão (cười ha hả xoa đầu đồ đệ): 'Hắc hắc tiểu gia hỏa! Vi sư ngủ một giấc tỉnh dậy, không ngờ con đã một mình đại náo Vân Lam Sơn, vượt Trấn Quỷ Quan, đột phá Đấu Linh lại còn đoạt luôn Tam Thiên Lôi Động rồi!'",
+            "Dược Lão (vuốt râu nghiêm nghị): 'Nhờ Thất Huyễn Thanh Linh Tiên của con, linh hồn vi sư đã khôi phục hơn phân nửa — ta truyền thêm +20 Linh Hồn Lực cho con! Mau lên Đại Đấu Giá Trường Bát Phiến Môn phía Bắc: vi sư cảm ứng được [Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa #3] và thất phẩm kỳ đan [Âm Dương Huyền Long Đan] đang xuất hiện ở đó!!'"
+          ],
+          "action": "effect:eff_ch05_duoc_lao_reawake"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Dược Lão (lơ lửng cười hiền hậu): 'Ở Hắc Ấn Thành này toàn lũ đầu trộm đuôi cướp Hắc Giác Vực, đặc biệt là đám Ác Đồ Hỏa Bạo Cuồng Nhân ở Hẻm Chợ Đen phía Đông — đừng để chúng lao vào tự bạo! Hãy giữ vững mục tiêu: {quest_objective}'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch05_bat_phien_auctioneer": {
+      "marker_when": { "missing_flag": "ch05_auction_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_auction_done" },
+          "lines": [
+            "Chưởng Quỹ Bát Phiến Môn (cúi chào trước bảo tọa đấu giá chật kín cường giả Hắc Giác Vực — Huyết Tông Phạm Lao, Bát Phiến Môn Viên Y, Hắc Khô Lâu Mộ Cốt): 'Hoan nghênh vị Hắc Bào Luyện Đan Sư bí ẩn tới Đại Đấu Giá Trường Bát Phiến Môn!'",
+            "Đêm nay áp trục đấu giá có hai chí bảo kinh thiên: [Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa #3] (không ai biết công dụng!) và Thất Phẩm Kỳ Đan [Âm Dương Huyền Long Đan — Phá Hậu Nhi Lập]!",
+            "Dược Lão (truyền âm gấp): 'Tiểu tử! Con có thể trực tiếp bước vào Phòng Đấu Giá Chiến Thuật đấu trí ra giá cùng các lão quái Hắc Giác Vực, HOẶC thi triển Tam Thiên Lôi Động hành động trong Đêm Mưa Đoạt Bảo đoạt thẳng bảo vật ngay lập tức!'"
+          ],
+          "choices": [
+            { "label": "Mở Phòng Đấu Giá Chiến Thuật Bát Phiến Môn (Đấu trí & Mở đường Hòa Bình Trấn!)", "action": "effect:eff_ch05_open_bat_phien_auction" },
+            { "label": "Đêm Mưa Đoạt Bảo — Nhận Mảnh Tàn Đồ #3 & Âm Dương Huyền Long Đan", "action": "effect:eff_ch05_rain_night_snatch" }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Chưởng Quỹ Bát Phiến Môn (kính cẩn cúi đầu): 'Ngài Hắc Bào Đại Sư thật thần cơ diệu toán! Phòng Đấu Giá Chiến Thuật Bát Phiến Môn luôn mở rộng cửa đón ngài đấu giá bảo vật & ký gửi trang bị!'"
+          ],
+          "choices": [
+            { "label": "Mở Phòng Đấu Giá Chiến Thuật Bát Phiến Môn", "action": "effect:eff_ch05_reopen_auction" },
+            { "label": "Nghỉ ngơi điều tức hồi đầy HP & Đấu Khí", "action": "heal_full" }
+          ]
+        }
+      ]
+    },
+    "ch05_thuong_nhan_gia_ma": {
+      "branches": [
+        {
+          "default": true,
+          "lines": [
+            "Thương Nhân Lữ Hành Gia Mã (hạ giọng vui mừng nhận ra hắc bào quen thuộc): 'Vị công tử này có phải người từ Gia Mã Đế Quốc sang không? Tin mừng lớn đây — Nhã Phi tiểu thư và Băng Hoàng Hải Ba Đông đã hộ tống toàn bộ tộc nhân Tiêu Gia rút lui an toàn khỏi sự truy lùng của Vân Lam Tông rồi!'",
+            "Thương Nhân Gia Mã: 'Bước qua Cổng Đông là tới ngay Ngoại Viện Học Viện Già Nam — đất thánh trăm năm ở Hắc Giác Vực không kẻ ác đồ nào dám quấy nhiễu! Công tử có muốn ghé xem hàng tiếp tế hay nghỉ chân hồi thể lực không?'"
+          ],
+          "choices": [
+            { "label": "Mở Cửa Hàng Tiếp Tế (Mua thảo dược, Ma Hạch & vật phẩm)", "action": "open_shop:nha_phi" },
+            { "label": "Nghỉ chân hồi đầy HP & Đấu Khí", "action": "heal_full" }
+          ]
+        }
+      ]
+    },
+    "ch05_bia_mang_thien_xich": {
+      "marker_when": { "missing_flag": "ch05_read_mang_thien_xich" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_read_mang_thien_xich" },
+          "sfx": "radar_ping",
+          "shake": [7.5, 0.3],
+          "lines": [
+            "Tấm bia đá cổ khắc đầy lôi văn tím sẫm dựng giữa trung tâm Hòa Bình Trấn — tương truyền do Viện Trưởng thần bí của Học Viện Già Nam là [MANG THIÊN XÍCH] (Bán Thánh · Lôi Tôn) lưu lại trước khi vân du Trung Châu!",
+            "Tiêu Viêm đặt tay lên bia đá, dòng chữ vàng cổ kính bỗng rung lên cộng hưởng với Tam Thiên Lôi Động và Linh Hồn Lực: 'Học Viện Già Nam đứng giữa Hắc Giác Vực ba trăm năm bất diệt — Nội Viện ẩn chứa Thiên Phần Luyện Khí Tháp trấn áp Dị Hỏa #14 Vẫn Lạc Tâm Viêm!'",
+            "Một tia Lôi Ý thuần khiết từ bia cổ truyền vào thức hải bạn — nhận +15 SOUL, +3.500 EXP & 1 viên [Lôi Ma Hạch Cấp 5] (khảm lên vũ khí tại bảng [I])!"
+          ],
+          "action": "effect:eff_ch05_inspect_mang_thien_xich"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Bia Cổ Viện Trưởng Mang Thiên Xích tỏa ánh lôi quang dịu nhẹ, như lời chúc phúc cho vị Tân Sinh sắp chấn động cả Học Viện Già Nam!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch05_huan_nhi_reunion": {
+      "marker_when": { "missing_flag": "ch05_huan_nhi_reunited" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_huan_nhi_reunited" },
+          "sfx": "breakthrough",
+          "shake": [9.0, 0.35],
+          "lines": [
+            "Giữa rừng trúc xanh mướt Ngoại Viện Học Viện Già Nam, thiếu nữ váy thanh lục khí chất tựa trích tiên đang đứng chờ bỗng sững người — đôi mắt trong veo lập tức ngấn lệ khi thấy bóng lưng hắc bào vác Huyền Trọng Xích bước tới!",
+            "Tiêu Huân Nhi (chạy ùa tới nắm chặt tay bạn, giọng run run đầy mừng rỡ): 'Tiêu Viêm ca ca!! Hai năm ròng rã... Cuối cùng huynh cũng giữ lời hẹn bước chân tới Học Viện Già Nam bình an vô sự rồi!!'",
+            "Tiêu Huân Nhi (lấy ra một quyển ngọc giản tỏa kim quang rực rỡ): 'Ở Ngoại Viện này sắp tới sẽ diễn ra Tuyển Chọn Nội Viện Top 5 và Cuộc Thi Săn Hỏa Năng. Muội sẽ luôn kề vai tác chiến bên huynh (Mở khóa Đồng Hành #4 [G] TIÊU HUÂN NHI!) — và đây là bí kỹ trấn tộc Cổ Tộc [ĐẾ ẤN QUYẾT — KHAI SƠN ẤN] muội tự tay chép tặng riêng cho huynh!'"
+          ],
+          "choices": [
+            { "label": "Ôm nhẹ Huân Nhi mỉm cười ấm áp: 'Xin lỗi để muội đợi lâu — từ nay cùng nhau vào Nội Viện!' (+30 Hảo Cảm Huân Nhi!)", "action": "effect:eff_ch05_huan_nhi_warm" },
+            { "label": "Siết chặt tay nàng kiên định: 'Có Đế Ấn Quyết và muội bên cạnh, Top 5 Ngoại Viện chắc chắn là của chúng ta!' (+20 Hảo Cảm & +10 SOUL!)", "action": "effect:eff_ch05_huan_nhi_firm" }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch05_beat_ngo_hao" },
+          "lines": [
+            "Tiêu Huân Nhi (mỉm cười dịu dàng): 'Tiêu Viêm ca ca nhớ bấm phím [G] triệu hồi muội chiến đấu cùng nhé, và đừng quên lắp [Đế Ấn Quyết] trong bảng [K]! Tu La Huyết Kiếm Ngô Hạo đang chờ tỷ thí Top 5 ở Lôi Đài phía Đông Nam — để muội hồi đầy thể lực cho huynh!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Huân Nhi (ánh mắt lấp lánh Kim Đế Phần Thiên Viêm): 'Khí thế của Tiêu Viêm ca ca khiến cả Ngoại Viện phải ngưỡng mộ rồi! Dù là Tàng Thư Các hay Rừng Săn Hỏa Năng, Huân Nhi luôn ở bên cạnh huynh!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch05_ho_can_tang_thu": {
+      "marker_when": { "has_flag": "ch05_beat_ngo_hao", "missing_flag": "ch05_got_su_ho" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_huan_nhi_reunited" },
+          "lines": [
+            "Phó Viện Trưởng Hổ Càn (cười lớn uy nghi trước cửa Tàng Thư Các): 'Ồ, tân sinh đặc cách nghỉ phép 2 năm của Nhược Lâm Đạo Sư cuối cùng cũng trình diện rồi sao? Vừa hay — cô bé Huân Nhi đang đợi ngươi ở Trúc Lâm phía Tây kìa! Gặp nàng trước rồi hãy lên Lôi Đài tranh suất Top 5 Ngoại Viện!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch05_beat_ngo_hao" },
+          "lines": [
+            "Phó Viện Trưởng Hổ Càn (khoanh tay nhìn xuống Lôi Đài): 'Muốn bước vào Tàng Thư Các chọn Đấu Kỹ thượng đẳng? Quy củ Ngoại Viện Già Nam rất rõ ràng: hãy lên Lôi Đài phía Nam đánh bại Đội trưởng Chấp Pháp [Tu La Huyết Kiếm Ngô Hạo] chứng minh tư cách Top 5 rồi quay lại đây!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch05_got_su_ho" },
+          "sfx": "skill_stun",
+          "shake": [9.0, 0.35],
+          "lines": [
+            "Phó Viện Trưởng Hổ Càn (vỗ tay trầm trồ chấn động cả sảnh Tàng Thư Các): 'XUẤT SẮC!! Một trận thắng đẹp mắt trước Tu La Huyết Kiếm Ngô Hạo — ngươi hoàn toàn xứng đáng đứng đầu Top 5 Ngoại Viện năm nay!'",
+            "Phó Viện Trưởng Hổ Càn (mở kết giới Tàng Thư Các lấy ra quả cầu ánh sáng vàng rực gầm vang tiếng Sư-Hổ): 'Ta ban thưởng cho ngươi Huyền Giai Đỉnh Phong Âm Ba Đấu Kỹ [SƯ HỔ TOÁI KIM NGÂM] — chuyên khắc chế hộ thuẫn và làm choáng kẻ địch diện rộng!'",
+            "Hổ Càn (mỉm cười thâm thúy): 'Ba ngày nữa Cuộc Thi Săn Hỏa Năng tiến vào Nội Viện sẽ khai mạc ở khu rừng phía Đông! Lão sinh Nội Viện năm nào cũng săn tân sinh như sói săn cừu — hãy qua Cổng Đông cho chúng biết thế nào là bản lĩnh Tân Sinh năm nay!'"
+          ],
+          "action": "effect:eff_ch05_grant_su_ho"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Phó Viện Trưởng Hổ Càn (gật đầu hài lòng): 'Sư Hổ Toái Kim Ngâm kết hợp với Linh Hồn Lực Luyện Đan Sư của ngươi quả là hổ mọc thêm cánh! Mau qua Cổng Đông vào Rừng Săn Hỏa Năng đoạt ngôi Tân Sinh Vương đi!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch05_tieu_ngoc_scout": {
+      "marker_when": { "missing_flag": "ch05_hunt_briefed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_hunt_briefed" },
+          "lines": [
+            "Biểu Tỷ Tiêu Ngọc (vừa thở hổn hển vừa chỉ về phía khu rừng trung tâm, mắt sáng lên khi thấy Tiêu Viêm): 'Tiêu Viêm!! Cuối cùng đệ cũng tới rồi! Đám Lão Sinh Nội Viện năm nay quá đáng lắm — chúng phục kích cướp sạch Hỏa Năng trong Hắc Tinh Thẻ của các tân sinh!'",
+            "Tiêu Ngọc: 'Tên mạnh nhất là Thủ Lĩnh Hắc Bạch Quan Sát [La Hầu] (Đấu Linh 9 Tinh Đỉnh Phong) cùng đám Lão Sinh Pháo Kích đang cắm chốt ngay bãi đất tím giữa rừng! Huân Nhi và Ngô Hạo bảo đệ có kế hoạch PHẢN SÁT cướp ngược Hỏa Năng của chúng — để tỷ hồi đầy thể lực cho đệ, cho chúng một bài học nhớ đời đi!!'"
+          ],
+          "action": "effect:eff_ch05_hunt_brief"
+        },
+        {
+          "when": { "missing_flag": "ch05_killed_la_hau" },
+          "lines": [
+            "Biểu Tỷ Tiêu Ngọc (nắm chặt tay cổ vũ): 'Thủ Lĩnh Hắc Bạch Quan Sát La Hầu rất nhanh và tàn độc! Hãy dùng [Sư Hổ Toái Kim Ngâm] làm choáng hắn, rồi phối hợp [Đế Ấn Quyết] & [Phật Nộ Hỏa Liên] phản sát hắn ngay!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Biểu Tỷ Tiêu Ngọc (cười phá lên đầy tự hào): 'Trời ơi không thể tin nổi!! Đệ thật sự dẫn đội tân sinh phản sát sạch sẽ cả Hắc Bạch Quan Sát La Hầu luôn rồi! Mau mang Hắc Tinh Thẻ qua Sơn Môn Đông trình diện Đại Trưởng Lão Tô Thiên đi!!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch05_to_thien_gate": {
+      "marker_when": { "has_flag": "ch05_killed_la_hau", "missing_flag": "ch05_completed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch05_killed_la_hau" },
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (Đấu Tông Cường Giả lơ lửng trước Sơn Môn Nội Viện, ánh mắt uy nghiêm như sấm sét): 'Tiểu tử, muốn bước qua Sơn Môn Nội Viện Già Nam không thể đi đường vòng! Hãy quay lại Rừng Săn Hỏa Năng đánh bại Thủ Lĩnh Hắc Bạch Quan Sát [La Hầu] chứng minh thực lực Đệ Nhất Tân Sinh đi!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch05_completed" },
+          "sfx": "breakthrough",
+          "shake": [14.0, 0.55],
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (cầm tấm Hắc Tinh Thẻ đỏ rực con số 240 ngày Tinh Hỏa Năng, nụ cười chấn động cả Sơn Môn Nội Viện): 'Hahahaha!! Ba mươi năm tổ chức Cuộc Thi Săn Hỏa Năng, đây là LẦN ĐẦU TIÊN một đội Tân Sinh phản sát toàn bộ Hắc Bạch Quan Sát và cướp ngược 240 ngày Tinh Hỏa Năng của Lão Sinh!!'",
+            "Tô Thiên (phóng luồng Đấu Khí Đấu Tông ôn dưỡng kinh mạch cho bạn): 'Tiêu Viêm — từ giây phút này, ngươi chính thức đăng quang danh hiệu [ĐỆ NHẤT TÂN SINH VƯƠNG HỌC VIỆN GIÀ NAM]! Lão phu đặc cách thưởng cho ngươi Thiên Giai Bí Pháp [HỎA LIÊN PHÂN THÂN], +240 Tinh Hỏa Năng, Hắc Tinh Thẻ Đế Phẩm và giúp ngươi củng cố cảnh giới thẳng lên ĐẤU LINH 6 TINH!!'",
+            "Dược Lão (cười lớn trong nhẫn đen nhìn về tòa hắc tháp rực lửa ẩn hiện sâu trong Nội Viện): 'Đồ nhi! Bên trong Sơn Môn kia chính là Thiên Phần Luyện Khí Tháp — nơi phong ấn ngọn Dị Hỏa #14 Vẫn Lạc Tâm Viêm đang chờ con ở Chương 06! [HOÀN TẤT TRỌN VẸN CHƯƠNG 05 — HẮC GIÁC VỰC & NGOẠI VIỆN GIÀ NAM!!]'"
+          ],
+          "action": "effect:eff_ch05_complete_chapter"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (gật đầu tán thưởng): 'Đệ Nhất Tân Sinh Vương Tiêu Viêm! Hãy dùng 240 Tinh Hỏa Năng khổ tu, rèn luyện Thiên Phần Luyện Khí Tháp & thử sức Tâm Ma Luyện Cảnh trong lúc chờ Chương 06: Nội Viện Già Nam khai mở!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    }
+  },
+  "effects": {
+    "eff_ch05_backup_tam_van": {
+      "give_items": { "pill_tam_van_thanh_linh": 1 },
+      "heal_full": true,
+      "banter": "Lăng Ảnh trao 1 viên [Tam Văn Thanh Linh Đan] dự phòng! Hãy bấm [B] đột phá Đấu Linh rồi trảm [BOSS] Trưởng Lão Vân Phàn!"
+    },
+    "eff_ch05_duoc_lao_reawake": {
+      "set_flag": "ch05_duoc_lao_awakened_ch05",
+      "heal_full": true
+    },
+    "eff_ch05_open_bat_phien_auction": {
+      "open_auction": "bat_phien_mon",
+      "set_flag": "ch05_auction_done",
+      "heal_full": true
+    },
+    "eff_ch05_rain_night_snatch": {
+      "set_flag": "ch05_auction_done",
+      "give_exp": 4000,
+      "heal_full": true
+    },
+    "eff_ch05_reopen_auction": {
+      "open_auction": "bat_phien_mon"
+    },
+    "eff_ch05_inspect_mang_thien_xich": {
+      "set_flag": "ch05_read_mang_thien_xich",
+      "heal_full": true
+    },
+    "eff_ch05_huan_nhi_warm": {
+      "affection": { "huan_nhi": 30 },
+      "set_flag": "ch05_huan_nhi_reunited",
+      "heal_full": true
+    },
+    "eff_ch05_huan_nhi_firm": {
+      "affection": { "huan_nhi": 20 },
+      "give_soul": 10,
+      "set_flag": "ch05_huan_nhi_reunited",
+      "heal_full": true
+    },
+    "eff_ch05_grant_su_ho": {
+      "set_flag": "ch05_got_su_ho",
+      "heal_full": true
+    },
+    "eff_ch05_hunt_brief": {
+      "set_flag": "ch05_hunt_briefed",
+      "heal_full": true,
+      "banter": "Biểu Tỷ Tiêu Ngọc đã chỉ rõ vị trí Hắc Bạch Quan Sát! Tiến vào bãi đất tím giữa rừng phản sát [BOSS] La Hầu (Cửu Tinh Đấu Linh)!"
+    },
+    "eff_ch05_complete_chapter": {
+      "set_flag": "ch05_completed",
+      "heal_full": true
+    }
+  }
+}

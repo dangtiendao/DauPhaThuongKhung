@@ -62,6 +62,14 @@
         { "pieces": 2, "desc": "+35 Công kích, +35 Phòng ngự & +25 Linh Hồn", "stats": { "atk": 35, "def": 35, "soul": 25 } },
         { "pieces": 3, "desc": "+18% Chí mạng, +30% Sát thương Hỏa & -20% Hồi chiêu", "stats": { "crit_chance": 18, "flame_dmg": 30, "cooldown_red": 20 } }
       ]
+    },
+    "set_tan_sinh_vuong": {
+      "id": "set_tan_sinh_vuong",
+      "name": "Bộ Già Nam Tân Sinh Vương",
+      "bonuses": [
+        { "pieces": 2, "desc": "+120 Công kích & +15% Chí mạng", "stats": { "atk": 120, "crit_chance": 15 } },
+        { "pieces": 4, "desc": "+650 Sinh lực, +20% Sát thương Hỏa & -12% Hồi chiêu", "stats": { "hp": 650, "flame_dmg": 20, "cooldown_red": 12 } }
+      ]
     }
   },
   "templates": {
@@ -301,6 +309,63 @@
       "icon": "res://assets/sprites/icons/icon_pendant.png",
       "base_stats": { "hp": 180, "soul": 36, "atk": 24, "flame_dmg": 28, "exp_bonus": 25 },
       "description": "Lá Ngọc Vàng Cổ Tộc Huân Nhi nhờ Lăng Ảnh gửi tặng — mang sức mạnh hồi sinh hộ mệnh trước đòn chí mạng!"
+    },
+    "wpn_xich_ngung_vat": {
+      "id": "wpn_xich_ngung_vat",
+      "name": "Huyền Trọng Xích · Ngưng Vật Hóa Viêm",
+      "slot": "weapon",
+      "set_id": "",
+      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
+      "attack_speed_mult": 0.98,
+      "base_stats": { "atk": 68, "hp": 220, "crit_chance": 16, "flame_dmg": 24 },
+      "description": "Huyền Trọng Xích tôi luyện qua Đấu Khí Ngưng Vật (Đấu Linh) & Dị Hỏa giữa Hắc Giác Vực — mỗi đòn vung thước mang uy áp phá thế cực mạnh!"
+    },
+    "caul_song_long_huyet_dinh": {
+      "id": "caul_song_long_huyet_dinh",
+      "name": "Song Long Huyết Đỉnh (Ngũ Phẩm)",
+      "slot": "cauldron",
+      "set_id": "",
+      "icon": "res://assets/sprites/icons/icon_cauldron.png",
+      "base_stats": { "soul": 45, "alchemy_bonus": 35, "flame_dmg": 28, "qi": 95 },
+      "description": "Dược đỉnh bảo vật lưu lạc tại Đại Đấu Giá Trường Bát Phiến Môn — khống hỏa siêu phàm (+35% Luyện Đan, +45 SOUL)!"
+    },
+    "arm_hac_bao_an_danh": {
+      "id": "arm_hac_bao_an_danh",
+      "name": "Hắc Bào Ẩn Danh Hắc Giác Vực",
+      "slot": "armor",
+      "set_id": "set_tan_sinh_vuong",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 460, "def": 72, "atk": 28, "soul": 32, "cooldown_red": 8 },
+      "description": "Chiến bào hắc ti hộ thân khi Tiêu Viêm ẩn danh xông pha Hắc Ấn Thành & Rừng Đêm Huyết Vụ."
+    },
+    "glv_ho_thu_am_thiet": {
+      "id": "glv_ho_thu_am_thiet",
+      "name": "Hộ Thủ Ám Thiết (Phá Địch)",
+      "slot": "gloves",
+      "set_id": "set_tan_sinh_vuong",
+      "icon": "res://assets/sprites/icons/icon_gloves.png",
+      "base_stats": { "atk": 46, "crit_chance": 14, "def": 28, "lifesteal": 6 },
+      "description": "Hộ uyển ám thiết rèn tại Hòa Bình Trấn — khuếch đại kình lực Đế Ấn Quyết và Tam Thiên Lôi Động!"
+    },
+    "wing_hac_diem_tu_van_duc": {
+      "id": "wing_hac_diem_tu_van_duc",
+      "name": "Hắc Diễm Tử Vân Dực",
+      "slot": "wings",
+      "set_id": "set_tan_sinh_vuong",
+      "icon": "res://assets/sprites/icons/icon_wings.png",
+      "base_stats": { "spd": 56, "crit_chance": 16, "cooldown_red": 14, "atk": 32 },
+      "description": "Đôi cánh Tử Vân Dực tôi luyện qua Hắc Diễm & Lôi Khí Hắc Giác Vực — thân pháp nhanh như tia chớp!"
+    },
+    "pend_hac_tinh_the_gia_nam": {
+      "id": "pend_hac_tinh_the_gia_nam",
+      "name": "Hắc Tinh Thẻ Tân Sinh Già Nam",
+      "slot": "pendant",
+      "set_id": "set_tan_sinh_vuong",
+      "icon": "res://assets/sprites/icons/icon_pendant.png",
+      "base_stats": { "atk": 42, "soul": 48, "hp": 320, "flame_dmg": 26, "exp_bonus": 28 },
+      "description": "Hắc Tinh Thẻ chứa 240 ngày Tinh Hỏa Năng của Đệ Nhất Tân Sinh Vương Ngoại Viện Già Nam!"
     }
   }
 }

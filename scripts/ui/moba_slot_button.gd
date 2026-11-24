@@ -26,6 +26,9 @@ var icon_rect: TextureRect
 var key_badge_lbl: Label
 var sub_badge_lbl: Label
 var cd_center_lbl: Label
+var _cached_sub_col: Color = Color(-1, -1, -1, -1)
+var _cached_cd_txt: String = ""
+var _visual_initialized: bool = false
 
 
 func _ready() -> void:
@@ -128,11 +131,16 @@ func _apply_frame_styles() -> void:
 
 
 func set_slot_visual(icon_tex: Texture2D, badge_txt: String, locked: bool, active_glow: bool = false, low_resource: bool = false, sub_col: Color = Color("#E9ECEF")) -> void:
-	var lock_changed: bool = (is_locked != locked)
+	var lock_changed: bool = (not _visual_initialized) or (is_locked != locked)
+	var same_tex: bool = (icon_rect != null and icon_rect.texture == icon_tex)
+	if _visual_initialized and not lock_changed and same_tex and sub_badge_text == badge_txt and is_active_glow == active_glow and is_low_resource == low_resource and _cached_sub_col == sub_col:
+		return
+	_visual_initialized = true
 	is_locked = locked
 	is_active_glow = active_glow
 	is_low_resource = low_resource
 	sub_badge_text = badge_txt
+	_cached_sub_col = sub_col
 	if lock_changed:
 		_apply_frame_styles()
 
@@ -149,21 +157,41 @@ func set_slot_visual(icon_tex: Texture2D, badge_txt: String, locked: bool, activ
 		sub_badge_lbl.text = "KHÓA" if is_locked else sub_badge_text
 		sub_badge_lbl.add_theme_color_override("font_color", Color("#6C757D") if is_locked else sub_col)
 
-	if key_badge_lbl != null:
+	if key_badge_lbl != null and lock_changed:
 		key_badge_lbl.add_theme_color_override("font_color", Color("#6C757D") if is_locked else Color("#FFD166"))
 
 	queue_redraw()
 
 
+func set_low_resource_state(low_resource: bool, sub_col: Color) -> void:
+	if is_locked or (is_low_resource == low_resource and _cached_sub_col == sub_col):
+		return
+	is_low_resource = low_resource
+	_cached_sub_col = sub_col
+	if icon_rect != null:
+		icon_rect.modulate = Color(0.50, 0.58, 0.78, 0.85) if is_low_resource else Color.WHITE
+	if sub_badge_lbl != null:
+		sub_badge_lbl.add_theme_color_override("font_color", sub_col)
+
+
 func set_cooldown(remaining: float, total: float) -> void:
-	cd_remaining = maxf(0.0, remaining)
-	cd_total = maxf(0.05, total)
+	var new_rem: float = maxf(0.0, remaining)
+	var new_tot: float = maxf(0.05, total)
+	if cd_remaining <= 0.05 and new_rem <= 0.05:
+		cd_remaining = 0.0
+		return
+	cd_remaining = new_rem
+	cd_total = new_tot
 	if cd_center_lbl != null:
 		if cd_remaining > 0.05:
 			cd_center_lbl.visible = true
-			cd_center_lbl.text = "%.1f" % cd_remaining if cd_remaining < 10.0 else "%d" % int(ceil(cd_remaining))
+			var next_txt: String = "%.1f" % cd_remaining if cd_remaining < 10.0 else "%d" % int(ceil(cd_remaining))
+			if next_txt != _cached_cd_txt:
+				_cached_cd_txt = next_txt
+				cd_center_lbl.text = next_txt
 		else:
 			cd_center_lbl.visible = false
+			_cached_cd_txt = ""
 	queue_redraw()
 
 

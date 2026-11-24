@@ -165,6 +165,56 @@
       "tier": 6,
       "color_hex": "#70D6FF",
       "description": "Lục phẩm bảo đan phá giải Xà Chi Phong Ấn Chú khôi phục thực lực Đấu Hoàng cho Băng Hoàng Hải Ba Đông!"
+    },
+    "herb_huyet_tinh_thao": {
+      "id": "herb_huyet_tinh_thao",
+      "name": "Huyết Tinh Thảo",
+      "type": "herb",
+      "tier": 4,
+      "color_hex": "#E63946",
+      "description": "Dược thảo Tứ phẩm thấm đẫm sát khí nơi rừng đêm Hắc Giác Vực, nguyên liệu chủ đạo luyện Huyết Ngưng Đan & Đấu Linh Đan."
+    },
+    "core_loi_5": {
+      "id": "core_loi_5",
+      "name": "Lôi Ma Hạch (Cấp 5)",
+      "type": "monster_core",
+      "tier": 5,
+      "color_hex": "#E0AAFF",
+      "description": "Tinh hạch Ma Thú Cấp 5 hệ Lôi quý hiếm ở Hắc Giác Vực — khảm lên vũ khí tăng +58 ATK, +10% Crit, +22% Phá Thế!"
+    },
+    "core_huyet_5": {
+      "id": "core_huyet_5",
+      "name": "Huyết Ma Hạch (Cấp 5)",
+      "type": "monster_core",
+      "tier": 5,
+      "color_hex": "#EF476F",
+      "description": "Tinh hạch Cấp 5 ngưng tụ huyết khí cường giả Huyết Tông & Hắc Giác Vực — khảm lên vũ khí tăng +48 ATK, +280 HP, +6% Hút Máu!"
+    },
+    "pill_huyet_ngung_dan": {
+      "id": "pill_huyet_ngung_dan",
+      "name": "Huyết Ngưng Đan (Ngũ Phẩm)",
+      "type": "consumable_hp",
+      "tier": 5,
+      "heal_hp": 320,
+      "color_hex": "#EF476F",
+      "description": "Ngũ phẩm liệu thương bảo đan lưu hành trong Học Viện Già Nam — uống vào hồi tức thì +320 HP!"
+    },
+    "pill_dau_linh_dan": {
+      "id": "pill_dau_linh_dan",
+      "name": "Đấu Linh Đan (Lục Phẩm)",
+      "type": "breakthrough",
+      "tier": 6,
+      "color_hex": "#A06CD5",
+      "description": "Lục phẩm kỳ đan dùng đột phá từ Đấu Linh Cửu Tinh lên ĐẤU VƯƠNG (mở khóa Đấu Khí Hóa Dực)!"
+    },
+    "pill_am_duong_huyen_long": {
+      "id": "pill_am_duong_huyen_long",
+      "name": "Âm Dương Huyền Long Đan (Thất Phẩm)",
+      "type": "consumable_buff",
+      "tier": 7,
+      "buff_sec": 30.0,
+      "color_hex": "#FFD166",
+      "description": "Thất phẩm chí bảo từ Đại Đấu Giá Bát Phiến Môn — Phá Hậu Nhi Lập: hồi đầy HP/QI & +25% ATK trong 30 giây!"
     }
   },
   "recipes": [
@@ -257,6 +307,36 @@
       "base_success_rate": 0.72,
       "soul_exp_gain": 35,
       "ingredients": { "herb_that_huyen_tien": 1, "herb_sa_chi_man_da_la": 2, "core_phong_4": 1 }
+    },
+    {
+      "id": "recipe_huyet_ngung_dan",
+      "output_item": "pill_huyet_ngung_dan",
+      "output_count": 2,
+      "tier": 5,
+      "req_soul": 65,
+      "base_success_rate": 0.78,
+      "soul_exp_gain": 24,
+      "ingredients": { "herb_huyet_tinh_thao": 2, "core_huyet_5": 1 }
+    },
+    {
+      "id": "recipe_dau_linh_dan",
+      "output_item": "pill_dau_linh_dan",
+      "output_count": 1,
+      "tier": 6,
+      "req_soul": 110,
+      "base_success_rate": 0.68,
+      "soul_exp_gain": 42,
+      "ingredients": { "herb_huyet_tinh_thao": 3, "herb_that_huyen_tien": 1, "core_loi_5": 1, "core_huyet_5": 1 }
+    },
+    {
+      "id": "recipe_am_duong_huyen_long",
+      "output_item": "pill_am_duong_huyen_long",
+      "output_count": 1,
+      "tier": 7,
+      "req_soul": 160,
+      "base_success_rate": 0.60,
+      "soul_exp_gain": 65,
+      "ingredients": { "herb_huyet_tinh_thao": 3, "herb_that_huyen_tien": 2, "core_loi_5": 2, "core_huyet_5": 2 }
     }
   ]
 }

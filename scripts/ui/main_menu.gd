@@ -1,7 +1,7 @@
 extends Control
 ## Màn Hình Chính (Title Screen) Chuẩn HD 32-bit Pixel Art:
 ## - Hỗ trợ: Tiếp Tục (nhớ đúng Ô chơi gần nhất), Chơi Mới (Chuẩn Cốt Truyện),
-##   CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (11 Map · Full 10 Kỹ · 28 Hỏa · 3 Đồng Hành · 10 Ô Thiên Phẩm),
+##   CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (25 Map · Full 15 Kỹ · 28 Hỏa · 4 Đồng Hành · 10 Ô Thiên Phẩm + 3 Ma Hạch),
 ##   Tùy chọn TỰ ĐỘNG LƯU (Auto-Save) & TỰ ĐỘNG VÀO CHƠI TIẾP LẦN SAU!
 
 const GAME_SCENE_PATH: String = "res://scenes/main_prototype.tscn"
@@ -436,15 +436,16 @@ func _open_controls_panel() -> void:
 		"• [W A S D] / Mũi tên: Di chuyển 8 hướng\n"
 		+ "• [V] hoặc [Enter]: Nói chuyện NPC, Chạm Ma Thạch Bi, Mở Rương & Đi qua Cổng\n"
 		+ "• [Chuột Trái]: Đánh Combo 3 nhịp (Quyền Cước -> Vũ Khí Liền Thân)\n"
-		+ "• [Space]: Lướt né (tự nâng cấp Lướt Tử Vân Dực khi mặc cánh!)\n"
+		+ "• [Space]: Lướt né (tự nâng cấp Tử Vân Dực -> Tam Thiên Lôi Động!)\n"
 		+ "• [Chuột Phải / C]: Bật/Tắt Trọng Áp Huyền Trọng Xích (+30% EXP)\n"
-		+ "• [Q] [E] [R] [F] [T]: 10 Đấu Kỹ, Phật Nộ Hỏa Liên & Cốt Linh Phụ Thể (bấm chuột trực tiếp được!)\n"
-		+ "• [G]: Triệu hồi / Đổi Đồng Hành AI (Dược Lão / Tiểu Y Tiên / Thần Thú Thải Lân)\n"
+		+ "• [Q] [E] [R] [F] [T]: 15 Đấu Kỹ, Phật Nộ Hỏa Liên & Cốt Linh / Mỹ Đỗ Toa Hộ Pháp (bấm chuột trực tiếp được!)\n"
+		+ "• [G]: Triệu hồi / Đổi 4 Đồng Hành AI (Dược Lão / Tiểu Y Tiên / Thải Lân / Tiêu Huân Nhi)\n"
+		+ "• [Z]: Radar Linh Hồn — Quét rương báu & phát hiện kẻ địch ẩn thân\n"
 		+ "• [1] [2] [3]: Uống nhanh Đan Dược hồi HP / Đấu Khí / EXP\n"
-		+ "• [I] Trang Bị 10 Ô  |  [K] Kho Đấu Kỹ  |  [B] Đột Phá\n"
+		+ "• [I] Trang Bị 10 Ô & Khảm Ma Hạch  |  [K] Kho Đấu Kỹ  |  [B] Đột Phá\n"
 		+ "• [L] Lò Luyện Đan (Mini-game Hỏa Hầu + Đan Lôi)  |  [H] Dị Hỏa Bảng (28 Hỏa)\n"
-		+ "• [M] Bản Đồ Thế Giới (11 Map + Dịch Chuyển Nhanh ở Chế Độ DEMO!)\n"
-		+ "• [ESC] Tạm Dừng, Bật/Tắt Auto-Save, Lưu/Tải 3 Ô & Bật Chế Độ DEMO"
+		+ "• [M] Thế Giới (%d Map · Ch01–Ch05), Hồng Nhan, Tâm Ma (23 Boss), Thiên Phần Tháp & Đồ Giám\n" % GameDatabase.maps_ordered.size()
+		+ "• [ESC] Tạm Dừng, Đổi Phím Tùy Chỉnh, Hiển Thị, Auto-Save, Lưu/Tải 3 Ô & Chế Độ DEMO"
 	)
 	var l := _make_label(lines, 13, Color("#F8F9FA"))
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

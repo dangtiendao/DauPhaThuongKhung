@@ -23,16 +23,41 @@ var target_hp_val: float = 130.0
 var target_qi_val: float = 70.0
 var target_exp_val: float = 0.0
 var target_boss_hp: float = 0.0
+var target_boss_poise: float = 0.0
 
 var map_banner_lbl: Label
 var quest_lbl: Label
 var banter_lbl: Label
 
-# Thanh máu BOSS Đa Phase
+# Thanh máu BOSS Đa Phase + Thanh Phá Thế (Poise / Stagger)
 var boss_bar_panel: PanelContainer
 var boss_title_lbl: Label
 var boss_phase_lbl: Label
 var boss_hp_bar: ProgressBar
+var boss_poise_bar: ProgressBar
+var boss_poise_lbl: Label
+var boss_is_staggered: bool = false
+var boss_p2_warning: bool = false
+var boss_pulse_t: float = 0.0
+
+# Chỉ báo FPS góc phải trên (bật/tắt trong [ESC] Cài Đặt Hiển Thị)
+var fps_panel: PanelContainer
+var fps_lbl: Label
+var fps_poll_accum: float = 0.0
+
+# Thanh trạng thái Thiên Phần Luyện Khí Tháp (Roguelite)
+var tower_bar_panel: PanelContainer
+var tower_info_lbl: Label
+var pending_tower_floor: int = 1
+var pending_tower_choices: Array = []
+
+# Trạng thái Đấu Giá Đấu Trí, Ký Gửi, Đổi Phím & Khảm Ma Hạch
+var shop_tab: String = "shop" # "shop" | "auction" | "consign"
+var shop_venue_id: String = "nha_phi" # "nha_phi" | "bat_phien_mon"
+var auction_lots: Array = []
+var active_auction_lot_idx: int = 0
+var rebinding_action: String = ""
+var selected_core_slot: int = 0
 
 # Tiểu Bản Đồ góc phải dưới
 var minimap_panel: PanelContainer
@@ -98,11 +123,20 @@ var alc_info_lbl: Label
 var alc_lightning_btn: Button
 var alc_pulse_btn: Button
 
-var world_map_tab: String = "maps" # "maps" hoặc "heroines"
+var world_map_tab: String = "maps" # "maps" | "heroines" | "boss_rush" | "bestiary"
 var selected_gift_heroine: String = "huan_nhi"
+var boss_rush_diff: String = "normal" # "normal" | "nightmare" | "dau_tong"
+var bestiary_filter: String = "all" # "all" | "boss" | "mob"
+var _bestiary_thumb_cache: Dictionary = {}
 
 var interact_poll_accum: float = 0.0
 var last_nearby_interact: String = "__init__"
+
+# Cache icon & theo dõi hồi Đấu Khí nhẹ (cắt bỏ hoàn toàn bão _refresh_moba_dock 60Hz!)
+var _icon_cache: Dictionary = {}
+var _last_qi_display: int = -1
+var _last_max_qi_display: int = -1
+var _slot_qi_costs: Dictionary = {}
 
 # Chỉ báo Tự Động Lưu nhẹ góc trái dưới
 var autosave_toast_panel: PanelContainer
@@ -125,6 +159,7 @@ func _ready() -> void:
 		map_banner_lbl.text = "%s — %s" % [str(init_m.get("chapter", "Chương 01")), str(init_m.get("name", ""))]
 
 	EventBus.stats_changed.connect(_refresh_stats)
+	EventBus.qi_updated.connect(_on_qi_updated)
 	EventBus.exp_changed.connect(_on_exp_changed)
 	EventBus.realm_updated.connect(_on_realm_updated)
 	EventBus.inventory_changed.connect(_refresh_inventory_ui)
@@ -140,13 +175,22 @@ func _ready() -> void:
 	EventBus.flame_changed.connect(_on_flame_changed)
 	EventBus.weight_seal_toggled.connect(_on_seal_toggled)
 	EventBus.boss_status_updated.connect(_on_boss_status_updated)
+	EventBus.boss_poise_updated.connect(_on_boss_poise_updated)
+	EventBus.boss_rush_completed.connect(_on_boss_rush_completed)
+	EventBus.tower_state_updated.connect(_on_tower_state_updated)
+	EventBus.tower_blessing_requested.connect(_on_tower_blessing_requested)
+	EventBus.auction_requested.connect(_open_auction_house)
+	EventBus.keybinds_changed.connect(_sync_keybind_labels)
+	EventBus.display_settings_changed.connect(_sync_display_widgets)
 	EventBus.companion_changed.connect(_on_companion_changed)
 	EventBus.skill_cooldown_updated.connect(_on_skill_cooldown_updated)
 	EventBus.auto_saved.connect(_on_auto_saved)
+	_sync_display_widgets()
+	_sync_keybind_labels()
 
 
 func _process(delta: float) -> void:
-	# Hiệu ứng trượt thanh HP / Đấu Khí / EXP / Boss cực mượt
+	# Hiệu ứng trượt thanh HP / Đấu Khí / EXP / Boss & Thanh Phá Thế cực mượt
 	var smooth_k: float = clampf(delta * 12.0, 0.0, 1.0)
 	if hp_bar != null:
 		hp_bar.value = lerpf(hp_bar.value, target_hp_val, smooth_k)
@@ -156,6 +200,29 @@ func _process(delta: float) -> void:
 		exp_bar.value = lerpf(exp_bar.value, target_exp_val, smooth_k)
 	if boss_hp_bar != null and boss_bar_panel.visible:
 		boss_hp_bar.value = lerpf(boss_hp_bar.value, target_boss_hp, smooth_k)
+	if boss_poise_bar != null and boss_bar_panel.visible:
+		boss_poise_bar.value = lerpf(boss_poise_bar.value, target_boss_poise, clampf(delta * 15.0, 0.0, 1.0))
+		if boss_is_staggered or boss_p2_warning:
+			boss_pulse_t += delta * 9.5
+			var pulse_a: float = 0.68 + 0.32 * sin(boss_pulse_t)
+			if boss_poise_lbl != null:
+				boss_poise_lbl.modulate.a = pulse_a
+			if boss_p2_warning and boss_phase_lbl != null:
+				boss_phase_lbl.modulate.a = pulse_a
+		else:
+			if boss_poise_lbl != null:
+				boss_poise_lbl.modulate.a = 1.0
+			if boss_phase_lbl != null:
+				boss_phase_lbl.modulate.a = 1.0
+
+	if fps_panel != null and fps_panel.visible:
+		fps_poll_accum += delta
+		if fps_poll_accum >= 0.25:
+			fps_poll_accum = 0.0
+			var cur_fps: int = Engine.get_frames_per_second()
+			fps_lbl.text = "FPS: %d" % cur_fps
+			var fps_col: Color = Color("#80ED99") if cur_fps >= 55 else (Color("#FFD166") if cur_fps >= 35 else Color("#FF4D6D"))
+			fps_lbl.add_theme_color_override("font_color", fps_col)
 
 	if alc_active:
 		_tick_alchemy_minigame(delta)
@@ -177,6 +244,22 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if rebinding_action != "":
+		if event is InputEventKey and event.pressed and not event.echo:
+			var k_ev: InputEventKey = event as InputEventKey
+			if k_ev.physical_keycode == KEY_ESCAPE:
+				rebinding_action = ""
+				modal_status_lbl.text = "Đã hủy đổi phím."
+			else:
+				AudioManager.rebind_action_key(rebinding_action, k_ev.physical_keycode)
+				modal_status_lbl.text = "Đã gán phím [%s] thành công!" % AudioManager.get_action_key_label(rebinding_action)
+				rebinding_action = ""
+			AudioManager.play_sfx("ui_click")
+			_populate_modal()
+			get_viewport().set_input_as_handled()
+			return
+		return
+
 	if alc_active:
 		if event.is_action_pressed("dash"):
 			_alchemy_pulse_heat()
@@ -203,6 +286,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and event.physical_keycode == KEY_ESCAPE:
+		if current_modal == "tower_blessing":
+			get_viewport().set_input_as_handled()
+			return
 		if current_modal != "":
 			_close_modal()
 		else:
@@ -210,7 +296,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		return
 
-	if current_modal == "pause":
+	if current_modal == "pause" or current_modal == "tower_blessing":
 		return
 
 	if event.is_action_pressed("panel_equipment"):
@@ -324,7 +410,16 @@ func _build_hud_layout() -> void:
 	tl_hbox.add_child(hero_frame)
 
 	var hero_tex := TextureRect.new()
-	hero_tex.texture = load("res://assets/sprites/player/tieu_viem_idle.png")
+	var idle_sheet: Texture2D = load("res://assets/sprites/player/tieu_viem_idle.png")
+	if idle_sheet != null:
+		var idle_m: Dictionary = SpriteAnimHelper.inspect_sheet(idle_sheet, "square", 1, 1)
+		if int(idle_m.get("total_frames", 1)) > 1:
+			var portrait_atlas := AtlasTexture.new()
+			portrait_atlas.atlas = idle_sheet
+			portrait_atlas.region = Rect2(0, 0, float(idle_m.get("cell_w", 96)), float(idle_m.get("cell_h", 96)))
+			hero_tex.texture = portrait_atlas
+		else:
+			hero_tex.texture = idle_sheet
 	hero_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	hero_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	hero_tex.custom_minimum_size = Vector2(66, 78)
@@ -407,6 +502,30 @@ func _build_hud_layout() -> void:
 	boss_hp_bar = _make_bar(Color("#C77DFF"), 13, 406)
 	boss_v.add_child(boss_hp_bar)
 
+	boss_poise_bar = _make_bar(Color("#FFD166"), 7, 406)
+	boss_poise_bar.max_value = 100.0
+	boss_poise_bar.value = 0.0
+	boss_v.add_child(boss_poise_bar)
+
+	boss_poise_lbl = _make_label("Tích Lũy Phá Thế (Poise): 0%", 10, Color("#FFE599"))
+	boss_poise_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	boss_v.add_child(boss_poise_lbl)
+
+	# 2C. THANH TRẠNG THÁI THIÊN PHẦN LUYỆN KHÍ THÁP (ROGUELITE)
+	tower_bar_panel = _make_styled_panel(Color(0.14, 0.04, 0.04, 0.92), Color("#FF7B00"), 2, 6, 8)
+	tower_bar_panel.anchor_left = 0.5
+	tower_bar_panel.anchor_right = 0.5
+	tower_bar_panel.anchor_top = 0.0
+	tower_bar_panel.offset_left = -212
+	tower_bar_panel.offset_right = 212
+	tower_bar_panel.offset_top = 56
+	tower_bar_panel.visible = false
+	root_ctrl.add_child(tower_bar_panel)
+
+	tower_info_lbl = _make_label("🔥 THIÊN PHẦN THÁP — TẦNG 1", 12, Color("#FFD166"))
+	tower_info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tower_bar_panel.add_child(tower_info_lbl)
+
 	# 3. KHUNG NHIỆM VỤ GỌN SẠCH (GÓC PHẢI TRÊN — KHÔNG RÁC PHÍM CHỮ)
 	var top_right := _make_styled_panel(Color(0.05, 0.07, 0.12, 0.88), Color("#FFD166"), 2, 9, 9)
 	top_right.anchor_left = 1.0
@@ -421,6 +540,23 @@ func _build_hud_layout() -> void:
 	quest_lbl = _make_label("", 12, Color("#F8F9FA"))
 	quest_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	top_right.add_child(quest_lbl)
+
+	# 3B. CHỈ BÁO FPS NHỎ GỌN (BẬT/TẮT TRONG [ESC] CÀI ĐẶT HIỂN THỊ)
+	fps_panel = _make_styled_panel(Color(0.04, 0.06, 0.11, 0.86), Color("#52B788"), 1, 4, 6)
+	fps_panel.anchor_left = 1.0
+	fps_panel.anchor_right = 1.0
+	fps_panel.anchor_top = 0.0
+	fps_panel.offset_left = -98
+	fps_panel.offset_right = -14
+	fps_panel.offset_top = 104
+	fps_panel.visible = false
+	fps_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root_ctrl.add_child(fps_panel)
+
+	fps_lbl = _make_label("FPS: 60", 11, Color("#80ED99"))
+	fps_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	fps_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fps_panel.add_child(fps_lbl)
 
 	# 4. CỤM 8 NÚT HỆ THỐNG BẤM TRỰC TIẾP (GÓC TRÁI DƯỚI: 2 HÀNG x 4 Ô VUÔNG MỊN)
 	var sys_dock := _make_styled_panel(Color(0.05, 0.06, 0.11, 0.90), Color("#3A506B"), 2, 6, 10)
@@ -825,15 +961,43 @@ func _make_bar_overlay_label(txt: String) -> Label:
 
 
 func _make_icon_box(tex_path: String, border_col: Color, box_px: int = 38) -> PanelContainer:
+	return _make_icon_box_from_tex(_get_cached_tex(tex_path), border_col, box_px)
+
+
+func _make_icon_box_from_tex(tex: Texture2D, border_col: Color, box_px: int = 38) -> PanelContainer:
 	var frame := _make_styled_panel(Color(0.10, 0.11, 0.18, 0.95), border_col, 2, 2, 6)
 	frame.custom_minimum_size = Vector2(box_px, box_px)
 	var tr := TextureRect.new()
-	tr.texture = load(tex_path)
+	tr.texture = tex
 	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tr.custom_minimum_size = Vector2(box_px - 6, box_px - 6)
 	frame.add_child(tr)
 	return frame
+
+
+func _get_enemy_thumb_tex(edef: Dictionary) -> Texture2D:
+	var eid: String = str(edef.get("id", ""))
+	if _bestiary_thumb_cache.has(eid):
+		return _bestiary_thumb_cache[eid] as Texture2D
+	var sheet_p: String = str(edef.get("anim_sheet", ""))
+	var raw_p: String = sheet_p if (sheet_p != "" and ResourceLoader.exists(sheet_p)) else str(edef.get("sprite", ""))
+	var base_tex: Texture2D = _get_cached_tex(raw_p)
+	if base_tex == null:
+		return null
+	var res_tex: Texture2D = base_tex
+	var meta: Dictionary = SpriteAnimHelper.inspect_sheet(base_tex, "square", 1, 1)
+	var hf: int = int(meta.get("hframes", 1))
+	var vf: int = int(meta.get("vframes", 1))
+	if hf > 1 or vf > 1:
+		var at := AtlasTexture.new()
+		at.atlas = base_tex
+		var fw: float = float(base_tex.get_width()) / float(hf)
+		var fh: float = float(base_tex.get_height()) / float(vf)
+		at.region = Rect2(0.0, 0.0, fw, fh)
+		res_tex = at
+	_bestiary_thumb_cache[eid] = res_tex
+	return res_tex
 
 
 # =========================================================
@@ -861,6 +1025,32 @@ func _hide_slot_tooltip() -> void:
 	tooltip_panel.visible = false
 
 
+func _get_cached_tex(tex_path: String) -> Texture2D:
+	if _icon_cache.has(tex_path):
+		return _icon_cache[tex_path] as Texture2D
+	var loaded: Texture2D = load(tex_path)
+	_icon_cache[tex_path] = loaded
+	return loaded
+
+
+func _on_qi_updated(cur_q: float, max_q: float) -> void:
+	if qi_bar != null:
+		qi_bar.max_value = max_q
+	target_qi_val = cur_q
+	var cur_i: int = int(cur_q)
+	var max_i: int = int(max_q)
+	if cur_i != _last_qi_display or max_i != _last_max_qi_display:
+		_last_qi_display = cur_i
+		_last_max_qi_display = max_i
+		if qi_val_lbl != null:
+			qi_val_lbl.text = "Đấu Khí  %d / %d" % [cur_i, max_i]
+	for slot_k in _slot_qi_costs.keys():
+		if skill_slots.has(slot_k):
+			var btn: MobaSlotButton = skill_slots[slot_k]
+			var low_q: bool = (cur_q < float(_slot_qi_costs[slot_k]))
+			btn.set_low_resource_state(low_q, Color("#FF758F") if low_q else Color("#70D6FF"))
+
+
 func _on_skill_cooldown_updated(slot_key: String, remaining: float, total: float) -> void:
 	if slot_key == "SPACE" and slot_dash != null:
 		slot_dash.set_cooldown(remaining, total)
@@ -881,7 +1071,7 @@ func _refresh_interact_button() -> void:
 	last_nearby_interact = near_txt
 	var has_near: bool = (near_txt != "")
 	slot_interact.set_slot_visual(
-		load("res://assets/sprites/props/chest_open.png") if has_near else load("res://assets/sprites/icons/icon_pendant.png"),
+		_get_cached_tex("res://assets/sprites/props/chest_open.png") if has_near else _get_cached_tex("res://assets/sprites/icons/icon_pendant.png"),
 		"BẤM!" if has_near else "Gần",
 		false,
 		has_near,
@@ -907,7 +1097,7 @@ func _refresh_moba_dock() -> void:
 			var tdef: Dictionary = GameDatabase.get_equipment_template(str(w_inst.get("template_id", "")))
 			w_icon_p = str(tdef.get("icon", w_icon_p))
 			w_name = EquipmentSystem.get_item_display_name(w_inst)
-		slot_lmb.set_slot_visual(load(w_icon_p), "ATK %d" % int(PlayerData.get_atk()), false, false, false, Color("#FFE599"))
+		slot_lmb.set_slot_visual(_get_cached_tex(w_icon_p), "ATK %d" % int(PlayerData.get_atk()), false, false, false, Color("#FFE599"))
 		slot_lmb.set_tooltip_info(
 			"Đánh Thường [Chuột Trái] — %s" % w_name,
 			"Combo 3 nhịp liền thân · Công kích: %d" % int(PlayerData.get_atk()),
@@ -928,11 +1118,12 @@ func _refresh_moba_dock() -> void:
 		"R": "Sang Chương 02 (Ma Thú Sơn Mạch) gặp Tiểu Y Tiên để học Diễm Phân Phệ Lãng Xích!",
 		"F": "Chỉ mở khóa ở Chương 03 Sa Mạc Tháp Qua Nhĩ sau khi thu phục Thanh Liên Địa Tâm Hỏa (#19)!"
 	}
+	_slot_qi_costs.clear()
 	for slot_k in ["Q", "E", "R", "F"]:
 		var btn: MobaSlotButton = skill_slots[slot_k]
 		var sid: String = PlayerData.get_skill_in_slot(slot_k)
 		if sid == "":
-			btn.set_slot_visual(load(str(default_locked_icons[slot_k])), "KHÓA", true, false, false)
+			btn.set_slot_visual(_get_cached_tex(str(default_locked_icons[slot_k])), "KHÓA", true, false, false)
 			btn.set_tooltip_info(
 				"Ô Đấu Kỹ [%s] — Chưa Mở Khóa" % slot_k,
 				"Chuẩn nguyên tác · Mở dần theo cốt truyện",
@@ -943,14 +1134,21 @@ func _refresh_moba_dock() -> void:
 			var sdef: Dictionary = GameDatabase.get_skill_def(sid)
 			var ic_p: String = str(sdef.get("icon", default_locked_icons[slot_k]))
 			var qi_c: float = float(sdef.get("qi_cost", 15.0))
+			if str(sdef.get("behavior", "")) == "fire_lotus_ult":
+				qi_c *= PlayerData.get_lotus_qi_cost_multiplier()
+			_slot_qi_costs[slot_k] = qi_c
 			var low_qi: bool = (PlayerData.current_qi < qi_c)
 			var is_buff_on: bool = (sid == "thien_hoa_tam_huyen_bien" and PlayerData.is_flame_buff_active)
-			btn.set_slot_visual(load(ic_p), "%d QI" % int(qi_c), false, is_buff_on, low_qi, Color("#FF758F") if low_qi else Color("#70D6FF"))
+			var mi: Dictionary = PlayerData.get_skill_mastery_info(sid)
+			var eff_cd: float = float(sdef.get("cooldown", 5.0)) * float(mi.get("cd_mult", 1.0))
+			var dmg_pct: int = int(round((float(mi.get("dmg_mult", 1.0)) - 1.0) * 100.0))
+			var m_tag: String = " · %s (+%d%% DMG)" % [str(mi.get("tier_name", "Sơ Khuy")), dmg_pct] if dmg_pct > 0 else " · %s" % str(mi.get("tier_name", "Sơ Khuy"))
+			btn.set_slot_visual(_get_cached_tex(ic_p), "%d QI" % int(qi_c), false, is_buff_on, low_qi, Color("#FF758F") if low_qi else Color("#70D6FF"))
 			btn.set_tooltip_info(
 				"[%s] %s" % [slot_k, str(sdef.get("name", sid))],
-				"%s · Tốn %d Đấu Khí · Hồi %.1fs" % [str(sdef.get("grade", "")), int(qi_c), float(sdef.get("cooldown", 5.0))],
-				str(sdef.get("description", "")) + "\n(Bấm chuột vào ô này hoặc nhấn phím [%s] để tung chiêu; mở [K] để đổi chiêu khác!)" % slot_k,
-				Color("#FFD166")
+				"%s%s · Tốn %d Đấu Khí · Hồi %.1fs" % [str(sdef.get("grade", "")), m_tag, int(qi_c), eff_cd],
+				str(sdef.get("description", "")) + "\n(Thông thạo: %d lần xuất chiêu · Mở [K] để xem thưởng Thông Thạo & đổi chiêu!)" % int(mi.get("uses", 0)),
+				mi.get("color", Color("#FFD166")) as Color
 			)
 
 	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa Đấu Tông Hộ Pháp
@@ -958,7 +1156,7 @@ func _refresh_moba_dock() -> void:
 	var t_mode: String = PlayerData.get_assist_mode()
 	if t_mode == "medusa_dau_tong":
 		btn_t.set_slot_visual(
-			load("res://assets/sprites/npcs/npc_my_do_toa.png"),
+			_get_cached_tex("res://assets/sprites/npcs/npc_my_do_toa.png"),
 			"ĐẤU TÔNG",
 			false,
 			PlayerData.is_duoc_lao_active,
@@ -973,7 +1171,7 @@ func _refresh_moba_dock() -> void:
 		)
 	elif t_mode == "sleeping":
 		btn_t.set_slot_visual(
-			load("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
+			_get_cached_tex("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
 			"NGỦ SAY",
 			true,
 			false,
@@ -989,7 +1187,7 @@ func _refresh_moba_dock() -> void:
 	else:
 		var t_unl: bool = (t_mode == "duoc_lao")
 		btn_t.set_slot_visual(
-			load("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
+			_get_cached_tex("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
 			"PHỤ THỂ" if t_unl else "KHÓA",
 			not t_unl,
 			PlayerData.is_duoc_lao_active,
@@ -1003,28 +1201,39 @@ func _refresh_moba_dock() -> void:
 			Color("#70D6FF") if t_unl else Color("#ADB5BD")
 		)
 
-	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Tử Vân Dực khi trang bị!)
+	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Tam Thiên Lôi Động hoặc Tử Vân Dực!)
+	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped()
+	var dash_sub: String = "Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt")
+	var dash_col: Color = Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF"))
 	slot_dash.set_slot_visual(
-		load("res://assets/sprites/icons/skill_tu_van_duc.png") if has_wings else load("res://assets/sprites/icons/skill_dash.png"),
-		"Tử Vân" if has_wings else "Lướt",
+		_get_cached_tex("res://assets/sprites/icons/skill_tu_van_duc.png") if (has_wings or has_thunder) else _get_cached_tex("res://assets/sprites/icons/skill_dash.png"),
+		dash_sub,
 		false,
-		has_wings,
+		has_wings or has_thunder,
 		false,
-		Color("#E0AAFF") if has_wings else Color("#70D6FF")
+		dash_col
 	)
-	slot_dash.set_tooltip_info(
-		"[Space] Lướt Tử Vân Dực (ĐÃ NÂNG CẤP!)" if has_wings else "[Space] Thân Pháp Lướt Né",
-		"Hồi 0.64s · Tăng +35% cự ly & I-frame dài hơn!" if has_wings else "Hồi 0.7s · Có khung bất tử (I-frame)",
-		"Đôi cánh Tử Vân Dực bùng phát lông vũ tím giúp bay vọt vượt đạn Boss cực nhanh!" if has_wings else "Lướt nhanh né cú húc Sơn Trư và 3 tia Nguyệt Nha của Boss! (Lấy Tử Vân Dực ở Huyền Nhai Sơn Động để nâng cấp!)",
-		Color("#C77DFF") if has_wings else Color("#4CC9F0")
-	)
+	if has_thunder:
+		slot_dash.set_tooltip_info(
+			"[Space] Tam Thiên Lôi Động — Thân Pháp Lôi Thiểm!",
+			"Hồi 0.62s · I-frame 0.42s · Để lại Tàn Ảnh Lôi Điện giật chậm & phá thế địch!",
+			"Thân pháp Địa Giai của Phong Lôi Các: mỗi lần lướt né hóa hồ quang sấm sét để lại Lôi Ảnh gây tê liệt kẻ địch áp sát!",
+			Color("#72EFDD")
+		)
+	else:
+		slot_dash.set_tooltip_info(
+			"[Space] Lướt Tử Vân Dực (ĐÃ NÂNG CẤP!)" if has_wings else "[Space] Thân Pháp Lướt Né",
+			"Hồi 0.64s · Tăng +35% cự ly & I-frame dài hơn!" if has_wings else "Hồi 0.7s · Có khung bất tử (I-frame)",
+			"Đôi cánh Tử Vân Dực bùng phát lông vũ tím giúp bay vọt vượt đạn Boss cực nhanh!" if has_wings else "Lướt nhanh né cú húc Sơn Trư và 3 tia Nguyệt Nha của Boss! (Lấy Tử Vân Dực ở Huyền Nhai Sơn Động để nâng cấp!)",
+			Color("#C77DFF") if has_wings else Color("#4CC9F0")
+		)
 
 	# 5. Ô Trọng Áp [C]
 	var has_xich: bool = PlayerData.has_huyen_trong_xich_equipped()
 	var sealed: bool = has_xich and PlayerData.is_ruler_sealed
 	slot_weight.set_slot_visual(
-		load("res://assets/sprites/weapons/huyen_trong_xich.png"),
+		_get_cached_tex("res://assets/sprites/weapons/huyen_trong_xich.png"),
 		"+30%" if sealed else ("Mở" if has_xich else "KHÓA"),
 		not has_xich,
 		sealed,
@@ -1041,16 +1250,20 @@ func _refresh_moba_dock() -> void:
 	# 6. Ô Đồng Hành [G]
 	var has_comp: bool = not PlayerData.unlocked_companions.is_empty()
 	var cur_c: String = PlayerData.active_companion_id
-	var c_tex: Texture2D = load("res://assets/sprites/npcs/npc_duoc_lao.png")
+	var c_tex: Texture2D = _get_cached_tex("res://assets/sprites/npcs/npc_duoc_lao.png")
 	var c_sub: String = "Bật" if cur_c != "" else ("Tắt" if has_comp else "KHÓA")
 	var c_col: Color = Color("#80ED99")
 	if cur_c == "tieu_y_tien":
-		c_tex = load("res://assets/sprites/npcs/npc_tieu_y_tien.png")
+		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_tieu_y_tien.png")
 		c_sub = "Y Tiên"
 	elif cur_c == "thai_lan":
-		c_tex = load("res://assets/sprites/enemies/pet_thai_lan.png")
+		c_tex = _get_cached_tex("res://assets/sprites/enemies/pet_thai_lan.png")
 		c_sub = "Thải Lân"
 		c_col = Color("#72EFDD")
+	elif cur_c == "huan_nhi":
+		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_huan_nhi.png")
+		c_sub = "Huân Nhi"
+		c_col = Color("#FFD166")
 	elif cur_c == "duoc_lao_phantom":
 		c_sub = "Dược Lão"
 		c_col = Color("#70D6FF")
@@ -1085,7 +1298,7 @@ func _refresh_moba_dock() -> void:
 		var cnt: int = PlayerData.get_item_count(pid)
 		var pb: MobaSlotButton = pill_slots[pi]
 		var badge_col: Color = Color("#72EFDD") if (pid == "pill_bang_tam_dan" or pid == "pill_thanh_lien_tu") and cnt > 0 else (Color("#FFFFFF") if cnt > 0 else Color("#6C757D"))
-		pb.set_slot_visual(load(str(pmeta["icon"])), "x%d" % cnt, false, false, cnt <= 0, badge_col)
+		pb.set_slot_visual(_get_cached_tex(str(pmeta["icon"])), "x%d" % cnt, false, false, cnt <= 0, badge_col)
 
 		var eff_amt: int = 0
 		var itype: String = str(idef.get("type", ""))
@@ -1106,19 +1319,19 @@ func _refresh_moba_dock() -> void:
 	# 8. 8 Nút Hệ Thống góc trái dưới
 	var sys_meta: Dictionary = {
 		"I": { "icon": "res://assets/sprites/icons/icon_armor.png", "sub": "Đồ", "locked": false, "glow": false, "t": "[I] Trang Bị 10 Ô & Cường Hóa", "d": "Mặc/tháo 10 ô trang bị, xem Set Bonus, cường hóa & phân giải đồ thừa." },
-		"K": { "icon": "res://assets/sprites/icons/skill_toai_thach.png", "sub": "Kỹ", "locked": false, "glow": false, "t": "[K] Kho 10 Đấu Kỹ & Xưởng Hỏa Liên", "d": "Tự do lắp các Đấu Kỹ đã lĩnh ngộ vào phím Q/E/R và ghép Hỏa cho Phật Nộ Hỏa Liên." },
+		"K": { "icon": "res://assets/sprites/icons/skill_toai_thach.png", "sub": "Kỹ", "locked": false, "glow": false, "t": "[K] Kho %d Đấu Kỹ & Xưởng Hỏa Liên" % GameDatabase.skills_by_id.size(), "d": "Tự do lắp các Đấu Kỹ đã lĩnh ngộ vào phím Q/E/R, xem Độ Thông Thạo và ghép Hỏa cho Phật Nộ Hỏa Liên." },
 		"B": { "icon": "res://assets/sprites/icons/icon_stone.png", "sub": "Đột!" if PlayerData.is_at_bottleneck() else "Cảnh", "locked": false, "glow": PlayerData.is_at_bottleneck(), "t": "[B] Cảnh Giới & Đột Phá", "d": "Xem tiến độ 12 Đại Cảnh Giới, Linh Hồn Lực và bấm Đột Phá khi đạt 9 Đoạn/Tinh Đỉnh Phong!" },
 		"L": { "icon": "res://assets/sprites/icons/icon_cauldron.png", "sub": "Đan", "locked": not PlayerData.is_alchemy_unlocked(), "glow": false, "t": "[L] Lò Luyện Đan Tương Tác", "d": "Khai lò luyện đan qua Mini-game Khống Hỏa [Space] & Chắn Đan Lôi [E]!" },
 		"H": { "icon": "res://assets/sprites/icons/skill_hoa_lien.png", "sub": "Hỏa", "locked": not PlayerData.is_flames_unlocked(), "glow": false, "t": "[H] Dị Hỏa Bảng & Phần Quyết", "d": "Xem và vận chuyển các Thú Hỏa / Dị Hỏa đã thu phục theo đúng cốt truyện." },
-		"M": { "icon": "res://assets/sprites/icons/icon_pendant.png", "sub": "Map", "locked": false, "glow": false, "t": "[M] Bản Đồ Thế Giới (11 Khu Vực)", "d": "Xem 11 bản đồ Chương 01–03, Hảo Cảm 5 Hồng Nhan, Kỳ Vật & Dịch Chuyển Nhanh (Chế Độ DEMO)." },
+		"M": { "icon": "res://assets/sprites/icons/icon_pendant.png", "sub": "Map", "locked": false, "glow": false, "t": "[M] Thế Giới · Hồng Nhan · Tâm Ma · Tháp & Đồ Giám", "d": "Xem 25 bản đồ, Buff Hồng Nhan, Tâm Ma Luyện Cảnh (23 Boss), Thiên Phần Tháp Roguelite & Đồ Giám Vạn Thú!" },
 		"F5": { "icon": "res://assets/sprites/icons/icon_ring.png", "sub": "Lưu", "locked": false, "glow": false, "t": "[F5] Lưu Nhanh Vào Ô %d" % PlayerData.active_save_slot, "d": "Lưu tức thì toàn bộ tiến độ tu luyện, bản đồ & trang bị vào ô hiện tại." },
-		"ESC": { "icon": "res://assets/sprites/icons/icon_necklace.png", "sub": "Menu", "locked": false, "glow": false, "t": "[ESC] Menu Tạm Dừng", "d": "Lưu/Tải 3 Ô Nạp Giới, chỉnh Âm Lượng BGM/SFX hoặc quay về Màn Hình Chính." }
+		"ESC": { "icon": "res://assets/sprites/icons/icon_necklace.png", "sub": "Menu", "locked": false, "glow": false, "t": "[ESC] Menu Tạm Dừng & Hiển Thị", "d": "Lưu/Tải 3 Ô Nạp Giới, chỉnh Fullscreen/VSync/FPS/Rung màn hình & Âm lượng BGM/SFX." }
 	}
 	for k in sys_meta.keys():
 		if sys_buttons.has(k):
 			var sm: Dictionary = sys_meta[k]
 			var b: MobaSlotButton = sys_buttons[k]
-			b.set_slot_visual(load(str(sm["icon"])), str(sm["sub"]), bool(sm["locked"]), bool(sm["glow"]), false)
+			b.set_slot_visual(_get_cached_tex(str(sm["icon"])), str(sm["sub"]), bool(sm["locked"]), bool(sm["glow"]), false)
 			b.set_tooltip_info(str(sm["t"]), "Bấm chuột trực tiếp hoặc nhấn phím [%s]" % str(k), str(sm["d"]), Color("#FFD166"))
 
 	_refresh_interact_button()
@@ -1127,12 +1340,118 @@ func _refresh_moba_dock() -> void:
 func _on_boss_status_updated(boss_name: String, realm_badge: String, cur_hp: float, max_hp: float, phase: int, visible_bar: bool) -> void:
 	boss_bar_panel.visible = visible_bar
 	if not visible_bar:
+		boss_is_staggered = false
+		boss_p2_warning = false
 		return
 	boss_title_lbl.text = "%s  <%s>" % [boss_name, realm_badge]
-	boss_phase_lbl.text = "GIAI ĐOẠN II — CUỒNG BẠO!" if phase >= 2 else "GIAI ĐOẠN I"
-	boss_phase_lbl.add_theme_color_override("font_color", Color("#FF2A5F") if phase >= 2 else Color("#FFD166"))
+	if not boss_p2_warning:
+		boss_phase_lbl.text = "GIAI ĐOẠN II — CUỒNG BẠO!" if phase >= 2 else "GIAI ĐOẠN I"
+		boss_phase_lbl.add_theme_color_override("font_color", Color("#FF2A5F") if phase >= 2 else Color("#FFD166"))
 	boss_hp_bar.max_value = maxf(1.0, max_hp)
 	target_boss_hp = clampf(cur_hp, 0.0, max_hp)
+
+
+func _on_boss_poise_updated(cur_poise: float, max_poise: float, staggered: bool, phase2_warning: bool) -> void:
+	boss_is_staggered = staggered
+	boss_p2_warning = phase2_warning
+	if boss_poise_bar == null or boss_poise_lbl == null:
+		return
+	boss_poise_bar.max_value = maxf(1.0, max_poise)
+	target_boss_poise = clampf(cur_poise, 0.0, max_poise)
+	var fill_sb: StyleBox = boss_poise_bar.get_theme_stylebox("fill")
+	if staggered:
+		boss_poise_lbl.text = "⚡ VỠ THẾ (STAGGER) — ĐÁNH TĂNG +35% SÁT THƯƠNG!"
+		boss_poise_lbl.add_theme_color_override("font_color", Color("#FF4D6D"))
+		if fill_sb is StyleBoxFlat:
+			(fill_sb as StyleBoxFlat).bg_color = Color("#FF4D6D")
+	elif phase2_warning:
+		boss_poise_lbl.text = "⚠ SẮP BỘC PHÁT GIAI ĐOẠN II — CHUẨN BỊ NÉ CHIÊU!"
+		boss_poise_lbl.add_theme_color_override("font_color", Color("#FF9F1C"))
+		boss_phase_lbl.text = "⚠ CẢNH BÁO: SẮP VÀO GIAI ĐOẠN II!"
+		boss_phase_lbl.add_theme_color_override("font_color", Color("#FF9F1C"))
+		if fill_sb is StyleBoxFlat:
+			(fill_sb as StyleBoxFlat).bg_color = Color("#FF7B00")
+	else:
+		var pct: int = int(round(100.0 * clampf(cur_poise / maxf(1.0, max_poise), 0.0, 1.0)))
+		boss_poise_lbl.text = "Tích Lũy Phá Thế (Poise): %d%%" % pct
+		boss_poise_lbl.add_theme_color_override("font_color", Color("#FFE599"))
+		if fill_sb is StyleBoxFlat:
+			(fill_sb as StyleBoxFlat).bg_color = Color("#FFD166")
+
+
+func _on_boss_rush_completed(boss_id: String, difficulty: String, grade: String, elapsed_sec: float, reward_stones: int, reward_gold: int) -> void:
+	var edef: Dictionary = GameDatabase.get_enemy_def(boss_id)
+	var bname: String = str(edef.get("name", boss_id))
+	var d_label: String = "ĐẤU TÔNG" if difficulty == "dau_tong" else ("ÁC MỘNG" if difficulty == "nightmare" else "THƯỜNG")
+	_on_banter("⚔ TÂM MA LUYỆN CẢNH THẮNG LỢI! %s [%s] · HẠNG %s · %.1fs · +%d Đá CH · +%d Kim Tệ!" % [
+		bname, d_label, grade, elapsed_sec, reward_stones, reward_gold
+	])
+	_refresh_stats()
+	if current_modal == "world_map":
+		_populate_modal()
+
+
+func _sync_display_widgets() -> void:
+	if fps_panel != null:
+		fps_panel.visible = AudioManager.show_fps
+
+
+func _sync_keybind_labels() -> void:
+	var pairs: Dictionary = {
+		"Q": "skill_q", "E": "skill_e", "R": "skill_r", "F": "skill_ult", "T": "skill_assist"
+	}
+	for k in pairs.keys():
+		if skill_slots.has(k):
+			var b: MobaSlotButton = skill_slots[k]
+			var lbl_s: String = AudioManager.get_action_key_label(str(pairs[k]))
+			b.key_label_text = lbl_s
+			if b.key_badge_lbl != null:
+				b.key_badge_lbl.text = lbl_s
+	var extra: Array = [
+		[slot_dash, "dash"], [slot_weight, "toggle_weight"],
+		[slot_companion, "toggle_companion"], [slot_interact, "interact"]
+	]
+	for item in extra:
+		var btn: MobaSlotButton = item[0] as MobaSlotButton
+		if btn != null:
+			var lbl_s: String = AudioManager.get_action_key_label(str(item[1]))
+			btn.key_label_text = lbl_s
+			if btn.key_badge_lbl != null:
+				btn.key_badge_lbl.text = lbl_s
+
+
+func _on_tower_state_updated(floor_num: int, enemies_left: int, enemies_total: int, heat_dps: float, active: bool) -> void:
+	if tower_bar_panel == null or tower_info_lbl == null:
+		return
+	tower_bar_panel.visible = active
+	if active:
+		tower_info_lbl.text = "🔥 THIÊN PHẦN THÁP — TẦNG %d  ·  Địch còn: %d/%d  ·  Tâm Hỏa: -%.0f HP/s" % [
+			floor_num, enemies_left, enemies_total, heat_dps
+		]
+		# Đẩy thanh Boss xuống gọn gàng nếu đang đánh Boss tầng 3/6/9
+		boss_bar_panel.offset_top = 92
+	else:
+		boss_bar_panel.offset_top = 56
+
+
+func _on_tower_blessing_requested(floor_num: int, choices: Array) -> void:
+	pending_tower_floor = floor_num
+	pending_tower_choices = choices
+	_hide_slot_tooltip()
+	current_modal = "tower_blessing"
+	modal_dim_bg.visible = true
+	modal_panel.visible = true
+	modal_status_lbl.text = "Chọn 1 trong 3 Chúc Phúc Tâm Hỏa để tiến lên Tầng %d!" % (floor_num + 1)
+	_populate_modal()
+	_sync_player_input_block()
+
+
+func _open_auction_house(venue_id: String = "nha_phi") -> void:
+	shop_venue_id = venue_id if venue_id != "" else "nha_phi"
+	shop_tab = "auction"
+	auction_lots = AuctionSystem.generate_auction_lots(shop_venue_id)
+	active_auction_lot_idx = 0
+	_open_nha_phi_shop()
 
 
 # =========================================================
@@ -1251,7 +1570,12 @@ func _execute_dialogue_action(act: String) -> void:
 				_heal_player_full("")
 			var oshop: String = str(res.get("open_shop", ""))
 			if oshop != "":
+				shop_venue_id = "nha_phi"
+				shop_tab = "shop"
 				_open_nha_phi_shop()
+			var oauc: String = str(res.get("open_auction", ""))
+			if oauc != "":
+				_open_auction_house(oauc)
 			var warp_m: String = str(eff.get("warp_map", ""))
 			if warp_m != "":
 				var w: Node = _find_world()
@@ -1372,7 +1696,8 @@ func _refresh_all() -> void:
 func _refresh_stats() -> void:
 	var bottleneck_tag: String = " [ĐỈNH PHONG!]" if PlayerData.is_at_bottleneck() else ""
 	realm_lbl.text = "%s%s" % [PlayerData.get_realm_display_title(), bottleneck_tag]
-	currency_lbl.text = "%d Kim Tệ · %d Đá" % [PlayerData.gold, PlayerData.enhance_stones]
+	var fe_txt: String = " · %d Hỏa Năng" % PlayerData.fire_energy if PlayerData.fire_energy > 0 else ""
+	currency_lbl.text = "%d Kim Tệ · %d Đá%s" % [PlayerData.gold, PlayerData.enhance_stones, fe_txt]
 
 	var m_hp: float = PlayerData.get_max_hp()
 	var m_qi: float = PlayerData.get_max_qi()
@@ -1385,7 +1710,9 @@ func _refresh_stats() -> void:
 
 	qi_bar.max_value = m_qi
 	target_qi_val = PlayerData.current_qi
-	qi_val_lbl.text = "Đấu Khí  %d / %d" % [int(PlayerData.current_qi), int(m_qi)]
+	_last_qi_display = int(PlayerData.current_qi)
+	_last_max_qi_display = int(m_qi)
+	qi_val_lbl.text = "Đấu Khí  %d / %d" % [_last_qi_display, _last_max_qi_display]
 
 	exp_bar.max_value = req_e
 	target_exp_val = float(PlayerData.current_exp)
@@ -1406,9 +1733,9 @@ func _refresh_quest_ui() -> void:
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		if PlayerData.is_demo_mode:
-			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ ★\nBấm [M] Dịch Chuyển Nhanh %d Map (Ch01–Ch04), thử [F] Hỏa Liên, [H] 28 Hỏa & [K] Đấu Kỹ!" % GameDatabase.maps_ordered.size()
+			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ ★\nBấm [M] Dịch Chuyển Nhanh %d Map (Ch01–Ch05), thử [F] Hỏa Liên, [H] 28 Hỏa & [K] Đấu Kỹ!" % GameDatabase.maps_ordered.size()
 		else:
-			quest_lbl.text = "★ HOÀN TẤT QUYỂN I (CHƯƠNG 01–04) ★\nTự do săn Boss, hoàn thành Nhiệm Vụ Phụ & chuẩn bị tiến vào Quyển II: Hắc Giác Vực!"
+			quest_lbl.text = "★ HOÀN TẤT CHƯƠNG 05 (HẮC GIÁC VỰC & NGOẠI VIỆN) ★\nTự do khiêu chiến Thiên Phần Tháp, Tâm Ma Luyện Cảnh (23 Boss) & chuẩn bị vào Chương 06: Nội Viện!"
 	else:
 		var goal: int = int(q.get("target_count", 1))
 		quest_lbl.text = "★ %s (%d/%d)\n%s" % [
@@ -1500,6 +1827,7 @@ func _toggle_modal(kind: String) -> void:
 func _close_modal() -> void:
 	if alc_active:
 		return
+	rebinding_action = ""
 	current_modal = ""
 	modal_dim_bg.visible = false
 	modal_panel.visible = false
@@ -1529,6 +1857,8 @@ func _populate_modal() -> void:
 		_build_single_scroll_modal(_build_world_map_content)
 	elif current_modal == "pause":
 		_build_single_scroll_modal(_build_pause_menu_content)
+	elif current_modal == "tower_blessing":
+		_build_single_scroll_modal(_build_tower_blessing_content)
 
 
 func _build_single_scroll_modal(builder_fn: Callable) -> void:
@@ -1558,6 +1888,31 @@ func _build_pause_menu_content(vbox: VBoxContainer) -> void:
 	resume_b.pressed.connect(_close_modal)
 	top_btns.add_child(resume_b)
 
+	var cur_world: Node = _find_world()
+	if cur_world != null and bool(cur_world.get("is_boss_rush_active")):
+		var exit_br_b := Button.new()
+		exit_br_b.text = "← Rời Tâm Ma Luyện Cảnh"
+		exit_br_b.add_theme_font_size_override("font_size", 13)
+		exit_br_b.add_theme_color_override("font_color", Color("#FF758F"))
+		exit_br_b.pressed.connect(func() -> void:
+			AudioManager.play_sfx("portal_warp")
+			_close_modal()
+			if cur_world.has_method("exit_boss_rush"):
+				cur_world.exit_boss_rush()
+		)
+		top_btns.add_child(exit_br_b)
+	elif cur_world != null and bool(cur_world.get("is_tower_active")):
+		var exit_tw_b := Button.new()
+		exit_tw_b.text = "← Rời Thiên Phần Luyện Khí Tháp"
+		exit_tw_b.add_theme_font_size_override("font_size", 13)
+		exit_tw_b.add_theme_color_override("font_color", Color("#FF9F1C"))
+		exit_tw_b.pressed.connect(func() -> void:
+			AudioManager.play_sfx("portal_warp")
+			_close_modal()
+			EventBus.tower_exit_requested.emit()
+		)
+		top_btns.add_child(exit_tw_b)
+
 	var main_b := Button.new()
 	main_b.text = "Lưu & Về Màn Hình Chính"
 	main_b.add_theme_font_size_override("font_size", 13)
@@ -1583,7 +1938,7 @@ func _build_pause_menu_content(vbox: VBoxContainer) -> void:
 		_close_modal()
 		_sync_world_after_load()
 		_refresh_all()
-		_on_banter("ĐÃ BẬT CHẾ ĐỘ DEMO FULL (Ô 3)! Bấm [M] Dịch Chuyển Nhanh %d bản đồ (Ch01–Ch04), bấm [F] thử Phật Nộ Hỏa Liên 4 Hỏa!" % GameDatabase.maps_ordered.size())
+		_on_banter("ĐÃ BẬT CHẾ ĐỘ DEMO FULL (Ô 3)! Bấm [M] Dịch Chuyển Nhanh %d bản đồ (Ch01–Ch05), bấm [F] thử Phật Nộ Hỏa Liên 4 Hỏa!" % GameDatabase.maps_ordered.size())
 	)
 	top_btns.add_child(demo_b)
 
@@ -1653,6 +2008,121 @@ func _build_pause_menu_content(vbox: VBoxContainer) -> void:
 	)
 	aud_v.add_child(sfx_s)
 
+	# Khung Cài Đặt Hiển Thị & Cảm Giác Chiến Đấu (Fullscreen / VSync / FPS / Rung Màn Hình)
+	var disp_card := _make_styled_panel(Color(0.08, 0.10, 0.18, 0.94), Color("#FFD166"), 1, 9)
+	vbox.add_child(disp_card)
+	var disp_v := VBoxContainer.new()
+	disp_v.add_theme_constant_override("separation", 5)
+	disp_card.add_child(disp_v)
+	disp_v.add_child(_make_label("HIỂN THỊ & CẢM GIÁC CHIẾN ĐẤU", 13, Color("#FFD166")))
+
+	var disp_row := HFlowContainer.new()
+	disp_row.add_theme_constant_override("h_separation", 14)
+	disp_row.add_theme_constant_override("v_separation", 4)
+	disp_v.add_child(disp_row)
+
+	var chk_fs := CheckButton.new()
+	chk_fs.text = "Toàn Màn Hình (Fullscreen)"
+	chk_fs.button_pressed = AudioManager.is_fullscreen
+	chk_fs.add_theme_font_size_override("font_size", 12)
+	chk_fs.add_theme_color_override("font_color", Color("#F8F9FA"))
+	chk_fs.toggled.connect(func(on: bool) -> void:
+		AudioManager.play_sfx("ui_click")
+		AudioManager.set_fullscreen(on)
+		modal_status_lbl.text = "Đã chuyển sang Toàn Màn Hình!" if on else "Đã chuyển về chế độ Cửa Sổ 1280×720!"
+	)
+	disp_row.add_child(chk_fs)
+
+	var chk_vs := CheckButton.new()
+	chk_vs.text = "Đồng Bộ Khung Hình (VSync)"
+	chk_vs.button_pressed = AudioManager.vsync_enabled
+	chk_vs.add_theme_font_size_override("font_size", 12)
+	chk_vs.add_theme_color_override("font_color", Color("#A8DADC"))
+	chk_vs.toggled.connect(func(on: bool) -> void:
+		AudioManager.play_sfx("ui_click")
+		AudioManager.set_vsync(on)
+		modal_status_lbl.text = "Đã BẬT VSync (Chống xé hình)!" if on else "Đã TẮT VSync (Mở khóa FPS tối đa)!"
+	)
+	disp_row.add_child(chk_vs)
+
+	var chk_fps := CheckButton.new()
+	chk_fps.text = "Hiện FPS Góc Phải"
+	chk_fps.button_pressed = AudioManager.show_fps
+	chk_fps.add_theme_font_size_override("font_size", 12)
+	chk_fps.add_theme_color_override("font_color", Color("#80ED99"))
+	chk_fps.toggled.connect(func(on: bool) -> void:
+		AudioManager.play_sfx("ui_click")
+		AudioManager.set_show_fps(on)
+		modal_status_lbl.text = "Đã BẬT hiển thị FPS!" if on else "Đã ẩn hiển thị FPS."
+	)
+	disp_row.add_child(chk_fps)
+
+	var shk_l := _make_label("Cường Độ Rung Màn Hình (Screen Shake): %d%%" % int(round(AudioManager.shake_scale * 100.0)), 12, Color("#FF9F1C"))
+	disp_v.add_child(shk_l)
+	var shk_s := HSlider.new()
+	shk_s.min_value = 0.0
+	shk_s.max_value = 1.0
+	shk_s.step = 0.1
+	shk_s.value = AudioManager.shake_scale
+	shk_s.value_changed.connect(func(v: float) -> void:
+		AudioManager.set_shake_scale(v)
+		shk_l.text = "Cường Độ Rung Màn Hình (Screen Shake): %d%%" % int(round(v * 100.0))
+	)
+	disp_v.add_child(shk_s)
+
+	# Khung Đổi Phím Tùy Chỉnh (Key Rebinding — Tự Lưu & Đồng Bộ Thanh MOBA!)
+	var kb_card := _make_styled_panel(Color(0.07, 0.09, 0.16, 0.94), Color("#C77DFF"), 1, 9)
+	vbox.add_child(kb_card)
+	var kb_v := VBoxContainer.new()
+	kb_v.add_theme_constant_override("separation", 6)
+	kb_card.add_child(kb_v)
+
+	var kb_hdr := HBoxContainer.new()
+	kb_v.add_child(kb_hdr)
+	var kb_title := _make_label("ĐỔI PHÍM TÙY CHỈNH (KEY REBINDING — Bấm ô phím rồi nhấn phím mới)", 13, Color("#E0AAFF"))
+	kb_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	kb_hdr.add_child(kb_title)
+
+	var kb_reset := Button.new()
+	kb_reset.text = "Khôi Phục Mặc Định"
+	kb_reset.add_theme_font_size_override("font_size", 11)
+	kb_reset.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		rebinding_action = ""
+		AudioManager.reset_default_keybinds()
+		modal_status_lbl.text = "Đã khôi phục toàn bộ phím điều khiển mặc định!"
+		_populate_modal()
+	)
+	kb_hdr.add_child(kb_reset)
+
+	var kb_grid := HFlowContainer.new()
+	kb_grid.add_theme_constant_override("h_separation", 8)
+	kb_grid.add_theme_constant_override("v_separation", 6)
+	kb_v.add_child(kb_grid)
+
+	var kb_specs: Array = [
+		["move_up", "Đi Lên"], ["move_down", "Đi Xuống"], ["move_left", "Sang Trái"], ["move_right", "Sang Phải"],
+		["dash", "Lướt Né"], ["interact", "Tương Tác"], ["skill_q", "Đấu Kỹ 1"], ["skill_e", "Đấu Kỹ 2"],
+		["skill_r", "Đấu Kỹ 3"], ["skill_ult", "Hỏa Liên"], ["skill_assist", "Trợ Chiến"],
+		["toggle_weight", "Trọng Áp"], ["toggle_companion", "Đồng Hành"], ["soul_radar", "Radar Hồn"]
+	]
+	for spec in kb_specs:
+		var act_k: String = str(spec[0])
+		var act_lbl: String = str(spec[1])
+		var is_wait: bool = (rebinding_action == act_k)
+		var kb_btn := Button.new()
+		kb_btn.text = "%s: [Nhấn phím...]" % act_lbl if is_wait else "%s: [%s]" % [act_lbl, AudioManager.get_action_key_label(act_k)]
+		kb_btn.add_theme_font_size_override("font_size", 11)
+		if is_wait:
+			kb_btn.add_theme_color_override("font_color", Color("#FFD166"))
+		kb_btn.pressed.connect(func() -> void:
+			AudioManager.play_sfx("ui_click")
+			rebinding_action = act_k
+			modal_status_lbl.text = "Đang đổi phím [%s] — Hãy nhấn phím bất kỳ trên bàn phím (ESC để hủy)!" % act_lbl
+			_populate_modal()
+		)
+		kb_grid.add_child(kb_btn)
+
 	vbox.add_child(_make_label("3 Ô LƯU TIẾN ĐỘ NẠP GIỚI (Ô hiện tại: Ô %d)" % PlayerData.active_save_slot, 14, Color("#FFD166")))
 	for s in range(1, PlayerData.MAX_SAVE_SLOTS + 1):
 		var info: Dictionary = PlayerData.get_save_slot_summary(s)
@@ -1691,16 +2161,17 @@ func _build_pause_menu_content(vbox: VBoxContainer) -> void:
 
 
 # =========================================================
-# [M] BẢN ĐỒ THẾ GIỚI (11 BẢN ĐỒ CH.01–03) & HỒNG NHAN (BUFF · TẶNG QUÀ)
+# [M] BẢN ĐỒ THẾ GIỚI (25 BẢN ĐỒ CH.01–05), HỒNG NHAN, TÂM MA, THIÊN PHẦN THÁP & ĐỒ GIÁM
 # =========================================================
 func _build_world_map_content(vbox: VBoxContainer) -> void:
 	var total_maps: int = GameDatabase.maps_ordered.size()
-	modal_title_lbl.text = "[M] BẢN ĐỒ THẾ GIỚI (%d KHU VỰC) • HỒNG NHAN (BUFF & TẶNG QUÀ) • KỲ VẬT" % total_maps
+	modal_title_lbl.text = "[M] THẾ GIỚI (%d MAP) • HỒNG NHAN • TÂM MA LUYỆN CẢNH • ĐỒ GIÁM VẠN THÚ" % total_maps
 	vbox.add_theme_constant_override("separation", 6)
 
-	# Thanh chuyển tab gọn gàng giữa Bản Đồ Thế Giới & Hồng Nhan Tri Kỷ
-	var tab_row := HBoxContainer.new()
-	tab_row.add_theme_constant_override("separation", 8)
+	# Thanh chuyển 4 tab gọn gàng (HFlowContainer chống tràn ngang)
+	var tab_row := HFlowContainer.new()
+	tab_row.add_theme_constant_override("h_separation", 7)
+	tab_row.add_theme_constant_override("v_separation", 6)
 	vbox.add_child(tab_row)
 
 	var unclaimed_gifts: int = 0
@@ -1713,9 +2184,9 @@ func _build_world_map_content(vbox: VBoxContainer) -> void:
 				unclaimed_gifts += 1
 
 	var tab_maps_btn := Button.new()
-	tab_maps_btn.text = ("★ " if world_map_tab == "maps" else "") + "Bản Đồ Thế Giới (%d Khu Vực)" % total_maps
+	tab_maps_btn.text = ("★ " if world_map_tab == "maps" else "") + "Bản Đồ (%d)" % total_maps
 	tab_maps_btn.disabled = (world_map_tab == "maps")
-	tab_maps_btn.add_theme_font_size_override("font_size", 13)
+	tab_maps_btn.add_theme_font_size_override("font_size", 12)
 	tab_maps_btn.pressed.connect(func() -> void:
 		AudioManager.play_sfx("ui_click")
 		world_map_tab = "maps"
@@ -1723,11 +2194,11 @@ func _build_world_map_content(vbox: VBoxContainer) -> void:
 	)
 	tab_row.add_child(tab_maps_btn)
 
-	var gift_badge: String = "  [%d QUÀ MỚI!]" % unclaimed_gifts if unclaimed_gifts > 0 else ""
+	var gift_badge: String = " [%d QUÀ!]" % unclaimed_gifts if unclaimed_gifts > 0 else ""
 	var tab_her_btn := Button.new()
-	tab_her_btn.text = ("★ " if world_map_tab == "heroines" else "") + "Hồng Nhan — Buff Hảo Cảm & Tặng Quà" + gift_badge
+	tab_her_btn.text = ("★ " if world_map_tab == "heroines" else "") + "Hồng Nhan" + gift_badge
 	tab_her_btn.disabled = (world_map_tab == "heroines")
-	tab_her_btn.add_theme_font_size_override("font_size", 13)
+	tab_her_btn.add_theme_font_size_override("font_size", 12)
 	tab_her_btn.add_theme_color_override("font_color", Color("#FFD166") if unclaimed_gifts > 0 else Color("#E0AAFF"))
 	tab_her_btn.pressed.connect(func() -> void:
 		AudioManager.play_sfx("ui_click")
@@ -1736,8 +2207,53 @@ func _build_world_map_content(vbox: VBoxContainer) -> void:
 	)
 	tab_row.add_child(tab_her_btn)
 
+	var tab_br_btn := Button.new()
+	tab_br_btn.text = ("★ " if world_map_tab == "boss_rush" else "") + "⚔ Tâm Ma Luyện Cảnh"
+	tab_br_btn.disabled = (world_map_tab == "boss_rush")
+	tab_br_btn.add_theme_font_size_override("font_size", 12)
+	tab_br_btn.add_theme_color_override("font_color", Color("#FF758F"))
+	tab_br_btn.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		world_map_tab = "boss_rush"
+		_populate_modal()
+	)
+	tab_row.add_child(tab_br_btn)
+
+	var tab_best_btn := Button.new()
+	tab_best_btn.text = ("★ " if world_map_tab == "bestiary" else "") + "📖 Đồ Giám Vạn Thú"
+	tab_best_btn.disabled = (world_map_tab == "bestiary")
+	tab_best_btn.add_theme_font_size_override("font_size", 12)
+	tab_best_btn.add_theme_color_override("font_color", Color("#72EFDD"))
+	tab_best_btn.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		world_map_tab = "bestiary"
+		_populate_modal()
+	)
+	tab_row.add_child(tab_best_btn)
+
+	var tab_tw_btn := Button.new()
+	tab_tw_btn.text = ("★ " if world_map_tab == "tower" else "") + "🔥 Thiên Phần Tháp"
+	tab_tw_btn.disabled = (world_map_tab == "tower")
+	tab_tw_btn.add_theme_font_size_override("font_size", 12)
+	tab_tw_btn.add_theme_color_override("font_color", Color("#FF9F1C"))
+	tab_tw_btn.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		world_map_tab = "tower"
+		_populate_modal()
+	)
+	tab_row.add_child(tab_tw_btn)
+
 	if world_map_tab == "heroines":
 		_build_heroines_affection_tab(vbox)
+		return
+	elif world_map_tab == "boss_rush":
+		_build_boss_rush_tab(vbox)
+		return
+	elif world_map_tab == "bestiary":
+		_build_bestiary_tab(vbox)
+		return
+	elif world_map_tab == "tower":
+		_build_tower_tab(vbox)
 		return
 
 	# 1. Tóm tắt Buff Hồng Nhan & Kỳ Vật Cốt Truyện
@@ -1953,6 +2469,416 @@ func _build_heroines_affection_tab(vbox: VBoxContainer) -> void:
 				ms_flow.add_child(cb)
 
 
+func _boss_rush_grade_color(g: String) -> Color:
+	match g:
+		"SSS":
+			return Color("#FFD166")
+		"SS":
+			return Color("#FF4D6D")
+		"S":
+			return Color("#C77DFF")
+		"A":
+			return Color("#80ED99")
+		"B":
+			return Color("#70D6FF")
+		_:
+			return Color("#CED4DA")
+
+
+func _build_boss_rush_tab(vbox: VBoxContainer) -> void:
+	var sum_card := _make_styled_panel(Color(0.13, 0.05, 0.09, 0.95), Color("#FF4D6D"), 2, 9)
+	vbox.add_child(sum_card)
+	var sv := VBoxContainer.new()
+	sv.add_theme_constant_override("separation", 5)
+	sum_card.add_child(sv)
+	sv.add_child(_make_label("⚔ TÂM MA LUYỆN CẢNH — TÁI CHIẾN TOÀN BỘ 19 ĐẠI BOSS (XẾP HẠNG C → SSS)", 14, Color("#FFD166")))
+	var desc_l := _make_label("Bước vào Đấu Trường Tâm Ma 1v1 để thử sức với bất kỳ Đại Boss nào mà KHÔNG ảnh hưởng nhiệm vụ cốt truyện! Đánh nhanh & ít mất máu đạt hạng SSS nhận tối đa Đá Cường Hóa + Kim Tệ.", 11, Color("#E2E8F0"))
+	desc_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	sv.add_child(desc_l)
+
+	var cur_world: Node = _find_world()
+	if cur_world != null and bool(cur_world.get("is_boss_rush_active")):
+		var leave_btn := Button.new()
+		leave_btn.text = "← Rời Tâm Ma Luyện Cảnh (Trở Về Bản Đồ Cũ)"
+		leave_btn.add_theme_font_size_override("font_size", 13)
+		leave_btn.add_theme_color_override("font_color", Color("#FF758F"))
+		leave_btn.pressed.connect(func() -> void:
+			AudioManager.play_sfx("portal_warp")
+			_close_modal()
+			if cur_world.has_method("exit_boss_rush"):
+				cur_world.exit_boss_rush()
+		)
+		sv.add_child(leave_btn)
+
+	# Chọn độ khó (Thường / Ác Mộng / Đấu Tông)
+	var diff_row := HFlowContainer.new()
+	diff_row.add_theme_constant_override("h_separation", 8)
+	diff_row.add_theme_constant_override("v_separation", 5)
+	sv.add_child(diff_row)
+
+	var diff_specs: Array = [
+		{ "k": "normal", "t": "Thường (HP x1.0 · ATK x1.0 · Thưởng x1.0)", "hp_m": 1.0, "atk_m": 1.0, "col": Color("#80ED99") },
+		{ "k": "nightmare", "t": "Ác Mộng (HP x1.65 · ATK x1.35 · Thưởng x1.75)", "hp_m": 1.65, "atk_m": 1.35, "col": Color("#FF9F1C") },
+		{ "k": "dau_tong", "t": "Đấu Tông (HP x2.45 · ATK x1.72 · Thưởng x2.6)", "hp_m": 2.45, "atk_m": 1.72, "col": Color("#FF4D6D") }
+	]
+	var cur_hp_m: float = 1.0
+	var cur_atk_m: float = 1.0
+	for ds in diff_specs:
+		var dk: String = str(ds["k"])
+		if dk == boss_rush_diff:
+			cur_hp_m = float(ds["hp_m"])
+			cur_atk_m = float(ds["atk_m"])
+		var db := Button.new()
+		db.text = ("★ " if dk == boss_rush_diff else "") + str(ds["t"])
+		db.disabled = (dk == boss_rush_diff)
+		db.add_theme_font_size_override("font_size", 11)
+		db.add_theme_color_override("font_color", ds["col"] as Color)
+		db.pressed.connect(func() -> void:
+			AudioManager.play_sfx("ui_click")
+			boss_rush_diff = dk
+			_populate_modal()
+		)
+		diff_row.add_child(db)
+
+	# Danh sách toàn bộ Boss từ GameDatabase, sắp theo Cảnh giới & HP
+	var bosses: Array = []
+	for eid in GameDatabase.enemies_by_id.keys():
+		var ed: Dictionary = GameDatabase.get_enemy_def(str(eid))
+		if bool(ed.get("is_boss", false)):
+			bosses.append(ed)
+	bosses.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var ra: int = int(a.get("realm_index", 1))
+		var rb: int = int(b.get("realm_index", 1))
+		if ra != rb:
+			return ra < rb
+		return float(a.get("max_hp", 0)) < float(b.get("max_hp", 0))
+	)
+
+	var cleared_cnt: int = 0
+	for bd in bosses:
+		if not PlayerData.get_boss_rush_record(str(bd.get("id", "")), boss_rush_diff).is_empty():
+			cleared_cnt += 1
+	sv.add_child(_make_label("Tiến độ độ khó đang chọn: Đã chinh phục %d / %d Đại Boss" % [cleared_cnt, bosses.size()], 12, Color("#72EFDD")))
+
+	for bd in bosses:
+		var bid: String = str(bd.get("id", ""))
+		var rec: Dictionary = PlayerData.get_boss_rush_record(bid, boss_rush_diff)
+		var has_clear: bool = not rec.is_empty()
+		var best_g: String = str(rec.get("best_grade", ""))
+		var border_c: Color = _boss_rush_grade_color(best_g) if has_clear else Color("#495057")
+
+		var card := _make_styled_panel(Color(0.09, 0.08, 0.15, 0.95), border_c, 2 if has_clear else 1, 7)
+		vbox.add_child(card)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		card.add_child(row)
+
+		row.add_child(_make_icon_box_from_tex(_get_enemy_thumb_tex(bd), border_c, 46))
+
+		var info_v := VBoxContainer.new()
+		info_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info_v.add_theme_constant_override("separation", 2)
+		row.add_child(info_v)
+
+		var sc_hp: int = int(round(float(bd.get("max_hp", 300.0)) * cur_hp_m))
+		var sc_atk: int = int(round(float(bd.get("atk", 20.0)) * cur_atk_m))
+		info_v.add_child(_make_label("%s  <%s>" % [str(bd.get("name", bid)), str(bd.get("realm_label", ""))], 13, Color("#FFD166")))
+		info_v.add_child(_make_label("HP Tâm Ma: %d  ·  ATK: %d  ·  DEF: %d  |  Đã hạ thực chiến: %d lần" % [
+			sc_hp, sc_atk, int(bd.get("def", 5)), PlayerData.get_enemy_kill_count(bid)
+		], 11, Color("#CED4DA")))
+
+		if has_clear:
+			info_v.add_child(_make_label("★ Kỷ lục [%s]: HẠNG %s  ·  Nhanh nhất %.1fs  ·  Thắng %d lần" % [
+				boss_rush_diff.to_upper(), best_g, float(rec.get("best_time", 0.0)), int(rec.get("clears", 1))
+			], 11, _boss_rush_grade_color(best_g)))
+		else:
+			info_v.add_child(_make_label("Chưa có kỷ lục ở độ khó này — Hãy khiêu chiến ngay!", 11, Color("#ADB5BD")))
+
+		var cap_bid: String = bid
+		var cap_diff: String = boss_rush_diff
+		var fight_btn := Button.new()
+		fight_btn.text = "⚔ Khiêu Chiến!"
+		fight_btn.add_theme_font_size_override("font_size", 12)
+		fight_btn.add_theme_color_override("font_color", Color("#FF9F1C"))
+		fight_btn.pressed.connect(func() -> void:
+			AudioManager.play_sfx("portal_warp")
+			_close_modal()
+			EventBus.boss_rush_requested.emit(cap_bid, cap_diff)
+		)
+		row.add_child(fight_btn)
+
+
+func _build_bestiary_tab(vbox: VBoxContainer) -> void:
+	var all_enemies: Array = []
+	var total_bosses: int = 0
+	var defeated_species: int = 0
+	var total_kills: int = 0
+	for eid in GameDatabase.enemies_by_id.keys():
+		var ed: Dictionary = GameDatabase.get_enemy_def(str(eid))
+		all_enemies.append(ed)
+		if bool(ed.get("is_boss", false)):
+			total_bosses += 1
+		var kc: int = PlayerData.get_enemy_kill_count(str(eid))
+		if kc > 0:
+			defeated_species += 1
+			total_kills += kc
+
+	all_enemies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var ra: int = int(a.get("realm_index", 1))
+		var rb: int = int(b.get("realm_index", 1))
+		if ra != rb:
+			return ra < rb
+		var ba: int = 1 if bool(a.get("is_boss", false)) else 0
+		var bb: int = 1 if bool(b.get("is_boss", false)) else 0
+		if ba != bb:
+			return ba < bb
+		return float(a.get("max_hp", 0)) < float(b.get("max_hp", 0))
+	)
+
+	var sum_card := _make_styled_panel(Color(0.06, 0.11, 0.15, 0.95), Color("#72EFDD"), 2, 9)
+	vbox.add_child(sum_card)
+	var sv := VBoxContainer.new()
+	sv.add_theme_constant_override("separation", 5)
+	sum_card.add_child(sv)
+	sv.add_child(_make_label("📖 ĐỒ GIÁM VẠN THÚ — %d / %d LOÀI ĐÃ TIÊU DIỆT (%d BOSS · %d QUÁI · TỔNG %d TRẬN HẠ)" % [
+		defeated_species, all_enemies.size(), total_bosses, all_enemies.size() - total_bosses, total_kills
+	], 13, Color("#72EFDD")))
+
+	var f_row := HBoxContainer.new()
+	f_row.add_theme_constant_override("separation", 8)
+	sv.add_child(f_row)
+	for fs in [
+		{ "k": "all", "t": "Tất Cả (%d)" % all_enemies.size() },
+		{ "k": "boss", "t": "Đại Boss (%d)" % total_bosses },
+		{ "k": "mob", "t": "Ma Thú & Quái Thường (%d)" % (all_enemies.size() - total_bosses) }
+	]:
+		var fk: String = str(fs["k"])
+		var fb := Button.new()
+		fb.text = ("★ " if bestiary_filter == fk else "") + str(fs["t"])
+		fb.disabled = (bestiary_filter == fk)
+		fb.add_theme_font_size_override("font_size", 11)
+		fb.pressed.connect(func() -> void:
+			AudioManager.play_sfx("ui_click")
+			bestiary_filter = fk
+			_populate_modal()
+		)
+		f_row.add_child(fb)
+
+	for ed in all_enemies:
+		var is_b: bool = bool(ed.get("is_boss", false))
+		if bestiary_filter == "boss" and not is_b:
+			continue
+		if bestiary_filter == "mob" and is_b:
+			continue
+		var eid: String = str(ed.get("id", ""))
+		var kills: int = PlayerData.get_enemy_kill_count(eid)
+		var border_c: Color = (Color("#FF4D6D") if is_b else Color("#52B788")) if kills > 0 else Color("#343A40")
+
+		var card := _make_styled_panel(Color(0.08, 0.10, 0.16, 0.94), border_c, 1, 6)
+		vbox.add_child(card)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		card.add_child(row)
+
+		var icon_box := _make_icon_box_from_tex(_get_enemy_thumb_tex(ed), border_c, 44)
+		if kills <= 0:
+			icon_box.modulate = Color(0.55, 0.58, 0.65, 0.80)
+		row.add_child(icon_box)
+
+		var info_v := VBoxContainer.new()
+		info_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info_v.add_theme_constant_override("separation", 1)
+		row.add_child(info_v)
+
+		var kind_tag: String = "[ĐẠI BOSS]" if is_b else "[QUÁI]"
+		var map_id_tag: String = str(ed.get("map_tag", ""))
+		var map_name: String = str(GameDatabase.get_map_def(map_id_tag).get("name", map_id_tag))
+		info_v.add_child(_make_label("%s %s  <%s>   |   Khu vực: %s" % [
+			kind_tag, str(ed.get("name", eid)), str(ed.get("realm_label", "")), map_name
+		], 12, Color("#FFD166") if is_b else Color("#F8F9FA")))
+
+		info_v.add_child(_make_label("HP: %d  ·  ATK: %d  ·  DEF: %d  ·  Thưởng: %d EXP / %d Kim Tệ" % [
+			int(ed.get("max_hp", 0)), int(ed.get("atk", 0)), int(ed.get("def", 0)),
+			int(ed.get("exp_reward", 0)), int(ed.get("gold_reward", 0))
+		], 11, Color("#CED4DA")))
+
+		var drop_names: Array = []
+		for dr in ed.get("drops", []):
+			if dr is Dictionary:
+				var it_id: String = str(dr.get("item_id", ""))
+				var it_def: Dictionary = GameDatabase.get_item_def(it_id)
+				drop_names.append(str(it_def.get("name", it_id)))
+		var drop_txt: String = ", ".join(drop_names) if not drop_names.is_empty() else "Trang bị & Nguyên liệu ngẫu nhiên"
+		var dl := _make_label("Vật phẩm rơi: %s" % drop_txt, 10, Color("#A8DADC"))
+		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		info_v.add_child(dl)
+
+		var k_lbl := _make_label("Đã hạ: %d" % kills if kills > 0 else "Chưa gặp", 12, Color("#80ED99") if kills > 0 else Color("#6C757D"))
+		row.add_child(k_lbl)
+
+
+func _build_tower_tab(vbox: VBoxContainer) -> void:
+	var sr: Dictionary = PlayerData.get_soul_realm_info()
+	var card := _make_styled_panel(Color(0.14, 0.05, 0.05, 0.96), Color("#FF7B00"), 2, 12)
+	vbox.add_child(card)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 8)
+	card.add_child(v)
+
+	v.add_child(_make_label("🔥 THIÊN PHẦN LUYỆN KHÍ THÁP — PHÓ BẢN ROGUELITE VÔ TẬN", 15, Color("#FFD166")))
+	var desc := _make_label(
+		"Thánh địa tu luyện trứ danh của Học Viện Già Nam! Bên trong Tháp có Tâm Hỏa Chước Đốt liên tục (Dị Hỏa giảm 45% thiêu đốt). Vượt mỗi tầng nhận ngay Tinh Hỏa Năng, Đá Cường Hóa, Kim Tệ và được chọn 1 trong 3 Chúc Phúc Tâm Hỏa cộng dồn suốt lượt leo!\n• Mỗi 3 tầng (Tầng 3, 6, 9, 12...) chạm trán Đại Boss Thủ Tháp!\n• Trọng thương trong Tháp sẽ an toàn truyền tống ra ngoài, giữ trọn 100% chiến lợi phẩm.",
+		12,
+		Color("#E2E8F0")
+	)
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(desc)
+
+	v.add_child(_make_label("★ Kỷ lục cao nhất: Tầng %d   |   Tinh Hỏa Năng: %d   |   Radar Linh Hồn [%s]: %s (Tầm %dpx)" % [
+		PlayerData.tower_best_floor,
+		PlayerData.fire_energy,
+		AudioManager.get_action_key_label("soul_radar"),
+		str(sr.get("name", "Phàm Cảnh Linh Hồn")),
+		int(round(PlayerData.get_soul_radar_radius()))
+	], 12, Color("#72EFDD")))
+
+	var btn_row := HFlowContainer.new()
+	btn_row.add_theme_constant_override("h_separation", 10)
+	btn_row.add_theme_constant_override("v_separation", 8)
+	v.add_child(btn_row)
+
+	var cur_world: Node = _find_world()
+	if cur_world != null and bool(cur_world.get("is_tower_active")):
+		var leave_b := Button.new()
+		leave_b.text = "← Rời Thiên Phần Luyện Khí Tháp (Về Bản Đồ Cũ)"
+		leave_b.add_theme_font_size_override("font_size", 13)
+		leave_b.add_theme_color_override("font_color", Color("#FF758F"))
+		leave_b.pressed.connect(func() -> void:
+			AudioManager.play_sfx("portal_warp")
+			_close_modal()
+			EventBus.tower_exit_requested.emit()
+		)
+		btn_row.add_child(leave_b)
+	else:
+		var start1 := Button.new()
+		start1.text = "🔥 Khởi Hành Từ Tầng 1"
+		start1.custom_minimum_size = Vector2(210, 40)
+		start1.add_theme_font_size_override("font_size", 13)
+		start1.add_theme_color_override("font_color", Color("#FFD166"))
+		start1.pressed.connect(func() -> void:
+			AudioManager.play_sfx("portal_warp")
+			_close_modal()
+			EventBus.tower_start_requested.emit(1)
+		)
+		btn_row.add_child(start1)
+
+		for cp in [4, 7, 10]:
+			if PlayerData.tower_best_floor >= cp:
+				var cp_f: int = cp
+				var cp_btn := Button.new()
+				cp_btn.text = "⚡ Vào Nhanh Tầng %d" % cp_f
+				cp_btn.custom_minimum_size = Vector2(165, 40)
+				cp_btn.add_theme_font_size_override("font_size", 12)
+				cp_btn.add_theme_color_override("font_color", Color("#FF9F1C"))
+				cp_btn.pressed.connect(func() -> void:
+					AudioManager.play_sfx("portal_warp")
+					_close_modal()
+					EventBus.tower_start_requested.emit(cp_f)
+				)
+				btn_row.add_child(cp_btn)
+
+	# Đổi Tinh Hỏa Năng lấy phần thưởng trực tiếp!
+	var shop_card := _make_styled_panel(Color(0.08, 0.10, 0.17, 0.95), Color("#FFD166"), 1, 10)
+	vbox.add_child(shop_card)
+	var sv := VBoxContainer.new()
+	sv.add_theme_constant_override("separation", 6)
+	shop_card.add_child(sv)
+	sv.add_child(_make_label("ĐỔI TINH HỎA NĂNG (Hiện có: %d Hỏa Năng)" % PlayerData.fire_energy, 13, Color("#FFD166")))
+
+	var ex_row := HFlowContainer.new()
+	ex_row.add_theme_constant_override("h_separation", 8)
+	ex_row.add_theme_constant_override("v_separation", 6)
+	sv.add_child(ex_row)
+
+	var ex_items: Array = [
+		{ "t": "Đổi 5 Đá Cường Hóa (40 Hỏa Năng)", "cost": 40, "kind": "stones", "val": 5 },
+		{ "t": "Đổi 1 Lôi Ma Hạch Cấp 5 (90 Hỏa Năng)", "cost": 90, "kind": "item", "id": "core_loi_5" },
+		{ "t": "Đổi 1 Huyết Ma Hạch Cấp 5 (90 Hỏa Năng)", "cost": 90, "kind": "item", "id": "core_huyet_5" },
+		{ "t": "Đổi 1 Đấu Linh Đan (120 Hỏa Năng)", "cost": 120, "kind": "item", "id": "pill_dau_linh_dan" }
+	]
+	for ex in ex_items:
+		var cost_v: int = int(ex["cost"])
+		var eb := Button.new()
+		eb.text = str(ex["t"])
+		eb.disabled = (PlayerData.fire_energy < cost_v)
+		eb.add_theme_font_size_override("font_size", 11)
+		eb.pressed.connect(func() -> void:
+			if PlayerData.fire_energy < cost_v:
+				return
+			PlayerData.add_fire_energy(-cost_v)
+			if str(ex["kind"]) == "stones":
+				PlayerData.enhance_stones += int(ex["val"])
+				EventBus.stats_changed.emit()
+			else:
+				PlayerData.add_item(str(ex["id"]), 1)
+			AudioManager.play_sfx("loot_rare")
+			modal_status_lbl.text = "Đổi thành công: %s!" % str(ex["t"])
+			_populate_modal()
+		)
+		ex_row.add_child(eb)
+
+
+func _build_tower_blessing_content(vbox: VBoxContainer) -> void:
+	modal_title_lbl.text = "🔥 CHÚC PHÚC TÂM HỎA — VƯỢT TẦNG %d THÀNH CÔNG!" % pending_tower_floor
+	vbox.add_theme_constant_override("separation", 10)
+	vbox.add_child(_make_label("Tâm Hỏa trong Tháp tôi luyện kinh mạch! Chọn 1 trong 3 Chúc Phúc để cộng dồn sức mạnh cho Tầng %d:" % (pending_tower_floor + 1), 13, Color("#FFE599")))
+
+	for ch in pending_tower_choices:
+		if not (ch is Dictionary):
+			continue
+		var cd: Dictionary = ch
+		var bid: String = str(cd.get("id", ""))
+		var col := Color(str(cd.get("color_hex", "#FFD166")))
+		var card := _make_styled_panel(Color(0.10, 0.08, 0.16, 0.96), col, 2, 12)
+		vbox.add_child(card)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 12)
+		card.add_child(row)
+
+		var iv := VBoxContainer.new()
+		iv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		iv.add_theme_constant_override("separation", 3)
+		row.add_child(iv)
+		iv.add_child(_make_label("✦ " + str(cd.get("name", bid)), 15, col))
+		var dl := _make_label(str(cd.get("desc", "")), 12, Color("#E2E8F0"))
+		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		iv.add_child(dl)
+
+		var cap_id: String = bid
+		var pick_btn := Button.new()
+		pick_btn.text = "Chọn Chúc Phúc →"
+		pick_btn.custom_minimum_size = Vector2(170, 44)
+		pick_btn.add_theme_font_size_override("font_size", 13)
+		pick_btn.add_theme_color_override("font_color", col)
+		pick_btn.pressed.connect(func() -> void:
+			AudioManager.play_sfx("breakthrough")
+			_close_modal()
+			EventBus.tower_blessing_picked.emit(cap_id)
+		)
+		row.add_child(pick_btn)
+
+	var exit_b := Button.new()
+	exit_b.text = "← Dừng Leo & Rút Lui An Toàn (Giữ Toàn Bộ Hỏa Năng & Đá CH)"
+	exit_b.add_theme_font_size_override("font_size", 12)
+	exit_b.add_theme_color_override("font_color", Color("#ADB5BD"))
+	exit_b.pressed.connect(func() -> void:
+		AudioManager.play_sfx("portal_warp")
+		_close_modal()
+		EventBus.tower_exit_requested.emit()
+	)
+	vbox.add_child(exit_b)
+
+
 # =========================================================
 # [K] KHO ĐẤU KỸ (CÓ ICON HD RIÊNG TỪNG CHIÊU + LẮP Q/E/R + HỎA LIÊN)
 # =========================================================
@@ -1991,10 +2917,29 @@ func _build_skills_codex_content(vbox: VBoxContainer) -> void:
 
 		var title_col: Color = Color("#FFD166") if is_unl else Color("#6C757D")
 		var lock_tag: String = "" if is_unl else " [KHÓA]"
+		var mi: Dictionary = PlayerData.get_skill_mastery_info(str(sid))
+		var eff_cd: float = float(sdef.get("cooldown", 5.0)) * float(mi.get("cd_mult", 1.0))
 		info_v.add_child(_make_label("%s  <%s>%s   |   QI: %d  |  CD: %.1fs" % [
 			str(sdef.get("name", sid)), str(sdef.get("grade", "")), lock_tag,
-			int(sdef.get("qi_cost", 15)), float(sdef.get("cooldown", 5.0))
+			int(sdef.get("qi_cost", 15)), eff_cd
 		], 13, title_col))
+
+		if is_unl:
+			var m_tier_idx: int = int(mi.get("tier", 0))
+			var m_tier: String = str(mi.get("tier_name", "Sơ Khuy"))
+			var m_uses: int = int(mi.get("uses", 0))
+			var m_next: int = int(mi.get("next_uses", 8))
+			var dmg_b: int = int(round((float(mi.get("dmg_mult", 1.0)) - 1.0) * 100.0))
+			var cd_b: int = int(round((1.0 - float(mi.get("cd_mult", 1.0))) * 100.0))
+			var rad_b: int = int(round((float(mi.get("radius_mult", 1.0)) - 1.0) * 100.0))
+			var m_col: Color = mi.get("color", Color("#A8DADC")) as Color
+			var prog_s: String = "ĐẠT TỐI ĐA (%d lần)" % m_uses if m_tier_idx >= 3 else "%d / %d lần" % [m_uses, m_next]
+			var bonus_s: String = "+%d%% DMG · -%d%% CD · +%d%% Phạm Vi" % [dmg_b, cd_b, rad_b] if dmg_b > 0 else "Dùng %d lần để đạt Tiểu Thành (+12%% DMG, -6%% CD)" % m_next
+			info_v.add_child(_make_label("★ Thông Thạo: %s (%s) — %s" % [m_tier, prog_s, bonus_s], 11, m_col))
+			var m_bar := _make_bar(m_col, 5, 220)
+			m_bar.max_value = 100.0
+			m_bar.value = 100.0 if m_tier_idx >= 3 else clampf(100.0 * float(m_uses) / float(max(1, m_next)), 0.0, 100.0)
+			info_v.add_child(m_bar)
 
 		var sub_txt: String = str(sdef.get("description", "")) if is_unl else ("Nguồn mở khóa: " + str(sdef.get("unlock_source", "")))
 		var dl := _make_label(sub_txt, 11, Color("#CED4DA") if is_unl else Color("#868E96"))
@@ -2351,11 +3296,62 @@ func _tick_alchemy_minigame(delta: float) -> void:
 
 
 # =========================================================
-# PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ — NHÃ PHI
+# PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ (NHÃ PHI) & BÁT PHIẾN MÔN (ĐẤU TRÍ · KÝ GỬI)
 # =========================================================
 func _build_nha_phi_shop_content(vbox: VBoxContainer) -> void:
-	modal_title_lbl.text = "PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ (NHÃ PHI)   |   Kim Tệ hiện có: %d" % PlayerData.gold
-	var intro := _make_label("Nhã Phi: 'Chọn vật phẩm công tử cần! Bí tịch Hấp Chưởng & Bạo Bộ sẽ giúp công tử bùng nổ chiến lực, còn Thanh Thiết Kiếm giúp thoát cảnh tay không!'", 13, Color("#FFE599"))
+	var venue_title: String = "ĐẠI ĐẤU GIÁ TRƯỜNG BÁT PHIẾN MÔN (HẮC ẤN THÀNH)" if shop_venue_id == "bat_phien_mon" else "PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ (NHÃ PHI)"
+	modal_title_lbl.text = "%s   |   Kim Tệ: %d   |   SOUL: %d" % [venue_title, PlayerData.gold, PlayerData.get_soul()]
+
+	var tab_row := HBoxContainer.new()
+	tab_row.add_theme_constant_override("separation", 8)
+	vbox.add_child(tab_row)
+
+	var t_shop := Button.new()
+	t_shop.text = ("★ " if shop_tab == "shop" else "") + "🛒 Mua Trực Tiếp"
+	t_shop.disabled = (shop_tab == "shop")
+	t_shop.add_theme_font_size_override("font_size", 12)
+	t_shop.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		shop_tab = "shop"
+		_populate_modal()
+	)
+	tab_row.add_child(t_shop)
+
+	var t_auc := Button.new()
+	t_auc.text = ("★ " if shop_tab == "auction" else "") + "⚖ Phiên Đấu Giá Đấu Trí"
+	t_auc.disabled = (shop_tab == "auction")
+	t_auc.add_theme_font_size_override("font_size", 12)
+	t_auc.add_theme_color_override("font_color", Color("#FFD166"))
+	t_auc.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		shop_tab = "auction"
+		if auction_lots.is_empty():
+			auction_lots = AuctionSystem.generate_auction_lots(shop_venue_id)
+			active_auction_lot_idx = 0
+		_populate_modal()
+	)
+	tab_row.add_child(t_auc)
+
+	var t_con := Button.new()
+	t_con.text = ("★ " if shop_tab == "consign" else "") + "💰 Ký Gửi Bán Đan Dược"
+	t_con.disabled = (shop_tab == "consign")
+	t_con.add_theme_font_size_override("font_size", 12)
+	t_con.add_theme_color_override("font_color", Color("#80ED99"))
+	t_con.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		shop_tab = "consign"
+		_populate_modal()
+	)
+	tab_row.add_child(t_con)
+
+	if shop_tab == "auction":
+		_build_auction_tab(vbox)
+		return
+	elif shop_tab == "consign":
+		_build_consign_tab(vbox)
+		return
+
+	var intro := _make_label("Nhã Phi: 'Chọn vật phẩm công tử cần! Hoặc chuyển sang tab [⚖ Phiên Đấu Giá Đấu Trí] & [💰 Ký Gửi Bán Đan Dược] để săn chí bảo và kiếm Kim Tệ giá cao!'", 13, Color("#FFE599"))
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(intro)
 
@@ -2566,6 +3562,193 @@ func _handle_shop_purchase(item_d: Dictionary) -> void:
 	_populate_modal()
 
 
+func _build_auction_tab(vbox: VBoxContainer) -> void:
+	if auction_lots.is_empty():
+		auction_lots = AuctionSystem.generate_auction_lots(shop_venue_id)
+		active_auction_lot_idx = 0
+	active_auction_lot_idx = clampi(active_auction_lot_idx, 0, auction_lots.size() - 1)
+
+	var top_bar := HBoxContainer.new()
+	top_bar.add_theme_constant_override("separation", 8)
+	vbox.add_child(top_bar)
+	for i in range(auction_lots.size()):
+		var l_dict: Dictionary = auction_lots[i]
+		var idx_cap: int = i
+		var lb := Button.new()
+		var done_tag: String = " ✓" if bool(l_dict.get("closed", false)) else ""
+		lb.text = ("★ " if i == active_auction_lot_idx else "") + "Lô #%d: %s%s" % [i + 1, str(l_dict.get("name", "")).left(24), done_tag]
+		lb.disabled = (i == active_auction_lot_idx)
+		lb.add_theme_font_size_override("font_size", 11)
+		lb.pressed.connect(func() -> void:
+			AudioManager.play_sfx("ui_click")
+			active_auction_lot_idx = idx_cap
+			_populate_modal()
+		)
+		top_bar.add_child(lb)
+
+	var reroll_b := Button.new()
+	reroll_b.text = "↻ Mở Phiên Mới"
+	reroll_b.add_theme_font_size_override("font_size", 11)
+	reroll_b.add_theme_color_override("font_color", Color("#70D6FF"))
+	reroll_b.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		auction_lots = AuctionSystem.generate_auction_lots(shop_venue_id)
+		active_auction_lot_idx = 0
+		modal_status_lbl.text = "Đã khai mạc phiên đấu giá mới với 3 bảo vật!"
+		_populate_modal()
+	)
+	top_bar.add_child(reroll_b)
+
+	var lot: Dictionary = auction_lots[active_auction_lot_idx]
+	var col := Color(str(lot.get("color_hex", "#FFD166")))
+	var card := _make_styled_panel(Color(0.11, 0.08, 0.16, 0.96), col, 2, 12)
+	vbox.add_child(card)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 6)
+	card.add_child(v)
+
+	v.add_child(_make_label("⚖ BẢO VẬT ĐANG ĐẤU GIÁ: %s" % str(lot.get("name", "")), 15, col))
+	var dl := _make_label(str(lot.get("desc", "")), 12, Color("#E2E8F0"))
+	dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(dl)
+
+	var cur_bid: int = int(lot.get("current_bid", 100))
+	var holder: String = str(lot.get("highest_bidder", "Chưa có ai"))
+	var rd: int = int(lot.get("round", 0))
+	var max_rd: int = int(lot.get("max_rounds", 5))
+	v.add_child(_make_label("Giá hiện tại: %d Kim Tệ   |   Người giữ giá: %s   |   Hiệp: %d / %d" % [cur_bid, holder, rd, max_rd], 13, Color("#FFD166")))
+
+	# Trạng thái 3 Đối thủ NPC
+	var is_scanned: bool = bool(lot.get("scanned", false))
+	var r_box := _make_styled_panel(Color(0.07, 0.09, 0.14, 0.92), Color("#3A506B"), 1, 8)
+	v.add_child(r_box)
+	var rv := VBoxContainer.new()
+	rv.add_theme_constant_override("separation", 3)
+	r_box.add_child(rv)
+	rv.add_child(_make_label("ĐỐI THỦ TRONG KHÁN PHÒNG (%s):" % ("ĐÃ QUÉT LINH HỒN!" if is_scanned else "Bấm Thăm Dò để xem ngân sách!"), 11, Color("#72EFDD")))
+	for riv in lot.get("rivals", []):
+		if riv is Dictionary:
+			var r_folded: bool = bool(riv.get("folded", false))
+			var st_txt: String = "[ĐÃ BỎ CUỘC]" if r_folded else (
+				"[Ngân sách tối đa: %d V · Bình tĩnh: %d]" % [int(riv.get("max_budget", 0)), int(riv.get("patience", 1))] if is_scanned else "[Đang theo giá...]"
+			)
+			rv.add_child(_make_label("• %s — %s" % [str(riv.get("name", "Đối thủ")), st_txt], 11, Color("#6C757D") if r_folded else Color("#F8F9FA")))
+
+	if bool(lot.get("closed", false)):
+		v.add_child(_make_label("Phiên của bảo vật này đã khép lại (%s). Hãy chọn lô khác hoặc bấm [Mở Phiên Mới]!" % str(lot.get("result_text", "Kết thúc")), 12, Color("#80ED99")))
+		return
+
+	var act_row := HFlowContainer.new()
+	act_row.add_theme_constant_override("h_separation", 8)
+	act_row.add_theme_constant_override("v_separation", 6)
+	v.add_child(act_row)
+
+	var step15: int = maxi(20, int(round(float(cur_bid) * 0.15)))
+	var step30: int = maxi(40, int(round(float(cur_bid) * 0.30)))
+
+	var b_norm := Button.new()
+	b_norm.text = "Ra Giá Thường (%d V)" % (cur_bid + step15)
+	b_norm.add_theme_font_size_override("font_size", 12)
+	b_norm.pressed.connect(func() -> void:
+		_run_auction_action(lot, "bid")
+	)
+	act_row.add_child(b_norm)
+
+	var b_over := Button.new()
+	b_over.text = "⚡ Áp Chế Linh Hồn — Đè Giá (%d V · SOUL %d)" % [cur_bid + step30, PlayerData.get_soul()]
+	b_over.add_theme_font_size_override("font_size", 12)
+	b_over.add_theme_color_override("font_color", Color("#FFD166"))
+	b_over.pressed.connect(func() -> void:
+		_run_auction_action(lot, "overbid")
+	)
+	act_row.add_child(b_over)
+
+	var b_scan := Button.new()
+	b_scan.text = "👁 Thăm Dò Hậu Đài (Miễn phí)"
+	b_scan.disabled = is_scanned
+	b_scan.add_theme_font_size_override("font_size", 12)
+	b_scan.add_theme_color_override("font_color", Color("#72EFDD"))
+	b_scan.pressed.connect(func() -> void:
+		_run_auction_action(lot, "scan")
+	)
+	act_row.add_child(b_scan)
+
+
+func _run_auction_action(lot: Dictionary, act_name: String) -> void:
+	var res: Dictionary = AuctionSystem.process_bid_turn(lot, act_name, PlayerData.get_soul(), PlayerData.gold)
+	var st: String = str(res.get("status", "ongoing"))
+	if st == "won":
+		lot["closed"] = true
+		var win_msg: String = AuctionSystem.award_won_lot(lot)
+		lot["result_text"] = "THẮNG ĐẤU GIÁ!"
+		modal_status_lbl.text = win_msg
+		_on_banter(win_msg)
+	elif st == "lost":
+		lot["closed"] = true
+		lot["result_text"] = "Đối thủ mua mất"
+		AudioManager.play_sfx("alchemy_fail")
+		modal_status_lbl.text = str(res.get("msg", "Đối thủ đã chốt giá cao hơn!"))
+	elif st == "insufficient_gold":
+		AudioManager.play_sfx("alchemy_fail")
+		modal_status_lbl.text = str(res.get("msg", "Không đủ Kim Tệ!"))
+	else:
+		AudioManager.play_sfx("radar_ping" if act_name == "scan" else "ui_click")
+		modal_status_lbl.text = str(res.get("msg", ""))
+	_populate_modal()
+
+
+func _build_consign_tab(vbox: VBoxContainer) -> void:
+	var items: Array = AuctionSystem.get_consignable_items()
+	vbox.add_child(_make_label("💰 KÝ GỬI BÁN ĐAN DƯỢC & NGUYÊN LIỆU (Giá bán được thưởng x1.25–1.85 theo Linh Hồn & Hảo Cảm Nhã Phi!)", 12, Color("#80ED99")))
+	if items.is_empty():
+		vbox.add_child(_make_label("Bạn chưa có đan dược, dược thảo hay Ma Hạch dư để ký gửi! Hãy khai lò [L] hoặc săn Ma Thú rồi quay lại.", 12, Color("#ADB5BD")))
+		return
+	for entry in items:
+		if not (entry is Dictionary):
+			continue
+		var ed: Dictionary = entry
+		var iid: String = str(ed.get("id", ""))
+		var qty: int = int(ed.get("qty", 0))
+		var u_price: int = int(ed.get("unit_price", 20))
+		var col := Color(str(ed.get("color_hex", "#FFE599")))
+
+		var card := _make_styled_panel(Color(0.08, 0.10, 0.16, 0.94), col, 1, 7)
+		vbox.add_child(card)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		card.add_child(row)
+
+		var iv := VBoxContainer.new()
+		iv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(iv)
+		iv.add_child(_make_label("%s  (x%d trong Nạp Giới)" % [str(ed.get("name", iid)), qty], 13, col))
+		iv.add_child(_make_label("Giá ký gửi: %d Kim Tệ / cái  ·  Bán hết thu: %d Kim Tệ" % [u_price, u_price * qty], 11, Color("#CED4DA")))
+
+		var cap_id: String = iid
+		var cap_qty: int = qty
+		var sell1 := Button.new()
+		sell1.text = "Bán x1 (+%d V)" % u_price
+		sell1.add_theme_font_size_override("font_size", 11)
+		sell1.pressed.connect(func() -> void:
+			var r: Dictionary = AuctionSystem.consign_item(cap_id, 1)
+			modal_status_lbl.text = str(r.get("msg", ""))
+			_populate_modal()
+		)
+		row.add_child(sell1)
+
+		if qty > 1:
+			var sell_all := Button.new()
+			sell_all.text = "Bán Hết (+%d V)" % (u_price * qty)
+			sell_all.add_theme_font_size_override("font_size", 11)
+			sell_all.add_theme_color_override("font_color", Color("#FFD166"))
+			sell_all.pressed.connect(func() -> void:
+				var r: Dictionary = AuctionSystem.consign_item(cap_id, cap_qty)
+				modal_status_lbl.text = str(r.get("msg", ""))
+				_populate_modal()
+			)
+			row.add_child(sell_all)
+
+
 # =========================================================
 # [I] NHÂN VẬT & TRANG BỊ 10 Ô
 # =========================================================
@@ -2604,6 +3787,74 @@ func _build_equipment_modal() -> void:
 	)
 	sum_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	summary_panel.add_child(sum_lbl)
+
+	# Khung Khảm Ma Hạch lên Huyền Trọng Xích / Vũ Khí (3 Rãnh)
+	var core_card := _make_styled_panel(Color(0.10, 0.07, 0.16, 0.94), Color("#E0AAFF"), 1, 7)
+	left_v.add_child(core_card)
+	var cv := VBoxContainer.new()
+	cv.add_theme_constant_override("separation", 5)
+	core_card.add_child(cv)
+	cv.add_child(_make_label("💎 KHẢM MA HẠCH LÊN VŨ KHÍ / HUYỀN TRỌNG XÍCH (3 RÃNH — Chọn rãnh rồi bấm Ma Hạch để khảm)", 11, Color("#E0AAFF")))
+
+	var sock_row := HBoxContainer.new()
+	sock_row.add_theme_constant_override("separation", 6)
+	cv.add_child(sock_row)
+	for s_idx in range(3):
+		var cid_s: String = str(PlayerData.weapon_core_sockets[s_idx]) if s_idx < PlayerData.weapon_core_sockets.size() else ""
+		var cdef: Dictionary = PlayerData.get_core_socket_def(cid_s) if cid_s != "" else {}
+		var is_sel: bool = (selected_core_slot == s_idx)
+		var cap_i: int = s_idx
+		var s_btn := Button.new()
+		s_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		s_btn.add_theme_font_size_override("font_size", 10)
+		if cdef.is_empty():
+			s_btn.text = ("★ " if is_sel else "") + "Rãnh #%d: (Trống)" % (s_idx + 1)
+			s_btn.add_theme_color_override("font_color", Color("#FFD166") if is_sel else Color("#ADB5BD"))
+		else:
+			s_btn.text = ("★ " if is_sel else "") + "Rãnh #%d: %s" % [s_idx + 1, str(cdef["name"]).left(18)]
+			s_btn.tooltip_text = str(cdef.get("desc", ""))
+			s_btn.add_theme_color_override("font_color", cdef.get("color", Color("#FFD166")) as Color)
+		s_btn.pressed.connect(func() -> void:
+			AudioManager.play_sfx("ui_click")
+			selected_core_slot = cap_i
+			_populate_modal()
+		)
+		sock_row.add_child(s_btn)
+		if not cdef.is_empty():
+			var rm_b := Button.new()
+			rm_b.text = "×"
+			rm_b.tooltip_text = "Tháo Ma Hạch khỏi Rãnh #%d về lại Nạp Giới" % (s_idx + 1)
+			rm_b.add_theme_font_size_override("font_size", 10)
+			rm_b.pressed.connect(func() -> void:
+				var res: Dictionary = PlayerData.unsocket_monster_core(cap_i)
+				modal_status_lbl.text = str(res.get("msg", ""))
+			)
+			sock_row.add_child(rm_b)
+
+	var core_bag_row := HFlowContainer.new()
+	core_bag_row.add_theme_constant_override("h_separation", 5)
+	core_bag_row.add_theme_constant_override("v_separation", 4)
+	cv.add_child(core_bag_row)
+	var has_any_core: bool = false
+	for core_k in ["core_hoa_1", "core_moc_2", "core_hoa_3", "core_phong_4", "core_loi_5", "core_huyet_5"]:
+		var cnt: int = PlayerData.get_item_count(core_k)
+		if cnt <= 0:
+			continue
+		has_any_core = true
+		var cd: Dictionary = PlayerData.get_core_socket_def(core_k)
+		var cap_ck: String = core_k
+		var cb := Button.new()
+		cb.text = "+ %s (x%d)" % [str(cd.get("name", core_k)), cnt]
+		cb.tooltip_text = "Khảm vào Rãnh #%d: %s" % [selected_core_slot + 1, str(cd.get("desc", ""))]
+		cb.add_theme_font_size_override("font_size", 10)
+		cb.add_theme_color_override("font_color", cd.get("color", Color("#FFD166")) as Color)
+		cb.pressed.connect(func() -> void:
+			var res: Dictionary = PlayerData.socket_monster_core(selected_core_slot, cap_ck)
+			modal_status_lbl.text = str(res.get("msg", ""))
+		)
+		core_bag_row.add_child(cb)
+	if not has_any_core:
+		core_bag_row.add_child(_make_label("(Chưa có Ma Hạch trong túi — Săn Ma Thú hoặc đổi bằng Hỏa Năng trong Thiên Phần Tháp!)", 10, Color("#868E96")))
 
 	for s_entry in GameDatabase.equipment_slots:
 		if not (s_entry is Dictionary):
@@ -2685,7 +3936,7 @@ func _build_equipment_modal() -> void:
 	quick_pill_flow.add_theme_constant_override("h_separation", 4)
 	quick_pill_flow.add_theme_constant_override("v_separation", 4)
 	right_col.add_child(quick_pill_flow)
-	for cid in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich"]:
+	for cid in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_huyet_ngung_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich", "pill_am_duong_huyen_long"]:
 		var cid_s: String = str(cid)
 		var p_cnt: int = PlayerData.get_item_count(cid_s)
 		if p_cnt <= 0:

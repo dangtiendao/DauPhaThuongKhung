@@ -7,43 +7,165 @@
       "chapter": "Chương 01",
       "name": "Quảng Trường & Đại Sảnh Tiêu Gia",
       "bgm": "bgm_peaceful",
-      "size": [1600, 1024],
+      "size": [
+        1600,
+        1024
+      ],
       "ambient_hex": "#c4cde4",
       "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
-      "default_spawn": [340, 520],
+      "default_spawn": [
+        340,
+        520
+      ],
       "zones": [
-        { "rect": [1040, 240, 480, 540], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#E6A234", "arena_circle": true },
-        { "rect": [640, 448, 400, 128], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "" }
+        {
+          "rect": [
+            1040,
+            240,
+            480,
+            540
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#E6A234",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            640,
+            448,
+            400,
+            128
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": ""
+        }
       ],
       "signs": [
-        { "pos": [260, 155], "text": "QUẢNG TRƯỜNG TIÊU GIA\n(Chạm Ma Thạch Bi [V] & Sân Tập)", "color": "#FFE599" },
-        { "pos": [1140, 175], "text": "LÔI ĐÀI LỄ THÀNH NIÊN\n(Quyết đấu Boss Tiêu Ninh ở NV 6)", "color": "#FF9770" }
+        {
+          "pos": [
+            260,
+            155
+          ],
+          "text": "QUẢNG TRƯỜNG TIÊU GIA\n(Chạm Ma Thạch Bi [V] & Sân Tập)",
+          "color": "#FFE599"
+        },
+        {
+          "pos": [
+            1140,
+            175
+          ],
+          "text": "LÔI ĐÀI LỄ THÀNH NIÊN\n(Quyết đấu Boss Tiêu Ninh ở NV 6)",
+          "color": "#FF9770"
+        }
       ],
       "props": [
-        { "type": "gate", "pos": [760, 235] },
-        { "type": "stele", "pos": [260, 420] },
-        { "type": "pine", "pos": [165, 290] },
-        { "type": "pine", "pos": [930, 210] },
-        { "type": "pine", "pos": [930, 865] },
-        { "type": "lantern", "pos": [140, 200] },
-        { "type": "lantern", "pos": [620, 200] },
-        { "type": "lantern", "pos": [140, 860] },
-        { "type": "lantern", "pos": [620, 860] },
-        { "type": "lantern", "pos": [1070, 280] },
-        { "type": "lantern", "pos": [1485, 280] },
-        { "type": "lantern", "pos": [1070, 750] },
-        { "type": "lantern", "pos": [1485, 750] }
+        {
+          "type": "gate",
+          "pos": [
+            760,
+            235
+          ]
+        },
+        {
+          "type": "stele",
+          "pos": [
+            260,
+            420
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            165,
+            290
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            930,
+            210
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            930,
+            865
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            140,
+            200
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            620,
+            200
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            140,
+            860
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            620,
+            860
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1070,
+            280
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1485,
+            280
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1070,
+            750
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1485,
+            750
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_tieu_gia_courtyard",
           "name": "Rương Đệ Tử Tiêu Gia",
-          "pos": [155, 800],
+          "pos": [
+            155,
+            800
+          ],
           "gold": 45,
           "stones": 2,
           "gear_template": "boot_phong_hanh_hai",
           "gear_rarity": "linh",
-          "items": { "pill_ngung_huyet_tan": 2 }
+          "items": {
+            "pill_ngung_huyet_tan": 2
+          }
         }
       ],
       "npcs": [
@@ -52,7 +174,10 @@
           "name": "Tiêu Chiến",
           "title": "Tộc Trưởng Tiêu Gia (Đại Đấu Sư 5 Tinh)",
           "sprite": "res://assets/sprites/npcs/npc_tieu_chien.png",
-          "pos": [590, 345],
+          "pos": [
+            590,
+            345
+          ],
           "role": "story_tieu_chien"
         },
         {
@@ -60,7 +185,10 @@
           "name": "Tiêu Huân Nhi",
           "title": "Thanh Mai Trúc Mã",
           "sprite": "res://assets/sprites/npcs/npc_huan_nhi.png",
-          "pos": [445, 425],
+          "pos": [
+            445,
+            425
+          ],
           "role": "story_huan_nhi"
         },
         {
@@ -68,7 +196,10 @@
           "name": "Nạp Lan Yên Nhiên",
           "title": "Thiếu Tông Chủ Vân Lam Tông",
           "sprite": "res://assets/sprites/npcs/npc_nap_lan_yen_nhien.png",
-          "pos": [640, 505],
+          "pos": [
+            640,
+            505
+          ],
           "role": "story_tu_hon",
           "hide_if_flag": "tu_hon_done"
         },
@@ -77,7 +208,10 @@
           "name": "Nhược Lâm Đạo Sư",
           "title": "Học Viện Già Nam (Đại Đấu Sư)",
           "sprite": "res://assets/sprites/npcs/npc_nhuoc_lam.png",
-          "pos": [980, 505],
+          "pos": [
+            980,
+            505
+          ],
           "role": "story_nhuoc_lam",
           "require_flag": "unlocked_bat_cuc_bang"
         },
@@ -86,34 +220,78 @@
           "name": "Bóng Đen Thần Bí (Lăng Ảnh)",
           "title": "Đấu Hoàng Ám Vệ — Kỳ Ngộ Ẩn",
           "sprite": "res://assets/sprites/npcs/npc_lang_anh.png",
-          "pos": [130, 395],
+          "pos": [
+            130,
+            395
+          ],
           "role": "secret_lang_anh",
           "require_flag": "duoc_lao_awake",
           "hide_if_flag": "secret_lang_anh_done"
         }
       ],
       "spawns": [
-        { "enemy_id": "moc_nhan", "pos": [250, 700], "respawn": 5.0 },
-        { "enemy_id": "moc_nhan", "pos": [410, 760], "respawn": 5.0 },
-        { "enemy_id": "moc_nhan", "pos": [550, 700], "respawn": 5.0 },
-        { "enemy_id": "tieu_ninh_boss", "pos": [1280, 510], "respawn": 20.0, "require_flag": "ready_thanh_nien_le" }
+        {
+          "enemy_id": "moc_nhan",
+          "pos": [
+            250,
+            700
+          ],
+          "respawn": 5.0
+        },
+        {
+          "enemy_id": "moc_nhan",
+          "pos": [
+            410,
+            760
+          ],
+          "respawn": 5.0
+        },
+        {
+          "enemy_id": "moc_nhan",
+          "pos": [
+            550,
+            700
+          ],
+          "respawn": 5.0
+        },
+        {
+          "enemy_id": "tieu_ninh_boss",
+          "pos": [
+            1280,
+            510
+          ],
+          "respawn": 20.0,
+          "require_flag": "ready_thanh_nien_le"
+        }
       ],
       "portals": [
         {
           "id": "to_hau_son",
           "label": "Cổng Bắc -> Vách Đá Hậu Sơn",
-          "pos": [760, 108],
+          "pos": [
+            760,
+            108
+          ],
           "target_map": "ch01_hau_son",
-          "target_spawn": [940, 960],
+          "target_spawn": [
+            940,
+            960
+          ],
           "require_flag": "tu_hon_done",
           "locked_hint": "Hãy tới gặp Nạp Lan Yên Nhiên (nhấn V) giải quyết sự kiện Từ Hôn trước!"
         },
         {
           "id": "to_o_than_thanh",
           "label": "Cổng Nam -> Phố Chợ Ô Thản Thành",
-          "pos": [760, 920],
+          "pos": [
+            760,
+            920
+          ],
           "target_map": "ch01_o_than_thanh",
-          "target_spawn": [320, 220],
+          "target_spawn": [
+            320,
+            220
+          ],
           "require_flag": "duoc_lao_awake",
           "locked_hint": "Hãy lên Hậu Sơn gặp Dược Lão thức tỉnh trước khi ra Phố Chợ Ô Thản Thành!"
         }
@@ -124,52 +302,229 @@
       "chapter": "Chương 01",
       "name": "Rừng Trúc & Vách Đá Hậu Sơn Tiêu Gia",
       "bgm": "bgm_wild",
-      "size": [1920, 1152],
+      "size": [
+        1920,
+        1152
+      ],
       "ambient_hex": "#9aaac9",
       "base_tile": "res://assets/sprites/tiles/bamboo_grass.png",
-      "default_spawn": [940, 950],
+      "default_spawn": [
+        940,
+        950
+      ],
       "zones": [
-        { "rect": [864, 160, 192, 920], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "" },
-        { "rect": [736, 128, 448, 256], "tile": "res://assets/sprites/tiles/courtyard_stone.png", "border_hex": "#70D6FF" }
+        {
+          "rect": [
+            864,
+            160,
+            192,
+            920
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": ""
+        },
+        {
+          "rect": [
+            736,
+            128,
+            448,
+            256
+          ],
+          "tile": "res://assets/sprites/tiles/courtyard_stone.png",
+          "border_hex": "#70D6FF"
+        }
       ],
       "signs": [
-        { "pos": [820, 72], "text": "VÁCH ĐÁ HẬU SƠN\n(Nơi Dược Lão Thức Tỉnh)", "color": "#A8DADC" },
-        { "pos": [240, 140], "text": "RỪNG TRÚC TÂY\n(Sơn Lang & Biểu Tỷ Tiêu Ngọc)", "color": "#9EE09E" },
-        { "pos": [1340, 140], "text": "RỪNG SÂU ĐÔNG\n(Thiết Bối Sơn Trư — Lv.7-8)", "color": "#FF9770" }
+        {
+          "pos": [
+            820,
+            72
+          ],
+          "text": "VÁCH ĐÁ HẬU SƠN\n(Nơi Dược Lão Thức Tỉnh)",
+          "color": "#A8DADC"
+        },
+        {
+          "pos": [
+            240,
+            140
+          ],
+          "text": "RỪNG TRÚC TÂY\n(Sơn Lang & Biểu Tỷ Tiêu Ngọc)",
+          "color": "#9EE09E"
+        },
+        {
+          "pos": [
+            1340,
+            140
+          ],
+          "text": "RỪNG SÂU ĐÔNG\n(Thiết Bối Sơn Trư — Lv.7-8)",
+          "color": "#FF9770"
+        }
       ],
       "props": [
-        { "type": "boulder", "pos": [690, 320] },
-        { "type": "boulder", "pos": [1230, 320] },
-        { "type": "boulder", "pos": [440, 560] },
-        { "type": "boulder", "pos": [1460, 580] },
-        { "type": "pine", "pos": [210, 360] },
-        { "type": "pine", "pos": [1730, 360] },
-        { "type": "lantern", "pos": [770, 210] },
-        { "type": "lantern", "pos": [1145, 210] },
-        { "type": "bamboo", "pos": [180, 240] },
-        { "type": "bamboo", "pos": [340, 200] },
-        { "type": "bamboo", "pos": [540, 260] },
-        { "type": "bamboo", "pos": [1380, 240] },
-        { "type": "bamboo", "pos": [1620, 220] },
-        { "type": "bamboo", "pos": [220, 560] },
-        { "type": "bamboo", "pos": [610, 590] },
-        { "type": "bamboo", "pos": [1320, 540] },
-        { "type": "bamboo", "pos": [1710, 580] },
-        { "type": "bamboo", "pos": [260, 940] },
-        { "type": "bamboo", "pos": [640, 960] },
-        { "type": "bamboo", "pos": [1320, 940] },
-        { "type": "bamboo", "pos": [1680, 920] }
+        {
+          "type": "boulder",
+          "pos": [
+            690,
+            320
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1230,
+            320
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            440,
+            560
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1460,
+            580
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            210,
+            360
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            1730,
+            360
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            770,
+            210
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1145,
+            210
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            180,
+            240
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            340,
+            200
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            540,
+            260
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1380,
+            240
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1620,
+            220
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            220,
+            560
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            610,
+            590
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1320,
+            540
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1710,
+            580
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            260,
+            940
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            640,
+            960
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1320,
+            940
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1680,
+            920
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_hau_son_su_tu_ngam",
           "name": "Rương Cũ Hậu Sơn",
-          "pos": [1740, 810],
+          "pos": [
+            1740,
+            810
+          ],
           "gold": 80,
           "stones": 3,
           "gear_template": "pend_thanh_ngoc_boi",
           "gear_rarity": "huyen",
-          "items": { "herb_tu_diep_lan": 2, "core_hoa_1": 1 }
+          "items": {
+            "herb_tu_diep_lan": 2,
+            "core_hoa_1": 1
+          }
         }
       ],
       "npcs": [
@@ -178,27 +533,93 @@
           "name": "Dược Trần (Dược Lão)",
           "title": "Hồn Thể Trong Cốt Viêm Giới",
           "sprite": "res://assets/sprites/npcs/npc_duoc_lao.png",
-          "pos": [960, 295],
+          "pos": [
+            960,
+            295
+          ],
           "role": "story_duoc_lao"
         }
       ],
       "spawns": [
-        { "enemy_id": "hoang_da_son_lang", "pos": [360, 420], "respawn": 7.0 },
-        { "enemy_id": "hoang_da_son_lang", "pos": [480, 680], "respawn": 7.0 },
-        { "enemy_id": "hoang_da_son_lang", "pos": [310, 820], "respawn": 7.0 },
-        { "enemy_id": "hoang_da_son_lang", "pos": [620, 460], "respawn": 7.0 },
-        { "enemy_id": "tieu_ngoc_boss", "pos": [520, 840], "respawn": 22.0, "require_flag": "bought_hap_chuong" },
-        { "enemy_id": "thiet_boi_son_tru", "pos": [1420, 420], "respawn": 9.5 },
-        { "enemy_id": "thiet_boi_son_tru", "pos": [1550, 720], "respawn": 9.5 },
-        { "enemy_id": "thiet_boi_son_tru", "pos": [1340, 840], "respawn": 9.5 }
+        {
+          "enemy_id": "hoang_da_son_lang",
+          "pos": [
+            360,
+            420
+          ],
+          "respawn": 7.0
+        },
+        {
+          "enemy_id": "hoang_da_son_lang",
+          "pos": [
+            480,
+            680
+          ],
+          "respawn": 7.0
+        },
+        {
+          "enemy_id": "hoang_da_son_lang",
+          "pos": [
+            310,
+            820
+          ],
+          "respawn": 7.0
+        },
+        {
+          "enemy_id": "hoang_da_son_lang",
+          "pos": [
+            620,
+            460
+          ],
+          "respawn": 7.0
+        },
+        {
+          "enemy_id": "tieu_ngoc_boss",
+          "pos": [
+            520,
+            840
+          ],
+          "respawn": 22.0,
+          "require_flag": "bought_hap_chuong"
+        },
+        {
+          "enemy_id": "thiet_boi_son_tru",
+          "pos": [
+            1420,
+            420
+          ],
+          "respawn": 9.5
+        },
+        {
+          "enemy_id": "thiet_boi_son_tru",
+          "pos": [
+            1550,
+            720
+          ],
+          "respawn": 9.5
+        },
+        {
+          "enemy_id": "thiet_boi_son_tru",
+          "pos": [
+            1340,
+            840
+          ],
+          "respawn": 9.5
+        }
       ],
       "portals": [
         {
           "id": "back_tieu_gia",
           "label": "Cổng Nam -> Quảng Trường Tiêu Gia",
-          "pos": [960, 1065],
+          "pos": [
+            960,
+            1065
+          ],
           "target_map": "ch01_tieu_gia",
-          "target_spawn": [760, 210],
+          "target_spawn": [
+            760,
+            210
+          ],
           "require_flag": ""
         }
       ]
@@ -208,43 +629,166 @@
       "chapter": "Chương 01",
       "name": "Phố Chợ Ô Thản Thành & Biệt Viện Gia Liệt Gia",
       "bgm": "bgm_peaceful",
-      "size": [2048, 1152],
+      "size": [
+        2048,
+        1152
+      ],
       "ambient_hex": "#c2c2db",
       "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
-      "default_spawn": [320, 220],
+      "default_spawn": [
+        320,
+        220
+      ],
       "zones": [
-        { "rect": [128, 384, 640, 512], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "#FF9F1C" },
-        { "rect": [1280, 224, 640, 704], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#E63946", "arena_circle": true }
+        {
+          "rect": [
+            128,
+            384,
+            640,
+            512
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#FF9F1C"
+        },
+        {
+          "rect": [
+            1280,
+            224,
+            640,
+            704
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#E63946",
+          "arena_circle": true
+        }
       ],
       "signs": [
-        { "pos": [240, 320], "text": "PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ\n(Gặp Nhã Phi [V] mua Đấu Kỹ & Vũ Khí)", "color": "#FFD166" },
-        { "pos": [1380, 155], "text": "BIỆT VIỆN GIA LIỆT GIA\n(Ám sát Liễu Tịch & BOSS: Gia Liệt Áo)", "color": "#FF4D6D" }
+        {
+          "pos": [
+            240,
+            320
+          ],
+          "text": "PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ\n(Gặp Nhã Phi [V] mua Đấu Kỹ & Vũ Khí)",
+          "color": "#FFD166"
+        },
+        {
+          "pos": [
+            1380,
+            155
+          ],
+          "text": "BIỆT VIỆN GIA LIỆT GIA\n(Ám sát Liễu Tịch & BOSS: Gia Liệt Áo)",
+          "color": "#FF4D6D"
+        }
       ],
       "props": [
-        { "type": "gate", "pos": [445, 470] },
-        { "type": "pine", "pos": [860, 240] },
-        { "type": "pine", "pos": [860, 960] },
-        { "type": "boulder", "pos": [1170, 230] },
-        { "type": "boulder", "pos": [1170, 960] },
-        { "type": "lantern", "pos": [180, 420] },
-        { "type": "lantern", "pos": [720, 420] },
-        { "type": "lantern", "pos": [180, 860] },
-        { "type": "lantern", "pos": [720, 860] },
-        { "type": "lantern", "pos": [1320, 260] },
-        { "type": "lantern", "pos": [1880, 260] },
-        { "type": "lantern", "pos": [1320, 890] },
-        { "type": "lantern", "pos": [1880, 890] }
+        {
+          "type": "gate",
+          "pos": [
+            445,
+            470
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            860,
+            240
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            860,
+            960
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1170,
+            230
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1170,
+            960
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            180,
+            420
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            720,
+            420
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            180,
+            860
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            720,
+            860
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1320,
+            260
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1880,
+            260
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1320,
+            890
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1880,
+            890
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_o_than_secret",
           "name": "Hòm Bảo Vật Phường Thị",
-          "pos": [190, 995],
+          "pos": [
+            190,
+            995
+          ],
           "gold": 110,
           "stones": 4,
           "gear_template": "ring_nap_gioi_so_cap",
           "gear_rarity": "huyen",
-          "items": { "pill_hoi_khi_dan": 2, "core_hoa_1": 1 }
+          "items": {
+            "pill_hoi_khi_dan": 2,
+            "core_hoa_1": 1
+          }
         }
       ],
       "npcs": [
@@ -253,32 +797,82 @@
           "name": "Nhã Phi",
           "title": "Thủ Tịch Đấu Giá Sư Mễ Đặc Nhĩ",
           "sprite": "res://assets/sprites/npcs/npc_nha_phi.png",
-          "pos": [440, 620],
+          "pos": [
+            440,
+            620
+          ],
           "role": "shop_nha_phi"
         }
       ],
       "spawns": [
-        { "enemy_id": "gia_dinh_gia_liet", "pos": [1060, 360], "respawn": 8.0 },
-        { "enemy_id": "gia_dinh_gia_liet", "pos": [1100, 620], "respawn": 8.0 },
-        { "enemy_id": "gia_dinh_gia_liet", "pos": [1060, 840], "respawn": 8.0 },
-        { "enemy_id": "lieu_tich_boss", "pos": [1460, 340], "respawn": 22.0 },
-        { "enemy_id": "gia_liet_ao_boss", "pos": [1680, 650], "respawn": 22.0 }
+        {
+          "enemy_id": "gia_dinh_gia_liet",
+          "pos": [
+            1060,
+            360
+          ],
+          "respawn": 8.0
+        },
+        {
+          "enemy_id": "gia_dinh_gia_liet",
+          "pos": [
+            1100,
+            620
+          ],
+          "respawn": 8.0
+        },
+        {
+          "enemy_id": "gia_dinh_gia_liet",
+          "pos": [
+            1060,
+            840
+          ],
+          "respawn": 8.0
+        },
+        {
+          "enemy_id": "lieu_tich_boss",
+          "pos": [
+            1460,
+            340
+          ],
+          "respawn": 22.0
+        },
+        {
+          "enemy_id": "gia_liet_ao_boss",
+          "pos": [
+            1680,
+            650
+          ],
+          "respawn": 22.0
+        }
       ],
       "portals": [
         {
           "id": "back_tieu_gia_from_city",
           "label": "Cổng Bắc -> Quảng Trường Tiêu Gia",
-          "pos": [320, 112],
+          "pos": [
+            320,
+            112
+          ],
           "target_map": "ch01_tieu_gia",
-          "target_spawn": [760, 810],
+          "target_spawn": [
+            760,
+            810
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch02_ma_thu",
           "label": "Nam Môn Quan Đạo -> [CHƯƠNG 02] Thanh Sơn Trấn",
-          "pos": [1945, 580],
+          "pos": [
+            1945,
+            580
+          ],
           "target_map": "ch02_ma_thu_son_mach",
-          "target_spawn": [190, 580],
+          "target_spawn": [
+            190,
+            580
+          ],
           "require_flag": "ch01_completed",
           "locked_hint": "Hãy diệt Liễu Tịch & đánh bại [BOSS] Gia Liệt Áo nhận Huyền Trọng Xích để sang Chương 02!"
         }
@@ -289,47 +883,193 @@
       "chapter": "Chương 02",
       "name": "Thanh Sơn Trấn & Rừng Ngoại Vi",
       "bgm": "bgm_wild",
-      "size": [2048, 1152],
+      "size": [
+        2048,
+        1152
+      ],
       "ambient_hex": "#8ca8b4",
       "base_tile": "res://assets/sprites/tiles/bamboo_grass.png",
-      "default_spawn": [200, 580],
+      "default_spawn": [
+        200,
+        580
+      ],
       "zones": [
-        { "rect": [128, 496, 1520, 160], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "" },
-        { "rect": [140, 350, 420, 220], "tile": "res://assets/sprites/tiles/courtyard_stone.png", "border_hex": "#80ED99" }
+        {
+          "rect": [
+            128,
+            496,
+            1520,
+            160
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": ""
+        },
+        {
+          "rect": [
+            140,
+            350,
+            420,
+            220
+          ],
+          "tile": "res://assets/sprites/tiles/courtyard_stone.png",
+          "border_hex": "#80ED99"
+        }
       ],
       "signs": [
-        { "pos": [210, 290], "text": "VẠN DƯỢC TRAI — THANH SƠN TRẤN\n(Gặp Tiểu Y Tiên [V] nhận nhiệm vụ & hồi máu)", "color": "#A8DADC" },
-        { "pos": [1120, 120], "text": "VÁCH ĐÁ ĐOẠN HỒN\n(Lối xuống Huyền Nhai Sơn Động!)", "color": "#FFD166" }
+        {
+          "pos": [
+            210,
+            290
+          ],
+          "text": "VẠN DƯỢC TRAI — THANH SƠN TRẤN\n(Gặp Tiểu Y Tiên [V] nhận nhiệm vụ & hồi máu)",
+          "color": "#A8DADC"
+        },
+        {
+          "pos": [
+            1120,
+            120
+          ],
+          "text": "VÁCH ĐÁ ĐOẠN HỒN\n(Lối xuống Huyền Nhai Sơn Động!)",
+          "color": "#FFD166"
+        }
       ],
       "props": [
-        { "type": "gate", "pos": [350, 440] },
-        { "type": "boulder", "pos": [620, 360] },
-        { "type": "boulder", "pos": [1040, 420] },
-        { "type": "boulder", "pos": [960, 760] },
-        { "type": "boulder", "pos": [1420, 820] },
-        { "type": "pine", "pos": [240, 220] },
-        { "type": "pine", "pos": [310, 920] },
-        { "type": "pine", "pos": [1480, 320] },
-        { "type": "lantern", "pos": [200, 490] },
-        { "type": "lantern", "pos": [490, 490] },
-        { "type": "bamboo", "pos": [700, 200] },
-        { "type": "bamboo", "pos": [900, 190] },
-        { "type": "bamboo", "pos": [1320, 220] },
-        { "type": "bamboo", "pos": [620, 960] },
-        { "type": "bamboo", "pos": [900, 980] },
-        { "type": "bamboo", "pos": [1220, 940] },
-        { "type": "bamboo", "pos": [1540, 920] }
+        {
+          "type": "gate",
+          "pos": [
+            350,
+            440
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            620,
+            360
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1040,
+            420
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            960,
+            760
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1420,
+            820
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            240,
+            220
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            310,
+            920
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            1480,
+            320
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            200,
+            490
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            490,
+            490
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            700,
+            200
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            900,
+            190
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1320,
+            220
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            620,
+            960
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            900,
+            980
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1220,
+            940
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1540,
+            920
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_ma_thu_south_cauldron",
           "name": "Bảo Rương Dược Đỉnh Cổ",
-          "pos": [1080, 995],
+          "pos": [
+            1080,
+            995
+          ],
           "gold": 150,
           "stones": 4,
           "gear_template": "caul_hac_ma_dinh",
           "gear_rarity": "huyen",
-          "items": { "herb_tay_cot_hoa": 2, "core_moc_2": 1 }
+          "items": {
+            "herb_tay_cot_hoa": 2,
+            "core_moc_2": 1
+          }
         }
       ],
       "npcs": [
@@ -338,7 +1078,10 @@
           "name": "Tiểu Y Tiên",
           "title": "Dược Sư Vạn Dược Trai",
           "sprite": "res://assets/sprites/npcs/npc_tieu_y_tien.png",
-          "pos": [340, 505],
+          "pos": [
+            340,
+            505
+          ],
           "role": "story_tieu_y_tien"
         },
         {
@@ -346,52 +1089,122 @@
           "name": "Mục Lực",
           "title": "Thiếu Đoàn Trưởng Lang Đầu Đoàn",
           "sprite": "res://assets/sprites/npcs/npc_muc_luc.png",
-          "pos": [520, 520],
+          "pos": [
+            520,
+            520
+          ],
           "role": "story_muc_luc_intro",
           "hide_if_flag": "absorbed_tu_hoa"
         }
       ],
       "spawns": [
-        { "enemy_id": "hoa_tinh_vien", "pos": [820, 320], "respawn": 9.0 },
-        { "enemy_id": "hoa_tinh_vien", "pos": [940, 780], "respawn": 9.0 },
-        { "enemy_id": "thiet_boi_son_tru", "pos": [720, 700], "respawn": 9.0 },
-        { "enemy_id": "lang_dau_tinh_anh", "pos": [1340, 420], "respawn": 9.5 },
-        { "enemy_id": "lang_dau_tinh_anh", "pos": [1380, 720], "respawn": 9.5 },
-        { "enemy_id": "muc_luc_boss", "pos": [1620, 580], "respawn": 22.0, "require_flag": "absorbed_tu_hoa" }
+        {
+          "enemy_id": "hoa_tinh_vien",
+          "pos": [
+            820,
+            320
+          ],
+          "respawn": 9.0
+        },
+        {
+          "enemy_id": "hoa_tinh_vien",
+          "pos": [
+            940,
+            780
+          ],
+          "respawn": 9.0
+        },
+        {
+          "enemy_id": "thiet_boi_son_tru",
+          "pos": [
+            720,
+            700
+          ],
+          "respawn": 9.0
+        },
+        {
+          "enemy_id": "lang_dau_tinh_anh",
+          "pos": [
+            1340,
+            420
+          ],
+          "respawn": 9.5
+        },
+        {
+          "enemy_id": "lang_dau_tinh_anh",
+          "pos": [
+            1380,
+            720
+          ],
+          "respawn": 9.5
+        },
+        {
+          "enemy_id": "muc_luc_boss",
+          "pos": [
+            1620,
+            580
+          ],
+          "respawn": 22.0,
+          "require_flag": "absorbed_tu_hoa"
+        }
       ],
       "portals": [
         {
           "id": "back_o_than_thanh",
           "label": "Cổng Tây -> Trở về Ô Thản Thành",
-          "pos": [112, 580],
+          "pos": [
+            112,
+            580
+          ],
           "target_map": "ch01_o_than_thanh",
-          "target_spawn": [1820, 580],
+          "target_spawn": [
+            1820,
+            580
+          ],
           "require_flag": ""
         },
         {
           "id": "to_huyen_nhai_dong",
           "label": "Vách Đá Bắc -> Huyền Nhai Sơn Động (3 Thạch Thất)",
-          "pos": [1120, 108],
+          "pos": [
+            1120,
+            108
+          ],
           "target_map": "ch02_huyen_nhai_dong",
-          "target_spawn": [800, 900],
+          "target_spawn": [
+            800,
+            900
+          ],
           "require_flag": "met_tieu_y_tien",
           "locked_hint": "Hãy tới Vạn Dược Trai gặp Tiểu Y Tiên [V] để cùng đi hái thuốc ở Vách Đá Đoạn Hồn!"
         },
         {
           "id": "to_noi_vi_su_vuong",
           "label": "Đông Bắc -> Bờ Suối Trăng Bạc (Gặp Vân Chi & Hang Sư Vương)",
-          "pos": [1935, 290],
+          "pos": [
+            1935,
+            290
+          ],
           "target_map": "ch02_noi_vi_su_vuong",
-          "target_spawn": [190, 540],
+          "target_spawn": [
+            190,
+            540
+          ],
           "require_flag": "got_tu_van_duc",
           "locked_hint": "Hãy khám phá Huyền Nhai Sơn Động đoạt [Tử Vân Dực] trước khi tiến vào Nội Vi!"
         },
         {
           "id": "to_thac_nuoc_muc_xa",
           "label": "Đông Nam -> Thác Nước Nghìn Trượng (Quyết Chiến Mục Xà!)",
-          "pos": [1935, 860],
+          "pos": [
+            1935,
+            860
+          ],
           "target_map": "ch02_thac_nuoc_muc_xa",
-          "target_spawn": [190, 540],
+          "target_spawn": [
+            190,
+            540
+          ],
           "require_flag": "killed_muc_luc",
           "locked_hint": "Hãy luyện hóa Tử Hỏa ở Nội Vi rồi hạ Thiếu Đoàn Trưởng Mục Lực đang phục kích phía Đông!"
         }
@@ -402,81 +1215,240 @@
       "chapter": "Chương 02",
       "name": "Huyền Nhai Sơn Động (3 Thạch Thất)",
       "bgm": "bgm_wild",
-      "size": [1600, 1024],
+      "size": [
+        1600,
+        1024
+      ],
       "ambient_hex": "#7ca9a8",
       "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
-      "default_spawn": [800, 890],
+      "default_spawn": [
+        800,
+        890
+      ],
       "zones": [
-        { "rect": [128, 160, 352, 320], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#FFD166" },
-        { "rect": [624, 128, 352, 288], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#80ED99" },
-        { "rect": [1120, 160, 352, 320], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#C77DFF" },
-        { "rect": [560, 448, 480, 352], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "#70D6FF", "arena_circle": true }
+        {
+          "rect": [
+            128,
+            160,
+            352,
+            320
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FFD166"
+        },
+        {
+          "rect": [
+            624,
+            128,
+            352,
+            288
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#80ED99"
+        },
+        {
+          "rect": [
+            1120,
+            160,
+            352,
+            320
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#C77DFF"
+        },
+        {
+          "rect": [
+            560,
+            448,
+            480,
+            352
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#70D6FF",
+          "arena_circle": true
+        }
       ],
       "signs": [
-        { "pos": [165, 118], "text": "THẠCH THẤT TRÁI\n(Cuồng Sư Ngâm — Âm Ba Công)", "color": "#FFD166" },
-        { "pos": [665, 92], "text": "THẠCH THẤT GIỮA\n(Thất Thải Độc Kinh)", "color": "#80ED99" },
-        { "pos": [1145, 118], "text": "THẠCH THẤT PHẢI\n(Hộp Ngọc Tử Vân Dực & Tàn Đồ #1)", "color": "#C77DFF" }
+        {
+          "pos": [
+            165,
+            118
+          ],
+          "text": "THẠCH THẤT TRÁI\n(Cuồng Sư Ngâm — Âm Ba Công)",
+          "color": "#FFD166"
+        },
+        {
+          "pos": [
+            665,
+            92
+          ],
+          "text": "THẠCH THẤT GIỮA\n(Thất Thải Độc Kinh)",
+          "color": "#80ED99"
+        },
+        {
+          "pos": [
+            1145,
+            118
+          ],
+          "text": "THẠCH THẤT PHẢI\n(Hộp Ngọc Tử Vân Dực & Tàn Đồ #1)",
+          "color": "#C77DFF"
+        }
       ],
       "props": [
-        { "type": "boulder", "pos": [520, 420] },
-        { "type": "boulder", "pos": [1080, 420] },
-        { "type": "boulder", "pos": [260, 740] },
-        { "type": "boulder", "pos": [1340, 740] },
-        { "type": "lantern", "pos": [590, 470] },
-        { "type": "lantern", "pos": [1010, 470] },
-        { "type": "lantern", "pos": [590, 760] },
-        { "type": "lantern", "pos": [1010, 760] },
-        { "type": "lantern", "pos": [304, 240] },
-        { "type": "lantern", "pos": [800, 195] },
-        { "type": "lantern", "pos": [1296, 240] }
+        {
+          "type": "boulder",
+          "pos": [
+            520,
+            420
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1080,
+            420
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            260,
+            740
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1340,
+            740
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            590,
+            470
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1010,
+            470
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            590,
+            760
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1010,
+            760
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            304,
+            240
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            800,
+            195
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1296,
+            240
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_cave_left_lion_roar",
           "name": "Rương Thạch Thất Trái — Cuồng Sư Ngâm",
-          "pos": [304, 320],
+          "pos": [
+            304,
+            320
+          ],
           "gold": 140,
           "stones": 4,
           "skill_unlock": "su_tu_ngam",
           "gear_template": "pend_thanh_ngoc_boi",
           "gear_rarity": "dia",
-          "items": { "herb_hoat_khi_qua": 2 }
+          "items": {
+            "herb_hoat_khi_qua": 2
+          }
         },
         {
           "id": "chest_cave_mid_poison_book",
           "name": "Rương Thất Thải Độc Kinh (Tặng Tiểu Y Tiên)",
-          "pos": [800, 275],
+          "pos": [
+            800,
+            275
+          ],
           "gold": 120,
           "stones": 3,
           "story_flag": "found_doc_kinh",
           "affection_npc": "tieu_y_tien",
           "affection_gain": 30,
-          "items": { "herb_tu_diep_lan": 3, "herb_tay_cot_hoa": 3 }
+          "items": {
+            "herb_tu_diep_lan": 3,
+            "herb_tay_cot_hoa": 3
+          }
         },
         {
           "id": "chest_cave_right_tu_van_duc",
           "name": "Hộp Ngọc Tiền Bối — Tử Vân Dực & Tàn Đồ #1",
-          "pos": [1296, 320],
+          "pos": [
+            1296,
+            320
+          ],
           "gold": 220,
           "stones": 6,
           "story_flag": "got_tu_van_duc",
           "skill_unlock": "tu_van_duc_kich",
           "gear_template": "wing_tu_van_duc",
           "gear_rarity": "dia",
-          "items": { "pill_truc_co_linh_dich": 2 }
+          "items": {
+            "pill_truc_co_linh_dich": 2
+          }
         }
       ],
       "npcs": [],
       "spawns": [
-        { "enemy_id": "thach_khoi_boss", "pos": [800, 580], "respawn": 26.0 }
+        {
+          "enemy_id": "thach_khoi_boss",
+          "pos": [
+            800,
+            580
+          ],
+          "respawn": 26.0
+        }
       ],
       "portals": [
         {
           "id": "exit_huyen_nhai_dong",
           "label": "Bay Lên Vách Đá -> Ngoại Vi Ma Thú Sơn Mạch",
-          "pos": [800, 945],
+          "pos": [
+            800,
+            945
+          ],
           "target_map": "ch02_ma_thu_son_mach",
-          "target_spawn": [1120, 210],
+          "target_spawn": [
+            1120,
+            210
+          ],
           "require_flag": ""
         }
       ]
@@ -486,45 +1458,180 @@
       "chapter": "Chương 02",
       "name": "Bờ Suối Trăng Bạc & Hang Sư Vương",
       "bgm": "bgm_wild",
-      "size": [1920, 1088],
+      "size": [
+        1920,
+        1088
+      ],
       "ambient_hex": "#8a8db8",
       "base_tile": "res://assets/sprites/tiles/bamboo_grass.png",
-      "default_spawn": [190, 540],
+      "default_spawn": [
+        190,
+        540
+      ],
       "zones": [
-        { "rect": [128, 352, 480, 384], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "#70D6FF" },
-        { "rect": [1216, 224, 576, 640], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#C77DFF", "arena_circle": true }
+        {
+          "rect": [
+            128,
+            352,
+            480,
+            384
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#70D6FF"
+        },
+        {
+          "rect": [
+            1216,
+            224,
+            576,
+            640
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#C77DFF",
+          "arena_circle": true
+        }
       ],
       "signs": [
-        { "pos": [190, 285], "text": "BỜ SUỐI TRĂNG BẠC & HANG ẨN TU\n(Gặp Mỹ Nhân Thần Bí Vân Chi [V])", "color": "#A8DADC" },
-        { "pos": [1320, 165], "text": "HANG TỬ TINH DỰC SƯ VƯƠNG\n(Hạ Tiểu Sư Vương đoạt Tử Tinh Nguyên!)", "color": "#E0AAFF" }
+        {
+          "pos": [
+            190,
+            285
+          ],
+          "text": "BỜ SUỐI TRĂNG BẠC & HANG ẨN TU\n(Gặp Mỹ Nhân Thần Bí Vân Chi [V])",
+          "color": "#A8DADC"
+        },
+        {
+          "pos": [
+            1320,
+            165
+          ],
+          "text": "HANG TỬ TINH DỰC SƯ VƯƠNG\n(Hạ Tiểu Sư Vương đoạt Tử Tinh Nguyên!)",
+          "color": "#E0AAFF"
+        }
       ],
       "props": [
-        { "type": "boulder", "pos": [760, 290] },
-        { "type": "boulder", "pos": [760, 810] },
-        { "type": "boulder", "pos": [1140, 320] },
-        { "type": "boulder", "pos": [1140, 780] },
-        { "type": "pine", "pos": [210, 210] },
-        { "type": "pine", "pos": [540, 210] },
-        { "type": "pine", "pos": [480, 890] },
-        { "type": "lantern", "pos": [260, 420] },
-        { "type": "lantern", "pos": [500, 420] },
-        { "type": "lantern", "pos": [1255, 265] },
-        { "type": "lantern", "pos": [1750, 265] },
-        { "type": "lantern", "pos": [1255, 825] },
-        { "type": "lantern", "pos": [1750, 825] },
-        { "type": "bamboo", "pos": [845, 220] },
-        { "type": "bamboo", "pos": [940, 890] }
+        {
+          "type": "boulder",
+          "pos": [
+            760,
+            290
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            760,
+            810
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1140,
+            320
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1140,
+            780
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            210,
+            210
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            540,
+            210
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            480,
+            890
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            260,
+            420
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            500,
+            420
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1255,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1750,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1255,
+            825
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1750,
+            825
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            845,
+            220
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            940,
+            890
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_broken_lion_horn",
           "name": "Kỳ Ngộ Ẩn — Sừng Gãy Tử Tinh Sư Vương",
-          "pos": [940, 160],
+          "pos": [
+            940,
+            160
+          ],
           "gold": 250,
           "stones": 6,
           "gear_template": "neck_lang_nha_lien",
           "gear_rarity": "dia",
-          "items": { "core_moc_2": 2, "pill_ho_mach_dan": 1 }
+          "items": {
+            "core_moc_2": 2,
+            "pill_ho_mach_dan": 1
+          }
         }
       ],
       "npcs": [
@@ -533,23 +1640,53 @@
           "name": "Vân Chi (Vân Vận)",
           "title": "Nữ Đấu Hoàng Thần Bí Bị Phong Ấn",
           "sprite": "res://assets/sprites/npcs/npc_van_chi.png",
-          "pos": [425, 505],
+          "pos": [
+            425,
+            505
+          ],
           "role": "story_van_chi",
           "hide_if_flag": "van_chi_departed"
         }
       ],
       "spawns": [
-        { "enemy_id": "hoa_tinh_vien", "pos": [860, 440], "respawn": 9.0 },
-        { "enemy_id": "hoa_tinh_vien", "pos": [920, 680], "respawn": 9.0 },
-        { "enemy_id": "tieu_tu_tinh_su_boss", "pos": [1510, 540], "respawn": 26.0 }
+        {
+          "enemy_id": "hoa_tinh_vien",
+          "pos": [
+            860,
+            440
+          ],
+          "respawn": 9.0
+        },
+        {
+          "enemy_id": "hoa_tinh_vien",
+          "pos": [
+            920,
+            680
+          ],
+          "respawn": 9.0
+        },
+        {
+          "enemy_id": "tieu_tu_tinh_su_boss",
+          "pos": [
+            1510,
+            540
+          ],
+          "respawn": 26.0
+        }
       ],
       "portals": [
         {
           "id": "back_ngoai_vi_from_noi_vi",
           "label": "Cổng Tây -> Ngoại Vi",
-          "pos": [112, 540],
+          "pos": [
+            112,
+            540
+          ],
           "target_map": "ch02_ma_thu_son_mach",
-          "target_spawn": [1810, 310],
+          "target_spawn": [
+            1810,
+            310
+          ],
           "require_flag": ""
         }
       ]
@@ -559,43 +1696,169 @@
       "chapter": "Chương 02",
       "name": "Thác Nước Nghìn Trượng & U Lan",
       "bgm": "bgm_wild",
-      "size": [1920, 1088],
+      "size": [
+        1920,
+        1088
+      ],
       "ambient_hex": "#82a6ba",
       "base_tile": "res://assets/sprites/tiles/bamboo_grass.png",
-      "default_spawn": [190, 540],
+      "default_spawn": [
+        190,
+        540
+      ],
       "zones": [
-        { "rect": [128, 464, 512, 160], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "" },
-        { "rect": [640, 224, 640, 640], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#FF4D6D", "arena_circle": true },
-        { "rect": [1344, 288, 480, 512], "tile": "res://assets/sprites/tiles/courtyard_stone.png", "border_hex": "#80ED99" }
+        {
+          "rect": [
+            128,
+            464,
+            512,
+            160
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": ""
+        },
+        {
+          "rect": [
+            640,
+            224,
+            640,
+            640
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FF4D6D",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            1344,
+            288,
+            480,
+            512
+          ],
+          "tile": "res://assets/sprites/tiles/courtyard_stone.png",
+          "border_hex": "#80ED99"
+        }
       ],
       "signs": [
-        { "pos": [760, 165], "text": "BÃI ĐÁ THÁC NƯỚC NGHÌN TRƯỢNG\n(Quyết Chiến 1v1: BOSS Đoàn Trưởng Mục Xà!)", "color": "#FF4D6D" },
-        { "pos": [1410, 230], "text": "THUNG LŨNG U LAN (ĐỘC CỐC)\n(Chia ly Tiểu Y Tiên -> Đường sang Chương 03)", "color": "#80ED99" }
+        {
+          "pos": [
+            760,
+            165
+          ],
+          "text": "BÃI ĐÁ THÁC NƯỚC NGHÌN TRƯỢNG\n(Quyết Chiến 1v1: BOSS Đoàn Trưởng Mục Xà!)",
+          "color": "#FF4D6D"
+        },
+        {
+          "pos": [
+            1410,
+            230
+          ],
+          "text": "THUNG LŨNG U LAN (ĐỘC CỐC)\n(Chia ly Tiểu Y Tiên -> Đường sang Chương 03)",
+          "color": "#80ED99"
+        }
       ],
       "props": [
-        { "type": "boulder", "pos": [540, 280] },
-        { "type": "boulder", "pos": [540, 820] },
-        { "type": "pine", "pos": [260, 240] },
-        { "type": "pine", "pos": [260, 860] },
-        { "type": "pine", "pos": [1580, 220] },
-        { "type": "pine", "pos": [1580, 890] },
-        { "type": "lantern", "pos": [680, 265] },
-        { "type": "lantern", "pos": [1240, 265] },
-        { "type": "lantern", "pos": [680, 825] },
-        { "type": "lantern", "pos": [1240, 825] },
-        { "type": "lantern", "pos": [1395, 340] },
-        { "type": "lantern", "pos": [1395, 750] }
+        {
+          "type": "boulder",
+          "pos": [
+            540,
+            280
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            540,
+            820
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            260,
+            240
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            260,
+            860
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            1580,
+            220
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            1580,
+            890
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            680,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1240,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            680,
+            825
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1240,
+            825
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1395,
+            340
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1395,
+            750
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_muc_xa_treasure",
           "name": "Kho Báu Lang Đầu Đánh Thuê Đoàn",
-          "pos": [1580, 740],
+          "pos": [
+            1580,
+            740
+          ],
           "gold": 400,
           "stones": 8,
           "gear_template": "ring_cot_viem_gioi",
           "gear_rarity": "dia",
-          "items": { "pill_ho_mach_dan": 1, "pill_truc_co_linh_dich": 2 }
+          "items": {
+            "pill_ho_mach_dan": 1,
+            "pill_truc_co_linh_dich": 2
+          }
         }
       ],
       "npcs": [
@@ -604,31 +1867,67 @@
           "name": "Tiểu Y Tiên (Độc Cốc)",
           "title": "Ách Nan Độc Thể Thức Tỉnh",
           "sprite": "res://assets/sprites/npcs/npc_tieu_y_tien.png",
-          "pos": [1580, 520],
+          "pos": [
+            1580,
+            520
+          ],
           "role": "story_tieu_y_tien_farewell",
           "require_flag": "killed_muc_xa"
         }
       ],
       "spawns": [
-        { "enemy_id": "lang_dau_tinh_anh", "pos": [760, 380], "respawn": 12.0 },
-        { "enemy_id": "lang_dau_tinh_anh", "pos": [760, 700], "respawn": 12.0 },
-        { "enemy_id": "muc_xa_boss", "pos": [1040, 540], "respawn": 28.0 }
+        {
+          "enemy_id": "lang_dau_tinh_anh",
+          "pos": [
+            760,
+            380
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "lang_dau_tinh_anh",
+          "pos": [
+            760,
+            700
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "muc_xa_boss",
+          "pos": [
+            1040,
+            540
+          ],
+          "respawn": 28.0
+        }
       ],
       "portals": [
         {
           "id": "back_ngoai_vi_from_thac",
           "label": "Cổng Tây -> Thanh Sơn Trấn",
-          "pos": [112, 540],
+          "pos": [
+            112,
+            540
+          ],
           "target_map": "ch02_ma_thu_son_mach",
-          "target_spawn": [1810, 840],
+          "target_spawn": [
+            1810,
+            840
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch03_desert_preview",
           "label": "Cổng Đông -> [CHƯƠNG 03] Thạch Mạc Thành",
-          "pos": [1810, 540],
+          "pos": [
+            1810,
+            540
+          ],
           "target_map": "ch03_thach_mac_thanh",
-          "target_spawn": [190, 520],
+          "target_spawn": [
+            190,
+            520
+          ],
           "require_flag": "ch02_farewell_done",
           "locked_hint": "Hãy hạ [BOSS] Mục Xà và từ biệt Tiểu Y Tiên ở Thung Lũng U Lan để tiến vào Sa Mạc Tháp Qua Nhĩ (Chương 03)!"
         }
@@ -638,44 +1937,171 @@
       "id": "ch03_thach_mac_thanh",
       "chapter": "Chương 03",
       "name": "Thạch Mạc Thành & Mạc Thiết Đoàn",
-      "bgm": "bgm_peaceful",
-      "size": [2048, 1152],
+      "bgm": "bgm_desert",
+      "size": [
+        2048,
+        1152
+      ],
       "ambient_hex": "#e8d2ae",
       "base_tile": "res://assets/sprites/tiles/sandstone_plaza.png",
-      "default_spawn": [190, 520],
+      "default_spawn": [
+        190,
+        520
+      ],
       "zones": [
-        { "rect": [256, 160, 704, 320], "tile": "res://assets/sprites/tiles/stepping_path.png", "border_hex": "#FFD166" },
-        { "rect": [128, 672, 576, 384], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#70D6FF", "arena_circle": true },
-        { "rect": [1216, 128, 768, 896], "tile": "res://assets/sprites/tiles/desert_sand.png", "border_hex": "#FF9F1C" }
+        {
+          "rect": [
+            256,
+            160,
+            704,
+            320
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#FFD166"
+        },
+        {
+          "rect": [
+            128,
+            672,
+            576,
+            384
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#70D6FF",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            1216,
+            128,
+            768,
+            896
+          ],
+          "tile": "res://assets/sprites/tiles/desert_sand.png",
+          "border_hex": "#FF9F1C"
+        }
       ],
       "signs": [
-        { "pos": [300, 112], "text": "TỔNG BỘ MẠC THIẾT ĐOÀN\n(Tiêu Đỉnh · Tiêu Lệ · Thanh Lân)", "color": "#FFD166" },
-        { "pos": [210, 622], "text": "TIỆM BẢN ĐỒ CỔ HẺM VẮNG\n(Băng Hoàng Hải Ba Đông & Tàn Đồ #2)", "color": "#70D6FF" },
-        { "pos": [1380, 145], "text": "BIỂN CÁT THÁP QUA NHĨ\n(Sa Độc Hạt Vương & Sa Chi Mạn Đà La)", "color": "#FFB703" }
+        {
+          "pos": [
+            300,
+            112
+          ],
+          "text": "TỔNG BỘ MẠC THIẾT ĐOÀN\n(Tiêu Đỉnh · Tiêu Lệ · Thanh Lân)",
+          "color": "#FFD166"
+        },
+        {
+          "pos": [
+            210,
+            622
+          ],
+          "text": "TIỆM BẢN ĐỒ CỔ HẺM VẮNG\n(Băng Hoàng Hải Ba Đông & Tàn Đồ #2)",
+          "color": "#70D6FF"
+        },
+        {
+          "pos": [
+            1380,
+            145
+          ],
+          "text": "BIỂN CÁT THÁP QUA NHĨ\n(Sa Độc Hạt Vương & Sa Chi Mạn Đà La)",
+          "color": "#FFB703"
+        }
       ],
       "props": [
-        { "type": "gate", "pos": [610, 210] },
-        { "type": "boulder", "pos": [1120, 320] },
-        { "type": "boulder", "pos": [1120, 820] },
-        { "type": "boulder", "pos": [1620, 240] },
-        { "type": "boulder", "pos": [1640, 910] },
-        { "type": "lantern", "pos": [290, 200] },
-        { "type": "lantern", "pos": [925, 200] },
-        { "type": "lantern", "pos": [165, 710] },
-        { "type": "lantern", "pos": [665, 710] },
-        { "type": "lantern", "pos": [165, 1015] },
-        { "type": "lantern", "pos": [665, 1015] }
+        {
+          "type": "gate",
+          "pos": [
+            610,
+            210
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1120,
+            320
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1120,
+            820
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1620,
+            240
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1640,
+            910
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            290,
+            200
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            925,
+            200
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            165,
+            710
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            665,
+            710
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            165,
+            1015
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            665,
+            1015
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_sa_mac_mandala",
           "name": "Kỳ Hoa Giữa Bão Cát — Sa Chi Mạn Đà La",
-          "pos": [1820, 940],
+          "pos": [
+            1820,
+            940
+          ],
           "gold": 480,
           "stones": 8,
           "gear_template": "arm_giap_vay_xa_hoang",
           "gear_rarity": "dia",
-          "items": { "herb_sa_chi_man_da_la": 3, "pill_bang_tam_dan": 1 }
+          "items": {
+            "herb_sa_chi_man_da_la": 3,
+            "pill_bang_tam_dan": 1
+          }
         }
       ],
       "npcs": [
@@ -684,7 +2110,10 @@
           "name": "Tiêu Đỉnh",
           "title": "Đại Ca · Đoàn Trưởng Mạc Thiết",
           "sprite": "res://assets/sprites/npcs/npc_tieu_dinh.png",
-          "pos": [365, 355],
+          "pos": [
+            365,
+            355
+          ],
           "role": "story_tieu_dinh"
         },
         {
@@ -692,7 +2121,10 @@
           "name": "Tiêu Lệ",
           "title": "Nhị Ca · Phó Đoàn Mạc Thiết",
           "sprite": "res://assets/sprites/npcs/npc_tieu_le.png",
-          "pos": [610, 355],
+          "pos": [
+            610,
+            355
+          ],
           "role": "story_tieu_le"
         },
         {
@@ -700,7 +2132,10 @@
           "name": "Thanh Lân",
           "title": "Thiếu Nữ Bích Xà Tam Hoa Đồng",
           "sprite": "res://assets/sprites/npcs/npc_thanh_lan.png",
-          "pos": [855, 365],
+          "pos": [
+            855,
+            365
+          ],
           "role": "story_thanh_lan"
         },
         {
@@ -708,43 +2143,107 @@
           "name": "Băng Hoàng Hải Ba Đông",
           "title": "Thập Đại Cường Giả (Giao Ước Tàn Đồ #2)",
           "sprite": "res://assets/sprites/npcs/npc_hai_ba_dong.png",
-          "pos": [415, 855],
+          "pos": [
+            415,
+            855
+          ],
           "role": "story_hai_ba_dong",
           "require_flag": "beat_hai_ba_dong"
         }
       ],
       "spawns": [
-        { "enemy_id": "hai_ba_dong_boss", "pos": [415, 865], "respawn": 26.0, "hide_if_flag": "beat_hai_ba_dong" },
-        { "enemy_id": "sa_doc_hat_vuong", "pos": [1410, 320], "respawn": 9.5 },
-        { "enemy_id": "sa_doc_hat_vuong", "pos": [1550, 560], "respawn": 9.5 },
-        { "enemy_id": "sa_doc_hat_vuong", "pos": [1420, 810], "respawn": 9.5 },
-        { "enemy_id": "xa_nhan_chien_binh", "pos": [1740, 380], "respawn": 10.5 },
-        { "enemy_id": "xa_nhan_chien_binh", "pos": [1740, 740], "respawn": 10.5 }
+        {
+          "enemy_id": "hai_ba_dong_boss",
+          "pos": [
+            415,
+            865
+          ],
+          "respawn": 26.0,
+          "hide_if_flag": "beat_hai_ba_dong"
+        },
+        {
+          "enemy_id": "sa_doc_hat_vuong",
+          "pos": [
+            1410,
+            320
+          ],
+          "respawn": 9.5
+        },
+        {
+          "enemy_id": "sa_doc_hat_vuong",
+          "pos": [
+            1550,
+            560
+          ],
+          "respawn": 9.5
+        },
+        {
+          "enemy_id": "sa_doc_hat_vuong",
+          "pos": [
+            1420,
+            810
+          ],
+          "respawn": 9.5
+        },
+        {
+          "enemy_id": "xa_nhan_chien_binh",
+          "pos": [
+            1740,
+            380
+          ],
+          "respawn": 10.5
+        },
+        {
+          "enemy_id": "xa_nhan_chien_binh",
+          "pos": [
+            1740,
+            740
+          ],
+          "respawn": 10.5
+        }
       ],
       "portals": [
         {
           "id": "back_thac_nuoc_u_lan",
           "label": "Cổng Tây -> Thung Lũng U Lan",
-          "pos": [112, 520],
+          "pos": [
+            112,
+            520
+          ],
           "target_map": "ch02_thac_nuoc_muc_xa",
-          "target_spawn": [1700, 540],
+          "target_spawn": [
+            1700,
+            540
+          ],
           "require_flag": ""
         },
         {
           "id": "to_dia_huyet_dung_nham",
           "label": "Hố Cát Bắc -> Địa Huyệt Dung Nham Ngầm",
-          "pos": [1050, 108],
+          "pos": [
+            1050,
+            108
+          ],
           "target_map": "ch03_dia_huyet_dung_nham",
-          "target_spawn": [210, 540],
+          "target_spawn": [
+            210,
+            540
+          ],
           "require_flag": "met_thanh_lan",
           "locked_hint": "Hãy an ủi Thanh Lân [V] tại Mạc Thiết Đoàn để nàng cảm ứng mở lối xuống Hố Cát Địa Huyệt!"
         },
         {
           "id": "to_thanh_thanh_xa_nhan",
           "label": "Cổng Đông -> Thánh Thành Xà Nhân Tộc",
-          "pos": [1945, 560],
+          "pos": [
+            1945,
+            560
+          ],
           "target_map": "ch03_thanh_thanh_xa_nhan",
-          "target_spawn": [200, 560],
+          "target_spawn": [
+            200,
+            560
+          ],
           "require_flag": "got_thanh_lien_dai",
           "locked_hint": "Hãy xuống Địa Huyệt Dung Nham phía Bắc đào [Thanh Liên Đài] trước khi tiến vào Thánh Thành Xà Nhân!"
         }
@@ -754,67 +2253,217 @@
       "id": "ch03_dia_huyet_dung_nham",
       "chapter": "Chương 03",
       "name": "Địa Huyệt Sông Dung Nham Ngầm",
-      "bgm": "bgm_wild",
-      "size": [1792, 1088],
+      "bgm": "bgm_lava",
+      "size": [
+        1792,
+        1088
+      ],
       "ambient_hex": "#d49a89",
       "base_tile": "res://assets/sprites/tiles/volcanic_basalt.png",
-      "default_spawn": [210, 540],
+      "default_spawn": [
+        210,
+        540
+      ],
       "zones": [
-        { "rect": [512, 224, 704, 640], "tile": "res://assets/sprites/tiles/volcanic_basalt.png", "border_hex": "#FF595E", "arena_circle": true },
-        { "rect": [1280, 288, 416, 512], "tile": "res://assets/sprites/tiles/oasis_turquoise.png", "border_hex": "#2EC4B6" }
+        {
+          "rect": [
+            512,
+            224,
+            704,
+            640
+          ],
+          "tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+          "border_hex": "#FF595E",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            1280,
+            288,
+            416,
+            512
+          ],
+          "tile": "res://assets/sprites/tiles/oasis_turquoise.png",
+          "border_hex": "#2EC4B6"
+        }
       ],
       "signs": [
-        { "pos": [610, 165], "text": "HỒ DUNG NHAM NGÀN TRƯỢNG\n(BOSS: Song Đầu Hỏa Linh Xà — Cấp 4 Đỉnh!)", "color": "#FF758F" },
-        { "pos": [1325, 225], "text": "ĐẢO SEN ĐÁY LỬA\n(Đào Thanh Liên Đài & 11 Hạt Liên Tử!)", "color": "#2EC4B6" }
+        {
+          "pos": [
+            610,
+            165
+          ],
+          "text": "HỒ DUNG NHAM NGÀN TRƯỢNG\n(BOSS: Song Đầu Hỏa Linh Xà — Cấp 4 Đỉnh!)",
+          "color": "#FF758F"
+        },
+        {
+          "pos": [
+            1325,
+            225
+          ],
+          "text": "ĐẢO SEN ĐÁY LỬA\n(Đào Thanh Liên Đài & 11 Hạt Liên Tử!)",
+          "color": "#2EC4B6"
+        }
       ],
       "props": [
-        { "type": "boulder", "pos": [440, 260] },
-        { "type": "boulder", "pos": [440, 820] },
-        { "type": "boulder", "pos": [1230, 240] },
-        { "type": "boulder", "pos": [1230, 840] },
-        { "type": "lantern", "pos": [550, 265] },
-        { "type": "lantern", "pos": [1175, 265] },
-        { "type": "lantern", "pos": [550, 825] },
-        { "type": "lantern", "pos": [1175, 825] },
-        { "type": "lantern", "pos": [1335, 345] },
-        { "type": "lantern", "pos": [1635, 345] },
-        { "type": "lantern", "pos": [1335, 745] },
-        { "type": "lantern", "pos": [1635, 745] }
+        {
+          "type": "boulder",
+          "pos": [
+            440,
+            260
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            440,
+            820
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1230,
+            240
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1230,
+            840
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            550,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1175,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            550,
+            825
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1175,
+            825
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1335,
+            345
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1635,
+            345
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1335,
+            745
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1635,
+            745
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_thanh_lien_dai",
           "name": "Bệ Đá Đáy Lửa — Thanh Liên Đài & Địa Tâm Tinh",
-          "pos": [1490, 540],
+          "pos": [
+            1490,
+            540
+          ],
           "gold": 680,
           "stones": 10,
           "story_flag": "got_thanh_lien_dai",
           "gear_template": "pend_thanh_lien_dai",
           "gear_rarity": "thien",
-          "items": { "pill_thanh_lien_tu": 3, "core_hoa_3": 2 }
+          "items": {
+            "pill_thanh_lien_tu": 3,
+            "core_hoa_3": 2
+          }
         },
         {
           "id": "chest_11_lien_tu",
           "name": "Kỳ Ngộ Ẩn — 11 Hạt Thanh Liên Tử",
-          "pos": [1490, 910],
+          "pos": [
+            1490,
+            910
+          ],
           "gold": 520,
           "stones": 8,
-          "items": { "pill_thanh_lien_tu": 4, "pill_bang_tam_dan": 1 }
+          "items": {
+            "pill_thanh_lien_tu": 4,
+            "pill_bang_tam_dan": 1
+          }
         }
       ],
       "npcs": [],
       "spawns": [
-        { "enemy_id": "sa_doc_hat_vuong", "pos": [350, 350], "respawn": 10.0 },
-        { "enemy_id": "sa_doc_hat_vuong", "pos": [350, 740], "respawn": 10.0 },
-        { "enemy_id": "hoa_linh_xa_boss", "pos": [865, 540], "respawn": 28.0 }
+        {
+          "enemy_id": "sa_doc_hat_vuong",
+          "pos": [
+            350,
+            350
+          ],
+          "respawn": 10.0
+        },
+        {
+          "enemy_id": "sa_doc_hat_vuong",
+          "pos": [
+            350,
+            740
+          ],
+          "respawn": 10.0
+        },
+        {
+          "enemy_id": "hoa_linh_xa_boss",
+          "pos": [
+            865,
+            540
+          ],
+          "respawn": 28.0
+        }
       ],
       "portals": [
         {
           "id": "exit_dia_huyet_dung_nham",
           "label": "Tử Vân Dực Bay Lên -> Thạch Mạc Thành",
-          "pos": [112, 540],
+          "pos": [
+            112,
+            540
+          ],
           "target_map": "ch03_thach_mac_thanh",
-          "target_spawn": [1050, 215],
+          "target_spawn": [
+            1050,
+            215
+          ],
           "require_flag": ""
         }
       ]
@@ -823,44 +2472,171 @@
       "id": "ch03_thanh_thanh_xa_nhan",
       "chapter": "Chương 03",
       "name": "Thánh Thành Xà Nhân & Thánh Trì",
-      "bgm": "bgm_wild",
-      "size": [2048, 1152],
+      "bgm": "bgm_desert",
+      "size": [
+        2048,
+        1152
+      ],
       "ambient_hex": "#ccb9de",
       "base_tile": "res://assets/sprites/tiles/sandstone_plaza.png",
-      "default_spawn": [200, 560],
+      "default_spawn": [
+        200,
+        560
+      ],
       "zones": [
-        { "rect": [320, 224, 576, 704], "tile": "res://assets/sprites/tiles/desert_sand.png", "border_hex": "#FF9F1C", "arena_circle": true },
-        { "rect": [960, 160, 448, 416], "tile": "res://assets/sprites/tiles/arena_violet.png", "border_hex": "#FF4D6D" },
-        { "rect": [1472, 224, 480, 704], "tile": "res://assets/sprites/tiles/oasis_turquoise.png", "border_hex": "#C77DFF", "arena_circle": true }
+        {
+          "rect": [
+            320,
+            224,
+            576,
+            704
+          ],
+          "tile": "res://assets/sprites/tiles/desert_sand.png",
+          "border_hex": "#FF9F1C",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            960,
+            160,
+            448,
+            416
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FF4D6D"
+        },
+        {
+          "rect": [
+            1472,
+            224,
+            480,
+            704
+          ],
+          "tile": "res://assets/sprites/tiles/oasis_turquoise.png",
+          "border_hex": "#C77DFF",
+          "arena_circle": true
+        }
       ],
       "signs": [
-        { "pos": [420, 165], "text": "NGOẠI VI THÁNH THÀNH\n(BOSS: Đại Thống Lĩnh Mặc Ba Tư)", "color": "#FF9F1C" },
-        { "pos": [1015, 110], "text": "ĐỘI ĐOẠT HỎA GIA MÃ\n(BOSS: Đan Vương Cổ Hà)", "color": "#FF4D6D" },
-        { "pos": [1535, 165], "text": "THÁNH TRÌ ĐẢO TÂM HỒ\n(Nữ Vương Mỹ Đỗ Toa Độ Kiếp Thiên Lôi!)", "color": "#E0AAFF" }
+        {
+          "pos": [
+            420,
+            165
+          ],
+          "text": "NGOẠI VI THÁNH THÀNH\n(BOSS: Đại Thống Lĩnh Mặc Ba Tư)",
+          "color": "#FF9F1C"
+        },
+        {
+          "pos": [
+            1015,
+            110
+          ],
+          "text": "ĐỘI ĐOẠT HỎA GIA MÃ\n(BOSS: Đan Vương Cổ Hà)",
+          "color": "#FF4D6D"
+        },
+        {
+          "pos": [
+            1535,
+            165
+          ],
+          "text": "THÁNH TRÌ ĐẢO TÂM HỒ\n(Nữ Vương Mỹ Đỗ Toa Độ Kiếp Thiên Lôi!)",
+          "color": "#E0AAFF"
+        }
       ],
       "props": [
-        { "type": "gate", "pos": [290, 560] },
-        { "type": "boulder", "pos": [930, 620] },
-        { "type": "boulder", "pos": [1410, 620] },
-        { "type": "lantern", "pos": [360, 265] },
-        { "type": "lantern", "pos": [855, 265] },
-        { "type": "lantern", "pos": [360, 885] },
-        { "type": "lantern", "pos": [855, 885] },
-        { "type": "lantern", "pos": [1515, 265] },
-        { "type": "lantern", "pos": [1905, 265] },
-        { "type": "lantern", "pos": [1515, 885] },
-        { "type": "lantern", "pos": [1905, 885] }
+        {
+          "type": "gate",
+          "pos": [
+            290,
+            560
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            930,
+            620
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1410,
+            620
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            360,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            855,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            360,
+            885
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            855,
+            885
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1515,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1905,
+            265
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1515,
+            885
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1905,
+            885
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_hai_ba_dong_shard",
           "name": "Kỳ Ngộ Ẩn — Hàn Băng Toái Phiến (20 Năm Trước)",
-          "pos": [195, 195],
+          "pos": [
+            195,
+            195
+          ],
           "gold": 620,
           "stones": 9,
           "gear_template": "neck_bang_hoang_tam",
           "gear_rarity": "thien",
-          "items": { "pill_pha_chuong_dan": 1 }
+          "items": {
+            "pill_pha_chuong_dan": 1
+          }
         }
       ],
       "npcs": [
@@ -869,7 +2645,10 @@
           "name": "Vân Vận (Tông Chủ Vân Lam)",
           "title": "Đấu Hoàng · Bóng Hồng Cố Nhân",
           "sprite": "res://assets/sprites/npcs/npc_van_chi.png",
-          "pos": [1180, 775],
+          "pos": [
+            1180,
+            775
+          ],
           "role": "story_van_van_ch03"
         },
         {
@@ -877,32 +2656,75 @@
           "name": "Nữ Vương Mỹ Đỗ Toa",
           "title": "Đấu Hoàng Đỉnh Phong — Độ Kiếp Thiên Lôi",
           "sprite": "res://assets/sprites/npcs/npc_my_do_toa.png",
-          "pos": [1710, 535],
+          "pos": [
+            1710,
+            535
+          ],
           "role": "story_my_do_toa",
           "hide_if_flag": "snatched_thanh_lien_hoa"
         }
       ],
       "spawns": [
-        { "enemy_id": "xa_nhan_chien_binh", "pos": [440, 340], "respawn": 11.0 },
-        { "enemy_id": "xa_nhan_chien_binh", "pos": [440, 780], "respawn": 11.0 },
-        { "enemy_id": "mac_ba_tu_boss", "pos": [640, 560], "respawn": 30.0 },
-        { "enemy_id": "co_ha_boss", "pos": [1180, 360], "respawn": 30.0 }
+        {
+          "enemy_id": "xa_nhan_chien_binh",
+          "pos": [
+            440,
+            340
+          ],
+          "respawn": 11.0
+        },
+        {
+          "enemy_id": "xa_nhan_chien_binh",
+          "pos": [
+            440,
+            780
+          ],
+          "respawn": 11.0
+        },
+        {
+          "enemy_id": "mac_ba_tu_boss",
+          "pos": [
+            640,
+            560
+          ],
+          "respawn": 30.0
+        },
+        {
+          "enemy_id": "co_ha_boss",
+          "pos": [
+            1180,
+            360
+          ],
+          "respawn": 30.0
+        }
       ],
       "portals": [
         {
           "id": "back_thach_mac_from_snake",
           "label": "Cổng Tây -> Thạch Mạc Thành",
-          "pos": [112, 560],
+          "pos": [
+            112,
+            560
+          ],
           "target_map": "ch03_thach_mac_thanh",
-          "target_spawn": [1820, 560],
+          "target_spawn": [
+            1820,
+            560
+          ],
           "require_flag": ""
         },
         {
           "id": "to_oc_dao_diem_le",
           "label": "Đông Nam -> Ốc Đảo Diêm Lệ (Thôn Phệ Dị Hỏa!)",
-          "pos": [1945, 980],
+          "pos": [
+            1945,
+            980
+          ],
           "target_map": "ch03_oc_dao_diem_le",
-          "target_spawn": [195, 512],
+          "target_spawn": [
+            195,
+            512
+          ],
           "require_flag": "snatched_thanh_lien_hoa",
           "locked_hint": "Hãy hạ Mặc Ba Tư & Cổ Hà rồi tiến vào Đảo Thánh Trì đoạt [Hỏa Chủng Thanh Liên Địa Tâm Hỏa] trước khi đào thoát!"
         }
@@ -912,39 +2734,132 @@
       "id": "ch03_oc_dao_diem_le",
       "chapter": "Chương 03",
       "name": "Ốc Đảo Diêm Lệ — Thôn Phệ Dị Hỏa",
-      "bgm": "bgm_peaceful",
-      "size": [1600, 1024],
+      "bgm": "bgm_desert",
+      "size": [
+        1600,
+        1024
+      ],
       "ambient_hex": "#aed9d4",
       "base_tile": "res://assets/sprites/tiles/desert_sand.png",
-      "default_spawn": [195, 512],
+      "default_spawn": [
+        195,
+        512
+      ],
       "zones": [
-        { "rect": [448, 192, 640, 640], "tile": "res://assets/sprites/tiles/oasis_turquoise.png", "border_hex": "#2EC4B6", "arena_circle": true },
-        { "rect": [1152, 256, 352, 512], "tile": "res://assets/sprites/tiles/sandstone_plaza.png", "border_hex": "#FFD166" }
+        {
+          "rect": [
+            448,
+            192,
+            640,
+            640
+          ],
+          "tile": "res://assets/sprites/tiles/oasis_turquoise.png",
+          "border_hex": "#2EC4B6",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            1152,
+            256,
+            352,
+            512
+          ],
+          "tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+          "border_hex": "#FFD166"
+        }
       ],
       "signs": [
-        { "pos": [555, 138], "text": "ỐC ĐẢO DIÊM LỆ — THANH LIÊN ĐÀI\n(Gặp Dược Lão [V] Thôn Phệ #19 Thanh Liên Hỏa!)", "color": "#2EC4B6" },
-        { "pos": [1175, 200], "text": "BÃI THỬ PHẬT NỘ HỎA LIÊN [F]\n(Thử uy lực Song Hỏa Dung Hợp & Thải Lân!)", "color": "#FFD166" }
+        {
+          "pos": [
+            555,
+            138
+          ],
+          "text": "ỐC ĐẢO DIÊM LỆ — THANH LIÊN ĐÀI\n(Gặp Dược Lão [V] Thôn Phệ #19 Thanh Liên Hỏa!)",
+          "color": "#2EC4B6"
+        },
+        {
+          "pos": [
+            1175,
+            200
+          ],
+          "text": "BÃI THỬ PHẬT NỘ HỎA LIÊN [F]\n(Thử uy lực Song Hỏa Dung Hợp & Thải Lân!)",
+          "color": "#FFD166"
+        }
       ],
       "props": [
-        { "type": "pine", "pos": [360, 220] },
-        { "type": "pine", "pos": [360, 810] },
-        { "type": "boulder", "pos": [1110, 195] },
-        { "type": "boulder", "pos": [1110, 835] },
-        { "type": "lantern", "pos": [495, 235] },
-        { "type": "lantern", "pos": [1045, 235] },
-        { "type": "lantern", "pos": [495, 785] },
-        { "type": "lantern", "pos": [1045, 785] }
+        {
+          "type": "pine",
+          "pos": [
+            360,
+            220
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            360,
+            810
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1110,
+            195
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1110,
+            835
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            495,
+            235
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1045,
+            235
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            495,
+            785
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1045,
+            785
+          ]
+        }
       ],
       "chests": [
         {
           "id": "chest_oc_dao_treasury",
           "name": "Bảo Rương Diêm Lệ Ốc Đảo",
-          "pos": [610, 740],
+          "pos": [
+            610,
+            740
+          ],
           "gold": 880,
           "stones": 12,
           "gear_template": "arm_giap_vay_xa_hoang",
           "gear_rarity": "thien",
-          "items": { "pill_pha_chuong_dan": 1, "pill_thanh_lien_tu": 3 }
+          "items": {
+            "pill_pha_chuong_dan": 1,
+            "pill_thanh_lien_tu": 3
+          }
         }
       ],
       "npcs": [
@@ -953,7 +2868,10 @@
           "name": "Dược Lão (Hộ Pháp)",
           "title": "Nghi Thức Thôn Phệ Dị Hỏa #19",
           "sprite": "res://assets/sprites/npcs/npc_duoc_lao.png",
-          "pos": [635, 455],
+          "pos": [
+            635,
+            455
+          ],
           "role": "story_devour_thanh_lien"
         },
         {
@@ -961,30 +2879,59 @@
           "name": "Thải Lân (Thôn Thiên Mãng)",
           "title": "Thần Thú Đòi Ăn Hỏa Tinh",
           "sprite": "res://assets/sprites/enemies/pet_thai_lan.png",
-          "pos": [935, 565],
+          "pos": [
+            935,
+            565
+          ],
           "role": "story_thai_lan_pet",
           "require_flag": "ch03_completed"
         }
       ],
       "spawns": [
-        { "enemy_id": "xa_nhan_chien_binh", "pos": [1325, 410], "respawn": 8.0 },
-        { "enemy_id": "xa_nhan_chien_binh", "pos": [1325, 620], "respawn": 8.0 }
+        {
+          "enemy_id": "xa_nhan_chien_binh",
+          "pos": [
+            1325,
+            410
+          ],
+          "respawn": 8.0
+        },
+        {
+          "enemy_id": "xa_nhan_chien_binh",
+          "pos": [
+            1325,
+            620
+          ],
+          "respawn": 8.0
+        }
       ],
       "portals": [
         {
           "id": "back_thanh_thanh_from_oasis",
           "label": "Cổng Tây -> Thánh Thành Xà Nhân",
-          "pos": [112, 512],
+          "pos": [
+            112,
+            512
+          ],
           "target_map": "ch03_thanh_thanh_xa_nhan",
-          "target_spawn": [1820, 920],
+          "target_spawn": [
+            1820,
+            920
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch04_de_do_preview",
           "label": "Cổng Đông -> [CHƯƠNG 04] Diêm Thành (Mặc Gia Trang) & Đế Đô",
-          "pos": [1510, 512],
+          "pos": [
+            1510,
+            512
+          ],
           "target_map": "ch04_mac_gia_trang",
-          "target_spawn": [195, 560],
+          "target_spawn": [
+            195,
+            560
+          ],
           "require_flag": "ch03_completed",
           "locked_hint": "Hãy hoàn tất Nghi Thức Thôn Phệ #19 Thanh Liên Địa Tâm Hỏa cùng Dược Lão tại Ốc Đảo Diêm Lệ trước khi tiến sang Chương 04!"
         }

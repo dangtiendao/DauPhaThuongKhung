@@ -76,6 +76,7 @@ func _setup_default_input_map() -> void:
 	_bind_key("panel_skills", KEY_K)
 	_bind_key("toggle_world_map", KEY_M)
 	_bind_key("toggle_companion", KEY_G)
+	_bind_key("soul_radar", KEY_Z)
 
 
 func _bind_key(action_name: String, keycode: Key) -> void:

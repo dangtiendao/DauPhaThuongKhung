@@ -1,12 +1,13 @@
 extends Node2D
-## Hệ thống Quản lý Đa Bản Đồ (11 Bản Đồ Quyển I: Chương 01 -> Chương 03 Đầy Đủ):
+## Hệ thống Quản lý Đa Bản Đồ (Data-Driven Story Engine: 25 Bản Đồ Ch.01 -> Ch.05 + Tâm Ma + Thiên Phần Tháp):
 ## - Chương 01 (3 map): Quảng Trường Tiêu Gia, Rừng Trúc Hậu Sơn, Phố Chợ Ô Thản Thành & Biệt Viện Gia Liệt Gia.
 ## - Chương 02 (4 map): Thanh Sơn Trấn & Ngoại Vi, Huyền Nhai Sơn Động (3 Thạch Thất), Bờ Suối Trăng Bạc & Hang Sư Vương, Thác Nước Nghìn Trượng & Thung Lũng U Lan.
 ## - Chương 03 (4 map): Thạch Mạc Thành & Mạc Thiết Đoàn, Địa Huyệt Sông Dung Nham, Thánh Thành Xà Nhân & Thánh Trì, Ốc Đảo Diêm Lệ.
 ## - Tương tác Ma Thạch Bi [V], 15 NPC cốt truyện & kỳ ngộ ẩn, Đối thoại Chọn Nhánh tăng Hảo Cảm Hồng Nhan, 14 Bảo Rương & 21 mốc Nhiệm Vụ!
 
-const ENEMY_SCENE_PATH: String = "res://scenes/entities/enemy_base.tscn"
-const COMPANION_SCENE_PATH: String = "res://scenes/entities/companion.tscn"
+const ENEMY_SCENE: PackedScene = preload("res://scenes/entities/enemy_base.tscn")
+const COMPANION_SCENE: PackedScene = preload("res://scenes/entities/companion.tscn")
+const TEX_LIGHT_RADIAL: Texture2D = preload("res://assets/sprites/vfx/light_radial_128.png")
 
 var current_map_id: String = ""
 var current_map_bgm: String = "bgm_peaceful"
@@ -26,6 +27,39 @@ var lantern_lights: Array = []
 var bamboo_sprites: Array = []
 var active_companion_node: Node2D = null
 var interact_cooldown: float = 0.0
+
+# Tâm Ma Luyện Cảnh (Boss Rush Arena)
+var is_boss_rush_active: bool = false
+var boss_rush_boss_id: String = ""
+var boss_rush_diff: String = "normal"
+var boss_rush_elapsed: float = 0.0
+var boss_rush_dmg_taken: float = 0.0
+var boss_rush_return_map: String = "ch01_tieu_gia"
+var boss_rush_return_pos: Vector2 = Vector2(340, 520)
+var boss_rush_boss_node: Node2D = null
+var _boss_rush_session_token: int = 0
+
+# Thiên Phần Luyện Khí Tháp (Infinite Roguelite Tower)
+var is_tower_active: bool = false
+var tower_floor: int = 1
+var tower_enemies_alive: Array = []
+var tower_total_wave: int = 0
+var tower_heat_dps: float = 0.0
+var tower_heat_accum: float = 0.0
+var tower_heat_text_accum: float = 0.0
+var tower_return_map: String = ""
+var tower_return_pos: Vector2 = Vector2.ZERO
+var tower_waiting_blessing: bool = false
+var _tower_session_token: int = 0
+var tower_sign_lbl: Label = null
+
+# Soul Radar Wave (Cảm Ứng Linh Hồn [Z])
+var radar_wave_timer: float = 0.0
+var radar_wave_duration: float = 0.95
+var radar_wave_origin: Vector2 = Vector2.ZERO
+var radar_wave_max_radius: float = 420.0
+var radar_ping_timer: float = 0.0
+var radar_pinged_chests: Array = []
 
 var map_backdrop_root: Node2D
 var map_overlay_root: Node2D
@@ -53,6 +87,12 @@ func _ready() -> void:
 	EventBus.story_flag_changed.connect(_on_story_flag_changed)
 	EventBus.quest_updated.connect(_refresh_npc_quest_markers)
 	EventBus.companion_changed.connect(_on_companion_changed)
+	EventBus.boss_rush_requested.connect(start_boss_rush)
+	EventBus.enemy_killed.connect(_on_enemy_killed_boss_rush)
+	EventBus.tower_start_requested.connect(start_tower)
+	EventBus.tower_blessing_picked.connect(apply_tower_blessing)
+	EventBus.tower_exit_requested.connect(exit_tower)
+	EventBus.soul_radar_pulsed.connect(_on_soul_radar_pulsed)
 
 	var init_spawn: Vector2 = Vector2.ZERO
 	if PlayerData.has_saved_player_pos and PlayerData.saved_player_pos != Vector2.ZERO:
@@ -75,6 +115,22 @@ func restore_map_bgm() -> void:
 
 
 func load_map(map_id: String, custom_spawn: Vector2 = Vector2.ZERO, should_autosave: bool = true) -> void:
+	is_boss_rush_active = false
+	boss_rush_boss_node = null
+	_boss_rush_session_token += 1
+	if is_tower_active:
+		is_tower_active = false
+		tower_waiting_blessing = false
+		tower_enemies_alive.clear()
+		tower_total_wave = 0
+		tower_heat_dps = 0.0
+		tower_heat_accum = 0.0
+		tower_heat_text_accum = 0.0
+		tower_sign_lbl = null
+		_tower_session_token += 1
+		PlayerData.clear_tower_buffs()
+		EventBus.tower_state_updated.emit(0, 0, 0, 0.0, false)
+
 	var m_def: Dictionary = GameDatabase.get_map_def(map_id)
 	if m_def.is_empty():
 		map_id = GameDatabase.start_map_id
@@ -111,14 +167,17 @@ func load_map(map_id: String, custom_spawn: Vector2 = Vector2.ZERO, should_autos
 
 	if player_node != null:
 		player_node.global_position = spawn_pt
+		player_node.reset_physics_interpolation()
 		if player_node.has_method("set_camera_limits"):
 			player_node.set_camera_limits(int(map_size.x), int(map_size.y))
 		var cam_node: Camera2D = player_node.get_node_or_null("Camera2D") as Camera2D
 		if cam_node != null:
 			cam_node.reset_smoothing()
+			cam_node.reset_physics_interpolation()
 
 	_sync_active_companion(spawn_pt)
 	EventBus.boss_status_updated.emit("", "", 0.0, 1.0, 1, false)
+	EventBus.boss_poise_updated.emit(0.0, 1.0, false, false)
 	EventBus.bgm_requested.emit(current_map_bgm)
 
 	var ch_str: String = str(m_def.get("chapter", "Chương 01"))
@@ -155,6 +214,10 @@ func _clear_current_map_nodes() -> void:
 	stele_positions.clear()
 	lantern_lights.clear()
 	bamboo_sprites.clear()
+	tower_sign_lbl = null
+	radar_wave_timer = 0.0
+	radar_ping_timer = 0.0
+	radar_pinged_chests.clear()
 
 
 func _on_companion_changed(_comp_id: String) -> void:
@@ -172,12 +235,10 @@ func _sync_active_companion(anchor_pos: Vector2) -> void:
 	var cid: String = PlayerData.active_companion_id
 	if cid == "":
 		return
-	var packed: PackedScene = load(COMPANION_SCENE_PATH)
-	if packed == null:
-		return
-	var comp: Node2D = packed.instantiate() as Node2D
+	var comp: Node2D = COMPANION_SCENE.instantiate() as Node2D
 	comp.global_position = anchor_pos + Vector2(-58, -16)
 	entities_root.add_child(comp)
+	comp.reset_physics_interpolation()
 	if comp.has_method("configure_companion"):
 		comp.configure_companion(cid)
 	active_companion_node = comp
@@ -230,23 +291,7 @@ func _build_atmosphere_and_boundaries(m_def: Dictionary) -> void:
 	mod.color = Color(str(m_def.get("ambient_hex", "#b2c0dc")))
 	map_overlay_root.add_child(mod)
 
-	if current_is_forest or current_map_id == "ch02_huyen_nhai_dong":
-		var fireflies := CPUParticles2D.new()
-		fireflies.position = map_size * 0.5
-		fireflies.emitting = true
-		fireflies.amount = 48
-		fireflies.lifetime = 5.0
-		fireflies.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-		fireflies.emission_rect_extents = Vector2(map_size.x * 0.45, map_size.y * 0.45)
-		fireflies.direction = Vector2(0.35, -1.0)
-		fireflies.spread = 80.0
-		fireflies.gravity = Vector2(0, -5)
-		fireflies.initial_velocity_min = 8.0
-		fireflies.initial_velocity_max = 22.0
-		fireflies.scale_amount_min = 2.5
-		fireflies.scale_amount_max = 4.5
-		fireflies.color = Color("#70F5DF") if current_map_id == "ch02_huyen_nhai_dong" else (Color("#E0AAFF") if current_map_id == "ch02_noi_vi_su_vuong" else Color("#A8F5B0"))
-		map_overlay_root.add_child(fireflies)
+	_build_regional_weather(m_def)
 
 	var wall_body := StaticBody2D.new()
 	map_overlay_root.add_child(wall_body)
@@ -265,6 +310,454 @@ func _build_atmosphere_and_boundaries(m_def: Dictionary) -> void:
 		col.shape = shape
 		col.position = rc.position + rc.size * 0.5
 		wall_body.add_child(col)
+
+
+func _make_soft_ambient_gradient(base_col: Color) -> Gradient:
+	var g := Gradient.new()
+	g.offsets = PackedFloat32Array([0.0, 0.18, 0.78, 1.0])
+	g.colors = PackedColorArray([
+		Color(base_col.r, base_col.g, base_col.b, 0.0),
+		base_col,
+		Color(base_col.r, base_col.g, base_col.b, base_col.a * 0.80),
+		Color(base_col.r, base_col.g, base_col.b, 0.0)
+	])
+	return g
+
+
+func _build_regional_weather(m_def: Dictionary) -> void:
+	var base_tile: String = str(m_def.get("base_tile", ""))
+	var is_tower_arena: bool = (is_tower_active or current_map_id == "thien_phan_thap")
+	var is_hac_giac_vuc: bool = (
+		current_map_id == "ch05_rung_dem_huyet_vu"
+		or current_map_id == "ch05_hac_an_thanh"
+		or current_map_id == "ch05_hem_nui_hac_phong"
+	)
+	var is_gia_nam: bool = (
+		current_map_id == "ch05_hoa_binh_tran"
+		or current_map_id == "ch05_ngoai_vien_gia_nam"
+		or current_map_id == "ch05_rung_san_hoa_nang"
+	)
+	var is_yunlan_high: bool = (
+		current_map_id == "ch04_thien_thang_van_lam"
+		or current_map_id == "ch04_dinh_van_lam_son"
+		or current_map_id == "ch04_rung_phong_toa"
+	)
+	var is_volcanic: bool = (
+		base_tile.find("volcanic_basalt") != -1
+		or current_map_id == "ch03_dia_huyet_dung_nham"
+	)
+	var is_desert: bool = (
+		base_tile.find("desert_sand") != -1
+		or base_tile.find("sandstone_plaza") != -1
+		or base_tile.find("oasis_turquoise") != -1
+	)
+	var is_forest_or_cave: bool = (
+		current_is_forest
+		or base_tile.find("bamboo_grass") != -1
+		or current_map_id == "ch02_huyen_nhai_dong"
+	)
+	var is_boss_rush_arena: bool = (
+		is_boss_rush_active
+		or current_map_id == "tam_ma_luyen_canh"
+		or base_tile.find("arena_violet") != -1
+	)
+
+	if is_tower_arena:
+		# Thiên Phần Luyện Khí Tháp: Tàn lửa Vẫn Lạc Tâm Viêm (#FF4D6D / #FFD166) bốc cuộn dày đặc khắp đấu trường!
+		var heart_embers := CPUParticles2D.new()
+		heart_embers.position = map_size * 0.5
+		heart_embers.emitting = true
+		heart_embers.preprocess = 2.0
+		heart_embers.amount = 74
+		heart_embers.lifetime = 3.2
+		heart_embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		heart_embers.emission_rect_extents = Vector2(map_size.x * 0.48, map_size.y * 0.48)
+		heart_embers.direction = Vector2(0.08, -1.0).normalized()
+		heart_embers.spread = 28.0
+		heart_embers.gravity = Vector2(0.0, -34.0)
+		heart_embers.initial_velocity_min = 42.0
+		heart_embers.initial_velocity_max = 104.0
+		heart_embers.scale_amount_min = 0.24
+		heart_embers.scale_amount_max = 0.56
+		VfxAssets.configure_glow_particles(heart_embers, Color("#FFD166"), Color("#FF4D6D"), false)
+		map_overlay_root.add_child(heart_embers)
+
+		var heart_streaks := CPUParticles2D.new()
+		heart_streaks.position = map_size * 0.5
+		heart_streaks.emitting = true
+		heart_streaks.preprocess = 1.6
+		heart_streaks.amount = 34
+		heart_streaks.lifetime = 2.2
+		heart_streaks.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		heart_streaks.emission_rect_extents = Vector2(map_size.x * 0.46, map_size.y * 0.46)
+		heart_streaks.direction = Vector2(0.0, -1.0)
+		heart_streaks.spread = 18.0
+		heart_streaks.gravity = Vector2(0.0, -48.0)
+		heart_streaks.initial_velocity_min = 78.0
+		heart_streaks.initial_velocity_max = 152.0
+		heart_streaks.scale_amount_min = 0.28
+		heart_streaks.scale_amount_max = 0.62
+		VfxAssets.configure_glow_particles(heart_streaks, Color("#FFF3B0"), Color("#FF4D6D"), true)
+		map_overlay_root.add_child(heart_streaks)
+
+		var magma_haze := CPUParticles2D.new()
+		magma_haze.position = map_size * 0.5
+		magma_haze.emitting = true
+		magma_haze.preprocess = 2.0
+		magma_haze.amount = 18
+		magma_haze.lifetime = 4.8
+		magma_haze.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		magma_haze.emission_rect_extents = Vector2(map_size.x * 0.48, map_size.y * 0.46)
+		magma_haze.direction = Vector2(0.06, -1.0).normalized()
+		magma_haze.spread = 24.0
+		magma_haze.gravity = Vector2(0.0, -12.0)
+		magma_haze.initial_velocity_min = 18.0
+		magma_haze.initial_velocity_max = 38.0
+		magma_haze.scale_amount_min = 2.4
+		magma_haze.scale_amount_max = 4.6
+		magma_haze.texture = VfxAssets.get_smoke_puff_texture()
+		magma_haze.scale_amount_curve = VfxAssets.get_scale_smoke_curve()
+		magma_haze.color_ramp = _make_soft_ambient_gradient(Color(1.0, 0.30, 0.38, 0.12))
+		magma_haze.color = Color.WHITE
+		map_overlay_root.add_child(magma_haze)
+
+	elif is_hac_giac_vuc:
+		# Hắc Giác Vực (Rừng Đêm Huyết Vũ / Hắc Ấn Thành / Hẻm Núi Hắc Phong): Mưa đêm huyết-bạc xiên chéo + sương mù máu trôi lững lờ!
+		var blood_rain := CPUParticles2D.new()
+		blood_rain.position = map_size * 0.5
+		blood_rain.emitting = true
+		blood_rain.preprocess = 1.4
+		blood_rain.amount = 76
+		blood_rain.lifetime = 1.45
+		blood_rain.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		blood_rain.emission_rect_extents = Vector2(map_size.x * 0.54, map_size.y * 0.52)
+		blood_rain.direction = Vector2(-0.32, 1.0).normalized()
+		blood_rain.spread = 4.0
+		blood_rain.gravity = Vector2(-18.0, 65.0)
+		blood_rain.initial_velocity_min = 270.0
+		blood_rain.initial_velocity_max = 395.0
+		blood_rain.particle_flag_align_y = true
+		blood_rain.scale_amount_min = 0.50
+		blood_rain.scale_amount_max = 1.15
+		blood_rain.texture = VfxAssets.get_spark_streak_texture()
+		blood_rain.scale_amount_curve = VfxAssets.get_scale_ember_curve()
+		var rain_grad := Gradient.new()
+		rain_grad.offsets = PackedFloat32Array([0.0, 0.22, 0.78, 1.0])
+		rain_grad.colors = PackedColorArray([
+			Color(0.84, 0.88, 0.96, 0.0),
+			Color(0.82, 0.86, 0.94, 0.48),
+			Color(0.76, 0.14, 0.26, 0.42),
+			Color(0.55, 0.08, 0.18, 0.0)
+		])
+		blood_rain.color_ramp = rain_grad
+		blood_rain.color = Color.WHITE
+		map_overlay_root.add_child(blood_rain)
+
+		var blood_mist := CPUParticles2D.new()
+		blood_mist.position = map_size * 0.5
+		blood_mist.emitting = true
+		blood_mist.preprocess = 2.4
+		blood_mist.amount = 22
+		blood_mist.lifetime = 6.8
+		blood_mist.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		blood_mist.emission_rect_extents = Vector2(map_size.x * 0.52, map_size.y * 0.48)
+		blood_mist.direction = Vector2(-1.0, 0.12).normalized()
+		blood_mist.spread = 18.0
+		blood_mist.gravity = Vector2(-6.0, 0.0)
+		blood_mist.initial_velocity_min = 18.0
+		blood_mist.initial_velocity_max = 42.0
+		blood_mist.scale_amount_min = 3.0
+		blood_mist.scale_amount_max = 5.8
+		blood_mist.texture = VfxAssets.get_smoke_puff_texture()
+		blood_mist.scale_amount_curve = VfxAssets.get_scale_smoke_curve()
+		blood_mist.color_ramp = _make_soft_ambient_gradient(Color(0.62, 0.12, 0.22, 0.15))
+		blood_mist.color = Color.WHITE
+		map_overlay_root.add_child(blood_mist)
+
+	elif is_gia_nam:
+		# Học Viện Già Nam (Hòa Bình Trấn / Ngoại Viện / Rừng Săn Hỏa Năng): Bụi nắng vàng ấm áp + cánh lá ngọc bích bay lả tả!
+		var sunlit_motes := CPUParticles2D.new()
+		sunlit_motes.position = map_size * 0.5
+		sunlit_motes.emitting = true
+		sunlit_motes.preprocess = 2.4
+		sunlit_motes.amount = 44
+		sunlit_motes.lifetime = 5.6
+		sunlit_motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		sunlit_motes.emission_rect_extents = Vector2(map_size.x * 0.48, map_size.y * 0.48)
+		sunlit_motes.direction = Vector2(0.32, -1.0).normalized()
+		sunlit_motes.spread = 65.0
+		sunlit_motes.gravity = Vector2(2.0, -5.0)
+		sunlit_motes.initial_velocity_min = 10.0
+		sunlit_motes.initial_velocity_max = 26.0
+		sunlit_motes.scale_amount_min = 0.20
+		sunlit_motes.scale_amount_max = 0.42
+		VfxAssets.configure_glow_particles(sunlit_motes, Color("#FFF9DB"), Color("#FFD166"), false)
+		sunlit_motes.modulate.a = 0.80
+		map_overlay_root.add_child(sunlit_motes)
+
+		var jade_petals := CPUParticles2D.new()
+		jade_petals.position = map_size * 0.5
+		jade_petals.emitting = true
+		jade_petals.preprocess = 2.4
+		jade_petals.amount = 36
+		jade_petals.lifetime = 6.2
+		jade_petals.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		jade_petals.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		jade_petals.direction = Vector2(0.68, 0.72).normalized()
+		jade_petals.spread = 24.0
+		jade_petals.gravity = Vector2(8.0, 10.0)
+		jade_petals.initial_velocity_min = 24.0
+		jade_petals.initial_velocity_max = 54.0
+		jade_petals.angle_min = -180.0
+		jade_petals.angle_max = 180.0
+		jade_petals.angular_velocity_min = -70.0
+		jade_petals.angular_velocity_max = 70.0
+		jade_petals.scale_amount_min = 0.28
+		jade_petals.scale_amount_max = 0.54
+		jade_petals.texture = VfxAssets.get_spark_streak_texture()
+		jade_petals.scale_amount_curve = VfxAssets.get_scale_ember_curve()
+		var jade_grad := Gradient.new()
+		jade_grad.offsets = PackedFloat32Array([0.0, 0.22, 0.76, 1.0])
+		jade_grad.colors = PackedColorArray([
+			Color(0.50, 0.93, 0.60, 0.0),
+			Color(0.50, 0.93, 0.60, 0.78),
+			Color(0.18, 0.77, 0.71, 0.58),
+			Color(0.18, 0.77, 0.71, 0.0)
+		])
+		jade_petals.color_ramp = jade_grad
+		jade_petals.color = Color.WHITE
+		map_overlay_root.add_child(jade_petals)
+
+	elif is_yunlan_high:
+		# Vân Lam Sơn / Cao Nguyên Mây Trắng: Sương mây bồng bềnh + cánh hoa/mây xanh lam bay ngang!
+		var cloud_mist := CPUParticles2D.new()
+		cloud_mist.position = map_size * 0.5
+		cloud_mist.emitting = true
+		cloud_mist.preprocess = 2.6
+		cloud_mist.amount = 24
+		cloud_mist.lifetime = 7.6
+		cloud_mist.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		cloud_mist.emission_rect_extents = Vector2(map_size.x * 0.52, map_size.y * 0.48)
+		cloud_mist.direction = Vector2(1.0, 0.14).normalized()
+		cloud_mist.spread = 16.0
+		cloud_mist.gravity = Vector2(4.0, 0.0)
+		cloud_mist.initial_velocity_min = 24.0
+		cloud_mist.initial_velocity_max = 52.0
+		cloud_mist.scale_amount_min = 3.2
+		cloud_mist.scale_amount_max = 6.4
+		cloud_mist.texture = VfxAssets.get_smoke_puff_texture()
+		cloud_mist.scale_amount_curve = VfxAssets.get_scale_smoke_curve()
+		cloud_mist.color_ramp = _make_soft_ambient_gradient(Color(0.88, 0.94, 1.0, 0.16))
+		cloud_mist.color = Color.WHITE
+		map_overlay_root.add_child(cloud_mist)
+
+		var cloud_petals := CPUParticles2D.new()
+		cloud_petals.position = map_size * 0.5
+		cloud_petals.emitting = true
+		cloud_petals.preprocess = 2.2
+		cloud_petals.amount = 36
+		cloud_petals.lifetime = 6.2
+		cloud_petals.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		cloud_petals.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		cloud_petals.direction = Vector2(0.86, 0.50).normalized()
+		cloud_petals.spread = 24.0
+		cloud_petals.gravity = Vector2(8.0, 6.0)
+		cloud_petals.initial_velocity_min = 28.0
+		cloud_petals.initial_velocity_max = 64.0
+		cloud_petals.angle_min = -180.0
+		cloud_petals.angle_max = 180.0
+		cloud_petals.angular_velocity_min = -60.0
+		cloud_petals.angular_velocity_max = 60.0
+		cloud_petals.scale_amount_min = 0.28
+		cloud_petals.scale_amount_max = 0.54
+		cloud_petals.texture = VfxAssets.get_spark_streak_texture()
+		cloud_petals.material = VfxAssets.get_additive_material()
+		cloud_petals.scale_amount_curve = VfxAssets.get_scale_ember_curve()
+		var petal_grad := Gradient.new()
+		petal_grad.offsets = PackedFloat32Array([0.0, 0.20, 0.72, 1.0])
+		petal_grad.colors = PackedColorArray([
+			Color(0.94, 0.98, 1.0, 0.0),
+			Color(0.92, 0.98, 1.0, 0.78),
+			Color(0.56, 0.86, 1.0, 0.52),
+			Color(0.56, 0.86, 1.0, 0.0)
+		])
+		cloud_petals.color_ramp = petal_grad
+		cloud_petals.color = Color.WHITE
+		map_overlay_root.add_child(cloud_petals)
+
+	elif is_volcanic:
+		# Địa Huyệt Dung Nham / Phế Tích Tro Tàn: Tàn lửa nham thạch rực cháy bay lên khắp hang!
+		var embers := CPUParticles2D.new()
+		embers.position = map_size * 0.5
+		embers.emitting = true
+		embers.preprocess = 2.0
+		embers.amount = 56
+		embers.lifetime = 3.8
+		embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		embers.emission_rect_extents = Vector2(map_size.x * 0.48, map_size.y * 0.48)
+		embers.direction = Vector2(0.14, -1.0).normalized()
+		embers.spread = 32.0
+		embers.gravity = Vector2(0.0, -24.0)
+		embers.initial_velocity_min = 26.0
+		embers.initial_velocity_max = 66.0
+		embers.scale_amount_min = 0.20
+		embers.scale_amount_max = 0.48
+		VfxAssets.configure_glow_particles(embers, Color("#FFF3B0"), Color("#FF6B00"), false)
+		map_overlay_root.add_child(embers)
+
+		var heat_haze := CPUParticles2D.new()
+		heat_haze.position = map_size * 0.5
+		heat_haze.emitting = true
+		heat_haze.preprocess = 2.0
+		heat_haze.amount = 16
+		heat_haze.lifetime = 5.4
+		heat_haze.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		heat_haze.emission_rect_extents = Vector2(map_size.x * 0.48, map_size.y * 0.46)
+		heat_haze.direction = Vector2(0.08, -1.0).normalized()
+		heat_haze.spread = 22.0
+		heat_haze.gravity = Vector2(0.0, -10.0)
+		heat_haze.initial_velocity_min = 14.0
+		heat_haze.initial_velocity_max = 32.0
+		heat_haze.scale_amount_min = 2.2
+		heat_haze.scale_amount_max = 4.2
+		heat_haze.texture = VfxAssets.get_smoke_puff_texture()
+		heat_haze.scale_amount_curve = VfxAssets.get_scale_smoke_curve()
+		heat_haze.color_ramp = _make_soft_ambient_gradient(Color(0.95, 0.42, 0.16, 0.10))
+		heat_haze.color = Color.WHITE
+		map_overlay_root.add_child(heat_haze)
+
+	elif is_desert:
+		# Sa Mạc Tháp Qua Nhĩ / Quảng Trường Sa Thạch: Luồng bão cát vàng quét chéo phải-xuống!
+		var sand_streaks := CPUParticles2D.new()
+		sand_streaks.position = map_size * 0.5
+		sand_streaks.emitting = true
+		sand_streaks.preprocess = 1.6
+		sand_streaks.amount = 54
+		sand_streaks.lifetime = 2.4
+		sand_streaks.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		sand_streaks.emission_rect_extents = Vector2(map_size.x * 0.52, map_size.y * 0.50)
+		sand_streaks.direction = Vector2(1.0, 0.32).normalized()
+		sand_streaks.spread = 10.0
+		sand_streaks.gravity = Vector2(28.0, 10.0)
+		sand_streaks.initial_velocity_min = 140.0
+		sand_streaks.initial_velocity_max = 245.0
+		sand_streaks.particle_flag_align_y = true
+		sand_streaks.scale_amount_min = 0.55
+		sand_streaks.scale_amount_max = 1.25
+		sand_streaks.texture = VfxAssets.get_spark_streak_texture()
+		sand_streaks.scale_amount_curve = VfxAssets.get_scale_ember_curve()
+		sand_streaks.color_ramp = _make_soft_ambient_gradient(Color(0.95, 0.80, 0.50, 0.36))
+		sand_streaks.color = Color.WHITE
+		map_overlay_root.add_child(sand_streaks)
+
+		var sand_haze := CPUParticles2D.new()
+		sand_haze.position = map_size * 0.5
+		sand_haze.emitting = true
+		sand_haze.preprocess = 2.0
+		sand_haze.amount = 16
+		sand_haze.lifetime = 5.2
+		sand_haze.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		sand_haze.emission_rect_extents = Vector2(map_size.x * 0.52, map_size.y * 0.48)
+		sand_haze.direction = Vector2(1.0, 0.28).normalized()
+		sand_haze.spread = 14.0
+		sand_haze.gravity = Vector2(10.0, 3.0)
+		sand_haze.initial_velocity_min = 52.0
+		sand_haze.initial_velocity_max = 96.0
+		sand_haze.scale_amount_min = 2.4
+		sand_haze.scale_amount_max = 4.6
+		sand_haze.texture = VfxAssets.get_smoke_puff_texture()
+		sand_haze.scale_amount_curve = VfxAssets.get_scale_smoke_curve()
+		sand_haze.color_ramp = _make_soft_ambient_gradient(Color(0.95, 0.80, 0.50, 0.09))
+		sand_haze.color = Color.WHITE
+		map_overlay_root.add_child(sand_haze)
+
+	elif is_forest_or_cave:
+		# Rừng Trúc / Sơn Động: Đom đóm phát sáng dịu + lá trúc xanh lục lơ lửng rơi chéo xuống!
+		var fireflies := CPUParticles2D.new()
+		fireflies.position = map_size * 0.5
+		fireflies.emitting = true
+		fireflies.preprocess = 2.0
+		fireflies.amount = 46
+		fireflies.lifetime = 5.0
+		fireflies.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		fireflies.emission_rect_extents = Vector2(map_size.x * 0.46, map_size.y * 0.46)
+		fireflies.direction = Vector2(0.35, -1.0).normalized()
+		fireflies.spread = 80.0
+		fireflies.gravity = Vector2(0.0, -5.0)
+		fireflies.initial_velocity_min = 8.0
+		fireflies.initial_velocity_max = 22.0
+		fireflies.scale_amount_min = 0.22
+		fireflies.scale_amount_max = 0.44
+		var ff_col: Color = Color("#70F5DF") if current_map_id == "ch02_huyen_nhai_dong" else (Color("#E0AAFF") if current_map_id == "ch02_noi_vi_su_vuong" else Color("#A8F5B0"))
+		VfxAssets.configure_glow_particles(fireflies, Color.WHITE.lerp(ff_col, 0.35), ff_col, false)
+		map_overlay_root.add_child(fireflies)
+
+		var bamboo_leaves := CPUParticles2D.new()
+		bamboo_leaves.position = map_size * 0.5
+		bamboo_leaves.emitting = true
+		bamboo_leaves.preprocess = 2.4
+		bamboo_leaves.amount = 34
+		bamboo_leaves.lifetime = 6.0
+		bamboo_leaves.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		bamboo_leaves.emission_rect_extents = Vector2(map_size.x * 0.48, map_size.y * 0.48)
+		bamboo_leaves.direction = Vector2(0.58, 0.82).normalized()
+		bamboo_leaves.spread = 22.0
+		bamboo_leaves.gravity = Vector2(6.0, 12.0)
+		bamboo_leaves.initial_velocity_min = 24.0
+		bamboo_leaves.initial_velocity_max = 52.0
+		bamboo_leaves.angle_min = -180.0
+		bamboo_leaves.angle_max = 180.0
+		bamboo_leaves.angular_velocity_min = -65.0
+		bamboo_leaves.angular_velocity_max = 65.0
+		bamboo_leaves.scale_amount_min = 0.28
+		bamboo_leaves.scale_amount_max = 0.54
+		bamboo_leaves.texture = VfxAssets.get_spark_streak_texture()
+		bamboo_leaves.scale_amount_curve = VfxAssets.get_scale_ember_curve()
+		var leaf_col := Color("#74C69D")
+		bamboo_leaves.color_ramp = _make_soft_ambient_gradient(Color(leaf_col.r, leaf_col.g, leaf_col.b, 0.72))
+		bamboo_leaves.color = Color.WHITE
+		map_overlay_root.add_child(bamboo_leaves)
+
+	elif is_boss_rush_arena:
+		# Tâm Ma Luyện Cảnh: Linh khí tím huyền bí & tàn quang vàng bốc nhẹ quanh đấu trường!
+		var arena_wisps := CPUParticles2D.new()
+		arena_wisps.position = map_size * 0.5
+		arena_wisps.emitting = true
+		arena_wisps.preprocess = 2.0
+		arena_wisps.amount = 42
+		arena_wisps.lifetime = 4.6
+		arena_wisps.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		arena_wisps.emission_rect_extents = Vector2(map_size.x * 0.46, map_size.y * 0.44)
+		arena_wisps.direction = Vector2(0.0, -1.0)
+		arena_wisps.spread = 45.0
+		arena_wisps.gravity = Vector2(0.0, -12.0)
+		arena_wisps.initial_velocity_min = 14.0
+		arena_wisps.initial_velocity_max = 38.0
+		arena_wisps.scale_amount_min = 0.20
+		arena_wisps.scale_amount_max = 0.44
+		VfxAssets.configure_glow_particles(arena_wisps, Color("#F3D5FF"), Color("#9D4EDD"), false)
+		map_overlay_root.add_child(arena_wisps)
+
+	else:
+		# Đế Đô / Gia Tộc / Quảng Trường (courtyard_stone mặc định): Hạt linh khí vàng nhẹ bay lên êm ái!
+		var qi_motes := CPUParticles2D.new()
+		qi_motes.position = map_size * 0.5
+		qi_motes.emitting = true
+		qi_motes.preprocess = 2.4
+		qi_motes.amount = 30
+		qi_motes.lifetime = 6.2
+		qi_motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		qi_motes.emission_rect_extents = Vector2(map_size.x * 0.46, map_size.y * 0.46)
+		qi_motes.direction = Vector2(0.18, -1.0).normalized()
+		qi_motes.spread = 55.0
+		qi_motes.gravity = Vector2(0.0, -4.0)
+		qi_motes.initial_velocity_min = 6.0
+		qi_motes.initial_velocity_max = 18.0
+		qi_motes.scale_amount_min = 0.16
+		qi_motes.scale_amount_max = 0.34
+		VfxAssets.configure_glow_particles(qi_motes, Color("#FFF8D6"), Color("#FFD166"), false)
+		qi_motes.modulate.a = 0.72
+		map_overlay_root.add_child(qi_motes)
 
 
 func _build_signs(m_def: Dictionary) -> void:
@@ -297,7 +790,7 @@ func _add_solid_collider(parent_nd: Node2D, box_size: Vector2, offset_pos: Vecto
 
 
 func _build_props(m_def: Dictionary) -> void:
-	var light_tex: Texture2D = load("res://assets/sprites/vfx/light_radial_128.png")
+	var light_tex: Texture2D = TEX_LIGHT_RADIAL
 	var lantern_tex: Texture2D = load("res://assets/sprites/props/stone_lantern.png")
 	var bamboo_tex: Texture2D = load("res://assets/sprites/props/bamboo_cluster.png")
 	var stele_tex: Texture2D = load("res://assets/sprites/props/testing_stele.png")
@@ -382,7 +875,7 @@ func _build_props(m_def: Dictionary) -> void:
 func _build_chests(m_def: Dictionary) -> void:
 	var closed_tex: Texture2D = load("res://assets/sprites/props/chest_closed.png")
 	var open_tex: Texture2D = load("res://assets/sprites/props/chest_open.png")
-	var light_tex: Texture2D = load("res://assets/sprites/vfx/light_radial_128.png")
+	var halo_tex: Texture2D = VfxAssets.get_soft_halo_texture()
 
 	var chests_arr: Array = m_def.get("chests", [])
 	for ch in chests_arr:
@@ -398,18 +891,20 @@ func _build_chests(m_def: Dictionary) -> void:
 		root_ch.position = pos_v
 		entities_root.add_child(root_ch)
 
+		# Quầng sáng Additive siêu nhẹ thay cho PointLight2D (giảm tải GPU gl_compatibility!)
+		var glow := Sprite2D.new()
+		glow.texture = halo_tex
+		glow.material = VfxAssets.get_additive_material()
+		glow.scale = Vector2(1.65, 1.65)
+		glow.modulate = Color(1.0, 0.82, 0.40, 0.14 if is_opened else 0.48)
+		glow.position = Vector2(0, -24)
+		glow.z_index = -1
+		root_ch.add_child(glow)
+
 		var sp := Sprite2D.new()
 		sp.texture = open_tex if is_opened else closed_tex
 		sp.position = Vector2(0, -28)
 		root_ch.add_child(sp)
-
-		var glow := PointLight2D.new()
-		glow.texture = light_tex
-		glow.texture_scale = 2.0
-		glow.energy = 0.25 if is_opened else 1.15
-		glow.color = Color("#FFD166")
-		glow.position = Vector2(0, -24)
-		root_ch.add_child(glow)
 
 		var lbl := Label.new()
 		lbl.text = str(cd.get("name", "Bảo Rương"))
@@ -455,13 +950,20 @@ func _open_secret_chest(c_entry: Dictionary) -> void:
 
 	c_entry["opened"] = true
 	PlayerData.mark_chest_opened(cid)
+	if not radar_pinged_chests.is_empty():
+		var kept_rc: Array = []
+		for rc_item in radar_pinged_chests:
+			if rc_item is Dictionary and str(rc_item.get("id", "")) == cid:
+				continue
+			kept_rc.append(rc_item)
+		radar_pinged_chests = kept_rc
 
 	var sp: Sprite2D = c_entry.get("sprite_node", null) as Sprite2D
 	if sp != null and is_instance_valid(sp):
 		sp.texture = load("res://assets/sprites/props/chest_open.png")
-	var glow: PointLight2D = c_entry.get("glow_node", null) as PointLight2D
+	var glow: Sprite2D = c_entry.get("glow_node", null) as Sprite2D
 	if glow != null and is_instance_valid(glow):
-		glow.energy = 0.25
+		glow.modulate.a = 0.14
 	var lbl: Label = c_entry.get("label_node", null) as Label
 	if lbl != null and is_instance_valid(lbl):
 		lbl.add_theme_color_override("font_color", Color("#ADB5BD"))
@@ -583,7 +1085,6 @@ func _sync_conditional_npcs() -> void:
 			kept_entries.append(entry)
 	npc_entries = kept_entries
 
-	var light_tex: Texture2D = load("res://assets/sprites/vfx/light_radial_128.png")
 	for ndef in current_npc_defs:
 		if not (ndef is Dictionary):
 			continue
@@ -635,25 +1136,29 @@ func _sync_conditional_npcs() -> void:
 			sp.modulate = Color(0.88, 0.85, 0.96, 0.84)
 		npc_root.add_child(sp)
 
-		var glow := PointLight2D.new()
-		glow.texture = light_tex
-		glow.texture_scale = 2.4
-		var is_floating: bool = bool(d.get("float_anim", false))
-		glow.energy = 1.08 if (is_floating or role_str == "story_duoc_lao" or role_str == "story_van_chi" or role_str == "story_my_do_toa" or role_str == "story_devour_thanh_lien") else 0.72
+		var halo_col: Color = Color("#FFE599")
 		var glow_hex: String = str(d.get("glow_hex", ""))
 		if glow_hex != "":
-			glow.color = Color(glow_hex)
+			halo_col = Color(glow_hex)
 		elif role_str == "story_duoc_lao" or role_str == "story_hai_ba_dong":
-			glow.color = Color("#70D6FF")
+			halo_col = Color("#70D6FF")
 		elif role_str == "story_van_chi" or role_str == "story_thanh_lan" or role_str == "story_devour_thanh_lien":
-			glow.color = Color("#2EC4B6")
+			halo_col = Color("#2EC4B6")
 		elif role_str == "secret_lang_anh" or role_str == "story_my_do_toa":
-			glow.color = Color("#C77DFF")
+			halo_col = Color("#C77DFF")
 		elif role_str == "story_thai_lan_pet":
-			glow.color = Color("#72EFDD")
-		else:
-			glow.color = Color("#FFE599")
+			halo_col = Color("#72EFDD")
+
+		# Quầng linh khí Additive siêu nhẹ thay cho PointLight2D trên từng NPC (giữ map < 12 đèn thực -> mượt GPU!)
+		var glow := Sprite2D.new()
+		glow.texture = VfxAssets.get_soft_halo_texture()
+		glow.material = VfxAssets.get_additive_material()
+		var is_floating: bool = bool(d.get("float_anim", false))
+		var is_strong_aura: bool = (is_floating or role_str == "story_duoc_lao" or role_str == "story_van_chi" or role_str == "story_my_do_toa" or role_str == "story_devour_thanh_lien")
+		glow.scale = Vector2(2.0, 2.0) if is_strong_aura else Vector2(1.55, 1.55)
+		glow.modulate = Color(halo_col.r, halo_col.g, halo_col.b, 0.42 if is_strong_aura else 0.26)
 		glow.position = Vector2(0, -36)
+		glow.z_index = -1
 		npc_root.add_child(glow)
 
 		var name_lbl := Label.new()
@@ -820,6 +1325,36 @@ func _on_story_flag_changed(_flag_name: String) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if is_boss_rush_active:
+		boss_rush_elapsed += delta
+
+	if radar_wave_timer > 0.0:
+		radar_wave_timer = maxf(0.0, radar_wave_timer - delta)
+	if radar_ping_timer > 0.0:
+		radar_ping_timer = maxf(0.0, radar_ping_timer - delta)
+		if radar_ping_timer <= 0.0:
+			radar_pinged_chests.clear()
+
+	if is_tower_active and not tower_waiting_blessing and not tower_enemies_alive.is_empty():
+		_prune_tower_enemies()
+		if is_tower_active and not tower_waiting_blessing and not tower_enemies_alive.is_empty():
+			tower_heat_accum += delta
+			if tower_heat_accum >= 1.0:
+				tower_heat_accum -= 1.0
+				tower_heat_text_accum += 1.0
+				if tower_heat_dps > 0.0 and PlayerData.current_hp > 1.0:
+					var actual_loss: float = minf(tower_heat_dps, PlayerData.current_hp - 1.0)
+					if actual_loss > 0.0:
+						PlayerData.current_hp = maxf(1.0, PlayerData.current_hp - actual_loss)
+						EventBus.stats_changed.emit()
+						if tower_heat_text_accum >= 3.0 and player_node != null:
+							tower_heat_text_accum = 0.0
+							EventBus.floating_text_requested.emit(
+								player_node.global_position + Vector2(0, -58),
+								"Tâm Hỏa -%d" % maxi(1, int(round(actual_loss))),
+								Color("#FF6B6B")
+							)
+
 	if interact_cooldown > 0.0:
 		interact_cooldown -= delta
 
@@ -1059,6 +1594,7 @@ func get_minimap_snapshot() -> Dictionary:
 			})
 
 	return {
+		"map_id": current_map_id,
 		"map_size": map_size,
 		"is_forest": current_is_forest,
 		"zones": zone_draw_specs,
@@ -1066,11 +1602,16 @@ func get_minimap_snapshot() -> Dictionary:
 		"npcs": npcs_out,
 		"portals": portals_out,
 		"chests": chests_out,
-		"enemies": enemies_out
+		"enemies": enemies_out,
+		"radar_active": radar_ping_timer > 0.0,
+		"radar_radius": PlayerData.get_soul_radar_radius(),
+		"radar_chests": radar_pinged_chests
 	}
 
 
 func get_quest_waypoint_world_pos() -> Vector2:
+	if is_boss_rush_active or current_map_id == "tam_ma_luyen_canh" or is_tower_active or current_map_id == "thien_phan_thap":
+		return Vector2.ZERO
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		return Vector2.ZERO
@@ -1555,11 +2096,8 @@ func _trigger_npc_interaction(npc_entry: Dictionary) -> void:
 
 
 func _spawn_from_slot(idx: int) -> void:
-	var packed: PackedScene = load(ENEMY_SCENE_PATH)
-	if packed == null:
-		return
 	var slot: Dictionary = spawn_slots[idx]
-	var inst: CharacterBody2D = packed.instantiate() as CharacterBody2D
+	var inst: CharacterBody2D = ENEMY_SCENE.instantiate() as CharacterBody2D
 	entities_root.add_child(inst)
 	var pos_val: Vector2 = slot.get("pos", Vector2(540, 420))
 	if inst.has_method("configure_enemy"):
@@ -1567,21 +2105,800 @@ func _spawn_from_slot(idx: int) -> void:
 	slot["ref"] = inst
 
 
+# =========================================================
+# TÂM MA LUYỆN CẢNH — BOSS RUSH ARENA CONTROLLER (TASK 5)
+# =========================================================
+func _get_boss_rush_diff_label(diff_key: String) -> String:
+	if diff_key == "normal":
+		return "Thường"
+	elif diff_key == "nightmare":
+		return "Ác Mộng"
+	elif diff_key == "di_hoa":
+		return "Dị Hỏa"
+	return "Địa Ngục"
+
+
+func record_boss_rush_player_damage(amount: float) -> void:
+	if is_boss_rush_active and amount > 0.0:
+		boss_rush_dmg_taken += amount
+
+
+func start_boss_rush(boss_id: String, diff_key: String = "normal") -> void:
+	var b_def: Dictionary = GameDatabase.get_enemy_def(boss_id)
+	if b_def.is_empty():
+		return
+
+	if is_tower_active:
+		var saved_t_map: String = tower_return_map
+		var saved_t_pos: Vector2 = tower_return_pos
+		is_tower_active = false
+		tower_waiting_blessing = false
+		tower_enemies_alive.clear()
+		tower_total_wave = 0
+		tower_heat_dps = 0.0
+		tower_heat_accum = 0.0
+		tower_heat_text_accum = 0.0
+		tower_sign_lbl = null
+		_tower_session_token += 1
+		PlayerData.clear_tower_buffs()
+		EventBus.tower_state_updated.emit(0, 0, 0, 0.0, false)
+		boss_rush_return_map = saved_t_map if (saved_t_map != "" and saved_t_map != "thien_phan_thap") else GameDatabase.start_map_id
+		boss_rush_return_pos = saved_t_pos if saved_t_pos != Vector2.ZERO else Vector2(340.0, 520.0)
+	elif not is_boss_rush_active and current_map_id != "tam_ma_luyen_canh":
+		boss_rush_return_map = current_map_id if current_map_id != "" else GameDatabase.start_map_id
+		boss_rush_return_pos = player_node.global_position if player_node != null else Vector2(340.0, 520.0)
+
+	_boss_rush_session_token += 1
+	is_boss_rush_active = true
+	boss_rush_boss_id = boss_id
+	boss_rush_diff = diff_key
+	boss_rush_elapsed = 0.0
+	boss_rush_dmg_taken = 0.0
+	boss_rush_boss_node = null
+
+	current_map_id = "tam_ma_luyen_canh"
+	current_map_bgm = "bgm_boss"
+	current_is_forest = false
+	interact_cooldown = 0.25
+
+	map_size = Vector2(1280.0, 896.0)
+	map_rect = Rect2(64.0, 64.0, map_size.x - 128.0, map_size.y - 128.0)
+
+	var diff_label: String = _get_boss_rush_diff_label(diff_key)
+	var boss_name: String = str(b_def.get("name", boss_id))
+	var arena_def: Dictionary = {
+		"id": "tam_ma_luyen_canh",
+		"name": "Tâm Ma Luyện Cảnh",
+		"bgm": "bgm_boss",
+		"size": [1280, 896],
+		"ambient_hex": "#a8b0d8",
+		"base_tile": "res://assets/sprites/tiles/arena_violet.png",
+		"zones": [
+			{
+				"rect": [192, 128, 896, 640],
+				"tile": "res://assets/sprites/tiles/arena_violet.png",
+				"border_hex": "#C77DFF",
+				"arena_circle": true
+			}
+		],
+		"signs": [
+			{
+				"pos": [420, 80],
+				"text": "TÂM MA LUYỆN CẢNH — %s (%s)" % [boss_name.to_upper(), diff_label],
+				"color": "#E0AAFF"
+			}
+		],
+		"props": [
+			{ "type": "lantern", "pos": [140, 160] },
+			{ "type": "lantern", "pos": [1140, 160] },
+			{ "type": "lantern", "pos": [140, 760] },
+			{ "type": "lantern", "pos": [1140, 760] }
+		],
+		"chests": [],
+		"portals": [],
+		"npcs": [],
+		"spawns": []
+	}
+
+	_clear_current_map_nodes()
+	current_npc_defs = []
+	_build_tiled_ground(arena_def)
+	_build_atmosphere_and_boundaries(arena_def)
+	_build_signs(arena_def)
+	_build_props(arena_def)
+
+	PlayerData.recalculate_and_clamp(true)
+	EventBus.stats_changed.emit()
+
+	var spawn_pt := Vector2(340.0, 448.0)
+	if player_node != null:
+		player_node.global_position = spawn_pt
+		player_node.reset_physics_interpolation()
+		if player_node.has_method("set_camera_limits"):
+			player_node.set_camera_limits(int(map_size.x), int(map_size.y))
+		var cam_node: Camera2D = player_node.get_node_or_null("Camera2D") as Camera2D
+		if cam_node != null:
+			cam_node.reset_smoothing()
+			cam_node.reset_physics_interpolation()
+
+	_sync_active_companion(spawn_pt)
+	EventBus.boss_status_updated.emit("", "", 0.0, 1.0, 1, false)
+	EventBus.boss_poise_updated.emit(0.0, 1.0, false, false)
+
+	var boss_inst: CharacterBody2D = ENEMY_SCENE.instantiate() as CharacterBody2D
+	entities_root.add_child(boss_inst)
+	var boss_pos := Vector2(920.0, 448.0)
+	if boss_inst.has_method("configure_enemy"):
+		boss_inst.configure_enemy(boss_id, boss_pos)
+	if boss_inst.has_method("configure_boss_rush"):
+		boss_inst.configure_boss_rush(diff_key)
+	boss_rush_boss_node = boss_inst
+
+	EventBus.audio_sfx_requested.emit("portal_warp")
+	EventBus.bgm_requested.emit("bgm_boss")
+	EventBus.map_changed.emit("tam_ma_luyen_canh", "Tâm Ma Luyện Cảnh — %s" % diff_label)
+	EventBus.banter_triggered.emit("TÂM MA LUYỆN CẢNH [%s]: Đối đầu [%s] — Kết liễu nhanh & né đòn hoàn hảo để đạt hạng SSS!" % [diff_label, boss_name])
+	if player_node != null:
+		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -84), "TÂM MA KHAI CHIẾN!", Color("#E0AAFF"))
+	queue_redraw()
+
+
+func _on_enemy_killed_boss_rush(enemy_id: String, _is_boss: bool) -> void:
+	if is_boss_rush_active and enemy_id == boss_rush_boss_id:
+		on_boss_rush_boss_defeated(enemy_id)
+	if is_tower_active and not tower_waiting_blessing:
+		_prune_tower_enemies()
+
+
+func on_boss_rush_boss_defeated(defeated_id: String) -> void:
+	if not is_boss_rush_active or defeated_id != boss_rush_boss_id:
+		return
+
+	var res: Dictionary = PlayerData.record_boss_rush_clear(boss_rush_boss_id, boss_rush_diff, boss_rush_elapsed, boss_rush_dmg_taken)
+	is_boss_rush_active = false
+	boss_rush_boss_node = null
+
+	var grade_str: String = str(res["grade"])
+	var rew_stones: int = int(res["stones"])
+	var rew_gold: int = int(res["gold"])
+	var elapsed_final: float = boss_rush_elapsed
+	var diff_label: String = _get_boss_rush_diff_label(boss_rush_diff)
+	var b_def: Dictionary = GameDatabase.get_enemy_def(defeated_id)
+	var boss_name: String = str(b_def.get("name", defeated_id))
+
+	EventBus.boss_rush_completed.emit(boss_rush_boss_id, boss_rush_diff, grade_str, elapsed_final, rew_stones, rew_gold)
+	EventBus.audio_sfx_requested.emit("breakthrough")
+	EventBus.screen_shake_requested.emit(7.5, 0.28)
+	if player_node != null:
+		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -92), "HẠNG %s!" % grade_str, Color("#FFD166"))
+	EventBus.banter_triggered.emit("TÂM MA LUYỆN CẢNH THẮNG LỢI! Hạ [%s · %s] trong %.1fs — Hạng [%s] (+%d Đá CH · +%d Kim Tệ)!" % [
+		boss_name, diff_label, elapsed_final, grade_str, rew_stones, rew_gold
+	])
+
+	var token: int = _boss_rush_session_token
+	get_tree().create_timer(2.2).timeout.connect(func() -> void:
+		if is_inside_tree() and not is_boss_rush_active and token == _boss_rush_session_token and current_map_id == "tam_ma_luyen_canh":
+			exit_boss_rush()
+	)
+
+
+func exit_boss_rush() -> void:
+	is_boss_rush_active = false
+	boss_rush_boss_node = null
+	_boss_rush_session_token += 1
+	var ret_map: String = boss_rush_return_map if (boss_rush_return_map != "" and boss_rush_return_map != "tam_ma_luyen_canh") else GameDatabase.start_map_id
+	load_map(ret_map, boss_rush_return_pos, false)
+
+
+func on_player_died_in_boss_rush() -> bool:
+	if not is_boss_rush_active:
+		return false
+	PlayerData.recalculate_and_clamp(true)
+	EventBus.stats_changed.emit()
+	EventBus.audio_sfx_requested.emit("alchemy_fail")
+	if player_node != null:
+		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -82), "TÂM MA BẠI TRẬN!", Color("#FF4D6D"))
+	EventBus.banter_triggered.emit("Thất bại trong Tâm Ma Luyện Cảnh! Tâm ma tan biến — Tiêu Viêm điều tức hồi đầy sinh lực và trở về vị trí cũ.")
+	exit_boss_rush()
+	return true
+
+
+# =========================================================
+# THIÊN PHẦN LUYỆN KHÍ THÁP — INFINITE ROGUELITE TOWER
+# =========================================================
+func _get_tower_blessing_pool() -> Array:
+	return [
+		{
+			"id": "tower_atk",
+			"name": "Phần Thiên Viêm Ý",
+			"title": "Phần Thiên Viêm Ý",
+			"tag": "+25% ATK",
+			"desc": "Vẫn Lạc Tâm Viêm rèn Đấu Khí: +25% Công Kích (ATK) trong suốt lượt leo Tháp!",
+			"color_hex": "#FF6B00",
+			"color": "#FF6B00",
+			"icon": "res://assets/sprites/icons/skill_phe_lang_xich.png",
+			"stat_key": "atk_pct",
+			"value": 25.0,
+			"stat_key2": "",
+			"value2": 0.0,
+			"heal_ratio": 0.0
+		},
+		{
+			"id": "tower_hp",
+			"name": "Thanh Liên Hộ Tâm",
+			"title": "Thanh Liên Hộ Tâm",
+			"tag": "+22% HP · Hồi 45%",
+			"desc": "Thanh Liên khí tức ôn dưỡng kinh mạch: +22% Sinh Lực Tối Đa (HP) & hồi ngay 45% HP/QI!",
+			"color_hex": "#52B788",
+			"color": "#52B788",
+			"icon": "res://assets/sprites/icons/pill_hp_red.png",
+			"stat_key": "hp_pct",
+			"value": 22.0,
+			"stat_key2": "",
+			"value2": 0.0,
+			"heal_ratio": 0.45
+		},
+		{
+			"id": "tower_haste",
+			"name": "Tam Thiên Lôi Ảnh",
+			"title": "Tam Thiên Lôi Ảnh",
+			"tag": "-15% CD · +15% SPD",
+			"desc": "Thân pháp lôi đình xuất thần nhập hóa: -15% Hồi Chiêu Đấu Kỹ & +15% Tốc Độ Di Chuyển!",
+			"color_hex": "#38BDF8",
+			"color": "#38BDF8",
+			"icon": "res://assets/sprites/icons/skill_tu_van_duc.png",
+			"stat_key": "cd_red_pct",
+			"value": 15.0,
+			"stat_key2": "spd_pct",
+			"value2": 15.0,
+			"heal_ratio": 0.0
+		},
+		{
+			"id": "tower_poise_crit",
+			"name": "Bát Cực Phá Thế",
+			"title": "Bát Cực Phá Thế",
+			"tag": "+35% Phá Thế · +12% Crit",
+			"desc": "Ám kình xuyên giáp vỡ hộ thuẫn: +35% Phá Thế Boss & +12% Tỷ lệ Chí Mạng!",
+			"color_hex": "#FFD166",
+			"color": "#FFD166",
+			"icon": "res://assets/sprites/icons/skill_bat_cuc_bang.png",
+			"stat_key": "poise_pct",
+			"value": 35.0,
+			"stat_key2": "crit_pct",
+			"value2": 12.0,
+			"heal_ratio": 0.0
+		},
+		{
+			"id": "tower_lifesteal",
+			"name": "Huyết Ma Hấp Tinh",
+			"title": "Huyết Ma Hấp Tinh",
+			"tag": "+7% Hút Máu",
+			"desc": "Thôn phệ tinh huyết địch thủ chống lại Tâm Hỏa: +7% Hút Máu mọi đòn đánh & kỹ năng!",
+			"color_hex": "#EF476F",
+			"color": "#EF476F",
+			"icon": "res://assets/sprites/icons/skill_hap_chuong.png",
+			"stat_key": "lifesteal_pct",
+			"value": 7.0,
+			"stat_key2": "",
+			"value2": 0.0,
+			"heal_ratio": 0.0
+		},
+		{
+			"id": "tower_def",
+			"name": "Huyền Trọng Bất Hoại",
+			"title": "Huyền Trọng Bất Hoại",
+			"tag": "+30% DEF · Hồi 35%",
+			"desc": "Đấu Khí Khải Giáp ngưng thực kiên cố: +30% Phòng Ngự (DEF) & hồi ngay 35% HP/QI!",
+			"color_hex": "#C77DFF",
+			"color": "#C77DFF",
+			"icon": "res://assets/sprites/icons/icon_armor.png",
+			"stat_key": "def_pct",
+			"value": 30.0,
+			"stat_key2": "",
+			"value2": 0.0,
+			"heal_ratio": 0.35
+		}
+	]
+
+
+func start_tower(start_floor: int = 1) -> void:
+	if is_boss_rush_active:
+		var saved_br_map: String = boss_rush_return_map
+		var saved_br_pos: Vector2 = boss_rush_return_pos
+		is_boss_rush_active = false
+		boss_rush_boss_node = null
+		_boss_rush_session_token += 1
+		tower_return_map = saved_br_map if (saved_br_map != "" and saved_br_map != "tam_ma_luyen_canh") else GameDatabase.start_map_id
+		tower_return_pos = saved_br_pos if saved_br_pos != Vector2.ZERO else Vector2(340.0, 520.0)
+	elif not is_tower_active and current_map_id != "thien_phan_thap":
+		tower_return_map = current_map_id if current_map_id != "" else GameDatabase.start_map_id
+		tower_return_pos = player_node.global_position if player_node != null else Vector2(340.0, 520.0)
+
+	PlayerData.clear_tower_buffs()
+	_tower_session_token += 1
+	is_tower_active = true
+	tower_floor = maxi(1, start_floor)
+	tower_enemies_alive.clear()
+	tower_total_wave = 0
+	tower_heat_dps = 0.0
+	tower_heat_accum = 0.0
+	tower_heat_text_accum = 0.0
+	tower_waiting_blessing = false
+
+	current_map_id = "thien_phan_thap"
+	current_map_bgm = "bgm_lava"
+	current_is_forest = false
+	interact_cooldown = 0.25
+
+	map_size = Vector2(1280.0, 896.0)
+	map_rect = Rect2(64.0, 64.0, map_size.x - 128.0, map_size.y - 128.0)
+
+	var arena_def: Dictionary = {
+		"id": "thien_phan_thap",
+		"name": "Thiên Phần Luyện Khí Tháp",
+		"bgm": "bgm_lava",
+		"size": [1280, 896],
+		"ambient_hex": "#ffb899",
+		"base_tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+		"zones": [
+			{
+				"rect": [192, 128, 896, 640],
+				"tile": "res://assets/sprites/tiles/arena_violet.png",
+				"border_hex": "#FF6B00",
+				"arena_circle": true
+			}
+		],
+		"signs": [
+			{
+				"pos": [420, 78],
+				"text": "THIÊN PHẦN LUYỆN KHÍ THÁP — TẦNG %d" % tower_floor,
+				"color": "#FFD166"
+			}
+		],
+		"props": [
+			{ "type": "lantern", "pos": [140, 160] },
+			{ "type": "lantern", "pos": [1140, 160] },
+			{ "type": "lantern", "pos": [140, 760] },
+			{ "type": "lantern", "pos": [1140, 760] }
+		],
+		"chests": [],
+		"portals": [],
+		"npcs": [],
+		"spawns": []
+	}
+
+	_clear_current_map_nodes()
+	current_npc_defs = []
+	_build_tiled_ground(arena_def)
+	_build_atmosphere_and_boundaries(arena_def)
+	_build_signs(arena_def)
+	_build_props(arena_def)
+
+	# Tìm lại Label bảng hiệu Tháp để cập nhật số tầng khi leo tiếp
+	for ch in map_overlay_root.get_children():
+		if ch is Label and (ch as Label).text.find("THIÊN PHẦN LUYỆN KHÍ THÁP") != -1:
+			tower_sign_lbl = ch as Label
+			break
+
+	PlayerData.recalculate_and_clamp(true)
+	EventBus.stats_changed.emit()
+
+	var spawn_pt := Vector2(340.0, 448.0)
+	if player_node != null:
+		player_node.global_position = spawn_pt
+		player_node.reset_physics_interpolation()
+		if player_node.has_method("set_camera_limits"):
+			player_node.set_camera_limits(int(map_size.x), int(map_size.y))
+		var cam_node: Camera2D = player_node.get_node_or_null("Camera2D") as Camera2D
+		if cam_node != null:
+			cam_node.reset_smoothing()
+			cam_node.reset_physics_interpolation()
+
+	_sync_active_companion(spawn_pt)
+	EventBus.boss_status_updated.emit("", "", 0.0, 1.0, 1, false)
+	EventBus.boss_poise_updated.emit(0.0, 1.0, false, false)
+
+	EventBus.audio_sfx_requested.emit("portal_warp")
+	EventBus.bgm_requested.emit("bgm_lava")
+	EventBus.map_changed.emit("thien_phan_thap", "Thiên Phần Luyện Khí Tháp — Tầng %d" % tower_floor)
+	EventBus.banter_triggered.emit("THIÊN PHẦN LUYỆN KHÍ THÁP TẦNG %d: Vẫn Lạc Tâm Viêm rèn thể! Quét sạch địch từng tầng để chọn Chúc Phúc Roguelite & thu Tinh Hỏa Năng!" % tower_floor)
+
+	_spawn_tower_floor(tower_floor)
+	queue_redraw()
+
+
+func _get_tower_boss_pool() -> Array:
+	var bosses: Array = []
+	for eid in GameDatabase.enemies_by_id.keys():
+		var edef: Dictionary = GameDatabase.enemies_by_id[eid]
+		if edef is Dictionary and bool(edef.get("is_boss", false)):
+			bosses.append({
+				"id": str(eid),
+				"realm": int(edef.get("realm_index", 1)),
+				"hp": float(edef.get("max_hp", 500.0))
+			})
+	bosses.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		if int(a["realm"]) != int(b["realm"]):
+			return int(a["realm"]) < int(b["realm"])
+		return float(a["hp"]) < float(b["hp"])
+	)
+	var out: Array = []
+	for b in bosses:
+		out.append(str(b["id"]))
+	if out.is_empty():
+		out.append("tieu_ninh_boss")
+	return out
+
+
+func _get_tower_mob_pools() -> Dictionary:
+	var special_types: Array = ["burrower", "artillery", "shieldbearer", "bomber"]
+	var special_mobs: Array = []
+	var standard_mobs: Array = []
+	var max_realm_cap: int = clampi(PlayerData.realm_index + 2, 2, 12)
+
+	for eid in GameDatabase.enemies_by_id.keys():
+		var edef: Dictionary = GameDatabase.enemies_by_id[eid]
+		if not (edef is Dictionary):
+			continue
+		if bool(edef.get("is_boss", false)):
+			continue
+		var ai_t: String = str(edef.get("ai_type", "chaser"))
+		if ai_t == "dummy":
+			continue
+		var r_idx: int = int(edef.get("realm_index", 1))
+		if special_types.has(ai_t):
+			special_mobs.append(str(eid))
+		elif r_idx <= max_realm_cap:
+			standard_mobs.append(str(eid))
+
+	if standard_mobs.is_empty():
+		for eid in GameDatabase.enemies_by_id.keys():
+			var edef: Dictionary = GameDatabase.enemies_by_id[eid]
+			if edef is Dictionary and not bool(edef.get("is_boss", false)) and str(edef.get("ai_type", "")) != "dummy":
+				standard_mobs.append(str(eid))
+	if standard_mobs.is_empty():
+		standard_mobs.append("hoang_da_son_lang")
+
+	return { "special": special_mobs, "standard": standard_mobs }
+
+
+func _spawn_tower_enemy_unit(enemy_id_str: String, spawn_pos: Vector2, floor_num: int, is_boss_slot: bool) -> Node2D:
+	var inst: CharacterBody2D = ENEMY_SCENE.instantiate() as CharacterBody2D
+	entities_root.add_child(inst)
+	if inst.has_method("configure_enemy"):
+		inst.configure_enemy(enemy_id_str, spawn_pos)
+	if inst.has_method("configure_tower_enemy"):
+		inst.configure_tower_enemy(floor_num, is_boss_slot)
+	else:
+		if "detect_radius" in inst:
+			inst.set("detect_radius", 1200.0)
+		if "max_hp" in inst and "cur_hp" in inst:
+			var sc_hp: float = (0.78 + float(floor_num) * 0.14) if is_boss_slot else (0.70 + float(floor_num) * 0.12)
+			var scaled_hp: float = maxf(80.0, float(inst.get("max_hp")) * sc_hp)
+			inst.set("max_hp", scaled_hp)
+			inst.set("cur_hp", scaled_hp)
+	tower_enemies_alive.append(inst)
+	return inst
+
+
+func _spawn_tower_floor(floor_num: int) -> void:
+	tower_enemies_alive.clear()
+	tower_heat_accum = 0.0
+	tower_heat_text_accum = 0.0
+
+	# Tâm Hỏa Chước Đốt: 2.0 + floor * 1.4 HP/s, giảm 45% nếu đang trang bị Dị Hỏa!
+	var raw_heat: float = 2.0 + float(floor_num) * 1.4
+	var f_def: Dictionary = PlayerData.get_active_flame_def()
+	var has_di_hoa: bool = false
+	if not f_def.is_empty():
+		var fid: String = str(f_def.get("id", ""))
+		var fcat: String = str(f_def.get("category", ""))
+		has_di_hoa = (fcat == "heavenly" or fid.begins_with("di_hoa_"))
+	tower_heat_dps = snappedf(raw_heat * (0.55 if has_di_hoa else 1.0), 0.1)
+
+	if tower_sign_lbl != null and is_instance_valid(tower_sign_lbl):
+		tower_sign_lbl.text = "THIÊN PHẦN LUYỆN KHÍ THÁP — TẦNG %d%s" % [
+			floor_num,
+			" (THÁP CHỦ)" if (floor_num % 3 == 0) else ""
+		]
+
+	var mob_pools: Dictionary = _get_tower_mob_pools()
+	var special_mobs: Array = mob_pools["special"]
+	var standard_mobs: Array = mob_pools["standard"]
+	var p_pos: Vector2 = player_node.global_position if player_node != null else Vector2(340.0, 448.0)
+
+	if floor_num % 3 == 0:
+		# Tầng Boss (3, 6, 9...): 1 Tháp Chủ Boss xoay vòng theo tiến trình + 2 Hộ Vệ!
+		var boss_pool: Array = _get_tower_boss_pool()
+		var tier_step: int = int(floor_num / 3) - 1
+		var start_offset: int = clampi((PlayerData.realm_index - 1) * 2, 0, maxi(0, boss_pool.size() - 1))
+		var b_idx: int = (start_offset + tier_step) % boss_pool.size()
+		var boss_id: String = str(boss_pool[b_idx])
+		var boss_pos := Vector2(930.0, 448.0)
+		if p_pos.distance_to(boss_pos) < 280.0:
+			boss_pos = Vector2(320.0, 448.0)
+		_spawn_tower_enemy_unit(boss_id, boss_pos, floor_num, true)
+
+		var escort_offsets: Array = [Vector2(-110.0, -170.0), Vector2(-110.0, 170.0)]
+		for idx_e in range(2):
+			var pick_pool: Array = special_mobs if (not special_mobs.is_empty() and (idx_e == 0 or randf() < 0.65)) else standard_mobs
+			var mob_id: String = str(pick_pool[randi() % pick_pool.size()])
+			var e_pos: Vector2 = (boss_pos + (escort_offsets[idx_e] as Vector2)).clamp(Vector2(140.0, 150.0), Vector2(1140.0, 746.0))
+			_spawn_tower_enemy_unit(mob_id, e_pos, floor_num, false)
+
+		var b_name: String = str(GameDatabase.get_enemy_def(boss_id).get("name", boss_id))
+		if player_node != null:
+			EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -86), "TẦNG %d — THÁP CHỦ XUẤT HIỆN!" % floor_num, Color("#FF4D6D"))
+		EventBus.banter_triggered.emit("THÁP TẦNG %d (BOSS): [%s] cùng 2 hộ vệ chấn giữ tầng lửa!" % [floor_num, b_name])
+	else:
+		# Tầng thường: 3 + min(5, floor_num) quái đa dạng (ưu tiên các loại mới burrower/artillery/shieldbearer/bomber!)
+		var wave_cnt: int = 3 + mini(5, floor_num)
+		for i in range(wave_cnt):
+			var use_special: bool = (not special_mobs.is_empty()) and (i < mini(special_mobs.size(), maxi(2, int(wave_cnt / 2))) or randf() < 0.55)
+			var mob_id: String = ""
+			if use_special:
+				mob_id = str(special_mobs[(i + floor_num) % special_mobs.size()])
+			else:
+				mob_id = str(standard_mobs[(i + floor_num + randi()) % standard_mobs.size()])
+
+			var ang: float = -PI * 0.44 + (PI * 0.88) * (float(i) / maxf(1.0, float(wave_cnt - 1)))
+			var dist_r: float = 250.0 + float(i % 2) * 115.0
+			var candidate := Vector2(720.0 + cos(ang) * dist_r, 448.0 + sin(ang) * dist_r)
+			candidate = candidate.clamp(Vector2(150.0, 150.0), Vector2(1130.0, 746.0))
+			if candidate.distance_to(p_pos) < 230.0:
+				var away: Vector2 = (candidate - p_pos).normalized()
+				if away.length() < 0.01:
+					away = Vector2.RIGHT
+				candidate = (p_pos + away * 290.0).clamp(Vector2(150.0, 150.0), Vector2(1130.0, 746.0))
+			_spawn_tower_enemy_unit(mob_id, candidate, floor_num, false)
+
+		if player_node != null:
+			EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -86), "TẦNG %d — KHAI CHIẾN!" % floor_num, Color("#FFD166"))
+
+	tower_total_wave = tower_enemies_alive.size()
+	EventBus.tower_state_updated.emit(tower_floor, tower_enemies_alive.size(), tower_total_wave, tower_heat_dps, true)
+
+
+func _prune_tower_enemies() -> void:
+	if not is_tower_active or tower_waiting_blessing or tower_enemies_alive.is_empty():
+		return
+	var dead_found: Array = []
+	for en in tower_enemies_alive:
+		if en == null or not is_instance_valid(en):
+			dead_found.append(en)
+		else:
+			var is_dying_f: bool = bool(en.get("is_dying")) if "is_dying" in en else false
+			if is_dying_f or not en.is_in_group("enemies"):
+				dead_found.append(en)
+	if not dead_found.is_empty():
+		on_tower_enemy_defeated(dead_found[0] as Node)
+
+
+func on_tower_enemy_defeated(enemy_node: Node) -> void:
+	if not is_tower_active or tower_waiting_blessing:
+		return
+
+	var next_alive: Array = []
+	for en in tower_enemies_alive:
+		if en == null or not is_instance_valid(en) or en == enemy_node:
+			continue
+		var is_dying_f: bool = bool(en.get("is_dying")) if "is_dying" in en else false
+		if is_dying_f or not en.is_in_group("enemies"):
+			continue
+		next_alive.append(en)
+	tower_enemies_alive = next_alive
+
+	EventBus.tower_state_updated.emit(tower_floor, tower_enemies_alive.size(), tower_total_wave, tower_heat_dps, true)
+
+	if tower_enemies_alive.is_empty():
+		var rew: Dictionary = PlayerData.record_tower_floor_clear(tower_floor)
+		var fe_gain: int = int(rew.get("fire_energy", 12))
+		var st_gain: int = int(rew.get("stones", 1))
+		var g_gain: int = int(rew.get("gold", 55))
+
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		EventBus.screen_shake_requested.emit(6.0, 0.24)
+		if player_node != null:
+			EventBus.floating_text_requested.emit(
+				player_node.global_position + Vector2(0, -90),
+				"VƯỢT TẦNG %d! +%d Hỏa Năng" % [tower_floor, fe_gain],
+				Color("#FFD166")
+			)
+		EventBus.banter_triggered.emit(
+			"VƯỢT TẦNG %d THIÊN PHẦN THÁP! Nhận +%d Tinh Hỏa Năng · +%d Đá CH · +%d Kim Tệ (Kỷ lục: Tầng %d)!" % [
+				tower_floor, fe_gain, st_gain, g_gain, int(rew.get("best_floor", tower_floor))
+			]
+		)
+
+		tower_waiting_blessing = true
+		var pool: Array = _get_tower_blessing_pool()
+		pool.shuffle()
+		var choices: Array = [pool[0], pool[1], pool[2]]
+		EventBus.tower_blessing_requested.emit(tower_floor, choices)
+
+
+func apply_tower_blessing(blessing_id: String) -> void:
+	if not is_tower_active:
+		return
+
+	var chosen: Dictionary = {}
+	for b in _get_tower_blessing_pool():
+		if str(b.get("id", "")) == blessing_id:
+			chosen = b
+			break
+
+	if not chosen.is_empty():
+		var sk1: String = str(chosen.get("stat_key", ""))
+		var v1: float = float(chosen.get("value", 0.0))
+		var hr: float = float(chosen.get("heal_ratio", 0.0))
+		PlayerData.add_tower_buff(sk1, v1, hr)
+		var sk2: String = str(chosen.get("stat_key2", ""))
+		var v2: float = float(chosen.get("value2", 0.0))
+		if sk2 != "" and v2 != 0.0:
+			PlayerData.add_tower_buff(sk2, v2, 0.0)
+		EventBus.banter_triggered.emit("CHÚC PHÚC TÂM HỎA [%s]: %s" % [str(chosen.get("name", "")), str(chosen.get("desc", ""))])
+
+	tower_floor += 1
+	tower_waiting_blessing = false
+	EventBus.audio_sfx_requested.emit("level_up")
+	EventBus.map_changed.emit("thien_phan_thap", "Thiên Phần Luyện Khí Tháp — Tầng %d" % tower_floor)
+	_spawn_tower_floor(tower_floor)
+
+
+func exit_tower() -> void:
+	is_tower_active = false
+	tower_waiting_blessing = false
+	tower_enemies_alive.clear()
+	tower_total_wave = 0
+	tower_heat_dps = 0.0
+	tower_heat_accum = 0.0
+	tower_heat_text_accum = 0.0
+	tower_sign_lbl = null
+	_tower_session_token += 1
+	PlayerData.clear_tower_buffs()
+	EventBus.tower_state_updated.emit(0, 0, 0, 0.0, false)
+	PlayerData.recalculate_and_clamp(true)
+	EventBus.stats_changed.emit()
+	var ret_map: String = tower_return_map if (tower_return_map != "" and tower_return_map != "thien_phan_thap" and tower_return_map != "tam_ma_luyen_canh") else GameDatabase.start_map_id
+	var ret_pos: Vector2 = tower_return_pos if tower_return_pos != Vector2.ZERO else Vector2.ZERO
+	load_map(ret_map, ret_pos, false)
+
+
+func on_player_died_in_tower() -> bool:
+	if not is_tower_active:
+		return false
+	var cur_fl: int = tower_floor
+	PlayerData.recalculate_and_clamp(true)
+	EventBus.stats_changed.emit()
+	EventBus.audio_sfx_requested.emit("alchemy_fail")
+	if player_node != null:
+		EventBus.floating_text_requested.emit(player_node.global_position + Vector2(0, -82), "TRUYỀN TỐNG KHẨN CẤP!", Color("#FF758F"))
+	EventBus.banter_triggered.emit("Trọng thương tại Thiên Phần Tháp Tầng %d — đã tự động truyền tống ra ngoài (giữ nguyên toàn bộ Tinh Hỏa Năng & Đá CH)!" % cur_fl)
+	exit_tower()
+	return true
+
+
+# =========================================================
+# SOUL RADAR WAVE — CẢM ỨNG LINH HỒN QUÉT RƯƠNG & KẺ ĐỊCH
+# =========================================================
+func trigger_soul_radar(origin: Vector2 = Vector2.ZERO, radius_px: float = -1.0) -> void:
+	var use_origin: Vector2 = origin
+	if use_origin == Vector2.ZERO:
+		if player_node == null:
+			return
+		use_origin = player_node.global_position
+	var use_radius: float = radius_px if radius_px > 0.0 else PlayerData.get_soul_radar_radius()
+	EventBus.soul_radar_pulsed.emit(use_origin, use_radius)
+
+
+func _on_soul_radar_pulsed(origin: Vector2, radius_px: float) -> void:
+	radar_wave_origin = origin
+	radar_wave_max_radius = maxf(180.0, radius_px)
+	radar_wave_duration = 0.95
+	radar_wave_timer = radar_wave_duration
+	radar_ping_timer = 8.0
+	radar_pinged_chests.clear()
+
+	for ch in chest_entries:
+		if bool(ch.get("opened", false)):
+			continue
+		var cpos: Vector2 = ch.get("pos", Vector2.ZERO)
+		if origin.distance_to(cpos) <= radar_wave_max_radius:
+			radar_pinged_chests.append({
+				"id": str(ch.get("id", "")),
+				"pos": cpos
+			})
+
+	var enemies_found: int = 0
+	for en in get_tree().get_nodes_in_group("enemies"):
+		if is_instance_valid(en) and en is Node2D:
+			var en_nd: Node2D = en as Node2D
+			if origin.distance_to(en_nd.global_position) <= radar_wave_max_radius:
+				enemies_found += 1
+				if en_nd.has_method("mark_radar_scanned"):
+					en_nd.mark_radar_scanned(8.0)
+
+	var soul_realm_name: String = PlayerData.get_soul_realm_name()
+	EventBus.floating_text_requested.emit(
+		origin + Vector2(0, -108),
+		"PHÁT HIỆN: %d RƯƠNG · %d KẺ ĐỊCH" % [radar_pinged_chests.size(), enemies_found],
+		Color("#72EFDD")
+	)
+	EventBus.banter_triggered.emit(
+		"RADAR LINH HỒN (%s): Phát hiện %d Rương & %d Kẻ Địch!" % [soul_realm_name, radar_pinged_chests.size(), enemies_found]
+	)
+	queue_redraw()
+
+
 func _spawn_floating_text(world_pos: Vector2, text_value: String, text_color: Color) -> void:
+	var is_crit: bool = text_value.ends_with("!") and text_value.length() <= 14
+	var is_big_cry: bool = text_value.length() > 14
+
 	var lbl := Label.new()
 	lbl.text = text_value
-	lbl.global_position = world_pos + Vector2(-42, -16)
-	lbl.add_theme_font_size_override("font_size", 17)
-	lbl.add_theme_color_override("font_color", text_color)
-	lbl.add_theme_color_override("font_outline_color", Color(0.04, 0.04, 0.07, 1.0))
-	lbl.add_theme_constant_override("outline_size", 5)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var font_sz: int = 23 if is_crit else (18 if is_big_cry else 17)
+	lbl.add_theme_font_size_override("font_size", font_sz)
+
+	if is_crit:
+		lbl.add_theme_color_override("font_color", text_color.lerp(Color("#FFF8D6"), 0.28))
+		lbl.add_theme_color_override("font_outline_color", Color("#3B1900"))
+		lbl.add_theme_constant_override("outline_size", 6)
+		lbl.add_theme_color_override("font_shadow_color", Color(1.0, 0.84, 0.24, 0.85))
+		lbl.add_theme_constant_override("shadow_outline_size", 5)
+		lbl.add_theme_constant_override("shadow_offset_x", 0)
+		lbl.add_theme_constant_override("shadow_offset_y", 2)
+		lbl.custom_minimum_size = Vector2(72.0, 0.0)
+		lbl.pivot_offset = Vector2(36.0, 12.0)
+		lbl.global_position = world_pos + Vector2(-36.0, -18.0)
+		lbl.z_index = 14
+	elif is_big_cry:
+		lbl.add_theme_color_override("font_color", text_color)
+		lbl.add_theme_color_override("font_outline_color", Color(0.04, 0.04, 0.07, 1.0))
+		lbl.add_theme_constant_override("outline_size", 5)
+		lbl.custom_minimum_size = Vector2(240.0, 0.0)
+		lbl.pivot_offset = Vector2(120.0, 12.0)
+		lbl.global_position = world_pos + Vector2(-120.0, -20.0)
+		lbl.z_index = 12
+	else:
+		lbl.add_theme_color_override("font_color", text_color)
+		lbl.add_theme_color_override("font_outline_color", Color(0.04, 0.04, 0.07, 1.0))
+		lbl.add_theme_constant_override("outline_size", 5)
+		lbl.custom_minimum_size = Vector2(72.0, 0.0)
+		lbl.pivot_offset = Vector2(36.0, 12.0)
+		lbl.global_position = world_pos + Vector2(-36.0, -16.0)
+		lbl.z_index = 10
+
 	floating_layer.add_child(lbl)
 
 	var tw := lbl.create_tween()
-	tw.set_parallel(true)
-	tw.tween_property(lbl, "position:y", lbl.position.y - 44.0, 0.72)
-	tw.tween_property(lbl, "modulate:a", 0.0, 0.72)
-	tw.chain().tween_callback(lbl.queue_free)
+	if is_crit:
+		lbl.scale = Vector2(1.55, 1.55)
+		var drift_x: float = randf_range(-28.0, 28.0)
+		var start_y: float = lbl.position.y
+		var peak_y: float = start_y - 56.0
+		tw.set_parallel(true)
+		tw.tween_property(lbl, "scale", Vector2.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_property(lbl, "position:x", lbl.position.x + drift_x, 0.82).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(lbl, "modulate:a", 0.0, 0.50).set_delay(0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		var arc_tw := lbl.create_tween()
+		arc_tw.tween_property(lbl, "position:y", peak_y, 0.38).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		arc_tw.tween_property(lbl, "position:y", peak_y + 14.0, 0.42).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.chain().tween_callback(lbl.queue_free)
+	elif is_big_cry:
+		lbl.scale = Vector2(1.22, 1.22)
+		tw.set_parallel(true)
+		tw.tween_property(lbl, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_property(lbl, "position:y", lbl.position.y - 48.0, 1.05).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(lbl, "modulate:a", 0.0, 0.44).set_delay(0.62).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.chain().tween_callback(lbl.queue_free)
+	else:
+		lbl.scale = Vector2(1.15, 1.15)
+		tw.set_parallel(true)
+		tw.tween_property(lbl, "scale", Vector2.ONE, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_property(lbl, "position:y", lbl.position.y - 42.0, 0.76).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(lbl, "modulate:a", 0.0, 0.44).set_delay(0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.chain().tween_callback(lbl.queue_free)
 
 
 func _draw() -> void:
@@ -1595,10 +2912,20 @@ func _draw() -> void:
 		if bool(z.get("arena_circle", false)):
 			var center: Vector2 = rc.position + rc.size * 0.5
 			var rad: float = minf(rc.size.x, rc.size.y) * 0.34
-			draw_arc(center, rad, 0.0, TAU, 56, Color(0.96, 0.75, 0.22, 0.50), 3.2)
-			draw_arc(center, rad * 0.58, 0.0, TAU, 40, Color(0.96, 0.75, 0.22, 0.32), 2.2)
+			if current_map_id == "thien_phan_thap":
+				var pulse_f: float = 0.78 + sin(t_sec * 4.4) * 0.22
+				draw_arc(center, rad, 0.0, TAU, 56, Color(1.0, 0.30, 0.42, 0.62 * pulse_f), 4.0)
+				draw_arc(center, rad * 0.64, -t_sec * 0.65, -t_sec * 0.65 + TAU * 0.80, 44, Color(1.0, 0.82, 0.40, 0.52 * pulse_f), 2.6)
+			elif current_map_id == "tam_ma_luyen_canh":
+				var pulse_a: float = 0.78 + sin(t_sec * 3.2) * 0.22
+				draw_arc(center, rad, 0.0, TAU, 56, Color(0.78, 0.48, 1.0, 0.58 * pulse_a), 3.6)
+				draw_arc(center, rad * 0.62, t_sec * 0.45, t_sec * 0.45 + TAU * 0.82, 44, Color(1.0, 0.82, 0.38, 0.44 * pulse_a), 2.4)
+			else:
+				draw_arc(center, rad, 0.0, TAU, 56, Color(0.96, 0.75, 0.22, 0.50), 3.2)
+				draw_arc(center, rad * 0.58, 0.0, TAU, 40, Color(0.96, 0.75, 0.22, 0.32), 2.2)
 
-	draw_rect(map_rect, Color("#4D7EA8"), false, 4.5)
+	var border_c: Color = Color("#FF6B00") if current_map_id == "thien_phan_thap" else (Color("#9D4EDD") if current_map_id == "tam_ma_luyen_canh" else Color("#4D7EA8"))
+	draw_rect(map_rect, border_c, false, 4.5)
 
 	for p_entry in portal_entries:
 		var pos_v: Vector2 = p_entry.get("pos", Vector2.ZERO)
@@ -1616,3 +2943,39 @@ func _draw() -> void:
 			draw_arc(pos_v, 34.0, 0.0, TAU, 32, Color(0.85, 0.28, 0.36, 0.72), 3.0)
 			draw_line(pos_v + Vector2(-14, -14), pos_v + Vector2(14, 14), Color(0.95, 0.35, 0.42, 0.85), 3.0)
 			draw_line(pos_v + Vector2(14, -14), pos_v + Vector2(-14, 14), Color(0.95, 0.35, 0.42, 0.85), 3.0)
+
+	# Sóng Radar Linh Hồn (Expanding Jade-Cyan Shockwave Ring)
+	if radar_wave_timer > 0.0:
+		var prog: float = 1.0 - (radar_wave_timer / maxf(0.01, radar_wave_duration))
+		var ease_p: float = 1.0 - pow(1.0 - prog, 2.3)
+		var cur_r: float = radar_wave_max_radius * ease_p
+		var wave_a: float = clampf(1.0 - prog * prog, 0.0, 1.0)
+		draw_circle(radar_wave_origin, cur_r, Color(0.18, 0.88, 0.78, 0.08 * wave_a))
+		draw_arc(radar_wave_origin, cur_r, 0.0, TAU, 64, Color(0.45, 0.96, 0.88, 0.88 * wave_a), 4.2)
+		if cur_r > 24.0:
+			draw_arc(radar_wave_origin, cur_r * 0.78, 0.0, TAU, 56, Color(0.80, 1.0, 0.96, 0.50 * wave_a), 2.2)
+
+	# Mũi tên định hướng & hào quang Rương kho báu được Radar Linh Hồn phát hiện
+	if radar_ping_timer > 0.0 and not radar_pinged_chests.is_empty():
+		var ping_a: float = clampf(radar_ping_timer / 1.2, 0.0, 1.0)
+		var pulse_r: float = 0.65 + 0.35 * sin(t_sec * 6.5)
+		var p_origin: Vector2 = player_node.global_position if player_node != null else radar_wave_origin
+		for rc_item in radar_pinged_chests:
+			if not (rc_item is Dictionary):
+				continue
+			var cpos: Vector2 = rc_item.get("pos", Vector2.ZERO)
+			var ring_rad: float = 28.0 + sin(t_sec * 6.5) * 9.0
+			draw_arc(cpos, ring_rad, 0.0, TAU, 32, Color(0.28, 0.96, 0.86, 0.85 * ping_a * pulse_r), 3.0)
+			draw_arc(cpos, ring_rad + 12.0, t_sec * 2.0, t_sec * 2.0 + TAU * 0.65, 28, Color(1.0, 0.86, 0.42, 0.72 * ping_a), 2.2)
+
+			var to_c: Vector2 = cpos - p_origin
+			var dist_c: float = to_c.length()
+			if dist_c > 96.0:
+				var dir_c: Vector2 = to_c / dist_c
+				var perp_c := Vector2(-dir_c.y, dir_c.x)
+				var tip: Vector2 = p_origin + dir_c * (78.0 + sin(t_sec * 7.0) * 5.0)
+				var base_l: Vector2 = tip - dir_c * 14.0 + perp_c * 9.0
+				var base_r: Vector2 = tip - dir_c * 14.0 - perp_c * 9.0
+				var chevron := PackedVector2Array([tip, base_l, tip - dir_c * 9.0, base_r])
+				draw_colored_polygon(chevron, Color(0.32, 0.98, 0.86, 0.86 * ping_a * pulse_r))
+				draw_polyline(PackedVector2Array([base_l, tip, base_r]), Color(1.0, 0.92, 0.55, 0.90 * ping_a), 2.0)

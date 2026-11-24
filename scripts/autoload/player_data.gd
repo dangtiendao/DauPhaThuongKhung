@@ -1,7 +1,7 @@
 extends Node
 ## Lưu trữ toàn bộ trạng thái tu luyện Chuẩn Cốt Truyện 100% — Chương 01 -> Chương 03 (Quyển I):
 ## - Khởi đầu phút 0: Đấu Chi Khí 3 Đoạn, TAY KHÔNG, chưa có Dược Lão, chưa có vũ khí, chưa có Đấu Kỹ, chưa có Hỏa Liên!
-## - Hỗ trợ Save 3 Ô, Auto-Save/Auto-Continue, Chế Độ DEMO, 10 Ô Trang Bị, 10 Đấu Kỹ, 11 Bản Đồ, 21 Mốc Cốt Truyện, Hảo Cảm Hồng Nhan (Buff & Tặng Quà) & Kỳ Vật!
+## - Hỗ trợ Save 3 Ô, Auto-Save/Auto-Continue, Chế Độ DEMO, 10 Ô Trang Bị + Khảm Ma Hạch, 15 Đấu Kỹ, 25 Bản Đồ, 39 Mốc Cốt Truyện, Hảo Cảm Hồng Nhan & Kỳ Vật!
 
 const LEGACY_SAVE_PATH: String = "user://dptk_savegame.json"
 const SETTINGS_PATH: String = "user://dptk_settings.json"
@@ -48,10 +48,19 @@ var story_relics: Array = []
 var claimed_affection_milestones: Dictionary = {}
 var cached_affection_bonuses: Dictionary = {}
 
-# Trang bị 10 Ô & Túi đồ
+# Trang bị 10 Ô, Khảm Ma Hạch (3 Rãnh Vũ Khí / Huyền Trọng Xích) & Túi đồ
 var equipped_gear: Dictionary = {}
 var gear_bag: Array = []
 var cached_gear_bonuses: Dictionary = {}
+var weapon_core_sockets: Array = ["", "", ""] # 3 rãnh khảm Ma Hạch (core_hoa_1..core_huyet_5)
+
+# Tinh Hỏa Năng (Chương 05 & Thiên Phần Luyện Khí Tháp), Tháp Roguelite & Đấu Giá
+var fire_energy: int = 0
+var tower_best_floor: int = 0
+var tower_active_buffs: Dictionary = {} # Chỉ tồn tại trong lượt leo Tháp hiện tại
+var auction_wins: int = 0
+var auction_consigned_total: int = 0
+var am_duong_buff_timer: float = 0.0
 
 # Cơ chế Đấu Phá Thương Khung (Mở dần theo truyện)
 var is_ruler_sealed: bool = false
@@ -63,6 +72,9 @@ var lotus_fusion_flames: Array = []
 
 # Trạng thái chiến đấu tạm thời từ Dị Hỏa (Phật Nộ Hỏa Liên) & Boss
 var enemies_killed_total: int = 0
+var enemy_kill_counts: Dictionary = {} # enemy_id -> int (cho Đồ Giám Vạn Thú)
+var skill_mastery_uses: Dictionary = {} # skill_id -> int (Thông Thạo Đấu Kỹ: Sơ Khuy -> Đỉnh Phong)
+var boss_rush_records: Dictionary = {} # "boss_id|diff" -> { "best_grade", "best_time", "clears" }
 var lotus_shield_hp: float = 0.0
 var lotus_dmg_red_timer: float = 0.0
 var lotus_double_herb_timer: float = 0.0
@@ -125,6 +137,14 @@ func _process(delta: float) -> void:
 			player_slow_timer = maxf(0.0, player_slow_timer - delta)
 			if player_slow_timer <= 0.0:
 				player_slow_ratio = 0.0
+		if am_duong_buff_timer > 0.0:
+			am_duong_buff_timer = maxf(0.0, am_duong_buff_timer - delta)
+			if am_duong_buff_timer <= 0.0:
+				EventBus.stats_changed.emit()
+		# Hồi HP tự nhiên nhẹ từ Ma Hạch Mộc khảm trên vũ khí
+		var core_regen: float = float(get_core_socket_totals().get("hp_regen", 0.0))
+		if core_regen > 0.0 and current_hp > 0.0 and current_hp < get_max_hp():
+			current_hp = minf(get_max_hp(), current_hp + core_regen * delta)
 		if auto_save_enabled and is_in_gameplay_session():
 			auto_save_timer += delta
 			if auto_save_timer >= 30.0:
@@ -236,6 +256,9 @@ func reset_for_new_game(slot_idx: int = 1) -> void:
 	quick_hp_pill_id = "pill_ngung_huyet_tan"
 	quick_qi_pill_id = "pill_hoi_khi_dan"
 	enemies_killed_total = 0
+	enemy_kill_counts = {}
+	skill_mastery_uses = {}
+	boss_rush_records = {}
 	_init_canon_starter_state()
 	_rebuild_gear_cache()
 	_rebuild_affection_cache()
@@ -259,13 +282,13 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	auto_save_timer = 0.0
 	current_map_id = "ch01_tieu_gia"
 
-	realm_index = 4 # Đại Đấu Sư 9 Tinh Đỉnh Phong (sẵn sàng bấm [B] lên Đấu Linh & trải nghiệm Ch01–Ch04!)
+	realm_index = 5 # Đấu Linh 9 Tinh Đỉnh Phong (kích hoạt Đấu Khí Ngưng Vật, sẵn sàng bấm [B] lên Đấu Vương & trải nghiệm trọn Ch01–Ch05!)
 	stage = 9
-	bonus_soul = 160
+	bonus_soul = 180
 	gold = 50000
 	enhance_stones = 999
 
-	# Mở toàn bộ cờ cốt truyện để đi tất cả bản đồ Ch01–Ch04 & Lò Đan/Dị Hỏa (giữ Boss trọng điểm để test đánh Boss!)
+	# Mở toàn bộ cờ cốt truyện để đi tất cả bản đồ Ch01–Ch05 & Lò Đan/Dị Hỏa (giữ Boss trọng điểm để test đánh Boss!)
 	story_flags = {
 		"tu_hon_done": true,
 		"duoc_lao_awake": true,
@@ -306,19 +329,31 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 		"ch04_second_van_lam_ready": true,
 		"ch04_killed_van_lang": true,
 		"ch04_tieu_toc_no_huyet": true,
-		"ch04_kim_viem_ngoc": true
+		"ch04_kim_viem_ngoc": true,
+		"ch04_completed": true,
+		"ch05_killed_van_phan": true,
+		"ch05_killed_pham_lang": true,
+		"ch05_duoc_lao_awakened_ch05": true,
+		"ch05_auction_done": true,
+		"ch05_read_mang_thien_xich": true,
+		"ch05_huan_nhi_reunited": true,
+		"ch05_beat_ngo_hao": true,
+		"ch05_got_su_ho": true,
+		"ch05_killed_la_hau": true,
+		"ch05_completed": true
 	}
 	affection = { "huan_nhi": 100, "tieu_y_tien": 100, "van_chi": 100, "thanh_lan": 100, "my_do_toa": 100 }
 	story_relics = [
-		"Chế Độ DEMO — Mở Khóa Toàn Bộ (%d Map · Ch01–Ch04 · 28 Hỏa)" % GameDatabase.maps_ordered.size(),
+		"Chế Độ DEMO — Mở Khóa Toàn Bộ (%d Map · Ch01–Ch05 · 28 Hỏa)" % GameDatabase.maps_ordered.size(),
 		"Ấn Ký Tôn Nghiêm (+5% Công Kích)",
 		"Hắc Ảnh Phù (+8% Tốc Chạy)",
 		"Thanh Liên Đài (+15% EXP & +40% Hồi QI)",
-		"Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (2/4 Đủ)",
+		"Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (3/4 Đủ)",
 		"Sơ Hình Phật Nộ Hỏa Liên & Thần Thú Thải Lân",
 		"Quán Quân Đan Hội Gia Mã · Lạc Độc Ấn",
 		"Tàn Dư Hắc Vụ Xiềng Xích (Manh Mối Hồn Điện)",
-		"Kim Viêm Hộ Hồn Ngọc (Hồi Sinh 1 Lần 50% HP)"
+		"Kim Viêm Hộ Hồn Ngọc (Hồi Sinh 1 Lần 50% HP)",
+		"Hỏa Năng Tinh Tạp · Tân Sinh Vương Già Nam (240 Hỏa Năng)"
 	]
 
 	# Mở toàn bộ 28 ngọn Hỏa (từ Phàm Hỏa tới #1 Đế Viêm!), vận chuyển #19 Thanh Liên Địa Tâm Hỏa & ghép sẵn 4 Hỏa Liên!
@@ -331,7 +366,7 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	equipped_flame_id = "di_hoa_19_thanh_lien"
 	lotus_fusion_flames = ["tu_tinh_thu_hoa", "di_hoa_19_thanh_lien", "di_hoa_11_cot_linh", "di_hoa_04_kim_de"]
 
-	# Mở toàn bộ 10 Đấu Kỹ + [F] Phật Nộ Hỏa Liên + [T] Cốt Linh Phụ Thể!
+	# Mở toàn bộ 15 Đấu Kỹ + [F] Phật Nộ Hỏa Liên + [T] Cốt Linh Phụ Thể!
 	unlocked_skills = []
 	for sid in GameDatabase.skills_by_id.keys():
 		unlocked_skills.append(str(sid))
@@ -341,9 +376,13 @@ func activate_demo_unlock_all(slot_idx: int = 3) -> void:
 	slot_f_skill = "phat_no_hoa_lien"
 	duoc_lao_assist_unlocked = true
 
-	# Mở toàn bộ 3 Đồng Hành AI [G] (mặc định triệu hồi Thần Thú Thải Lân!)
-	unlocked_companions = ["duoc_lao_phantom", "tieu_y_tien", "thai_lan"]
+	# Mở toàn bộ 4 Đồng Hành AI [G] (Dược Lão, Tiểu Y Tiên, Thải Lân & Tiêu Huân Nhi!)
+	unlocked_companions = ["duoc_lao_phantom", "tieu_y_tien", "thai_lan", "huan_nhi"]
 	active_companion_id = "thai_lan"
+	weapon_core_sockets = ["core_hoa_3", "core_phong_4", "core_loi_5"]
+	fire_energy = 240
+	tower_active_buffs.clear()
+	am_duong_buff_timer = 0.0
 
 	# Trang bị 10 Ô Full Thiên Phẩm + 3 Vũ Khí & Bảo Vật trong Nạp Giới!
 	equipped_gear = {
@@ -411,6 +450,13 @@ func _init_canon_starter_state() -> void:
 		"cauldron": {}
 	}
 	gear_bag = []
+	weapon_core_sockets = ["", "", ""]
+	fire_energy = 0
+	tower_best_floor = 0
+	tower_active_buffs.clear()
+	auction_wins = 0
+	auction_consigned_total = 0
+	am_duong_buff_timer = 0.0
 	story_flags = {}
 	opened_chests = {}
 	affection = { "huan_nhi": 20, "tieu_y_tien": 0, "van_chi": 0, "thanh_lan": 0, "my_do_toa": 0 }
@@ -852,6 +898,8 @@ func get_companion_display_name(comp_id: String) -> String:
 		return "Hồn Ảnh Dược Lão (Cốt Linh Hộ Pháp)"
 	elif comp_id == "thai_lan":
 		return "Thải Lân (Thất Thải Thôn Thiên Mãng)"
+	elif comp_id == "huan_nhi":
+		return "Tiêu Huân Nhi (Kim Đế Phần Thiên Viêm)"
 	return "Thu Hồi"
 
 
@@ -1085,6 +1133,14 @@ func execute_story_effect(eff: Dictionary, skip_flag_id: String = "") -> Diction
 	if g_exp > 0:
 		add_exp(g_exp)
 
+	var g_fe: int = int(eff.get("give_fire_energy", 0))
+	if g_fe != 0:
+		add_fire_energy(g_fe)
+
+	var open_auc: String = str(eff.get("open_auction", ""))
+	if open_auc != "":
+		result["open_auction"] = open_auc
+
 	var aff_d: Dictionary = eff.get("affection", {})
 	for hk in aff_d.keys():
 		add_affection(str(hk), int(aff_d[hk]))
@@ -1236,13 +1292,14 @@ func get_gear_bonus(stat_key: String) -> float:
 
 
 func get_max_hp() -> float:
-	var total: float = 65.0 + get_gear_bonus("hp")
+	var core_t: Dictionary = get_core_socket_totals()
+	var total: float = 65.0 + get_gear_bonus("hp") + float(core_t.get("hp", 0.0))
 	for r_idx in range(1, realm_index + 1):
 		var r_def: Dictionary = GameDatabase.get_realm_def(r_idx)
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
 		var stages_cnt: int = int(r_def.get("max_stage", 9)) if r_idx < realm_index else stage
 		total += float(st_dict.get("hp", 20.0)) * float(stages_cnt)
-	total *= (1.0 + get_affection_bonus("hp_pct") / 100.0)
+	total *= (1.0 + (get_affection_bonus("hp_pct") + float(tower_active_buffs.get("hp_pct", 0.0))) / 100.0)
 	return total
 
 
@@ -1257,7 +1314,8 @@ func get_max_qi() -> float:
 
 
 func get_atk() -> float:
-	var base_atk: float = 8.0 + get_gear_bonus("atk")
+	var core_t: Dictionary = get_core_socket_totals()
+	var base_atk: float = 8.0 + get_gear_bonus("atk") + float(core_t.get("atk", 0.0))
 	for r_idx in range(1, realm_index + 1):
 		var r_def: Dictionary = GameDatabase.get_realm_def(r_idx)
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
@@ -1265,13 +1323,17 @@ func get_atk() -> float:
 		base_atk += float(st_dict.get("atk", 4.0)) * float(stages_cnt)
 	var f_def: Dictionary = get_active_flame_def()
 	var mult: float = float(f_def.get("atk_mult", 1.0)) if not f_def.is_empty() else 1.0
-	mult *= (1.0 + get_affection_bonus("atk_pct") / 100.0)
+	mult *= (1.0 + (get_affection_bonus("atk_pct") + float(tower_active_buffs.get("atk_pct", 0.0))) / 100.0)
 	if has_flag("tu_hon_done"):
 		mult *= 1.05 # Ấn Ký Tôn Nghiêm!
+	if has_flag("ch05_completed"):
+		mult *= 1.05 # Đệ Nhất Tân Sinh Vương!
 	if is_duoc_lao_active:
 		mult *= 2.45 if get_assist_mode() == "medusa_dau_tong" else 2.2
 	if is_flame_buff_active:
 		mult *= 1.45
+	if am_duong_buff_timer > 0.0:
+		mult *= 1.25 # Âm Dương Huyền Long Đan!
 	return base_atk * mult
 
 
@@ -1282,8 +1344,10 @@ func get_def() -> float:
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
 		var stages_cnt: int = int(r_def.get("max_stage", 9)) if r_idx < realm_index else stage
 		total += float(st_dict.get("def", 2.0)) * float(stages_cnt)
-	total *= (1.0 + get_affection_bonus("def_pct") / 100.0)
-	if realm_index >= 4:
+	total *= (1.0 + (get_affection_bonus("def_pct") + float(tower_active_buffs.get("def_pct", 0.0))) / 100.0)
+	if realm_index >= 5:
+		total *= 1.42 # Đấu Linh — Đấu Khí Ngưng Vật!
+	elif realm_index >= 4:
 		total *= 1.32 # Đấu Khí Khải Giáp của Đại Đấu Sư!
 	elif realm_index >= 3:
 		total *= 1.18 # Đấu Khí Sa Y của Đấu Sư!
@@ -1291,14 +1355,15 @@ func get_def() -> float:
 
 
 func get_move_speed() -> float:
-	var base_spd: float = 220.0 + get_gear_bonus("spd") * 1.35
+	var core_t: Dictionary = get_core_socket_totals()
+	var base_spd: float = 220.0 + (get_gear_bonus("spd") + float(core_t.get("spd", 0.0))) * 1.35
 	for r_idx in range(1, realm_index + 1):
 		var r_def: Dictionary = GameDatabase.get_realm_def(r_idx)
 		var st_dict: Dictionary = r_def.get("stats_per_stage", {})
 		var stages_cnt: int = int(r_def.get("max_stage", 9)) if r_idx < realm_index else stage
 		base_spd += float(st_dict.get("spd", 2.0)) * float(stages_cnt) * 1.15
-	base_spd = minf(base_spd, 450.0)
-	base_spd *= (1.0 + get_affection_bonus("spd_pct") / 100.0)
+	base_spd = minf(base_spd, 465.0)
+	base_spd *= (1.0 + (get_affection_bonus("spd_pct") + float(tower_active_buffs.get("spd_pct", 0.0))) / 100.0)
 	if has_flag("secret_lang_anh_done"):
 		base_spd *= 1.08 # Hắc Ảnh Phù!
 	if is_ruler_sealed and has_huyen_trong_xich_equipped():
@@ -1323,16 +1388,51 @@ func get_soul() -> int:
 
 
 func get_crit_chance() -> float:
-	return clampf(0.12 + (get_gear_bonus("crit_chance") + get_affection_bonus("crit_chance")) / 100.0, 0.05, 0.90)
+	var core_t: Dictionary = get_core_socket_totals()
+	var total_pct: float = get_gear_bonus("crit_chance") + get_affection_bonus("crit_chance") + float(core_t.get("crit_pct", 0.0)) + float(tower_active_buffs.get("crit_pct", 0.0))
+	return clampf(0.12 + total_pct / 100.0, 0.05, 0.92)
 
 
 func get_lifesteal_ratio() -> float:
-	return clampf((get_gear_bonus("lifesteal") + get_affection_bonus("lifesteal")) / 100.0, 0.0, 0.40)
+	var core_t: Dictionary = get_core_socket_totals()
+	var total_pct: float = get_gear_bonus("lifesteal") + get_affection_bonus("lifesteal") + float(core_t.get("lifesteal_pct", 0.0)) + float(tower_active_buffs.get("lifesteal_pct", 0.0))
+	return clampf(total_pct / 100.0, 0.0, 0.45)
 
 
 func get_cooldown_multiplier() -> float:
-	var cdr: float = clampf((get_gear_bonus("cooldown_red") + get_affection_bonus("cooldown_red")) / 100.0, 0.0, 0.60)
+	var core_t: Dictionary = get_core_socket_totals()
+	var cdr: float = clampf((get_gear_bonus("cooldown_red") + get_affection_bonus("cooldown_red") + float(core_t.get("cd_red_pct", 0.0)) + float(tower_active_buffs.get("cd_red_pct", 0.0))) / 100.0, 0.0, 0.65)
 	return 1.0 - cdr
+
+
+func get_poise_dmg_multiplier() -> float:
+	var core_t: Dictionary = get_core_socket_totals()
+	var bonus_pct: float = float(core_t.get("poise_pct", 0.0)) + float(tower_active_buffs.get("poise_pct", 0.0))
+	if realm_index >= 5:
+		bonus_pct += 15.0 # Đấu Linh: Đấu Khí Ngưng Vật tăng lực phá thế!
+	return 1.0 + bonus_pct / 100.0
+
+
+func get_attack_reach_multiplier() -> float:
+	return 1.20 if realm_index >= 5 else 1.0
+
+
+func get_core_burn_dps() -> float:
+	return float(get_core_socket_totals().get("burn_dps", 0.0))
+
+
+func get_soul_realm_info() -> Dictionary:
+	var cur_soul: int = get_soul()
+	var best: Dictionary = { "id": "pham_canh", "name": "Phàm Cảnh Linh Hồn", "min_soul": 0, "alchemy_max_tier": 6, "radar_radius_px": 140 }
+	for sr in GameDatabase.soul_realms_list:
+		if sr is Dictionary and cur_soul >= int(sr.get("min_soul", 0)):
+			best = sr
+	return best
+
+
+func get_soul_radar_radius() -> float:
+	var sr: Dictionary = get_soul_realm_info()
+	return clampf(float(sr.get("radar_radius_px", 140.0)) * 2.8, 360.0, 1400.0)
 
 
 func get_flame_dmg_multiplier() -> float:
@@ -1722,9 +1822,9 @@ func get_effective_quick_pill(slot_num: int) -> String:
 	if slot_num == 1:
 		if get_item_count(quick_hp_pill_id) > 0:
 			return quick_hp_pill_id
-		var alt_hp: String = "pill_bang_tam_dan" if quick_hp_pill_id == "pill_ngung_huyet_tan" else "pill_ngung_huyet_tan"
-		if get_item_count(alt_hp) > 0:
-			return alt_hp
+		for cand in ["pill_huyet_ngung_dan", "pill_bang_tam_dan", "pill_ngung_huyet_tan"]:
+			if get_item_count(cand) > 0:
+				return cand
 		return quick_hp_pill_id
 	elif slot_num == 2:
 		if get_item_count(quick_qi_pill_id) > 0:
@@ -1737,7 +1837,7 @@ func get_effective_quick_pill(slot_num: int) -> String:
 
 
 func set_quick_pill_slot(slot_num: int, item_id: String) -> void:
-	if slot_num == 1 and (item_id == "pill_ngung_huyet_tan" or item_id == "pill_bang_tam_dan"):
+	if slot_num == 1 and item_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_huyet_ngung_dan"]:
 		quick_hp_pill_id = item_id
 	elif slot_num == 2 and (item_id == "pill_hoi_khi_dan" or item_id == "pill_thanh_lien_tu"):
 		quick_qi_pill_id = item_id
@@ -1777,6 +1877,15 @@ func use_consumable(item_id: String, world_pos: Vector2 = Vector2.ZERO) -> bool:
 		EventBus.audio_sfx_requested.emit("level_up")
 		var g_exp: int = int(idef.get("grant_exp", 240))
 		add_exp(g_exp, world_pos)
+		return true
+	elif itype == "consumable_buff":
+		remove_item(item_id, 1)
+		recalculate_and_clamp(true)
+		am_duong_buff_timer = maxf(am_duong_buff_timer, float(idef.get("buff_sec", 30.0)))
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		if world_pos != Vector2.ZERO:
+			EventBus.floating_text_requested.emit(world_pos + Vector2(0, -68), "PHÁ HẬU NHI LẬP! (+25% ATK & FULL HP/QI)", Color("#FFD166"))
+		EventBus.stats_changed.emit()
 		return true
 	return false
 
@@ -1844,6 +1953,7 @@ func _check_quest_flag(flag_name: String) -> void:
 
 func _on_enemy_killed(enemy_id: String, _is_boss: bool) -> void:
 	enemies_killed_total += 1
+	enemy_kill_counts[enemy_id] = int(enemy_kill_counts.get(enemy_id, 0)) + 1
 	if enemy_id == "tieu_ninh_boss":
 		set_story_flag("unlocked_bat_cuc_bang")
 	elif enemy_id == "lieu_tich_boss":
@@ -2027,6 +2137,14 @@ func save_game(slot_idx: int = -1, silent: bool = false) -> bool:
 		"story_relics": story_relics,
 		"claimed_affection_milestones": claimed_affection_milestones,
 		"enemies_killed_total": enemies_killed_total,
+		"enemy_kill_counts": enemy_kill_counts,
+		"skill_mastery_uses": skill_mastery_uses,
+		"boss_rush_records": boss_rush_records,
+		"weapon_core_sockets": weapon_core_sockets,
+		"fire_energy": fire_energy,
+		"tower_best_floor": tower_best_floor,
+		"auction_wins": auction_wins,
+		"auction_consigned_total": auction_consigned_total,
 		"quick_hp_pill_id": quick_hp_pill_id,
 		"quick_qi_pill_id": quick_qi_pill_id,
 		"equipped_gear": equipped_gear,
@@ -2108,6 +2226,20 @@ func load_game(slot_idx: int = -1) -> bool:
 	else:
 		claimed_affection_milestones = {}
 	enemies_killed_total = int(d.get("enemies_killed_total", 0))
+	enemy_kill_counts = d.get("enemy_kill_counts", {}) if (d.get("enemy_kill_counts", {}) is Dictionary) else {}
+	skill_mastery_uses = d.get("skill_mastery_uses", {}) if (d.get("skill_mastery_uses", {}) is Dictionary) else {}
+	boss_rush_records = d.get("boss_rush_records", {}) if (d.get("boss_rush_records", {}) is Dictionary) else {}
+	var loaded_socks = d.get("weapon_core_sockets", ["", "", ""])
+	if loaded_socks is Array and loaded_socks.size() == 3:
+		weapon_core_sockets = [str(loaded_socks[0]), str(loaded_socks[1]), str(loaded_socks[2])]
+	else:
+		weapon_core_sockets = ["", "", ""]
+	fire_energy = int(d.get("fire_energy", 0))
+	tower_best_floor = int(d.get("tower_best_floor", 0))
+	auction_wins = int(d.get("auction_wins", 0))
+	auction_consigned_total = int(d.get("auction_consigned_total", 0))
+	tower_active_buffs.clear()
+	am_duong_buff_timer = 0.0
 	quick_hp_pill_id = str(d.get("quick_hp_pill_id", "pill_ngung_huyet_tan"))
 	quick_qi_pill_id = str(d.get("quick_qi_pill_id", "pill_hoi_khi_dan"))
 	lotus_shield_hp = 0.0
@@ -2169,3 +2301,218 @@ func load_game(slot_idx: int = -1) -> bool:
 	EventBus.flame_changed.emit(equipped_flame_id)
 	EventBus.companion_changed.emit(active_companion_id)
 	return true
+
+
+# =========================================================
+# ĐỘ THÔNG THẠO ĐẤU KỸ (MASTERY) · TÂM MA LUYỆN CẢNH · ĐỒ GIÁM VẠN THÚ
+# =========================================================
+func get_skill_mastery_info(skill_id: String) -> Dictionary:
+	var uses: int = int(skill_mastery_uses.get(skill_id, 0))
+	if uses >= 40:
+		return {
+			"tier": 3, "tier_name": "Đỉnh Phong", "uses": uses, "next_uses": 40,
+			"dmg_mult": 1.40, "cd_mult": 0.80, "radius_mult": 1.22, "color": Color("#FFD166")
+		}
+	elif uses >= 20:
+		return {
+			"tier": 2, "tier_name": "Đại Thành", "uses": uses, "next_uses": 40,
+			"dmg_mult": 1.25, "cd_mult": 0.88, "radius_mult": 1.14, "color": Color("#C77DFF")
+		}
+	elif uses >= 8:
+		return {
+			"tier": 1, "tier_name": "Tiểu Thành", "uses": uses, "next_uses": 20,
+			"dmg_mult": 1.12, "cd_mult": 0.94, "radius_mult": 1.06, "color": Color("#70D6FF")
+		}
+	return {
+		"tier": 0, "tier_name": "Sơ Khuy", "uses": uses, "next_uses": 8,
+		"dmg_mult": 1.00, "cd_mult": 1.00, "radius_mult": 1.00, "color": Color("#ADB5BD")
+	}
+
+
+func record_skill_use(skill_id: String, world_pos: Vector2 = Vector2.ZERO) -> Dictionary:
+	if skill_id == "":
+		return get_skill_mastery_info("")
+	var old_tier: int = int(get_skill_mastery_info(skill_id).get("tier", 0))
+	skill_mastery_uses[skill_id] = int(skill_mastery_uses.get(skill_id, 0)) + 1
+	var info: Dictionary = get_skill_mastery_info(skill_id)
+	var new_tier: int = int(info.get("tier", 0))
+	if new_tier > old_tier:
+		var sdef: Dictionary = GameDatabase.get_skill_def(skill_id)
+		var sname: String = str(sdef.get("name", skill_id))
+		EventBus.audio_sfx_requested.emit("level_up")
+		if world_pos != Vector2.ZERO:
+			EventBus.floating_text_requested.emit(world_pos + Vector2(0, -96), "THÔNG THẠO [%s] -> %s!" % [sname, str(info["tier_name"]).to_upper()], info["color"] as Color)
+		EventBus.banter_triggered.emit("Đấu Kỹ [%s] đột phá Thông Thạo bậc [%s]: +%d%% Sát thương · -%d%% Hồi chiêu · +%d%% Tầm VFX!" % [
+			sname, str(info["tier_name"]),
+			int(round((float(info["dmg_mult"]) - 1.0) * 100.0)),
+			int(round((1.0 - float(info["cd_mult"])) * 100.0)),
+			int(round((float(info["radius_mult"]) - 1.0) * 100.0))
+		])
+		EventBus.skills_updated.emit()
+	return info
+
+
+func get_enemy_kill_count(enemy_id: String) -> int:
+	return int(enemy_kill_counts.get(enemy_id, 0))
+
+
+func get_boss_rush_record(boss_id: String, diff_key: String) -> Dictionary:
+	var k: String = "%s|%s" % [boss_id, diff_key]
+	var rec = boss_rush_records.get(k, {})
+	return rec as Dictionary if rec is Dictionary else {}
+
+
+func record_boss_rush_clear(boss_id: String, diff_key: String, elapsed_sec: float, dmg_taken: float) -> Dictionary:
+	var grade_order: Dictionary = { "C": 1, "B": 2, "A": 3, "S": 4, "SS": 5, "SSS": 6 }
+	var hp_ref: float = maxf(100.0, get_max_hp())
+	var dmg_ratio: float = dmg_taken / hp_ref
+	var grade: String = "B"
+	if elapsed_sec <= 22.0 and dmg_ratio <= 0.15:
+		grade = "SSS"
+	elif elapsed_sec <= 36.0 and dmg_ratio <= 0.35:
+		grade = "SS"
+	elif elapsed_sec <= 52.0 and dmg_ratio <= 0.65:
+		grade = "S"
+	elif elapsed_sec <= 75.0:
+		grade = "A"
+	elif elapsed_sec <= 105.0:
+		grade = "B"
+	else:
+		grade = "C"
+
+	var diff_mult: float = 1.0 if diff_key == "normal" else (1.75 if diff_key == "nightmare" else 2.6)
+	var grade_bonus: float = float(grade_order.get(grade, 1))
+	var stones_rew: int = maxi(1, int(round(grade_bonus * diff_mult)))
+	var gold_rew: int = int(round((28.0 + grade_bonus * 16.0) * diff_mult))
+	enhance_stones += stones_rew
+	gold += gold_rew
+
+	var k: String = "%s|%s" % [boss_id, diff_key]
+	var prev: Dictionary = get_boss_rush_record(boss_id, diff_key)
+	var prev_g: String = str(prev.get("best_grade", ""))
+	var best_g: String = grade if int(grade_order.get(grade, 0)) >= int(grade_order.get(prev_g, 0)) else prev_g
+	var prev_t: float = float(prev.get("best_time", 9999.0))
+	var best_t: float = minf(prev_t, elapsed_sec)
+	boss_rush_records[k] = {
+		"best_grade": best_g,
+		"best_time": snappedf(best_t, 0.1),
+		"clears": int(prev.get("clears", 0)) + 1
+	}
+	EventBus.stats_changed.emit()
+	trigger_auto_save("Tâm Ma Luyện Cảnh", true)
+	return {
+		"grade": grade,
+		"elapsed_sec": elapsed_sec,
+		"stones": stones_rew,
+		"gold": gold_rew
+	}
+
+
+# =========================================================
+# KHẢM MA HẠCH LÊN VŨ KHÍ / HUYỀN TRỌNG XÍCH (3 RÃNH)
+# =========================================================
+func get_core_socket_def(core_id: String) -> Dictionary:
+	match core_id:
+		"core_hoa_1":
+			return { "id": core_id, "name": "Hỏa Ma Hạch (Cấp 1)", "atk": 14.0, "burn_dps": 6.0, "color": Color("#FF7B00"), "desc": "+14 ATK · +6 Thiêu Đốt/s" }
+		"core_moc_2":
+			return { "id": core_id, "name": "Mộc Ma Hạch (Cấp 2)", "hp": 120.0, "hp_regen": 3.0, "color": Color("#2EC4B6"), "desc": "+120 HP · Hồi +3 HP/s" }
+		"core_hoa_3":
+			return { "id": core_id, "name": "Viêm Xà Ma Hạch (Cấp 3)", "atk": 32.0, "crit_pct": 8.0, "burn_dps": 16.0, "color": Color("#FF4D6D"), "desc": "+32 ATK · +8% Crit · +16 Thiêu Đốt/s" }
+		"core_phong_4":
+			return { "id": core_id, "name": "Phong Ma Hạch (Cấp 4)", "spd": 24.0, "crit_pct": 12.0, "cd_red_pct": 8.0, "color": Color("#70D6FF"), "desc": "+24 SPD · +12% Crit · -8% Hồi Chiêu" }
+		"core_loi_5":
+			return { "id": core_id, "name": "Lôi Ma Hạch (Cấp 5)", "atk": 58.0, "crit_pct": 10.0, "poise_pct": 22.0, "color": Color("#E0AAFF"), "desc": "+58 ATK · +10% Crit · +22% Phá Thế Boss" }
+		"core_huyet_5":
+			return { "id": core_id, "name": "Huyết Ma Hạch (Cấp 5)", "atk": 48.0, "hp": 280.0, "lifesteal_pct": 6.0, "color": Color("#EF476F"), "desc": "+48 ATK · +280 HP · +6% Hút Máu" }
+		_:
+			return {}
+
+
+func get_core_socket_totals() -> Dictionary:
+	var totals: Dictionary = {
+		"atk": 0.0, "hp": 0.0, "spd": 0.0, "crit_pct": 0.0,
+		"burn_dps": 0.0, "hp_regen": 0.0, "cd_red_pct": 0.0,
+		"poise_pct": 0.0, "lifesteal_pct": 0.0
+	}
+	for cid in weapon_core_sockets:
+		var cid_s: String = str(cid)
+		if cid_s == "":
+			continue
+		var cdef: Dictionary = get_core_socket_def(cid_s)
+		for k in totals.keys():
+			totals[k] = float(totals[k]) + float(cdef.get(k, 0.0))
+	return totals
+
+
+func socket_monster_core(slot_idx: int, core_id: String) -> Dictionary:
+	if slot_idx < 0 or slot_idx >= 3:
+		return { "ok": false, "msg": "Rãnh khảm không hợp lệ!" }
+	var cdef: Dictionary = get_core_socket_def(core_id)
+	if cdef.is_empty():
+		return { "ok": false, "msg": "Vật phẩm này không thể khảm lên vũ khí!" }
+	if get_item_count(core_id) <= 0:
+		return { "ok": false, "msg": "Bạn không có [%s] trong Nạp Giới!" % str(cdef["name"]) }
+	var prev: String = str(weapon_core_sockets[slot_idx])
+	if prev != "":
+		add_item(prev, 1)
+	remove_item(core_id, 1)
+	weapon_core_sockets[slot_idx] = core_id
+	recalculate_and_clamp(false)
+	EventBus.audio_sfx_requested.emit("level_up")
+	EventBus.equipment_changed.emit()
+	EventBus.stats_changed.emit()
+	return { "ok": true, "msg": "Đã khảm [%s] vào Rãnh #%d (%s)!" % [str(cdef["name"]), slot_idx + 1, str(cdef["desc"])] }
+
+
+func unsocket_monster_core(slot_idx: int) -> Dictionary:
+	if slot_idx < 0 or slot_idx >= 3:
+		return { "ok": false, "msg": "Rãnh khảm không hợp lệ!" }
+	var prev: String = str(weapon_core_sockets[slot_idx])
+	if prev == "":
+		return { "ok": false, "msg": "Rãnh #%d đang trống!" % (slot_idx + 1) }
+	weapon_core_sockets[slot_idx] = ""
+	add_item(prev, 1)
+	recalculate_and_clamp(false)
+	EventBus.audio_sfx_requested.emit("ui_click")
+	EventBus.equipment_changed.emit()
+	EventBus.stats_changed.emit()
+	return { "ok": true, "msg": "Đã tháo [%s] khỏi Rãnh #%d về lại Nạp Giới!" % [str(get_core_socket_def(prev).get("name", prev)), slot_idx + 1] }
+
+
+# =========================================================
+# TINH HỎA NĂNG & CHÚC PHÚC ROGUELITE THIÊN PHẦN LUYỆN KHÍ THÁP
+# =========================================================
+func add_fire_energy(amount: int) -> void:
+	fire_energy = maxi(0, fire_energy + amount)
+	EventBus.stats_changed.emit()
+
+
+func clear_tower_buffs() -> void:
+	tower_active_buffs.clear()
+	recalculate_and_clamp(false)
+	EventBus.stats_changed.emit()
+
+
+func add_tower_buff(stat_key: String, value: float, heal_ratio: float = 0.0) -> void:
+	if stat_key != "":
+		tower_active_buffs[stat_key] = float(tower_active_buffs.get(stat_key, 0.0)) + value
+	recalculate_and_clamp(false)
+	if heal_ratio > 0.0:
+		current_hp = minf(get_max_hp(), current_hp + get_max_hp() * heal_ratio)
+		current_qi = minf(get_max_qi(), current_qi + get_max_qi() * heal_ratio)
+	EventBus.stats_changed.emit()
+
+
+func record_tower_floor_clear(floor_num: int) -> Dictionary:
+	if floor_num > tower_best_floor:
+		tower_best_floor = floor_num
+	var fe_gain: int = 12 + floor_num * 5
+	var stones_gain: int = 1 + int(floor_num / 3)
+	var gold_gain: int = 55 + floor_num * 28
+	fire_energy += fe_gain
+	enhance_stones += stones_gain
+	gold += gold_gain
+	EventBus.stats_changed.emit()
+	trigger_auto_save("Thiên Phần Tháp Tầng %d" % floor_num, true)
+	return { "fire_energy": fe_gain, "stones": stones_gain, "gold": gold_gain, "best_floor": tower_best_floor }

@@ -1,0 +1,1484 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 05",
+  "map_order": [
+    "ch05_hem_nui_hac_phong",
+    "ch05_rung_dem_huyet_vu",
+    "ch05_hac_an_thanh",
+    "ch05_hoa_binh_tran",
+    "ch05_ngoai_vien_gia_nam",
+    "ch05_rung_san_hoa_nang"
+  ],
+  "maps": {
+    "ch05_hem_nui_hac_phong": {
+      "id": "ch05_hem_nui_hac_phong",
+      "chapter": "Chương 05",
+      "name": "Hẻm Núi Hắc Phong — Phục Kích Truy Binh Vân Lam",
+      "bgm": "bgm_yunlan",
+      "size": [
+        2048,
+        1152
+      ],
+      "ambient_hex": "#8d92ab",
+      "base_tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+      "default_spawn": [
+        180,
+        560
+      ],
+      "zones": [
+        {
+          "rect": [
+            256,
+            224,
+            512,
+            672
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#70D6FF"
+        },
+        {
+          "rect": [
+            1056,
+            192,
+            768,
+            768
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FF4D6D",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [
+            335,
+            175
+          ],
+          "text": "CỬA NGÕ HẮC GIÁC VỰC — HẺM NÚI HẮC PHONG\n(Đột Phá Đấu Linh [B] -> Đấu Khí Ngưng Vật!)",
+          "color": "#70D6FF"
+        },
+        {
+          "pos": [
+            1185,
+            145
+          ],
+          "text": "TRẬN ĐỊA PHỤC KÍCH VÂN LAM TÔNG\n(BOSS: Trưởng Lão Vân Phàn — Đấu Linh 7 Tinh!)",
+          "color": "#FF4D6D"
+        }
+      ],
+      "props": [
+        {
+          "type": "gate",
+          "pos": [
+            270,
+            560
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            845,
+            260
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            845,
+            880
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            380,
+            195
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            380,
+            945
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            310,
+            300
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            310,
+            820
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1115,
+            250
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1760,
+            250
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1115,
+            900
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1760,
+            900
+          ]
+        }
+      ],
+      "chests": [
+        {
+          "id": "chest_hac_phong_supply",
+          "name": "Hộp Tiếp Tế Ám Vệ Hắc Phong",
+          "pos": [
+            595,
+            830
+          ],
+          "gold": 2200,
+          "stones": 18,
+          "gear_template": "arm_hac_bao_an_danh",
+          "gear_rarity": "thien",
+          "items": {
+            "pill_tam_van_thanh_linh": 1,
+            "herb_huyet_tinh_thao": 3,
+            "pill_huyet_ngung_dan": 2
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch05_hem_nui_guide",
+          "name": "Ám Vệ Lăng Ảnh (Tiền Tiêu)",
+          "title": "Hắc Giác Vực Dẫn Lộ · Cảnh Báo Vân Phàn",
+          "sprite": "res://assets/sprites/npcs/npc_lang_anh.png",
+          "pos": [
+            430,
+            455
+          ],
+          "role": "ch05_hem_nui_guide",
+          "glow_hex": "#C77DFF",
+          "name_hex": "#E0AAFF",
+          "prompt_text": "[V] Gặp Ám Vệ Lăng Ảnh"
+        }
+      ],
+      "spawns": [
+        {
+          "enemy_id": "chap_su_van_lam_ch05",
+          "pos": [
+            940,
+            340
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "chap_su_van_lam_ch05",
+          "pos": [
+            940,
+            780
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "chap_su_van_lam_ch05",
+          "pos": [
+            1220,
+            560
+          ],
+          "respawn": 13.0
+        },
+        {
+          "enemy_id": "van_phan_boss",
+          "pos": [
+            1490,
+            560
+          ],
+          "respawn": 30.0
+        }
+      ],
+      "portals": [
+        {
+          "id": "back_tran_quy_quan_from_ch05",
+          "label": "Cổng Tây -> Trấn Quỷ Quan (Gia Mã Biên Cảnh)",
+          "pos": [
+            112,
+            560
+          ],
+          "target_map": "ch04_rung_phong_toa",
+          "target_spawn": [
+            1810,
+            560
+          ],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch05_rung_dem_huyet_vu",
+          "label": "Cổng Đông -> Rừng Đêm Huyết Vụ (Doanh Trại Huyết Tông)",
+          "pos": [
+            1940,
+            560
+          ],
+          "target_map": "ch05_rung_dem_huyet_vu",
+          "target_spawn": [
+            180,
+            560
+          ],
+          "require_flag": "ch05_killed_van_phan",
+          "locked_hint": "Hãy trảm [BOSS] Trưởng Lão Vân Phàn (Đấu Linh 7 Tinh) để phá vòng vây Hẻm Núi Hắc Phong trước khi vào Rừng Đêm Huyết Vụ!"
+        }
+      ]
+    },
+    "ch05_rung_dem_huyet_vu": {
+      "id": "ch05_rung_dem_huyet_vu",
+      "chapter": "Chương 05",
+      "name": "Rừng Đêm Huyết Vụ — Doanh Trại Huyết Tông",
+      "bgm": "bgm_wild",
+      "size": [
+        2048,
+        1152
+      ],
+      "ambient_hex": "#8f7b8e",
+      "base_tile": "res://assets/sprites/tiles/bamboo_grass.png",
+      "default_spawn": [
+        180,
+        560
+      ],
+      "zones": [
+        {
+          "rect": [
+            288,
+            256,
+            640,
+            640
+          ],
+          "tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+          "border_hex": "#EF476F"
+        },
+        {
+          "rect": [
+            1088,
+            192,
+            768,
+            768
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#E0AAFF",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [
+            360,
+            210
+          ],
+          "text": "RỪNG ĐÊM HUYẾT VỤ — PHỤC KÍCH ĐỘN THỔ\n(Cẩn Thận Thích Khách Huyết Tông Dưới Lòng Đất!)",
+          "color": "#EF476F"
+        },
+        {
+          "pos": [
+            1205,
+            145
+          ],
+          "text": "DOANH TRẠI THIẾU TÔNG CHỦ PHẠM LĂNG\n(Trảm Phạm Lăng -> Đoạt Bí Tịch [TAM THIÊN LÔI ĐỘNG]!)",
+          "color": "#E0AAFF"
+        }
+      ],
+      "props": [
+        {
+          "type": "pine",
+          "pos": [
+            220,
+            220
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            220,
+            920
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            610,
+            180
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            610,
+            960
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            990,
+            290
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            990,
+            850
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            340,
+            305
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1140,
+            245
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1790,
+            245
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1140,
+            905
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1790,
+            905
+          ]
+        }
+      ],
+      "chests": [
+        {
+          "id": "chest_huyet_tong_vault",
+          "name": "Huyết Tinh Bảo Rương (Cướp Từ Huyết Tông)",
+          "pos": [
+            1720,
+            290
+          ],
+          "gold": 2600,
+          "stones": 20,
+          "gear_template": "glv_ho_thu_am_thiet",
+          "gear_rarity": "thien",
+          "items": {
+            "core_huyet_5": 1,
+            "herb_huyet_tinh_thao": 4,
+            "pill_huyet_ngung_dan": 2
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch05_thai_lan_huyet_vu",
+          "name": "Thải Lân (Cảm Ứng Huyết Khí)",
+          "title": "Thất Thải Thôn Thiên Mãng · Hộ Pháp Hắc Giác Vực",
+          "sprite": "res://assets/sprites/enemies/pet_thai_lan.png",
+          "pos": [
+            385,
+            490
+          ],
+          "role": "ch05_thai_lan_huyet_vu",
+          "float_anim": true,
+          "glow_hex": "#E0AAFF",
+          "name_hex": "#E0AAFF",
+          "prompt_text": "[V] Hỏi Thăm Thải Lân"
+        }
+      ],
+      "spawns": [
+        {
+          "enemy_id": "huyet_y_dao_khach",
+          "pos": [
+            580,
+            380
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "huyet_y_dao_khach",
+          "pos": [
+            600,
+            760
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "huyet_anh_chap_su",
+          "pos": [
+            845,
+            450
+          ],
+          "respawn": 13.0
+        },
+        {
+          "enemy_id": "huyet_anh_chap_su",
+          "pos": [
+            845,
+            680
+          ],
+          "respawn": 13.0
+        },
+        {
+          "enemy_id": "pham_lang_boss",
+          "pos": [
+            1510,
+            560
+          ],
+          "respawn": 30.0
+        }
+      ],
+      "portals": [
+        {
+          "id": "back_hem_nui_from_huyet_vu",
+          "label": "Cổng Tây -> Hẻm Núi Hắc Phong",
+          "pos": [
+            112,
+            560
+          ],
+          "target_map": "ch05_hem_nui_hac_phong",
+          "target_spawn": [
+            1810,
+            560
+          ],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch05_hac_an_thanh",
+          "label": "Cổng Đông -> Hắc Ấn Thành (Đấu Giá Bát Phiến Môn)",
+          "pos": [
+            1940,
+            560
+          ],
+          "target_map": "ch05_hac_an_thanh",
+          "target_spawn": [
+            180,
+            560
+          ],
+          "require_flag": "ch05_killed_pham_lang",
+          "locked_hint": "Hãy trảm [BOSS] Thiếu Tông Chủ Huyết Tông Phạm Lăng đoạt [Tam Thiên Lôi Động] trước khi tiến vào Hắc Ấn Thành!"
+        }
+      ]
+    },
+    "ch05_hac_an_thanh": {
+      "id": "ch05_hac_an_thanh",
+      "chapter": "Chương 05",
+      "name": "Hắc Ấn Thành — Đại Đấu Giá Trường Bát Phiến Môn",
+      "bgm": "bgm_capital",
+      "size": [
+        2048,
+        1152
+      ],
+      "ambient_hex": "#a898b0",
+      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "default_spawn": [
+        180,
+        560
+      ],
+      "zones": [
+        {
+          "rect": [
+            320,
+            192,
+            736,
+            448
+          ],
+          "tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+          "border_hex": "#FFD166",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            320,
+            704,
+            640,
+            256
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#70D6FF"
+        },
+        {
+          "rect": [
+            1152,
+            224,
+            672,
+            736
+          ],
+          "tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+          "border_hex": "#EF476F"
+        }
+      ],
+      "signs": [
+        {
+          "pos": [
+            445,
+            148
+          ],
+          "text": "ĐẠI ĐẤU GIÁ TRƯỜNG BÁT PHIẾN MÔN\n(Đấu Trí Đoạt Mảnh Tàn Đồ #3 & Âm Dương Huyền Long Đan!)",
+          "color": "#FFD166"
+        },
+        {
+          "pos": [
+            395,
+            664
+          ],
+          "text": "PHÒNG TĨNH TU KHÁCH ĐIẾM HẮC ẤN\n(Dược Lão Tái Tỉnh Sau Giấc Ngủ Say!)",
+          "color": "#70D6FF"
+        },
+        {
+          "pos": [
+            1265,
+            180
+          ],
+          "text": "HẺM CHỢ ĐEN HẮC ẤN THÀNH\n(Ác Đồ Hỏa Bạo Cuồng Nhân — Đừng Để Chúng Áp Sát!)",
+          "color": "#EF476F"
+        }
+      ],
+      "props": [
+        {
+          "type": "gate",
+          "pos": [
+            690,
+            175
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            365,
+            245
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1005,
+            245
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            365,
+            605
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1005,
+            605
+          ]
+        },
+        {
+          "type": "boulder",
+          "pos": [
+            1115,
+            560
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1210,
+            280
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1770,
+            280
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1210,
+            900
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1770,
+            900
+          ]
+        }
+      ],
+      "chests": [
+        {
+          "id": "chest_hac_an_blackmarket",
+          "name": "Hộp Kho Báu Chợ Đen Hắc Ấn Thành",
+          "pos": [
+            1710,
+            835
+          ],
+          "gold": 3200,
+          "stones": 22,
+          "gear_template": "caul_song_long_huyet_dinh",
+          "gear_rarity": "thien",
+          "items": {
+            "core_loi_5": 1,
+            "pill_huyet_ngung_dan": 3
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch05_bat_phien_auctioneer",
+          "name": "Chưởng Quỹ Bát Phiến Môn (Đấu Giá Sư)",
+          "title": "Đại Đấu Giá Chiến Thuật Hắc Ấn Thành",
+          "sprite": "res://assets/sprites/npcs/npc_nha_phi.png",
+          "pos": [
+            690,
+            405
+          ],
+          "role": "ch05_bat_phien_auctioneer",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Đại Đấu Giá Trường Bát Phiến Môn"
+        },
+        {
+          "id": "npc_ch05_duoc_lao_hac_an",
+          "name": "Dược Lão (Thức Tỉnh Tái Xuất!)",
+          "title": "Đệ Nhất Luyện Đan Tông Sư · Nhẫn Đen Rực Sáng",
+          "sprite": "res://assets/sprites/npcs/npc_duoc_lao.png",
+          "pos": [
+            540,
+            825
+          ],
+          "role": "ch05_duoc_lao_hac_an",
+          "float_anim": true,
+          "glow_hex": "#70D6FF",
+          "name_hex": "#A8DADC",
+          "prompt_text": "[V] Bái Kiến Sư Phụ Dược Lão"
+        }
+      ],
+      "spawns": [
+        {
+          "enemy_id": "ac_do_hac_an",
+          "pos": [
+            1320,
+            370
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "ac_do_hac_an",
+          "pos": [
+            1580,
+            550
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "ac_do_hac_an",
+          "pos": [
+            1380,
+            790
+          ],
+          "respawn": 12.0
+        }
+      ],
+      "portals": [
+        {
+          "id": "back_huyet_vu_from_hac_an",
+          "label": "Cổng Tây -> Rừng Đêm Huyết Vụ",
+          "pos": [
+            112,
+            560
+          ],
+          "target_map": "ch05_rung_dem_huyet_vu",
+          "target_spawn": [
+            1810,
+            560
+          ],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch05_hoa_binh_tran",
+          "label": "Cổng Đông -> Hòa Bình Trấn (Ranh Giới Già Nam)",
+          "pos": [
+            1940,
+            560
+          ],
+          "target_map": "ch05_hoa_binh_tran",
+          "target_spawn": [
+            180,
+            512
+          ],
+          "require_flag": "ch05_auction_done",
+          "locked_hint": "Hãy tham dự Đại Đấu Giá Bát Phiến Môn (hoặc Đêm Mưa Đoạt Bảo) đoạt Mảnh Tàn Đồ #3 & Âm Dương Huyền Long Đan trước khi rời Hắc Ấn Thành!"
+        }
+      ]
+    },
+    "ch05_hoa_binh_tran": {
+      "id": "ch05_hoa_binh_tran",
+      "chapter": "Chương 05",
+      "name": "Hòa Bình Trấn — Ranh Giới Học Viện Già Nam",
+      "bgm": "bgm_peaceful",
+      "size": [
+        1792,
+        1024
+      ],
+      "ambient_hex": "#d4e2d4",
+      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "default_spawn": [
+        180,
+        512
+      ],
+      "zones": [
+        {
+          "rect": [
+            320,
+            192,
+            608,
+            448
+          ],
+          "tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+          "border_hex": "#FFD166"
+        },
+        {
+          "rect": [
+            1024,
+            192,
+            512,
+            448
+          ],
+          "tile": "res://assets/sprites/tiles/oasis_turquoise.png",
+          "border_hex": "#80ED99",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            320,
+            704,
+            1216,
+            192
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#70D6FF"
+        }
+      ],
+      "signs": [
+        {
+          "pos": [
+            415,
+            148
+          ],
+          "text": "HÒA BÌNH TRẤN — VÙNG AN TOÀN HỌC VIỆN GIÀ NAM\n(Đội Chấp Pháp Trấn Thủ · Thương Đội Gia Mã Dừng Chân)",
+          "color": "#FFD166"
+        },
+        {
+          "pos": [
+            1085,
+            148
+          ],
+          "text": "BIA CỔ VIỆN TRƯỞNG MANG THIÊN XÍCH\n(Bí Sử Lôi Hệ Đấu Tôn & Học Viện Già Nam!)",
+          "color": "#80ED99"
+        }
+      ],
+      "props": [
+        {
+          "type": "gate",
+          "pos": [
+            1540,
+            512
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            235,
+            210
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            1585,
+            210
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            235,
+            820
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            1585,
+            820
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            375,
+            240
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            875,
+            240
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1075,
+            240
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1485,
+            240
+          ]
+        }
+      ],
+      "chests": [
+        {
+          "id": "chest_hoa_binh_relic",
+          "name": "Hộp Rèn Vũ Khí Hòa Bình Trấn",
+          "pos": [
+            1395,
+            555
+          ],
+          "gold": 2800,
+          "stones": 24,
+          "gear_template": "wpn_xich_ngung_vat",
+          "gear_rarity": "thien",
+          "items": {
+            "herb_huyet_tinh_thao": 3,
+            "pill_huyet_ngung_dan": 3
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch05_thuong_nhan_gia_ma",
+          "name": "Thương Nhân Lữ Hành Gia Mã",
+          "title": "Tin Tức Tiêu Gia · Tiếp Tế Đan Dược & Nguyên Liệu",
+          "sprite": "res://assets/sprites/npcs/npc_tieu_chien.png",
+          "pos": [
+            615,
+            420
+          ],
+          "role": "ch05_thuong_nhan_gia_ma",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFE599",
+          "prompt_text": "[V] Thương Nhân Gia Mã / Tiếp Tế"
+        },
+        {
+          "id": "npc_ch05_bia_mang_thien_xich",
+          "name": "Bia Cổ Viện Trưởng Mang Thiên Xích",
+          "title": "Kỳ Ngộ Bí Sử — Lôi Tôn & Nội Viện Già Nam",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [
+            1270,
+            390
+          ],
+          "role": "ch05_bia_mang_thien_xich",
+          "glow_hex": "#E0AAFF",
+          "name_hex": "#E0AAFF",
+          "prompt_text": "[V] Lĩnh Hội Bia Cổ Mang Thiên Xích"
+        }
+      ],
+      "spawns": [
+        {
+          "enemy_id": "ac_do_hac_an",
+          "pos": [
+            440,
+            800
+          ],
+          "respawn": 18.0
+        }
+      ],
+      "portals": [
+        {
+          "id": "back_hac_an_from_hoa_binh",
+          "label": "Cổng Tây -> Hắc Ấn Thành",
+          "pos": [
+            112,
+            512
+          ],
+          "target_map": "ch05_hac_an_thanh",
+          "target_spawn": [
+            1810,
+            560
+          ],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch05_ngoai_vien_gia_nam",
+          "label": "Cổng Đông -> Ngoại Viện Học Viện Già Nam",
+          "pos": [
+            1680,
+            512
+          ],
+          "target_map": "ch05_ngoai_vien_gia_nam",
+          "target_spawn": [
+            180,
+            560
+          ],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch05_ngoai_vien_gia_nam": {
+      "id": "ch05_ngoai_vien_gia_nam",
+      "chapter": "Chương 05",
+      "name": "Ngoại Viện Học Viện Già Nam — Lôi Đài & Tàng Thư Các",
+      "bgm": "bgm_peaceful",
+      "size": [
+        2048,
+        1152
+      ],
+      "ambient_hex": "#dce4cf",
+      "base_tile": "res://assets/sprites/tiles/courtyard_stone.png",
+      "default_spawn": [
+        180,
+        560
+      ],
+      "zones": [
+        {
+          "rect": [
+            256,
+            192,
+            544,
+            384
+          ],
+          "tile": "res://assets/sprites/tiles/oasis_turquoise.png",
+          "border_hex": "#FFD166"
+        },
+        {
+          "rect": [
+            1152,
+            128,
+            640,
+            288
+          ],
+          "tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+          "border_hex": "#70D6FF"
+        },
+        {
+          "rect": [
+            1088,
+            480,
+            736,
+            512
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FF9F1C",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [
+            345,
+            150
+          ],
+          "text": "TRÚC LÂM NGOẠI VIỆN — HỘI NGỘ TIÊU HUÂN NHI\n(Mở Đồng Hành #4 [G] Huân Nhi & [ĐẾ ẤN QUYẾT]!)",
+          "color": "#FFD166"
+        },
+        {
+          "pos": [
+            1235,
+            92
+          ],
+          "text": "TÀNG THƯ CÁC NGOẠI VIỆN GIÀ NAM\n(Phó Viện Trưởng Hổ Càn — Trao [SƯ HỔ TOÁI KIM NGÂM]!)",
+          "color": "#70D6FF"
+        },
+        {
+          "pos": [
+            1205,
+            440
+          ],
+          "text": "LÔI ĐÀI TUYỂN CHỌN NỘI VIỆN TOP 5\n(TỶ THÍ: Tu La Huyết Kiếm Ngô Hạo!)",
+          "color": "#FF9F1C"
+        }
+      ],
+      "props": [
+        {
+          "type": "gate",
+          "pos": [
+            285,
+            560
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            305,
+            240
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            745,
+            240
+          ]
+        },
+        {
+          "type": "stele",
+          "pos": [
+            475,
+            820
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            280,
+            900
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1205,
+            180
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1735,
+            180
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1140,
+            530
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1770,
+            530
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1140,
+            940
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1770,
+            940
+          ]
+        }
+      ],
+      "chests": [
+        {
+          "id": "chest_tang_thu_cac",
+          "name": "Bảo Hạp Tàng Thư Các Già Nam",
+          "pos": [
+            1705,
+            290
+          ],
+          "gold": 3600,
+          "stones": 26,
+          "gear_template": "wing_hac_diem_tu_van_duc",
+          "gear_rarity": "thien",
+          "items": {
+            "core_loi_5": 1,
+            "pill_huyet_ngung_dan": 3,
+            "pill_thanh_lien_tu": 3
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch05_huan_nhi_reunion",
+          "name": "Tiêu Huân Nhi (Nữ Thần Ngoại Viện)",
+          "title": "Hội Ngộ Sau 2 Năm · Truyền Thụ Đế Ấn Quyết & Đồng Hành #4",
+          "sprite": "res://assets/sprites/npcs/npc_huan_nhi.png",
+          "pos": [
+            525,
+            375
+          ],
+          "role": "ch05_huan_nhi_reunion",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Hội Ngộ Tiêu Huân Nhi"
+        },
+        {
+          "id": "npc_ch05_ho_can_tang_thu",
+          "name": "Phó Viện Trưởng Hổ Càn",
+          "title": "Trấn Thủ Tàng Thư Các · Trao Thưởng Top 5",
+          "sprite": "res://assets/sprites/npcs/npc_nhuoc_lam.png",
+          "pos": [
+            1465,
+            265
+          ],
+          "role": "ch05_ho_can_tang_thu",
+          "glow_hex": "#70D6FF",
+          "name_hex": "#70D6FF",
+          "prompt_text": "[V] Gặp Phó Viện Trưởng Hổ Càn"
+        }
+      ],
+      "spawns": [
+        {
+          "enemy_id": "tinh_nhue_ngoai_vien",
+          "pos": [
+            940,
+            450
+          ],
+          "respawn": 13.0
+        },
+        {
+          "enemy_id": "tinh_nhue_ngoai_vien",
+          "pos": [
+            940,
+            780
+          ],
+          "respawn": 13.0
+        },
+        {
+          "enemy_id": "ngo_hao_boss",
+          "pos": [
+            1455,
+            735
+          ],
+          "respawn": 30.0,
+          "require_flag": "ch05_huan_nhi_reunited"
+        }
+      ],
+      "portals": [
+        {
+          "id": "back_hoa_binh_from_ngoai_vien",
+          "label": "Cổng Tây -> Hòa Bình Trấn",
+          "pos": [
+            112,
+            560
+          ],
+          "target_map": "ch05_hoa_binh_tran",
+          "target_spawn": [
+            1560,
+            512
+          ],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch05_rung_san_hoa_nang",
+          "label": "Cổng Đông -> Rừng Săn Hỏa Năng (Nhập Nội Viện!)",
+          "pos": [
+            1940,
+            560
+          ],
+          "target_map": "ch05_rung_san_hoa_nang",
+          "target_spawn": [
+            180,
+            560
+          ],
+          "require_flag": "ch05_got_su_ho",
+          "locked_hint": "Hãy hội ngộ Huân Nhi, đánh bại [TỶ THÍ TOP 5] Ngô Hạo rồi nhận [Sư Hổ Toái Kim Ngâm] từ Phó Viện Trưởng Hổ Càn trước khi vào Rừng Săn Hỏa Năng!"
+        }
+      ]
+    },
+    "ch05_rung_san_hoa_nang": {
+      "id": "ch05_rung_san_hoa_nang",
+      "chapter": "Chương 05",
+      "name": "Rừng Săn Hỏa Năng — Phản Sát Hắc Bạch Quan Sát",
+      "bgm": "bgm_boss",
+      "size": [
+        2048,
+        1152
+      ],
+      "ambient_hex": "#96a89c",
+      "base_tile": "res://assets/sprites/tiles/bamboo_grass.png",
+      "default_spawn": [
+        180,
+        560
+      ],
+      "zones": [
+        {
+          "rect": [
+            256,
+            256,
+            480,
+            640
+          ],
+          "tile": "res://assets/sprites/tiles/stepping_path.png",
+          "border_hex": "#80ED99"
+        },
+        {
+          "rect": [
+            832,
+            192,
+            672,
+            768
+          ],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FF4D6D",
+          "arena_circle": true
+        },
+        {
+          "rect": [
+            1568,
+            224,
+            352,
+            704
+          ],
+          "tile": "res://assets/sprites/tiles/sandstone_plaza.png",
+          "border_hex": "#FFD166"
+        }
+      ],
+      "signs": [
+        {
+          "pos": [
+            305,
+            210
+          ],
+          "text": "KHU RỪNG SĂN HỎA NĂNG — TÂN SINH PHẢN CÔNG\n(Gặp Biểu Tỷ Tiêu Ngọc [V] Nắm Quy Tắc Hắc Tinh Thẻ!)",
+          "color": "#80ED99"
+        },
+        {
+          "pos": [
+            935,
+            145
+          ],
+          "text": "ĐẠI BẢN DOANH HẮC BẠCH QUAN SÁT\n(BOSS: Thủ Lĩnh La Hầu — Cửu Tinh Đấu Linh!)",
+          "color": "#FF4D6D"
+        },
+        {
+          "pos": [
+            1590,
+            180
+          ],
+          "text": "SƠN MÔN NỘI VIỆN HỌC VIỆN GIÀ NAM\n(Đại Trưởng Lão Tô Thiên — Phong Vương Tân Sinh!)",
+          "color": "#FFD166"
+        }
+      ],
+      "props": [
+        {
+          "type": "pine",
+          "pos": [
+            220,
+            210
+          ]
+        },
+        {
+          "type": "pine",
+          "pos": [
+            220,
+            920
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            775,
+            220
+          ]
+        },
+        {
+          "type": "bamboo",
+          "pos": [
+            775,
+            920
+          ]
+        },
+        {
+          "type": "gate",
+          "pos": [
+            1590,
+            560
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1645,
+            275
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            1645,
+            865
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            890,
+            250
+          ]
+        },
+        {
+          "type": "lantern",
+          "pos": [
+            890,
+            900
+          ]
+        }
+      ],
+      "chests": [
+        {
+          "id": "chest_hoa_nang_hoard",
+          "name": "Kho Chiến Lợi Phẩm Lão Sinh Săn Hỏa Năng",
+          "pos": [
+            1735,
+            820
+          ],
+          "gold": 4500,
+          "stones": 30,
+          "gear_template": "pend_hac_tinh_the_gia_nam",
+          "gear_rarity": "de",
+          "items": {
+            "pill_dau_linh_dan": 1,
+            "pill_huyet_ngung_dan": 3,
+            "core_huyet_5": 1
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch05_tieu_ngoc_scout",
+          "name": "Biểu Tỷ Tiêu Ngọc (Trinh Sát Tân Sinh)",
+          "title": "Đội Hình Tân Sinh · Phản Sát Lão Sinh Nội Viện",
+          "sprite": "res://assets/sprites/enemies/tieu_ngoc_boss.png",
+          "pos": [
+            435,
+            430
+          ],
+          "role": "ch05_tieu_ngoc_scout",
+          "glow_hex": "#FF9F1C",
+          "name_hex": "#FFE599",
+          "prompt_text": "[V] Gặp Biểu Tỷ Tiêu Ngọc"
+        },
+        {
+          "id": "npc_ch05_to_thien_gate",
+          "name": "Đại Trưởng Lão Tô Thiên (Đấu Tông)",
+          "title": "Thủ Hộ Giả Nội Viện · Khen Thưởng Đệ Nhất Tân Sinh Vương",
+          "sprite": "res://assets/sprites/npcs/npc_hai_ba_dong.png",
+          "pos": [
+            1720,
+            485
+          ],
+          "role": "ch05_to_thien_gate",
+          "float_anim": true,
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Trình Hắc Tinh Thẻ — Đại Trưởng Lão Tô Thiên"
+        }
+      ],
+      "spawns": [
+        {
+          "enemy_id": "lao_sinh_san_the",
+          "pos": [
+            680,
+            350
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "lao_sinh_san_the",
+          "pos": [
+            680,
+            790
+          ],
+          "respawn": 12.0
+        },
+        {
+          "enemy_id": "lao_sinh_san_the",
+          "pos": [
+            980,
+            560
+          ],
+          "respawn": 13.0
+        },
+        {
+          "enemy_id": "la_hau_boss",
+          "pos": [
+            1320,
+            560
+          ],
+          "respawn": 32.0
+        }
+      ],
+      "portals": [
+        {
+          "id": "back_ngoai_vien_from_hoa_nang",
+          "label": "Cổng Tây -> Ngoại Viện Học Viện Già Nam",
+          "pos": [
+            112,
+            560
+          ],
+          "target_map": "ch05_ngoai_vien_gia_nam",
+          "target_spawn": [
+            1810,
+            560
+          ],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch06_noi_vien_future",
+          "label": "Cổng Đông -> [CH.06] Nội Viện Già Nam & Thiên Phần Tháp",
+          "pos": [
+            1940,
+            560
+          ],
+          "target_map": "ch05_rung_san_hoa_nang",
+          "target_spawn": [
+            1740,
+            560
+          ],
+          "require_flag": "ch06_unlocked_future",
+          "locked_hint": "Chúc mừng chinh phục trọn vẹn Chương 05 — Đệ Nhất Tân Sinh Vương Già Nam! Chương 06: Nội Viện Già Nam & Vẫn Lạc Tâm Viêm sẽ khai mở ở bản cập nhật tới!"
+        }
+      ]
+    }
+  }
+}
