@@ -15,7 +15,8 @@ e:\Project\DauPhaThuongKhung\docs\
 ├── 00_Tong_Quan_Kien_Truc\
 │   ├── 00_Master_Index_Va_Quy_Chuan.md          # Mục lục tổng, triết lý làm game hấp dẫn & quy chuẩn chung
 │   ├── 01_Art_Spec_Huong_Dan_Ve_Pixel.md        # Quy chuẩn vẽ Pixel Art, SpriteSheet & Shader Dị Hỏa
-│   └── 02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md     # Bảng tiến độ Đã làm / Chưa làm, Bug Backlog & Roadmap M1–M6
+│   ├── 02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md     # Bảng tiến độ Đã làm / Chưa làm, Bug Backlog & Roadmap M1–M6
+│   └── 03_Danh_Sach_Do_Hoa_Va_VFX_Can_Nang_Cap.md # Sổ theo dõi ảnh tạm (model 503), sprite tái sử dụng & VFX cần nâng cấp
 │
 ├── 01_Cot_Truyen_Chi_Tiet\                      # Kịch bản chi tiết từng Hồi, Nhiệm vụ, Bí mật & Thoại theo truyện
 │   ├── Quyen_01_Gia_Ma_De_Quoc\

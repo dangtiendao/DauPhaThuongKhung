@@ -93,9 +93,11 @@
   * [ ] Nâng cấp Thế Lực tự lập lên cấp 2–3 (**Viêm Minh** Ch.07 → **Thiên Phủ Liên Minh** Ch.10) kèm sự kiện phòng thủ Hồn Điện tập kích. *(Cấp 1 **Bàn Môn** đã hoàn tất ở Ch.06!)*
 * [ ] **5/8 Phó Bản Cày Cuốc & Endgame Còn Lại**:
   * [ ] Thiên Sơn Huyết Đàm, Vạn Dặm Đan Giới (roguelite), Viễn Cổ Di Tích, Thiên Mộ, 17 Bí Cảnh Dị Hỏa Ẩn, Khe Nứt Đại Thiên Thế Giới & `New Game+`. *(Đã xong 3/8: Tâm Ma Luyện Cảnh, Thiên Phần Luyện Khí Tháp & Đấu Trường Cường Bảng!)*
-* [x] **Đồ Họa (Bù Nợ Art Ch.04–05 — ĐÃ HOÀN TẤT ở `v0.5.2`; Art Ch.06 hoàn tất tạm thời ở `v0.5.5`)**:
-  * [x] Ch.04–05 (`v0.5.2`): **39 tài nguyên 32-bit HD Pixel Art mới** vẽ riêng (5 icon, 4 tileset, 8 NPC, 11 Boss 8-frame).
-  * [x] Ch.06 (`v0.5.5`): **18 tài nguyên pixel-art riêng** (2 tileset, 2 icon Đấu Kỹ, 4 NPC, 5 Boss 8-frame + 5 portrait) hiện được tổng hợp palette-crafted chuẩn `4×2` do quota model tạo ảnh tạm hết — có thể thay nóng 1-đổi-1 bằng ảnh AI vẽ mới sau khi quota reset mà không cần sửa bất kỳ dòng code/JSON nào.
+* [ ] **Đồ Họa & VFX Cần Nâng Cấp (Art & VFX Quality Debt)**: Xem chi tiết đầy đủ từng file, kích thước & thứ tự ưu tiên tại [`03_Danh_Sach_Do_Hoa_Va_VFX_Can_Nang_Cap.md`](./03_Danh_Sach_Do_Hoa_Va_VFX_Can_Nang_Cap.md):
+  * **P0 (31 file Ch.08)**: Toàn bộ 7 Boss 8f + 7 chân dung + 7 NPC + 5 Tileset + 5 Icon Ch.08 tạm sinh thủ tục do model AI quá tải `503`.
+  * **P1 (10 file Ch.06–07)**: 4 NPC (`npc_tu_nghien`, `npc_dia_yeu_khoi`, `npc_lam_tu_nhai`, `npc_mac_thien_hanh`), 3 Tileset (`thien_phan_magma`, `xuat_van_poison_marsh`, `thien_nhai_wormhole`), 3 Icon (`skill_luu_ly_lien_tam`, `skill_phien_hai_an`, `skill_tam_huyen_nhi_bien`).
+  * **P2 (6 hạng mục VFX/Shader)**: Nâng cấp texture `slash_arc`/`fire_lotus` (`64×64 → 128×128`), thay vẽ hình học phẳng ở các chiêu Ch.07–08 bằng shader distortion/dissolve, cánh Đấu Khí sprite-shader & `WorldEnvironment` Glow nhẹ.
+  * **P3 (Polish)**: 3 pickup sơ khai (`< 210B`), quái thường Ch.04–08 đang dùng lại sprite cũ & prop tương tác riêng.
 
 ---
 
