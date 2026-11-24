@@ -1,6 +1,8 @@
 class_name PanelWorldMapBestiary
 extends RefCounted
-## Panel [M] Bản Đồ Thế Giới (25 Map), Hồng Nhan Tri Kỷ (Buff · Tặng Quà) & Đồ Giám Vạn Thú.
+## Panel [M] Bản Đồ Thế Giới (31 Map), Hồng Nhan Tri Kỷ, Bàn Môn & Cường Bảng, Tâm Ma, Thiên Phần Tháp & Đồ Giám Vạn Thú.
+
+const PanGateMgr = preload("res://scripts/systems/pan_gate_manager.gd")
 
 var hud: CanvasLayer
 
@@ -11,7 +13,7 @@ func _init(hud_ref: CanvasLayer) -> void:
 
 func build_content(vbox: VBoxContainer) -> void:
 	var total_maps: int = GameDatabase.maps_ordered.size()
-	hud.modal_title_lbl.text = "[M] THẾ GIỚI (%d MAP) • HỒNG NHAN • TÂM MA • THIÊN PHẦN THÁP • ĐỒ GIÁM" % total_maps
+	hud.modal_title_lbl.text = "[M] THẾ GIỚI (%d MAP) • HỒNG NHAN • BÀN MÔN • TÂM MA • THÁP • ĐỒ GIÁM" % total_maps
 	vbox.add_theme_constant_override("separation", 6)
 
 	var tab_row := HFlowContainer.new()
@@ -88,6 +90,19 @@ func build_content(vbox: VBoxContainer) -> void:
 	)
 	tab_row.add_child(tab_tw_btn)
 
+	var pan_ready: bool = PanGateMgr.is_unlocked(PlayerData) and PanGateMgr.get_harvest_cooldown_remaining(PlayerData) <= 0.0
+	var tab_pan_btn := Button.new()
+	tab_pan_btn.text = ("★ " if hud.world_map_tab == "pan_gate" else "") + "🏯 Bàn Môn" + (" [THU!]" if pan_ready else "")
+	tab_pan_btn.disabled = (hud.world_map_tab == "pan_gate")
+	tab_pan_btn.add_theme_font_size_override("font_size", 12)
+	tab_pan_btn.add_theme_color_override("font_color", Color("#80ED99") if pan_ready else Color("#FFD166"))
+	tab_pan_btn.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		hud.world_map_tab = "pan_gate"
+		hud._populate_modal()
+	)
+	tab_row.add_child(tab_pan_btn)
+
 	if hud.world_map_tab == "heroines":
 		build_heroines_tab(vbox)
 		return
@@ -99,6 +114,9 @@ func build_content(vbox: VBoxContainer) -> void:
 		return
 	elif hud.world_map_tab == "tower":
 		hud.panel_tower_boss_rush.build_tower_tab(vbox)
+		return
+	elif hud.world_map_tab == "pan_gate":
+		build_pan_gate_tab(vbox)
 		return
 
 	# 1. Tóm tắt Buff Hồng Nhan & Kỳ Vật Cốt Truyện
@@ -419,3 +437,181 @@ func build_bestiary_tab(vbox: VBoxContainer) -> void:
 
 		var k_lbl: Label = hud._make_label("Đã hạ: %d" % kills if kills > 0 else "Chưa gặp", 12, Color("#80ED99") if kills > 0 else Color("#6C757D"))
 		row.add_child(k_lbl)
+
+
+func build_pan_gate_tab(vbox: VBoxContainer) -> void:
+	var unlocked: bool = PanGateMgr.is_unlocked(PlayerData)
+	var st: Dictionary = PanGateMgr.ensure_state(PlayerData)
+	var d_lvl: int = PanGateMgr.get_hall_level(PlayerData, "dan_duong")
+	var v_lvl: int = PanGateMgr.get_hall_level(PlayerData, "vo_duong")
+	var a_lvl: int = PanGateMgr.get_hall_level(PlayerData, "am_duong")
+
+	# 1. Tổng quan Thế Lực Bàn Môn & Thu Hoạch Thụ Động
+	var hdr_card: PanelContainer = hud._make_styled_panel(Color(0.11, 0.08, 0.05, 0.96), Color("#FFD166"), 2, 10)
+	vbox.add_child(hdr_card)
+	var hv := VBoxContainer.new()
+	hv.add_theme_constant_override("separation", 5)
+	hdr_card.add_child(hv)
+
+	var max_badge: String = "  [★ CỰC THỊNH — CẦU NỐI VIÊM MINH CH.07!]" if PlayerData.has_flag("FLAG_PAN_GATE_LEVEL_MAX") else "  (Đan %d/3 · Võ %d/3 · Ám %d/3)" % [d_lvl, v_lvl, a_lvl]
+	hv.add_child(hud._make_label("🏯 QUẢN TRỊ THẾ LỰC BÀN MÔN — NỘI VIỆN GIÀ NAM%s" % max_badge, 14, Color("#FFD166")))
+
+	if not unlocked:
+		var lock_l: Label = hud._make_label(
+			"Chưa thành lập Bàn Môn! Hãy tiến vào Chương 06 (Nội Viện Già Nam), đánh bại Thủ lĩnh Bạch Bang [Bạch Thành] ở Phố Giao Dịch và đấu đan khuất phục [Hàn Nhàn] để sáng lập Bàn Môn!",
+			12, Color("#FF9770")
+		)
+		lock_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		hv.add_child(lock_l)
+	else:
+		hv.add_child(hud._make_label(
+			"Ngân Khố:  🔥 %d Tinh Hỏa Năng  ·  💰 %d Kim Tệ  ·  💎 %d Đá CH   |   Buff: +%d%% ATK (Võ Đường) · +%d%% Luyện Đan (Đan Đường)" % [
+				PlayerData.fire_energy, PlayerData.gold, PlayerData.enhance_stones,
+				int(round(PanGateMgr.get_atk_bonus_pct(PlayerData))),
+				int(round(PanGateMgr.get_alchemy_bonus_pct(PlayerData)))
+			],
+			12, Color("#80ED99")
+		))
+
+		var harv_row := HBoxContainer.new()
+		harv_row.add_theme_constant_override("separation", 10)
+		hv.add_child(harv_row)
+
+		var rem_cd: float = PanGateMgr.get_harvest_cooldown_remaining(PlayerData)
+		var harv_btn := Button.new()
+		harv_btn.text = "★ THU HOẠCH BÀN MÔN NGAY! (Hỏa Năng · Kim Tệ · Đá · Ma Hạch)" if rem_cd <= 0.0 else "Đang Luyện Đan & Tuần Tra... Còn %.0fs" % ceilf(rem_cd)
+		harv_btn.disabled = (rem_cd > 0.0)
+		harv_btn.add_theme_font_size_override("font_size", 12)
+		if rem_cd <= 0.0:
+			harv_btn.add_theme_color_override("font_color", Color("#FFD166"))
+		harv_btn.pressed.connect(func() -> void:
+			var res: Dictionary = PanGateMgr.claim_passive_harvest(PlayerData)
+			hud.modal_status_lbl.text = str(res.get("msg", ""))
+			hud._populate_modal()
+		)
+		harv_row.add_child(harv_btn)
+		harv_row.add_child(hud._make_label("Đã thu: %d lượt · Tử Nghiên tầm bảo: %d chuyến" % [
+			int(st.get("total_harvests", 0)), int(st.get("ziyan_expeditions", 0))
+		], 11, Color("#CED4DA")))
+
+	# 2. 3 Phân Đường Bàn Môn (Cấp 0 -> Cấp 3)
+	for hd in PanGateMgr.get_hall_defs():
+		var hid: String = str(hd["id"])
+		var hcol := Color(str(hd["color"]))
+		var cur_l: int = PanGateMgr.get_hall_level(PlayerData, hid)
+		var card: PanelContainer = hud._make_styled_panel(Color(0.08, 0.10, 0.17, 0.95), hcol if cur_l > 0 else Color("#3A4760"), 2 if cur_l >= PanGateMgr.MAX_HALL_LEVEL else 1, 8)
+		vbox.add_child(card)
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 10)
+		card.add_child(row)
+
+		var iv := VBoxContainer.new()
+		iv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		iv.add_theme_constant_override("separation", 2)
+		row.add_child(iv)
+
+		iv.add_child(hud._make_label("%s  —  Cấp %d / %d" % [str(hd["name"]), cur_l, PanGateMgr.MAX_HALL_LEVEL], 13, hcol))
+		var dl1: Label = hud._make_label(str(hd["desc"]), 11, Color("#CED4DA"))
+		dl1.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		iv.add_child(dl1)
+		var dl2: Label = hud._make_label("• Lợi ích: " + str(hd["per_lvl_desc"]), 11, Color("#80ED99"))
+		dl2.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		iv.add_child(dl2)
+
+		var up_btn := Button.new()
+		up_btn.add_theme_font_size_override("font_size", 11)
+		if cur_l >= PanGateMgr.MAX_HALL_LEVEL:
+			up_btn.text = "★ ĐÃ ĐẠT CẤP TỐI ĐA"
+			up_btn.disabled = true
+		else:
+			var c_fe: int = int((hd["costs_fe"] as Array)[cur_l])
+			var c_gd: int = int((hd["costs_gold"] as Array)[cur_l])
+			up_btn.text = "Nâng Cấp %d\n(%d Hỏa · %d Vàng)" % [cur_l + 1, c_fe, c_gd]
+			up_btn.disabled = not unlocked
+			var hid_cap: String = hid
+			up_btn.pressed.connect(func() -> void:
+				var res: Dictionary = PanGateMgr.upgrade_hall(PlayerData, hid_cap)
+				hud.modal_status_lbl.text = str(res.get("msg", ""))
+				hud._populate_modal()
+			)
+		row.add_child(up_btn)
+
+	# 3. Ám Đường — Cử Tiểu Man Vương Tử Nghiên đi Tầm Bảo Hậu Sơn!
+	var ziyan_card: PanelContainer = hud._make_styled_panel(Color(0.11, 0.07, 0.16, 0.95), Color("#C77DFF"), 1, 9)
+	vbox.add_child(ziyan_card)
+	var zv := VBoxContainer.new()
+	zv.add_theme_constant_override("separation", 5)
+	ziyan_card.add_child(zv)
+	zv.add_child(hud._make_label("🐉 ÁM ĐƯỜNG TẦM BẢO — TIỂU MAN VƯƠNG TỬ NGHIÊN (Cấp Ám Đường: %d/3)" % a_lvl, 13, Color("#E0AAFF")))
+	var z_desc: Label = hud._make_label(
+		"Đút 1 [Đan Hoàn Ngọt] (hoặc 45 Tinh Hỏa Năng) để Tử Nghiên chạy vào Hậu Sơn đánh hơi & đào về Thanh Mộc Tiên Đằng, Long Huyết Chi, Băng Ma Hạch Cấp 5 & Đá Cường Hóa!",
+		11, Color("#CED4DA")
+	)
+	z_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	zv.add_child(z_desc)
+
+	var z_row := HBoxContainer.new()
+	z_row.add_theme_constant_override("separation", 8)
+	zv.add_child(z_row)
+
+	var candy_cnt: int = PlayerData.get_item_count("pill_dan_hoan_ngot")
+	var btn_candy := Button.new()
+	btn_candy.text = "🍬 Đút 1 Đan Hoàn Ngọt (Đang có: %d)" % candy_cnt
+	btn_candy.disabled = (not unlocked) or (not PlayerData.has_flag("ch06_tu_nghien_joined") and not PlayerData.is_demo_mode)
+	btn_candy.add_theme_font_size_override("font_size", 12)
+	btn_candy.add_theme_color_override("font_color", Color("#FFD166"))
+	btn_candy.pressed.connect(func() -> void:
+		var res: Dictionary = PanGateMgr.send_ziyan_forage(PlayerData, true)
+		hud.modal_status_lbl.text = str(res.get("msg", ""))
+		hud._populate_modal()
+	)
+	z_row.add_child(btn_candy)
+
+	var btn_fe := Button.new()
+	btn_fe.text = "🔥 Cử Đi Bằng 45 Tinh Hỏa Năng"
+	btn_fe.disabled = (not unlocked) or (not PlayerData.has_flag("ch06_tu_nghien_joined") and not PlayerData.is_demo_mode)
+	btn_fe.add_theme_font_size_override("font_size", 12)
+	btn_fe.add_theme_color_override("font_color", Color("#72EFDD"))
+	btn_fe.pressed.connect(func() -> void:
+		var res: Dictionary = PanGateMgr.send_ziyan_forage(PlayerData, false)
+		hud.modal_status_lbl.text = str(res.get("msg", ""))
+		hud._populate_modal()
+	)
+	z_row.add_child(btn_fe)
+
+	# 4. Đấu Trường Cường Bảng Nội Viện (Top 10 Ranking Challenge)
+	var rank_card: PanelContainer = hud._make_styled_panel(Color(0.08, 0.11, 0.16, 0.95), Color("#FF9F1C"), 1, 9)
+	vbox.add_child(rank_card)
+	var rv := VBoxContainer.new()
+	rv.add_theme_constant_override("separation", 5)
+	rank_card.add_child(rv)
+	rv.add_child(hud._make_label("⚔ CƯỜNG BẢNG NỘI VIỆN (TOP 10 RANKING) — KHIÊU CHIẾN ĐOẠT HẠNG", 13, Color("#FF9F1C")))
+	rv.add_child(hud._make_label("Khiêu chiến cao thủ Cường Bảng trong Lôi Đài riêng biệt để thử nghiệm kỹ năng & nhận Đá Cường Hóa + Kim Tệ!", 11, Color("#A8DADC")))
+
+	for entry in PanGateMgr.get_strong_ranking_roster():
+		var rk: int = int(entry["rank"])
+		var b_id: String = str(entry["boss_id"])
+		var diff_k: String = str(entry["diff"])
+		var rec: Dictionary = PlayerData.get_boss_rush_record(b_id, diff_k)
+		var best_g: String = str(rec.get("best_grade", ""))
+		var row_r := HBoxContainer.new()
+		row_r.add_theme_constant_override("separation", 8)
+		rv.add_child(row_r)
+
+		var badge_s: String = " [★ HẠNG %s]" % best_g if best_g != "" else ""
+		var rl: Label = hud._make_label("Hạng #%d — %s <%s>%s" % [rk, str(entry["name"]), str(entry["realm"]), badge_s], 12, Color("#80ED99") if best_g != "" else Color("#F8F9FA"))
+		rl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row_r.add_child(rl)
+
+		var ch_btn := Button.new()
+		ch_btn.text = "Khiêu Chiến!"
+		ch_btn.add_theme_font_size_override("font_size", 11)
+		ch_btn.add_theme_color_override("font_color", Color("#FFD166"))
+		var cap_bid: String = b_id
+		var cap_diff: String = diff_k
+		ch_btn.pressed.connect(func() -> void:
+			AudioManager.play_sfx("ui_click")
+			hud._close_modal()
+			EventBus.boss_rush_requested.emit(cap_bid, cap_diff)
+		)
+		row_r.add_child(ch_btn)

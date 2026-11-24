@@ -1,0 +1,227 @@
+class_name PanGateManager
+extends RefCounted
+## Hệ thống Quản Trị Thế Lực "BÀN MÔN" (Chương 06 — Nội Viện Già Nam) & Cường Bảng Top 10:
+## - 3 Phân Đường nâng cấp Cấp 0 -> Cấp 3:
+##   1. Đan Đường (Hàn Nhàn): Tạo Tinh Hỏa Năng + Kim Tệ thụ động & +5%/cấp tỷ lệ thành đan.
+##   2. Võ Đường (Ngô Hạo & Hổ Gia): Thu Ma Hạch Cấp 4–5 + Đá Cường Hóa & +4%/cấp ATK.
+##   3. Ám Đường / Tầm Bảo (Tử Nghiên): Đút Đan Hoàn Ngọt / Hỏa Năng cử Tử Nghiên đi đào linh dược Lục Phẩm!
+## - Bảng Khiêu Chiến Cường Bảng Nội Viện (Top 10 Ranking) tích hợp mượt với Tâm Ma / Lôi Đài!
+
+const MAX_HALL_LEVEL: int = 3
+const HARVEST_INTERVAL_SEC: float = 45.0
+
+
+static func default_state() -> Dictionary:
+	return {
+		"dan_duong": 0,
+		"vo_duong": 0,
+		"am_duong": 0,
+		"last_harvest_playtime": -100.0,
+		"total_harvests": 0,
+		"ziyan_expeditions": 0,
+		"strong_rank_cleared": {}
+	}
+
+
+static func ensure_state(pd: Node) -> Dictionary:
+	if not ("pan_gate_state" in pd) or not (pd.pan_gate_state is Dictionary) or pd.pan_gate_state.is_empty():
+		pd.pan_gate_state = default_state()
+	var st: Dictionary = pd.pan_gate_state
+	for k in ["dan_duong", "vo_duong", "am_duong", "total_harvests", "ziyan_expeditions"]:
+		if not st.has(k):
+			st[k] = 0
+	if not st.has("last_harvest_playtime"):
+		st["last_harvest_playtime"] = -100.0
+	if not st.has("strong_rank_cleared") or not (st["strong_rank_cleared"] is Dictionary):
+		st["strong_rank_cleared"] = {}
+	return st
+
+
+static func is_unlocked(pd: Node) -> bool:
+	return pd.has_flag("ch06_ban_mon_founded") or bool(pd.is_demo_mode)
+
+
+static func get_hall_defs() -> Array:
+	return [
+		{
+			"id": "dan_duong",
+			"name": "Đan Đường (Hàn Nhàn)",
+			"color": "#52B788",
+			"desc": "Đệ tử Dược Bang cũ luyện Hỏa Liên Đan & Băng Tâm Đan bán lấy Tinh Hỏa Năng.",
+			"per_lvl_desc": "Thu +40/80/125 Hỏa Năng & +1500/3200/5500 Kim Tệ mỗi lượt · +5%/cấp Luyện Đan",
+			"costs_fe": [60, 140, 260],
+			"costs_gold": [3500, 9000, 18000]
+		},
+		{
+			"id": "vo_duong",
+			"name": "Võ Đường (Ngô Hạo & Hổ Gia)",
+			"color": "#FF4D6D",
+			"desc": "Đội tuần tra Bàn Môn bảo vệ tân sinh, săn Ma Hạch Cấp 4–5 & giữ phòng VIP Thiên Phần Tháp.",
+			"per_lvl_desc": "Thu +4/8/14 Đá Cường Hóa + Ma Hạch Cấp 4–5 mỗi lượt · Vĩnh viễn +4%/cấp Công Kích",
+			"costs_fe": [60, 140, 260],
+			"costs_gold": [3500, 9000, 18000]
+		},
+		{
+			"id": "am_duong",
+			"name": "Ám Đường · Tầm Bảo (Tử Nghiên)",
+			"color": "#C77DFF",
+			"desc": "Tiểu Man Vương Tử Nghiên đánh hơi thiên tài địa bảo khắp Hậu Sơn Nội Viện!",
+			"per_lvl_desc": "Mở & tăng cấp độ Tầm Bảo: đào Thanh Mộc Tiên Đằng, Long Huyết Chi, Băng Ma Hạch Cấp 5 & Đá!",
+			"costs_fe": [50, 130, 240],
+			"costs_gold": [3000, 8000, 16000]
+		}
+	]
+
+
+static func get_hall_level(pd: Node, hall_id: String) -> int:
+	var st: Dictionary = ensure_state(pd)
+	return clampi(int(st.get(hall_id, 0)), 0, MAX_HALL_LEVEL)
+
+
+static func get_atk_bonus_pct(pd: Node) -> float:
+	if not is_unlocked(pd):
+		return 0.0
+	return float(get_hall_level(pd, "vo_duong")) * 4.0
+
+
+static func get_alchemy_bonus_pct(pd: Node) -> float:
+	if not is_unlocked(pd):
+		return 0.0
+	return float(get_hall_level(pd, "dan_duong")) * 5.0
+
+
+static func upgrade_hall(pd: Node, hall_id: String) -> Dictionary:
+	if not is_unlocked(pd):
+		return { "ok": false, "msg": "Hãy hạ Bạch Thành & đấu đan thắng Hàn Nhàn để sáng lập Bàn Môn trước!" }
+	var st: Dictionary = ensure_state(pd)
+	var cur_lvl: int = get_hall_level(pd, hall_id)
+	if cur_lvl >= MAX_HALL_LEVEL:
+		return { "ok": false, "msg": "Phân Đường này đã đạt cực hạn Cấp %d!" % MAX_HALL_LEVEL }
+	var hdef: Dictionary = {}
+	for hd in get_hall_defs():
+		if str(hd["id"]) == hall_id:
+			hdef = hd
+			break
+	if hdef.is_empty():
+		return { "ok": false, "msg": "Phân Đường không hợp lệ!" }
+
+	var cost_fe: int = int((hdef["costs_fe"] as Array)[cur_lvl])
+	var cost_gold: int = int((hdef["costs_gold"] as Array)[cur_lvl])
+	if pd.fire_energy < cost_fe or pd.gold < cost_gold:
+		return {
+			"ok": false,
+			"msg": "Cần %d Tinh Hỏa Năng & %d Kim Tệ để nâng %s lên Cấp %d!" % [cost_fe, cost_gold, str(hdef["name"]), cur_lvl + 1]
+		}
+
+	pd.fire_energy -= cost_fe
+	pd.gold -= cost_gold
+	st[hall_id] = cur_lvl + 1
+	if get_hall_level(pd, "dan_duong") >= MAX_HALL_LEVEL and get_hall_level(pd, "vo_duong") >= MAX_HALL_LEVEL and get_hall_level(pd, "am_duong") >= MAX_HALL_LEVEL:
+		pd.set_story_flag("FLAG_PAN_GATE_LEVEL_MAX")
+		pd.add_story_relic("Bàn Môn Cực Thịnh (Cả 3 Đường Cấp 3 — Cầu Nối Viêm Minh Ch.07)")
+	pd.recalculate_and_clamp(false)
+	EventBus.audio_sfx_requested.emit("breakthrough")
+	EventBus.stats_changed.emit()
+	pd.trigger_auto_save("nâng cấp Bàn Môn", true)
+	return {
+		"ok": true,
+		"msg": "NÂNG CẤP THÀNH CÔNG: %s -> CẤP %d!" % [str(hdef["name"]), cur_lvl + 1]
+	}
+
+
+static func get_harvest_cooldown_remaining(pd: Node) -> float:
+	var st: Dictionary = ensure_state(pd)
+	var last_t: float = float(st.get("last_harvest_playtime", -100.0))
+	var elapsed: float = float(pd.playtime_sec) - last_t
+	return maxf(0.0, HARVEST_INTERVAL_SEC - elapsed)
+
+
+static func claim_passive_harvest(pd: Node) -> Dictionary:
+	if not is_unlocked(pd):
+		return { "ok": false, "msg": "Chưa thành lập Bàn Môn!" }
+	var rem: float = get_harvest_cooldown_remaining(pd)
+	if rem > 0.0:
+		return { "ok": false, "msg": "Đệ tử Bàn Môn đang luyện đan & tuần tra — quay lại sau %.0fs!" % ceilf(rem) }
+	var st: Dictionary = ensure_state(pd)
+	var d_lvl: int = get_hall_level(pd, "dan_duong")
+	var v_lvl: int = get_hall_level(pd, "vo_duong")
+	var fe_table: Array = [30, 70, 115, 165]
+	var gold_table: Array = [1200, 2700, 4800, 7500]
+	var stone_table: Array = [2, 6, 11, 18]
+
+	var fe_gain: int = int(fe_table[d_lvl])
+	var gold_gain: int = int(gold_table[d_lvl])
+	var stone_gain: int = int(stone_table[v_lvl])
+	pd.fire_energy += fe_gain
+	pd.gold += gold_gain
+	pd.enhance_stones += stone_gain
+
+	var extra_str: String = ""
+	if v_lvl >= 1:
+		var core_id: String = "core_phong_4" if v_lvl == 1 else ("core_loi_5" if v_lvl == 2 else "core_huyet_5")
+		pd.add_item(core_id, 1)
+		var cname: String = str(GameDatabase.get_item_def(core_id).get("name", core_id))
+		extra_str = " + 1 [%s]" % cname
+	if d_lvl >= 2:
+		pd.add_item("pill_hoa_lien_dan", 1)
+		extra_str += " + 1 [Hỏa Liên Đan]"
+
+	st["last_harvest_playtime"] = float(pd.playtime_sec)
+	st["total_harvests"] = int(st.get("total_harvests", 0)) + 1
+	EventBus.audio_sfx_requested.emit("loot_rare")
+	EventBus.stats_changed.emit()
+	pd.trigger_auto_save("thu hoạch Bàn Môn", true)
+	return {
+		"ok": true,
+		"msg": "THU HOẠCH BÀN MÔN: +%d Tinh Hỏa Năng · +%d Kim Tệ · +%d Đá Cường Hóa%s!" % [fe_gain, gold_gain, stone_gain, extra_str]
+	}
+
+
+static func send_ziyan_forage(pd: Node, use_candy: bool = true) -> Dictionary:
+	if not is_unlocked(pd):
+		return { "ok": false, "msg": "Hãy thành lập Bàn Môn trước!" }
+	if not pd.has_flag("ch06_tu_nghien_joined") and not pd.is_demo_mode:
+		return { "ok": false, "msg": "Hãy lên Hậu Sơn Dược Tài thu phục Tiểu Man Vương Tử Nghiên trước!" }
+	var a_lvl: int = get_hall_level(pd, "am_duong")
+	if use_candy:
+		if pd.get_item_count("pill_dan_hoan_ngot") <= 0:
+			return { "ok": false, "msg": "Không đủ [Đan Hoàn Ngọt] trong Nạp Giới — hãy luyện trong [L] hoặc dùng 45 Tinh Hỏa Năng!" }
+		pd.remove_item("pill_dan_hoan_ngot", 1)
+	else:
+		if pd.fire_energy < 45:
+			return { "ok": false, "msg": "Cần 45 Tinh Hỏa Năng để mua linh quả dụ Tử Nghiên đi tầm bảo!" }
+		pd.fire_energy -= 45
+
+	var st: Dictionary = ensure_state(pd)
+	st["ziyan_expeditions"] = int(st.get("ziyan_expeditions", 0)) + 1
+
+	var herb_cnt: int = 2 + a_lvl
+	pd.add_item("herb_thanh_moc_tien_dang", herb_cnt)
+	var extra_notes: Array = ["%dx Thanh Mộc Tiên Đằng" % herb_cnt]
+	if a_lvl >= 1 or randf() < 0.65:
+		var lh_cnt: int = 1 + int(a_lvl >= 2)
+		pd.add_item("herb_long_huyet_chi", lh_cnt)
+		extra_notes.append("%dx Long Huyết Chi" % lh_cnt)
+	if a_lvl >= 2 or randf() < 0.45:
+		pd.add_item("core_bang_5", 1)
+		extra_notes.append("1x Băng Ma Hạch Cấp 5")
+	if a_lvl >= 3:
+		pd.enhance_stones += 8
+		extra_notes.append("+8 Đá Cường Hóa")
+	EventBus.audio_sfx_requested.emit("chest_open")
+	EventBus.stats_changed.emit()
+	pd.trigger_auto_save("Tử Nghiên tầm bảo", true)
+	return {
+		"ok": true,
+		"msg": "Tử Nghiên ăn xong chạy vút vào Hậu Sơn đào về: %s!" % " · ".join(extra_notes)
+	}
+
+
+static func get_strong_ranking_roster() -> Array:
+	return [
+		{ "rank": 10, "name": "Bạch Thành (Thủ Lĩnh Bạch Bang)", "boss_id": "bach_thanh_boss", "diff": "normal", "realm": "Đấu Linh 7★", "reward_fe": 45 },
+		{ "rank": 8, "name": "La Hầu (Hắc Bạch Quan Sát)", "boss_id": "la_hau_boss", "diff": "normal", "realm": "Đấu Linh 9★", "reward_fe": 65 },
+		{ "rank": 6, "name": "Ngô Hạo (Tu La Huyết Kiếm)", "boss_id": "ngo_hao_boss", "diff": "nightmare", "realm": "Đấu Linh Đỉnh", "reward_fe": 85 },
+		{ "rank": 3, "name": "Bá Thương Liễu Kình", "boss_id": "lieu_kinh_boss", "diff": "normal", "realm": "Bán Bộ Đấu Vương", "reward_fe": 120 },
+		{ "rank": 2, "name": "Bá Thương Liễu Kình (Ác Mộng · Đại Liệt Trảo)", "boss_id": "lieu_kinh_boss", "diff": "nightmare", "realm": "Đấu Vương Sơ Kỳ", "reward_fe": 180 }
+	]

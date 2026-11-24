@@ -70,6 +70,14 @@
         { "pieces": 2, "desc": "+120 Công kích & +15% Chí mạng", "stats": { "atk": 120, "crit_chance": 15 } },
         { "pieces": 4, "desc": "+650 Sinh lực, +20% Sát thương Hỏa & -12% Hồi chiêu", "stats": { "hp": 650, "flame_dmg": 20, "cooldown_red": 12 } }
       ]
+    },
+    "set_noi_vien_ba_chu": {
+      "id": "set_noi_vien_ba_chu",
+      "name": "Bộ Lưu Ly Bá Chủ Nội Viện",
+      "bonuses": [
+        { "pieces": 2, "desc": "+220 Công kích, +60 Linh Hồn & +28% Sát thương Hỏa", "stats": { "atk": 220, "soul": 60, "flame_dmg": 28 } },
+        { "pieces": 4, "desc": "+1.500 Sinh lực, +20% Chí mạng, +10% Hút máu & -18% Hồi chiêu", "stats": { "hp": 1500, "crit_chance": 20, "lifesteal": 10, "cooldown_red": 18 } }
+      ]
     }
   },
   "templates": {
@@ -366,6 +374,54 @@
       "icon": "res://assets/sprites/icons/icon_pendant.png",
       "base_stats": { "atk": 42, "soul": 48, "hp": 320, "flame_dmg": 26, "exp_bonus": 28 },
       "description": "Hắc Tinh Thẻ chứa 240 ngày Tinh Hỏa Năng của Đệ Nhất Tân Sinh Vương Ngoại Viện Già Nam!"
+    },
+    "wpn_xich_luu_ly_viem": {
+      "id": "wpn_xich_luu_ly_viem",
+      "name": "Huyền Trọng Xích · Lưu Ly Liên Tâm",
+      "slot": "weapon",
+      "set_id": "set_noi_vien_ba_chu",
+      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
+      "attack_speed_mult": 1.04,
+      "base_stats": { "atk": 135, "hp": 420, "crit_chance": 20, "flame_dmg": 38 },
+      "description": "Huyền Trọng Xích tôi luyện suốt 2 năm dưới đáy biển dung nham Thiên Phần Tháp, khắc ấn Lưu Ly Liên Tâm Hỏa (#19 + #14)!"
+    },
+    "arm_luu_ly_dau_vuong_bao": {
+      "id": "arm_luu_ly_dau_vuong_bao",
+      "name": "Lưu Ly Đấu Vương Chiến Bào",
+      "slot": "armor",
+      "set_id": "set_noi_vien_ba_chu",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 880, "def": 135, "atk": 58, "soul": 52, "cooldown_red": 12 },
+      "description": "Chiến bào Nội Viện gia cố bằng Địa Tâm Tôi Thể Nhũ & bản nguyên Tâm Hỏa, tỏa uy áp Đấu Vương Đỉnh Phong!"
+    },
+    "wing_dau_khi_hoa_duc": {
+      "id": "wing_dau_khi_hoa_duc",
+      "name": "Lưu Ly Đấu Khí Hóa Dực",
+      "slot": "wings",
+      "set_id": "set_noi_vien_ba_chu",
+      "icon": "res://assets/sprites/icons/icon_wings.png",
+      "base_stats": { "spd": 82, "crit_chance": 22, "cooldown_red": 18, "atk": 68, "flame_dmg": 24 },
+      "description": "Đôi cánh Đấu Khí thực chất hóa màu xanh lưu ly ánh tím khi đột phá Đấu Vương — không chiến tự do trên bầu trời Nội Viện!"
+    },
+    "caul_hai_tam_dinh": {
+      "id": "caul_hai_tam_dinh",
+      "name": "Hải Tâm Đỉnh (Lục Phẩm Dược Đỉnh)",
+      "slot": "cauldron",
+      "set_id": "set_noi_vien_ba_chu",
+      "icon": "res://assets/sprites/icons/icon_cauldron.png",
+      "base_stats": { "soul": 68, "alchemy_bonus": 48, "flame_dmg": 42, "qi": 180 },
+      "description": "Chiến lợi phẩm đoạt từ Dược Hoàng Hàn Phong! Lò đan Lục Phẩm danh chấn Hắc Giác Vực, tăng cực mạnh tỷ lệ luyện đan & chống nổ Đan Lôi!"
+    },
+    "ring_duoc_hoang_nap_gioi": {
+      "id": "ring_duoc_hoang_nap_gioi",
+      "name": "Nạp Giới Dược Hoàng (Hàn Phong)",
+      "slot": "ring",
+      "set_id": "set_noi_vien_ba_chu",
+      "icon": "res://assets/sprites/icons/icon_ring.png",
+      "base_stats": { "atk": 72, "soul": 65, "hp": 460, "lifesteal": 8, "exp_bonus": 32 },
+      "description": "Chiếc Nạp Giới cổ chứa hàng chục cổ đan phương và tinh hoa Hắc Giác Vực thu được sau khi phá hủy nhục thân Hàn Phong!"
     }
   }
 }

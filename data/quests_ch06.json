@@ -1,0 +1,278 @@
+{
+  "version": "1.0",
+  "chapter_title": "Chương 06 — Nội Viện Già Nam & Đáy Tháp Thiên Phần (Quyển II)",
+  "quests": [
+    {
+      "id": "q40_ch06_lap_ban_mon",
+      "title": "40. [CHƯƠNG 06] Sáng Lập Bàn Môn — Dẹp Bạch Bang & Đấu Đan Hàn Nhàn!",
+      "objective": "Qua Cổng Đông vào Nội Viện Già Nam, hạ [MINI-BOSS] Thủ Lĩnh Bạch Bang Bạch Thành rồi tỉ thí đấu đan cùng Hàn Nhàn [V] thành lập thế lực BÀN MÔN!",
+      "type": "story_flag",
+      "flag_name": "ch06_ban_mon_founded",
+      "target_count": 1,
+      "reward_exp": 28000,
+      "reward_gold": 12000,
+      "reward_items": { "herb_thanh_moc_tien_dang": 3, "pill_dan_hoan_ngot": 2, "pill_hoa_lien_dan": 2 },
+      "intro_log": "Sơn Môn Nội Viện Già Nam đã mở! Nhưng Bạch Bang và Dược Bang đang cấu kết chèn ép tân sinh — hãy dẹp Bạch Thành, thắng Hàn Nhàn lập thế lực [BÀN MÔN] độc bá thị trường Tinh Hỏa Năng!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch06_killed_bach_thanh" }, "kind": "boss", "target": "bach_thanh_boss", "map": "ch06_noi_vien_ban_mon" },
+        { "default": true, "kind": "npc", "target": "ch06_han_nhan_ban_mon", "map": "ch06_noi_vien_ban_mon" }
+      ]
+    },
+    {
+      "id": "q41_ch06_tu_nghien_dia_tam",
+      "title": "41. Hậu Sơn Dược Tài — Thu Phục 'Tiểu Man Vương' Tử Nghiên & Địa Tâm Nhũ!",
+      "objective": "Lên Cổng Bắc Hậu Sơn Dược Tài dùng Kẹo Đan Hoàn thu phục [Tử Nghiên] [V] (Đồng Hành #5 [G]), hạ [BOSS] Tuyết Ma Thiên Viên rồi hớt [Địa Tâm Tôi Thể Nhũ] [V]!",
+      "type": "story_flag",
+      "flag_name": "ch06_got_dia_tam_nhu",
+      "target_count": 1,
+      "reward_exp": 34000,
+      "reward_gold": 14000,
+      "reward_items": { "herb_thanh_moc_tien_dang": 3, "herb_long_huyet_chi": 2, "core_bang_5": 1 },
+      "intro_log": "Bàn Môn đã vững như bàn thạch! Muốn thu phục Dị Hỏa #14 dưới đáy Thiên Phần Tháp bắt buộc phải có Lục Phẩm [Địa Linh Đan] — hãy lên Hậu Sơn Dược Viên phía Bắc tìm Thanh Mộc Tiên Đằng & kỳ ngộ Tiểu Man Vương!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch06_tu_nghien_joined" }, "kind": "npc", "target": "ch06_tu_nghien_meet", "map": "ch06_hau_son_duoc_vien" },
+        { "when": { "missing_flag": "ch06_killed_tuyet_ma" }, "kind": "boss", "target": "tuyet_ma_thien_vien_boss", "map": "ch06_hau_son_duoc_vien" },
+        { "default": true, "kind": "npc", "target": "ch06_dia_tam_nhu", "map": "ch06_hau_son_duoc_vien" }
+      ]
+    },
+    {
+      "id": "q42_ch06_luyen_dia_linh_dan",
+      "title": "42. Luyện Chế Bảo Đan Hộ Tâm — Lục Phẩm Địa Linh Đan!",
+      "objective": "Mở Lò Luyện Đan [L] luyện thành công 1 viên Lục Phẩm [Địa Linh Đan] (Thanh Mộc Tiên Đằng x2 + Long Huyết Chi x1 + Băng Ma Hạch Cấp 5 x1) chuẩn bị thôn phệ Vẫn Lạc Tâm Viêm!",
+      "type": "craft_pill",
+      "target_id": "pill_dia_linh_dan",
+      "auto_pass_if_owned": true,
+      "target_count": 1,
+      "reward_exp": 30000,
+      "reward_gold": 12000,
+      "reward_items": { "pill_hoa_lien_dan": 3 },
+      "intro_log": "Địa Tâm Tôi Thể Nhũ đã rèn gân cốt như kim cương và đánh thức trọn vẹn thần hồn Dược Lão! Mau bấm [L] luyện Lục Phẩm [Địa Linh Đan] bảo hộ tâm mạch trước khi vào Đấu Trường Cường Bảng!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch06_han_nhan_ban_mon", "map": "ch06_noi_vien_ban_mon" }
+      ]
+    },
+    {
+      "id": "q43_ch06_cuong_bang_lieu_kinh",
+      "title": "43. Đại Thi Đấu Cường Bảng (Top 10) — Kịch Chiến Bá Thương Liễu Kình!",
+      "objective": "Xuống Cổng Nam vào Đấu Trường Cường Bảng quyết đấu [BOSS #3] Bá Thương Liễu Kình, rồi nâng chén kết giao Liễu Kình [V] nhận vé xuống Tầng Đáy Thiên Phần Tháp!",
+      "type": "story_flag",
+      "flag_name": "ch06_got_top10_pass",
+      "target_count": 1,
+      "reward_exp": 42000,
+      "reward_gold": 18000,
+      "reward_items": { "pill_hoa_lien_dan": 3, "core_loi_5": 1 },
+      "intro_log": "Đại Thi Đấu Cường Bảng Nội Viện khai mạc! Chỉ Thập Đại Cường Giả mới được phép xuống Tầng 7–9 Thiên Phần Tháp — tiến xuống Đấu Trường phía Nam nghênh chiến Bá Thương Liễu Kình!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch06_beat_lieu_kinh" }, "kind": "boss", "target": "lieu_kinh_boss", "map": "ch06_dau_truong_cuong_bang" },
+        { "default": true, "kind": "npc", "target": "ch06_lieu_kinh_brother", "map": "ch06_dau_truong_cuong_bang" }
+      ]
+    },
+    {
+      "id": "q44_ch06_thien_phan_bao_dong",
+      "title": "44. Đại Bạo Động Thiên Phần Tháp — Phản Đồ Hàn Phong Áp Thành!",
+      "objective": "Tiến qua Cổng Đông vào Tầng 7–9 Thiên Phần Luyện Khí Tháp gặp Đại Trưởng Lão Tô Thiên [V] kích hoạt Đại Bạo Động Vẫn Lạc Tâm Viêm và rơi xuống Vực Thẳm Dung Nham!",
+      "type": "story_flag",
+      "flag_name": "ch06_tower_eruption_done",
+      "target_count": 1,
+      "reward_exp": 36000,
+      "reward_gold": 14000,
+      "reward_items": { "pill_hoa_lien_dan": 3, "pill_thanh_lien_tu": 3 },
+      "intro_log": "Thập Đại Cường Giả đã định danh! Đột nhiên toàn bộ Thiên Phần Luyện Khí Tháp phía Đông rung chuyển dữ dội — nghịch đồ Hàn Phong dẫn liên quân Đấu Hoàng Hắc Giác Vực kéo tới cướp Dị Hỏa!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch06_to_thien_tower", "map": "ch06_thien_phan_noi_thap" }
+      ]
+    },
+    {
+      "id": "q45_ch06_van_lac_tam_viem",
+      "title": "45. Luyện Ngục Dung Nham — Trấn Áp Bản Thể Dị Hỏa #14 Vẫn Lạc Tâm Viêm!",
+      "objective": "Bước vào Vực Thẳm Dung Nham Đáy Tháp, hiệp lực cùng Dược Lão đánh bại [BOSS DỊ HỎA #14] Đại Xà Vẫn Lạc Tâm Viêm!",
+      "type": "story_flag",
+      "flag_name": "ch06_killed_van_lac_snake",
+      "target_count": 1,
+      "reward_exp": 58000,
+      "reward_gold": 22000,
+      "reward_items": { "pill_hoa_lien_dan": 4 },
+      "intro_log": "Đại Xà Vẫn Lạc Tâm Viêm đã nuốt chửng bạn kéo xuống tận Vực Thẳm Dung Nham ngàn trượng! Phía trên là đại trận phong ấn kín mít — không còn đường lui, đánh gục bản thể Dị Hỏa #14 để sinh tồn!",
+      "waypoint": [
+        { "default": true, "kind": "boss", "target": "van_lac_tam_viem_boss", "map": "ch06_vuc_tham_dung_nham" }
+      ]
+    },
+    {
+      "id": "q46_ch06_luu_ly_dau_vuong",
+      "title": "46. Lưu Ly Liên Tâm Hỏa & Giao Ước Mỹ Đỗ Toa — Đột Phá Đấu Vương Đỉnh Phong!",
+      "objective": "Gặp Nữ Hoàng Mỹ Đỗ Toa vừa thức tỉnh Đấu Tông [V] giữa Vực Dung Nham để hoàn tất luyện hóa #14 Vẫn Lạc Tâm Viêm, mở Đấu Khí Hóa Dực & Tu Luyện Gian Lận Khí!",
+      "type": "story_flag",
+      "flag_name": "ch06_absorbed_van_lac",
+      "target_count": 1,
+      "reward_exp": 75000,
+      "reward_gold": 28000,
+      "reward_items": { "pill_hoang_cuc_dan": 1, "pill_hoa_lien_dan": 3 },
+      "intro_log": "Bản thể Đại Xà đã bị trấn áp thành Bản Nguyên Tâm Hỏa! Nhưng giữa khoảnh khắc dung hợp song Dị Hỏa bùng phát, Nữ Hoàng Mỹ Đỗ Toa (Đấu Tông) bất ngờ bước ra khỏi Thất Thải Thôn Thiên Mãng...",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch06_medusa_abyss", "map": "ch06_vuc_tham_dung_nham" }
+      ]
+    },
+    {
+      "id": "q47_ch06_tram_han_phong",
+      "title": "47. [KẾT CHƯƠNG 06] Phá Tháp Cứu Viện — Thanh Toán Nghịch Đồ Hàn Phong!",
+      "objective": "Phá tháp bay lên Bầu Trời Nội Viện, dùng Song Dị Hỏa Hỏa Liên trảm [FINAL BOSS] Dược Hoàng Hàn Phong (Hải Tâm Diễm #15) rồi nghe tin khẩn từ Thám Tử Gia Mã [V]!",
+      "type": "story_flag",
+      "flag_name": "ch06_completed",
+      "target_count": 1,
+      "reward_exp": 120000,
+      "reward_gold": 45000,
+      "reward_items": { "pill_hoang_cuc_dan": 1, "pill_am_duong_huyen_long": 2 },
+      "intro_log": "HAI NĂM BẾ QUAN ĐÃ QUA — LƯU LY LIÊN TÂM HỎA THÀNH HÌNH, ĐẤU VƯƠNG 9 TINH ĐỈNH PHONG XUẤT THẾ!! Phía trên Bầu Trời Nội Viện, Dược Hoàng Hàn Phong đang bao vây Bàn Môn — PHÁ THÁP BAY LÊN TRẢ THÙ CHO SƯ TÔN!!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch06_killed_han_phong" }, "kind": "boss", "target": "han_phong_boss", "map": "ch06_bau_troi_noi_vien" },
+        { "default": true, "kind": "npc", "target": "ch06_gia_ma_scout", "map": "ch06_bau_troi_noi_vien" }
+      ]
+    }
+  ],
+  "enemy_kill_flags": {
+    "bach_thanh_boss": { "set_flag": "ch06_killed_bach_thanh" },
+    "tuyet_ma_thien_vien_boss": { "set_flag": "ch06_killed_tuyet_ma" },
+    "lieu_kinh_boss": { "set_flag": "ch06_beat_lieu_kinh" },
+    "van_lac_tam_viem_boss": { "set_flag": "ch06_killed_van_lac_snake" },
+    "han_phong_boss": { "set_flag": "ch06_killed_han_phong" }
+  },
+  "flag_effects": {
+    "ch06_killed_bach_thanh": {
+      "relic": "Dẹp Loạn Bạch Bang: Đánh Gục Thủ Lĩnh Bạch Thành",
+      "give_fire_energy": 60,
+      "sfx": "level_up",
+      "shake": [10.0, 0.35],
+      "banter": "ĐÁNH GỤC THỦ LĨNH BẠCH BANG BẠCH THÀNH (+60 Tinh Hỏa Năng)! Mau quay lại gặp Hàn Nhàn [V] đấu đan thu phục Dược Bang & chính thức thành lập BÀN MÔN!"
+    },
+    "ch06_ban_mon_founded": {
+      "relic": "Môn Chủ Bàn Môn (Mở Quản Trị Thế Lực [M] -> Bàn Môn)",
+      "give_fire_energy": 100,
+      "set_realm_min": { "realm": 5, "stage": 7 },
+      "sfx": "breakthrough",
+      "shake": [12.0, 0.45],
+      "banter": "SÁNG LẬP THẾ LỰC [BÀN MÔN] THÀNH CÔNG! Hàn Nhàn quy thuận làm Đan Đường Chủ (+100 Hỏa Năng & Đấu Linh 7 Tinh) — bấm [M] -> 🏯 Bàn Môn để nâng cấp 3 Đường & mở cổng Hậu Sơn / Cường Bảng / Thiên Phần Tháp!"
+    },
+    "ch06_tu_nghien_joined": {
+      "relic": "Đồng Hành #5 [G]: Tiểu Man Vương Tử Nghiên (Thái Hư Cổ Long)",
+      "set_flag": "FLAG_ZI_YAN_COMPANION",
+      "unlock_companion": { "id": "tu_nghien", "auto_summon": true },
+      "give_items": { "herb_thanh_moc_tien_dang": 2 },
+      "sfx": "breakthrough",
+      "shake": [10.0, 0.40],
+      "banter": "THU PHỤC 'TIỂU MAN VƯƠNG' TỬ NGHIÊN! Mở khóa Đồng Hành #5 [G] TỬ NGHIÊN (Cổ Long Nhất Quyền gây Choáng & +45% Tầm Radar Tầm Bảo)! Tiến sang Thung Lũng Tuyết Ma phía Đông hạ Tuyết Ma Thiên Viên!"
+    },
+    "ch06_tu_nghien_candy_done": {
+      "relic": "Kỳ Ngộ Cổ Long Hoàng: Long Huyết Chi (+500 HP & Cổ Long Nhất Quyền Choáng 2.5s!)",
+      "give_items": { "herb_long_huyet_chi": 2 },
+      "give_soul": 15,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ KẸO ĐAN HOÀN ĐẠI THÀNH! Tử Nghiên dẫn bạn tìm [Long Huyết Chi Ngàn Năm] (+500 HP vĩnh viễn) & cường hóa Cổ Long Nhất Quyền gây Choáng 2.5 giây!"
+    },
+    "ch06_killed_tuyet_ma": {
+      "relic": "Chinh Phục Thung Lũng Tuyết Ma Thiên Viên",
+      "sfx": "breakthrough",
+      "shake": [12.0, 0.45],
+      "banter": "ĐÁNH BẠI TUYẾT MA THIÊN VIÊN (MA THÚ CẤP 5 ĐỈNH)! Mau tiến tới Thạch Bồn phía Đông Bắc hớt [Địa Tâm Tôi Thể Nhũ] [V]!"
+    },
+    "ch06_got_dia_tam_nhu": {
+      "relic": "Địa Tâm Tôi Thể Nhũ (+15% DEF · +1200 HP · Đánh Thức Sư Tôn Đỉnh Phong)",
+      "give_soul": 25,
+      "set_realm_min": { "realm": 5, "stage": 8 },
+      "give_items": { "herb_thanh_moc_tien_dang": 2, "herb_long_huyet_chi": 1, "core_bang_5": 1 },
+      "sfx": "breakthrough",
+      "shake": [12.0, 0.45],
+      "banter": "TẨY TỦY ĐỊA TÂM TÔI THỂ NHŨ THÀNH CÔNG! Vĩnh viễn +15% DEF, +1.200 HP, +25 SOUL & đột phá ĐẤU LINH 8 TINH! Bấm [L] luyện Lục Phẩm [Địa Linh Đan] ngay!"
+    },
+    "ch06_beat_lieu_kinh": {
+      "relic": "Trận Hòa Lịch Sử Cường Bảng: Bá Thương Liễu Kình",
+      "give_fire_energy": 120,
+      "sfx": "breakthrough",
+      "shake": [13.0, 0.50],
+      "banter": "KỊCH CHIẾN LONG TRỜI LỞ ĐẤT CÙNG BÁ THƯƠNG LIỄU KÌNH! Đại Trưởng Lão Tô Thiên tuyên bố đặc cách Top 10 Cường Bảng — hãy tới gặp Liễu Kình [V] kết giao huynh đệ & nhận tuyệt học!"
+    },
+    "ch06_got_top10_pass": {
+      "relic": "Thập Đại Cường Giả Nội Viện · Tuyệt Học [Đại Liệt Phách Quan Trảo]",
+      "unlock_skill": { "id": "dai_liet_phach_quan", "slot": "" },
+      "give_soul": 20,
+      "set_realm_min": { "realm": 5, "stage": 9 },
+      "sfx": "breakthrough",
+      "shake": [11.0, 0.40],
+      "banter": "KẾT GIAO HUYNH ĐỆ BÁ THƯƠNG LIỄU KÌNH! Lĩnh ngộ Địa Giai Trung Cấp [ĐẠI LIỆT PHÁCH QUAN TRẢO] (lắp tại [K]), đột phá ĐẤU LINH 9 TINH ĐỈNH PHONG & mở đường xuống Tầng Đáy Thiên Phần Tháp!"
+    },
+    "ch06_lam_tu_nhai_ally": {
+      "relic": "Viện Binh Cường Bảng: Thanh Phong Kiếm Lâm Tu Nhai",
+      "give_fire_energy": 80,
+      "give_soul": 12,
+      "sfx": "level_up",
+      "banter": "Cường Bảng Đệ Nhị [Lâm Tu Nhai] đồng ý kết giao viện binh sẵn sàng theo bạn viễn chinh Gia Mã Đế Quốc (+80 Hỏa Năng · +12 SOUL)!"
+    },
+    "ch06_duoc_lao_memory_done": {
+      "relic": "Hận Thù Phản Sư Dược Trần (+25% DMG vs Hàn Phong & Hồn Điện · +35 SOUL)",
+      "give_soul": 35,
+      "sfx": "radar_ping",
+      "banter": "Lĩnh hội Ký Ức Dược Tôn Giả! Linh Hồn lực tăng vọt +35 SOUL & vĩnh viễn +25% Sát thương lên phản đồ Hàn Phong cùng toàn bộ Hồn Điện!"
+    },
+    "ch06_cured_to_thien": {
+      "relic": "Ân Nhân Học Viện Già Nam: Chữa Tâm Hỏa Ám Tật Đại Trưởng Lão Tô Thiên (+30 SOUL)",
+      "give_soul": 30,
+      "give_fire_energy": 150,
+      "sfx": "breakthrough",
+      "banter": "Dùng Lưu Ly Liên Tâm Hỏa hút sạch Tâm Hỏa Ám Tật cho Đại Trưởng Lão Tô Thiên (+30 SOUL · +150 Hỏa Năng)! Học Viện Già Nam vĩnh viễn bảo hộ Bàn Môn!"
+    },
+    "ch06_tower_eruption_done": {
+      "relic": "Đại Bạo Động Thiên Phần Tháp: Đụng Độ Dược Hoàng Hàn Phong",
+      "sfx": "boss_roar",
+      "shake": [15.0, 0.65],
+      "banter": "ĐẠI XÀ VẪN LẠC TÂM VIÊM PHÁ THÁP BẠO ĐỘNG!! Khe Nứt Đông dẫn xuống VỰC THẲM DUNG NHAM ĐÁY THÁP đã mở toang!"
+    },
+    "ch06_killed_van_lac_snake": {
+      "relic": "Trấn Áp Bản Thể Dị Hỏa #14 Vẫn Lạc Tâm Viêm",
+      "sfx": "breakthrough",
+      "shake": [14.0, 0.55],
+      "banter": "SƯ ĐỒ HIỆP LỰC TRẤN ÁP ĐẠI XÀ VẪN LẠC TÂM VIÊM THÀNH BẢN NGUYÊN!! Nhưng bóng dáng kiều diễm của Nữ Hoàng Mỹ Đỗ Toa vừa bước ra giữa biển dung nham — hãy tới gặp nàng [V]!"
+    },
+    "ch06_luu_ly_tinh_done": {
+      "relic": "Kỳ Ngộ Đáy Vực: Địa Hỏa Lưu Ly Tinh (+15% Sát Thương Hỏa & Dung Nham Chước Đốt)",
+      "give_soul": 18,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ ẨN ĐÁY DUNG NHAM! Khảm [Địa Hỏa Lưu Ly Tinh] lên Huyền Trọng Xích: vĩnh viễn +15% Sát thương Hỏa & mỗi đòn đánh bùng nổ dư hỏa dung nham!"
+    },
+    "ch06_absorbed_van_lac": {
+      "relic": "Lưu Ly Liên Tâm Hỏa (#19+#14) · Tu Luyện Gian Lận Khí · Đấu Khí Hóa Dực",
+      "set_flags": ["FLAG_FALLING_HEART_FLAME", "FLAG_MEDUSA_SOUL_BOND"],
+      "unlock_flame": { "id": "di_hoa_14_van_lac", "auto_equip": true },
+      "unlock_skill": { "id": "luu_ly_lien_tam", "slot": "" },
+      "set_realm_min": { "realm": 6, "stage": 9 },
+      "give_gear": [
+        { "template": "wpn_xich_luu_ly_viem", "rarity": "de", "auto_equip": false },
+        { "template": "wing_dau_khi_hoa_duc", "rarity": "de", "auto_equip": false }
+      ],
+      "affection": { "my_do_toa": 35 },
+      "give_soul": 40,
+      "sfx": "breakthrough",
+      "shake": [16.0, 0.70],
+      "banter": "LƯU LY LIÊN TÂM HỎA THÀNH HÌNH!! Thu phục #14 VẪN LẠC TÂM VIÊM, đột phá thẳng ĐẤU VƯƠNG 9 TINH ĐỈNH PHONG (Đấu Khí Hóa Dực), kích hoạt [Tu Luyện Gian Lận Khí 24/7] & lĩnh ngộ [Lưu Ly Liên Tâm Ấn]!! PHÁ THÁP BAY LÊN TRỜI CỨU BÀN MÔN!!"
+    },
+    "ch06_killed_han_phong": {
+      "relic": "Chấn Động Hắc Giác Vực: Nổ Tan Nhục Thân Dược Hoàng Hàn Phong & Đoạt Hải Tâm Đỉnh!",
+      "set_flag": "FLAG_HAN_FENG_SOUL_ESCAPED",
+      "give_gear": [
+        { "template": "caul_hai_tam_dinh", "rarity": "de", "auto_equip": false },
+        { "template": "ring_duoc_hoang_nap_gioi", "rarity": "de", "auto_equip": false }
+      ],
+      "give_fire_energy": 200,
+      "sfx": "breakthrough",
+      "shake": [16.0, 0.75],
+      "banter": "SONG DỊ HỎA PHẬT NỘ HỎA LIÊN NỔ NÁT NHỤC THÂN DƯỢC HOÀNG HÀN PHONG!! Đoạt [Hải Tâm Đỉnh Lục Phẩm] & [Nạp Giới Dược Hoàng] — nhưng một luồng khói đen Hồn Điện lén cuốn tàn hồn hắn trốn thoát... Mau gặp Thám Tử Gia Mã [V]!"
+    },
+    "ch06_completed": {
+      "relic": "Bá Chủ Nội Viện & Quân Đoàn Viễn Chinh — Sẵn Sàng Tam Thượng Vân Lam Sơn!",
+      "give_soul": 30,
+      "give_fire_energy": 250,
+      "affection": { "huan_nhi": 25, "my_do_toa": 20 },
+      "sfx": "breakthrough",
+      "shake": [14.0, 0.60],
+      "banter": "HOÀN TẤT TRỌN VẸN CHƯƠNG 06 — NỘI VIỆN GIÀ NAM & ĐÁY THÁP THIÊN PHẦN!! Tiêu Gia lâm nạn, phụ thân mất tích... Quân Đoàn Viễn Chinh Đấu Vương & Bảo Tiêu Đấu Tông Mỹ Đỗ Toa đã sẵn sàng cho CHƯƠNG 07: TAM THƯỢNG VÂN LAM SƠN!!"
+    }
+  }
+}

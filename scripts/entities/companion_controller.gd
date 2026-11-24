@@ -4,6 +4,7 @@ extends Node2D
 ## - duoc_lao_phantom: Hồn ảnh Dược Lão lơ lửng hộ pháp, phóng tia Cốt Linh Lãnh Hỏa gây thiêu đốt kẻ địch xung quanh!
 ## - thai_lan: Thất Thải Thôn Thiên Mãng tốc công cực cao + kỹ năng Hộ Chủ cứu nguy khi HP < 38%!
 ## - huan_nhi: Tiêu Huân Nhi (Kim Đế Phần Thiên Viêm) — phóng kim diễm sát thương & thiêu đốt cực mạnh + hồi +10% Max QI mỗi 6.5s!
+## - tu_nghien: Tiểu Man Vương Tử Nghiên (Thái Hư Cổ Long) — tung Cổ Long Nhất Quyền sát thương cực cao + LÀM CHOÁNG kẻ địch & mở rộng Radar Tầm Bảo +45%!
 
 var companion_id: String = "tieu_y_tien"
 var attack_timer: float = 0.8
@@ -72,6 +73,14 @@ func configure_companion(new_id: String) -> void:
 		aura_light.energy = 1.12
 		name_lbl.text = "Đồng Hành: Tiêu Huân Nhi (Kim Đế Viêm)"
 		name_lbl.add_theme_color_override("font_color", Color("#FFD166"))
+	elif companion_id == "tu_nghien":
+		body_sprite.texture = load("res://assets/sprites/npcs/npc_tu_nghien.png")
+		body_sprite.scale = Vector2(0.84, 0.84)
+		body_sprite.modulate = Color.WHITE
+		aura_light.color = Color("#C77DFF")
+		aura_light.energy = 1.15
+		name_lbl.text = "Đồng Hành: Tử Nghiên (Thái Hư Cổ Long)"
+		name_lbl.add_theme_color_override("font_color", Color("#E0AAFF"))
 	else:
 		body_sprite.texture = load("res://assets/sprites/npcs/npc_duoc_lao.png")
 		body_sprite.scale = Vector2(0.86, 0.86)
@@ -99,6 +108,8 @@ func _physics_process(delta: float) -> void:
 		desired_offset = Vector2(-52.0, -28.0)
 	elif companion_id == "huan_nhi":
 		desired_offset = Vector2(58.0, -20.0)
+	elif companion_id == "tu_nghien":
+		desired_offset = Vector2(-56.0, -24.0)
 	var target_pos: Vector2 = player.global_position + desired_offset
 	var dist_p: float = global_position.distance_to(target_pos)
 	if dist_p > 520.0:
@@ -121,6 +132,10 @@ func _physics_process(delta: float) -> void:
 		body_sprite.position.y = -36.0 + sin(anim_t * 4.0) * 2.8
 		if aura_light != null:
 			aura_light.energy = 1.08 + sin(anim_t * 5.0) * 0.18
+	elif companion_id == "tu_nghien":
+		body_sprite.position.y = -33.0 + absf(sin(anim_t * 5.6)) * -4.2
+		if aura_light != null:
+			aura_light.energy = 1.10 + sin(anim_t * 6.2) * 0.22
 	else:
 		body_sprite.position.y = -36.0 + sin(anim_t * 4.2) * 2.2
 
@@ -168,6 +183,8 @@ func _physics_process(delta: float) -> void:
 		if target_en != null:
 			if companion_id == "thai_lan":
 				attack_timer = 1.22
+			elif companion_id == "tu_nghien":
+				attack_timer = 1.48
 			elif companion_id == "huan_nhi":
 				attack_timer = 1.32
 			elif companion_id == "tieu_y_tien":
@@ -176,18 +193,20 @@ func _physics_process(delta: float) -> void:
 				attack_timer = 1.45
 			body_sprite.flip_h = (target_en.global_position.x < global_position.x)
 			var base_atk: float = PlayerData.get_atk()
-			var dmg_mult: float = 0.88 if companion_id == "thai_lan" else (0.78 if companion_id == "huan_nhi" else (0.48 if companion_id == "tieu_y_tien" else 0.62))
+			var dmg_mult: float = 0.96 if companion_id == "tu_nghien" else (0.88 if companion_id == "thai_lan" else (0.78 if companion_id == "huan_nhi" else (0.48 if companion_id == "tieu_y_tien" else 0.62)))
 			var bolt_dmg: float = base_atk * dmg_mult
-			var bolt_col: Color = Color.from_hsv(fmod(anim_t * 0.6, 1.0), 0.72, 1.0) if companion_id == "thai_lan" else (Color("#FFD166") if companion_id == "huan_nhi" else (Color("#52B788") if companion_id == "tieu_y_tien" else Color("#A8DADC")))
+			var bolt_col: Color = Color("#C77DFF") if companion_id == "tu_nghien" else (Color.from_hsv(fmod(anim_t * 0.6, 1.0), 0.72, 1.0) if companion_id == "thai_lan" else (Color("#FFD166") if companion_id == "huan_nhi" else (Color("#52B788") if companion_id == "tieu_y_tien" else Color("#A8DADC"))))
 			var burn_v: float = bolt_dmg * 0.32 if companion_id == "thai_lan" else (base_atk * 0.28 if companion_id == "huan_nhi" else (bolt_dmg * 0.20 if companion_id == "duoc_lao_phantom" else 0.0))
+			var stun_s: float = (2.5 if PlayerData.has_flag("ch06_tu_nghien_candy_done") else 1.5) if companion_id == "tu_nghien" else 0.0
 			active_bolts.append({
 				"pos": global_position + Vector2(0, -30),
 				"target": target_en,
 				"color": bolt_col,
 				"dmg": bolt_dmg,
-				"burn": burn_v
+				"burn": burn_v,
+				"stun": stun_s
 			})
-			EventBus.audio_sfx_requested.emit("skill_fire")
+			EventBus.audio_sfx_requested.emit("skill_burst" if companion_id == "tu_nghien" else "skill_fire")
 
 	# Cập nhật tia năng lượng bay tới mục tiêu
 	var kept_bolts: Array = []
@@ -200,7 +219,12 @@ func _physics_process(delta: float) -> void:
 		var to_t: Vector2 = dest - cur_p
 		if to_t.length() <= 24.0:
 			if tgt.has_method("receive_hit"):
-				tgt.receive_hit(float(b.get("dmg", 10.0)), to_t.normalized() * 90.0, 0.15, float(b.get("burn", 0.0)))
+				var kb_str: float = 280.0 if float(b.get("stun", 0.0)) > 0.0 else 90.0
+				tgt.receive_hit(float(b.get("dmg", 10.0)), to_t.normalized() * kb_str, 0.28, float(b.get("burn", 0.0)))
+			var st_val: float = float(b.get("stun", 0.0))
+			if st_val > 0.0 and tgt.has_method("apply_stun"):
+				tgt.apply_stun(st_val)
+				EventBus.floating_text_requested.emit(tgt.global_position + Vector2(0, -82), "CỔ LONG NHẤT QUYỀN! CHOÁNG %.1fs" % st_val, Color("#E0AAFF"))
 		else:
 			b["pos"] = cur_p + to_t.normalized() * 520.0 * delta
 			kept_bolts.append(b)

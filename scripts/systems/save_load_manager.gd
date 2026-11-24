@@ -147,6 +147,7 @@ static func build_save_payload(pd: Node) -> Dictionary:
 		"weapon_core_sockets": pd.weapon_core_sockets.duplicate(true),
 		"fire_energy": pd.fire_energy,
 		"tower_best_floor": pd.tower_best_floor,
+		"pan_gate_state": pd.pan_gate_state.duplicate(true) if ("pan_gate_state" in pd and pd.pan_gate_state is Dictionary) else {},
 		"auction_wins": pd.auction_wins,
 		"auction_consigned_total": pd.auction_consigned_total,
 		"quick_hp_pill_id": pd.quick_hp_pill_id,
@@ -215,6 +216,11 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 		pd.weapon_core_sockets = ["", "", ""]
 	pd.fire_energy = int(d.get("fire_energy", 0))
 	pd.tower_best_floor = int(d.get("tower_best_floor", 0))
+	var loaded_pg = d.get("pan_gate_state", {})
+	if loaded_pg is Dictionary and not loaded_pg.is_empty():
+		pd.pan_gate_state = loaded_pg.duplicate(true)
+	else:
+		pd.pan_gate_state = {}
 	pd.auction_wins = int(d.get("auction_wins", 0))
 	pd.auction_consigned_total = int(d.get("auction_consigned_total", 0))
 	pd.tower_active_buffs.clear()

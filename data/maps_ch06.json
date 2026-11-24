@@ -1,0 +1,743 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 06",
+  "map_order": [
+    "ch06_noi_vien_ban_mon",
+    "ch06_hau_son_duoc_vien",
+    "ch06_dau_truong_cuong_bang",
+    "ch06_thien_phan_noi_thap",
+    "ch06_vuc_tham_dung_nham",
+    "ch06_bau_troi_noi_vien"
+  ],
+  "maps": {
+    "ch06_noi_vien_ban_mon": {
+      "id": "ch06_noi_vien_ban_mon",
+      "chapter": "Chương 06",
+      "name": "Nội Viện Già Nam — Khu Tân Sinh & Trang Viên Bàn Môn",
+      "bgm": "bgm_capital",
+      "size": [2048, 1152],
+      "ambient_hex": "#c4ddd6",
+      "base_tile": "res://assets/sprites/tiles/noi_vien_jade.png",
+      "default_spawn": [180, 560],
+      "zones": [
+        {
+          "rect": [256, 224, 672, 672],
+          "tile": "res://assets/sprites/tiles/gia_nam_courtyard.png",
+          "border_hex": "#FFD166"
+        },
+        {
+          "rect": [1120, 224, 704, 672],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#70D6FF",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [345, 175],
+          "text": "TRANG VIÊN BÀN MÔN — ĐAN ĐƯỜNG & VÕ ĐƯỜNG\n(Gặp Ngô Hạo & Hàn Nhàn [V] · Quản Trị Thế Lực [M]!)",
+          "color": "#FFD166"
+        },
+        {
+          "pos": [1220, 175],
+          "text": "PHỐ GIAO DỊCH HỎA NĂNG — ĐỊA BÀN BẠCH BANG\n(Dẹp Thủ Lĩnh Bạch Thành & Đấu Đan Phá Thế Dược Bang!)",
+          "color": "#70D6FF"
+        }
+      ],
+      "props": [
+        { "type": "gate", "pos": [260, 560] },
+        { "type": "gate", "pos": [1024, 150] },
+        { "type": "lantern", "pos": [310, 270] },
+        { "type": "lantern", "pos": [870, 270] },
+        { "type": "lantern", "pos": [310, 845] },
+        { "type": "lantern", "pos": [870, 845] },
+        { "type": "pine", "pos": [210, 210] },
+        { "type": "pine", "pos": [1835, 210] },
+        { "type": "lantern", "pos": [1160, 270] },
+        { "type": "lantern", "pos": [1770, 270] },
+        { "type": "lantern", "pos": [1160, 845] },
+        { "type": "lantern", "pos": [1770, 845] }
+      ],
+      "chests": [
+        {
+          "id": "chest_ban_mon_treasury",
+          "name": "Kho Quỹ Khởi Nghiệp Trang Viên Bàn Môn",
+          "pos": [330, 770],
+          "gold": 3800,
+          "stones": 24,
+          "gear_template": "arm_luu_ly_dau_vuong_bao",
+          "gear_rarity": "thien",
+          "items": {
+            "herb_thanh_moc_tien_dang": 3,
+            "pill_hoa_lien_dan": 2,
+            "pill_dan_hoan_ngot": 2
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch06_huan_nhi_ban_mon",
+          "name": "Tiêu Huân Nhi (Phó Môn Chủ Bàn Môn)",
+          "title": "Trang Viên Bàn Môn · Hậu Thuẫn Cổ Tộc",
+          "sprite": "res://assets/sprites/npcs/npc_huan_nhi.png",
+          "pos": [440, 445],
+          "role": "ch06_huan_nhi_ban_mon",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFE599",
+          "prompt_text": "[V] Gặp Tiêu Huân Nhi"
+        },
+        {
+          "id": "npc_ch06_ngo_hao_ban_mon",
+          "name": "Ngô Hạo (Đường Chủ Võ Đường Bàn Môn)",
+          "title": "Sáng Lập Bàn Môn · Quản Trị Võ Đường",
+          "sprite": "res://assets/sprites/enemies/ngo_hao_boss.png",
+          "pos": [610, 620],
+          "role": "ch06_ngo_hao_ban_mon",
+          "glow_hex": "#FF4D6D",
+          "name_hex": "#FF9770",
+          "prompt_text": "[V] Gặp Đường Chủ Ngô Hạo"
+        },
+        {
+          "id": "npc_ch06_han_nhan_ban_mon",
+          "name": "Hàn Nhàn (Dược Bang -> Đan Đường Bàn Môn)",
+          "title": "Tỉ Thí Đấu Đan · Quản Lý Kinh Tế Hỏa Năng",
+          "sprite": "res://assets/sprites/npcs/npc_han_nhan.png",
+          "pos": [775, 455],
+          "role": "ch06_han_nhan_ban_mon",
+          "glow_hex": "#52B788",
+          "name_hex": "#80ED99",
+          "prompt_text": "[V] Đấu Đan & Quản Trị Bàn Môn — Hàn Nhàn"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "bach_bang_tinh_nhue", "pos": [1210, 360], "respawn": 12.0 },
+        { "enemy_id": "bach_bang_tinh_nhue", "pos": [1210, 760], "respawn": 12.0 },
+        { "enemy_id": "bach_thanh_boss", "pos": [1530, 560], "respawn": 30.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_hoa_nang_from_noi_vien",
+          "label": "Cổng Tây -> Rừng Săn Hỏa Năng (Ngoại Viện)",
+          "pos": [112, 560],
+          "target_map": "ch05_rung_san_hoa_nang",
+          "target_spawn": [1810, 560],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch06_hau_son_duoc_vien",
+          "label": "Cổng Bắc -> Hậu Sơn Dược Tài & Thung Lũng Tuyết Ma",
+          "pos": [1024, 112],
+          "target_map": "ch06_hau_son_duoc_vien",
+          "target_spawn": [1024, 980],
+          "require_flag": "ch06_ban_mon_founded",
+          "locked_hint": "Hãy đánh bại [MINI-BOSS] Bạch Thành và thắng Hàn Nhàn lập Bàn Môn trước khi tiến sâu vào Hậu Sơn Dược Viên!"
+        },
+        {
+          "id": "to_ch06_dau_truong_cuong_bang",
+          "label": "Cổng Nam -> Đấu Trường Cường Bảng Nội Viện (Top 10)",
+          "pos": [1024, 1035],
+          "target_map": "ch06_dau_truong_cuong_bang",
+          "target_spawn": [1024, 185],
+          "require_flag": "ch06_ban_mon_founded",
+          "locked_hint": "Hãy hoàn tất sáng lập Bàn Môn (gặp Hàn Nhàn) trước khi tiến vào Đấu Trường Cường Bảng!"
+        },
+        {
+          "id": "to_ch06_thien_phan_noi_thap",
+          "label": "Cổng Đông -> Thiên Phần Luyện Khí Tháp (Tầng 7–9 Phong Ấn)",
+          "pos": [1940, 560],
+          "target_map": "ch06_thien_phan_noi_thap",
+          "target_spawn": [180, 560],
+          "require_flag": "ch06_ban_mon_founded",
+          "locked_hint": "Hãy thành lập Bàn Môn tạo nguồn Tinh Hỏa Năng trước khi bước vào Thiên Phần Luyện Khí Tháp!"
+        }
+      ]
+    },
+    "ch06_hau_son_duoc_vien": {
+      "id": "ch06_hau_son_duoc_vien",
+      "chapter": "Chương 06",
+      "name": "Hậu Sơn Dược Tài Nội Viện — Thung Lũng Tuyết Ma Thiên Viên",
+      "bgm": "bgm_wild",
+      "size": [2048, 1152],
+      "ambient_hex": "#b7dfd4",
+      "base_tile": "res://assets/sprites/tiles/bamboo_grass.png",
+      "default_spawn": [1024, 980],
+      "zones": [
+        {
+          "rect": [224, 288, 608, 576],
+          "tile": "res://assets/sprites/tiles/gia_nam_courtyard.png",
+          "border_hex": "#C77DFF"
+        },
+        {
+          "rect": [1088, 192, 768, 544],
+          "tile": "res://assets/sprites/tiles/yunlan_marble.png",
+          "border_hex": "#72EFDD",
+          "arena_circle": true
+        },
+        {
+          "rect": [1472, 256, 320, 224],
+          "tile": "res://assets/sprites/tiles/oasis_turquoise.png",
+          "border_hex": "#2EC4B6"
+        }
+      ],
+      "signs": [
+        {
+          "pos": [315, 240],
+          "text": "DƯỢC VIÊN HOANG HẬU SƠN\n(Gặp 'Tiểu Man Vương' Tử Nghiên [V] — Dụ Bằng Kẹo Đan Hoàn!)",
+          "color": "#E0AAFF"
+        },
+        {
+          "pos": [1170, 145],
+          "text": "THUNG LŨNG TUYẾT MA THIÊN VIÊN\n(Hạ Tuyết Ma Thiên Viên -> Đoạt ĐỊA TÂM TÔI THỂ NHŨ!)",
+          "color": "#72EFDD"
+        }
+      ],
+      "props": [
+        { "type": "pine", "pos": [185, 220] },
+        { "type": "bamboo", "pos": [480, 200] },
+        { "type": "bamboo", "pos": [860, 220] },
+        { "type": "boulder", "pos": [980, 460] },
+        { "type": "boulder", "pos": [980, 680] },
+        { "type": "pine", "pos": [1860, 820] },
+        { "type": "lantern", "pos": [1145, 240] },
+        { "type": "lantern", "pos": [1795, 680] }
+      ],
+      "chests": [
+        {
+          "id": "chest_hau_son_long_huyet",
+          "name": "Hốc Cổ Thụ Tiền Sử (Kho Báu Tử Nghiên Đánh Hơi)",
+          "pos": [290, 360],
+          "gold": 4200,
+          "stones": 26,
+          "gear_template": "wing_hac_diem_tu_van_duc",
+          "gear_rarity": "de",
+          "items": {
+            "herb_thanh_moc_tien_dang": 4,
+            "herb_long_huyet_chi": 3,
+            "pill_dan_hoan_ngot": 3
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch06_tu_nghien_meet",
+          "name": "Tiểu Man Vương Tử Nghiên (Thái Hư Cổ Long)",
+          "title": "Đồng Hành #5 [G] · Tầm Bảo Radar · Kỳ Ngộ Kẹo Đan Hoàn",
+          "sprite": "res://assets/sprites/npcs/npc_tu_nghien.png",
+          "pos": [520, 560],
+          "role": "ch06_tu_nghien_meet",
+          "glow_hex": "#C77DFF",
+          "name_hex": "#E0AAFF",
+          "prompt_text": "[V] Nói Chuyện Với Tiểu Man Vương Tử Nghiên"
+        },
+        {
+          "id": "npc_ch06_dia_tam_nhu",
+          "name": "Thạch Bồn Địa Tâm Tôi Thể Nhũ",
+          "title": "Huyền Hoàng Viêm Tinh · Tẩy Tủy Rèn Cốt (+15% DEF · +1200 HP)",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [1630, 365],
+          "role": "ch06_dia_tam_nhu",
+          "glow_hex": "#2EC4B6",
+          "name_hex": "#72EFDD",
+          "prompt_text": "[V] Hớt Địa Tâm Tôi Thể Nhũ & Đánh Thức Sư Tôn"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "thanh_moc_doc_mang", "pos": [820, 420], "respawn": 12.0 },
+        { "enemy_id": "thanh_moc_doc_mang", "pos": [820, 740], "respawn": 12.0 },
+        { "enemy_id": "thanh_moc_doc_mang", "pos": [1240, 780], "respawn": 13.0 },
+        { "enemy_id": "tuyet_ma_thien_vien_boss", "pos": [1400, 520], "respawn": 30.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_ban_mon_from_hau_son",
+          "label": "Cổng Nam -> Nội Viện Già Nam (Trang Viên Bàn Môn)",
+          "pos": [1024, 1045],
+          "target_map": "ch06_noi_vien_ban_mon",
+          "target_spawn": [1024, 185],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch06_dau_truong_cuong_bang": {
+      "id": "ch06_dau_truong_cuong_bang",
+      "chapter": "Chương 06",
+      "name": "Đấu Trường Cường Bảng Nội Viện (Top 10 Arena)",
+      "bgm": "bgm_yunlan",
+      "size": [2048, 1152],
+      "ambient_hex": "#dcd2c0",
+      "base_tile": "res://assets/sprites/tiles/noi_vien_jade.png",
+      "default_spawn": [1024, 185],
+      "zones": [
+        {
+          "rect": [448, 256, 1152, 736],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FFD166",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [620, 210],
+          "text": "ĐẠI THI ĐẤU CƯỜNG BẢNG NỘI VIỆN (TOP 10 ARENA)\n(Kịch Chiến Bá Thương Liễu Kình -> Lĩnh Ngộ ĐẠI LIỆT PHÁCH QUAN TRẢO!)",
+          "color": "#FFD166"
+        }
+      ],
+      "props": [
+        { "type": "gate", "pos": [1024, 130] },
+        { "type": "lantern", "pos": [495, 310] },
+        { "type": "lantern", "pos": [1550, 310] },
+        { "type": "lantern", "pos": [495, 940] },
+        { "type": "lantern", "pos": [1550, 940] },
+        { "type": "pine", "pos": [220, 320] },
+        { "type": "pine", "pos": [1820, 320] },
+        { "type": "pine", "pos": [220, 860] },
+        { "type": "pine", "pos": [1820, 860] }
+      ],
+      "chests": [
+        {
+          "id": "chest_cuong_bang_prize",
+          "name": "Bảo Rương Thập Đại Cường Giả Nội Viện",
+          "pos": [1735, 580],
+          "gold": 5200,
+          "stones": 30,
+          "gear_template": "wpn_xich_luu_ly_viem",
+          "gear_rarity": "thien",
+          "items": {
+            "core_loi_5": 1,
+            "pill_hoa_lien_dan": 3,
+            "herb_long_huyet_chi": 2
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch06_to_thien_arena",
+          "name": "Đại Trưởng Lão Tô Thiên (Trọng Tài Cường Bảng)",
+          "title": "Chứng Kiến Trận Hòa Lịch Sử · Trao Vé Tầng Đáy Tháp",
+          "sprite": "res://assets/sprites/npcs/npc_to_thien.png",
+          "pos": [710, 295],
+          "role": "ch06_to_thien_arena",
+          "float_anim": true,
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Gặp Trọng Tài Tô Thiên"
+        },
+        {
+          "id": "npc_ch06_lam_tu_nhai_arena",
+          "name": "Lâm Tu Nhai (Cường Bảng Đệ Nhị)",
+          "title": "Thanh Phong Kiếm · Kết Giao Viện Binh Viễn Chinh",
+          "sprite": "res://assets/sprites/npcs/npc_lam_tu_nhai.png",
+          "pos": [1345, 295],
+          "role": "ch06_lam_tu_nhai_arena",
+          "glow_hex": "#80ED99",
+          "name_hex": "#80ED99",
+          "prompt_text": "[V] Kết Giao Lâm Tu Nhai (Cường Bảng #2)"
+        },
+        {
+          "id": "npc_ch06_lieu_kinh_brother",
+          "name": "Bá Thương Liễu Kình (Cường Bảng Đệ Tam)",
+          "title": "Anh Hùng Trọng Anh Hùng · Truyền Thụ Đại Liệt Phách Quan Trảo",
+          "sprite": "res://assets/sprites/npcs/npc_lieu_kinh.png",
+          "pos": [1024, 880],
+          "role": "ch06_lieu_kinh_brother",
+          "require_flag": "ch06_beat_lieu_kinh",
+          "glow_hex": "#FF9F1C",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Nâng Chén Kết Giao Bá Thương Liễu Kình"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "cuong_bang_tinh_nhue", "pos": [690, 620], "respawn": 13.0 },
+        { "enemy_id": "cuong_bang_tinh_nhue", "pos": [1360, 620], "respawn": 13.0 },
+        { "enemy_id": "lieu_kinh_boss", "pos": [1024, 620], "respawn": 30.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_ban_mon_from_arena",
+          "label": "Cổng Bắc -> Nội Viện Già Nam (Trang Viên Bàn Môn)",
+          "pos": [1024, 108],
+          "target_map": "ch06_noi_vien_ban_mon",
+          "target_spawn": [1024, 965],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch06_thien_phan_noi_thap": {
+      "id": "ch06_thien_phan_noi_thap",
+      "chapter": "Chương 06",
+      "name": "Thiên Phần Luyện Khí Tháp — Tầng 7–9 Đại Trận Phong Ấn",
+      "bgm": "bgm_lava",
+      "size": [2048, 1152],
+      "ambient_hex": "#9b89b8",
+      "base_tile": "res://assets/sprites/tiles/hac_giac_obsidian.png",
+      "default_spawn": [180, 560],
+      "zones": [
+        {
+          "rect": [320, 224, 576, 672],
+          "tile": "res://assets/sprites/tiles/noi_vien_jade.png",
+          "border_hex": "#70D6FF"
+        },
+        {
+          "rect": [1056, 192, 768, 768],
+          "tile": "res://assets/sprites/tiles/thien_phan_magma.png",
+          "border_hex": "#E0AAFF",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [380, 175],
+          "text": "ĐẠI TRẬN PHONG ẤN TINH KHÔNG (TẦNG 7–9)\n(Cửa Vào Thiên Phần Tháp & Chữa Hỏa Độc Tô Thiên!)",
+          "color": "#70D6FF"
+        },
+        {
+          "pos": [1180, 145],
+          "text": "KHE NỨT PHONG ẤN ĐÁY THÁP — DỊ HỎA #14 BẠO ĐỘNG!\n(Đủ Địa Linh Đan + Top 10 Cường Bảng -> Mở Đường Xuống Vực Dung Nham!)",
+          "color": "#E0AAFF"
+        }
+      ],
+      "props": [
+        { "type": "gate", "pos": [265, 560] },
+        { "type": "boulder", "pos": [960, 270] },
+        { "type": "boulder", "pos": [960, 860] },
+        { "type": "lantern", "pos": [370, 275] },
+        { "type": "lantern", "pos": [845, 275] },
+        { "type": "lantern", "pos": [1110, 250] },
+        { "type": "lantern", "pos": [1770, 250] },
+        { "type": "lantern", "pos": [1110, 900] },
+        { "type": "lantern", "pos": [1770, 900] }
+      ],
+      "chests": [
+        {
+          "id": "chest_thien_phan_seal",
+          "name": "Bảo Rương Tinh Hoa Tâm Hỏa (Tầng 8)",
+          "pos": [1710, 290],
+          "gold": 5600,
+          "stones": 30,
+          "gear_template": "arm_luu_ly_dau_vuong_bao",
+          "gear_rarity": "de",
+          "items": {
+            "pill_hoa_lien_dan": 3,
+            "core_bang_5": 1,
+            "herb_long_huyet_chi": 2
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch06_to_thien_tower",
+          "name": "Đại Trưởng Lão Tô Thiên (Trấn Tháp Phong Ấn)",
+          "title": "Đại Bạo Động Thiên Phần Tháp · Nhiệm Vụ Phụ Chữa Hỏa Độc",
+          "sprite": "res://assets/sprites/npcs/npc_to_thien.png",
+          "pos": [540, 440],
+          "role": "ch06_to_thien_tower",
+          "float_anim": true,
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Gặp Đại Trưởng Lão Tô Thiên"
+        },
+        {
+          "id": "npc_ch06_duoc_lao_han_phong_memory",
+          "name": "Dược Lão (Nhận Diện Nghịch Đồ Hàn Phong)",
+          "title": "Ký Ức Phản Sư · Tăng +25% Sát Thương vs Hàn Phong & Hồn Điện",
+          "sprite": "res://assets/sprites/npcs/npc_duoc_lao.png",
+          "pos": [760, 660],
+          "role": "ch06_duoc_lao_han_phong_memory",
+          "float_anim": true,
+          "glow_hex": "#70D6FF",
+          "name_hex": "#A8DADC",
+          "prompt_text": "[V] Trò Chuyện Với Sư Tôn Dược Lão"
+        },
+        {
+          "id": "npc_ch06_tower_stele",
+          "name": "Bia Tâm Hỏa Luyện Khí (Vào Tháp Roguelite)",
+          "title": "Thử Thách Vô Tận · Cày Tinh Hỏa Năng",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [440, 745],
+          "role": "ch06_tower_stele",
+          "glow_hex": "#FF9F1C",
+          "name_hex": "#FF9F1C",
+          "prompt_text": "[V] Chạm Bia Tâm Hỏa (Mở Thiên Phần Tháp)"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "tam_hoa_ao_anh", "pos": [1260, 390], "respawn": 12.0 },
+        { "enemy_id": "tam_hoa_ao_anh", "pos": [1260, 750], "respawn": 12.0 },
+        { "enemy_id": "tam_hoa_ao_anh", "pos": [1550, 560], "respawn": 13.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_ban_mon_from_tower",
+          "label": "Cổng Tây -> Nội Viện Già Nam (Trang Viên Bàn Môn)",
+          "pos": [112, 560],
+          "target_map": "ch06_noi_vien_ban_mon",
+          "target_spawn": [1810, 560],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch06_vuc_tham_dung_nham",
+          "label": "Khe Nứt Đông -> Vực Thẳm Dung Nham Đáy Tháp (Dị Hỏa #14!)",
+          "pos": [1940, 560],
+          "target_map": "ch06_vuc_tham_dung_nham",
+          "target_spawn": [180, 560],
+          "require_flag": "ch06_tower_eruption_done",
+          "locked_hint": "Hãy lọt Top 10 Cường Bảng (hạ Liễu Kình), luyện Địa Linh Đan [L], và gặp Đại Trưởng Lão Tô Thiên kích hoạt Đại Bạo Động Thiên Phần Tháp!"
+        },
+        {
+          "id": "to_ch06_bau_troi_from_tower",
+          "label": "Cột Lửa Bắc -> Bầu Trời Nội Viện (Đại Chiến Hàn Phong!)",
+          "pos": [1024, 112],
+          "target_map": "ch06_bau_troi_noi_vien",
+          "target_spawn": [180, 560],
+          "require_flag": "ch06_absorbed_van_lac",
+          "locked_hint": "Hãy xuống Vực Thẳm Dung Nham thu phục Dị Hỏa #14 Vẫn Lạc Tâm Viêm và đột phá Đấu Vương trước khi phá tháp lên trời!"
+        }
+      ]
+    },
+    "ch06_vuc_tham_dung_nham": {
+      "id": "ch06_vuc_tham_dung_nham",
+      "chapter": "Chương 06",
+      "name": "Vực Thẳm Dung Nham Đáy Tháp — Luyện Hóa Vẫn Lạc Tâm Viêm",
+      "bgm": "bgm_lava",
+      "size": [2048, 1152],
+      "ambient_hex": "#c484b4",
+      "base_tile": "res://assets/sprites/tiles/thien_phan_magma.png",
+      "default_spawn": [180, 560],
+      "zones": [
+        {
+          "rect": [256, 256, 512, 608],
+          "tile": "res://assets/sprites/tiles/volcanic_basalt.png",
+          "border_hex": "#70D6FF"
+        },
+        {
+          "rect": [992, 192, 832, 768],
+          "tile": "res://assets/sprites/tiles/arena_violet.png",
+          "border_hex": "#FF4D6D",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [310, 210],
+          "text": "ĐÁY BIỂN DUNG NHAM NGÀN TRƯỢNG\n(Sư Đồ Hiệp Lực Khóa Dị Hỏa #14 Vẫn Lạc Tâm Viêm!)",
+          "color": "#70D6FF"
+        },
+        {
+          "pos": [1120, 145],
+          "text": "SÀO HUYỆT BẢN THỂ ĐẠI XÀ VẪN LẠC TÂM VIÊM (#14)\n(Hạ Đại Xà -> Giao Ước Mỹ Đỗ Toa -> Lưu Ly Liên Tâm Hỏa & Đấu Vương!)",
+          "color": "#FFD6FF"
+        }
+      ],
+      "props": [
+        { "type": "boulder", "pos": [860, 280] },
+        { "type": "boulder", "pos": [860, 840] },
+        { "type": "lantern", "pos": [310, 310] },
+        { "type": "lantern", "pos": [310, 810] },
+        { "type": "lantern", "pos": [1060, 250] },
+        { "type": "lantern", "pos": [1760, 250] },
+        { "type": "lantern", "pos": [1060, 900] },
+        { "type": "lantern", "pos": [1760, 900] }
+      ],
+      "chests": [
+        {
+          "id": "chest_abyss_magma_relic",
+          "name": "Đài Đá Lưu Ly Đáy Vực Dung Nham",
+          "pos": [1720, 860],
+          "gold": 6800,
+          "stones": 35,
+          "gear_template": "wing_dau_khi_hoa_duc",
+          "gear_rarity": "de",
+          "items": {
+            "pill_hoa_lien_dan": 4,
+            "pill_hoang_cuc_dan": 1
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch06_duoc_lao_abyss",
+          "name": "Dược Lão (Cốt Linh Lãnh Hỏa Trợ Chiến)",
+          "title": "Đóng Băng Bản Nguyên Đại Xà · Hồi Đầy Thể Lực",
+          "sprite": "res://assets/sprites/npcs/npc_duoc_lao.png",
+          "pos": [440, 480],
+          "role": "ch06_duoc_lao_abyss",
+          "float_anim": true,
+          "glow_hex": "#70D6FF",
+          "name_hex": "#A8DADC",
+          "prompt_text": "[V] Bái Kiến Dược Lão (Trợ Chiến Cốt Linh Hỏa)"
+        },
+        {
+          "id": "npc_ch06_medusa_abyss",
+          "name": "Nữ Hoàng Mỹ Đỗ Toa (Thức Tỉnh Đấu Tông!)",
+          "title": "Biến Cố Định Mệnh Đáy Dung Nham · Luyện Hóa Lưu Ly Liên Tâm Hỏa",
+          "sprite": "res://assets/sprites/npcs/npc_my_do_toa.png",
+          "pos": [1460, 490],
+          "role": "ch06_medusa_abyss",
+          "require_flag": "ch06_killed_van_lac_snake",
+          "float_anim": true,
+          "glow_hex": "#E0AAFF",
+          "name_hex": "#FF9770",
+          "prompt_text": "[V] Đối Mặt Nữ Hoàng Mỹ Đỗ Toa & Dung Hợp Dị Hỏa #14"
+        },
+        {
+          "id": "npc_ch06_luu_ly_tinh",
+          "name": "Địa Hỏa Lưu Ly Tinh (Kỳ Ngộ Ẩn Đáy Vực)",
+          "title": "Vảy Lột Thất Thải Thôn Thiên Mãng & Tinh Thể Nham Thạch",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [1680, 290],
+          "role": "ch06_luu_ly_tinh",
+          "require_flag": "ch06_killed_van_lac_snake",
+          "glow_hex": "#00F5D4",
+          "name_hex": "#72EFDD",
+          "prompt_text": "[V] Thu Nhặt Địa Hỏa Lưu Ly Tinh (+15% Sát Thương Hỏa!)"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "dung_nham_hoa_linh_xa", "pos": [860, 460], "respawn": 13.0 },
+        { "enemy_id": "dung_nham_hoa_linh_xa", "pos": [860, 680], "respawn": 13.0 },
+        { "enemy_id": "van_lac_tam_viem_boss", "pos": [1410, 580], "respawn": 32.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tower_from_abyss",
+          "label": "Lối Lên Tây -> Thiên Phần Luyện Khí Tháp (Tầng 7–9)",
+          "pos": [112, 560],
+          "target_map": "ch06_thien_phan_noi_thap",
+          "target_spawn": [1810, 560],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch06_bau_troi_noi_vien",
+          "label": "Cột Lửa Đông -> PHÁ THÁP LÊN BẦU TRỜI NỘI VIỆN (HÀN PHONG!)",
+          "pos": [1940, 560],
+          "target_map": "ch06_bau_troi_noi_vien",
+          "target_spawn": [180, 560],
+          "require_flag": "ch06_absorbed_van_lac",
+          "locked_hint": "Hãy hạ [BOSS] Đại Xà Vẫn Lạc Tâm Viêm và hoàn tất dung hợp Lưu Ly Liên Tâm Hỏa cùng Mỹ Đỗ Toa trước khi phá tháp phóng lên bầu trời!"
+        }
+      ]
+    },
+    "ch06_bau_troi_noi_vien": {
+      "id": "ch06_bau_troi_noi_vien",
+      "chapter": "Chương 06",
+      "name": "Bầu Trời Nội Viện Chiến Hỏa — Đại Chiến Dược Hoàng Hàn Phong",
+      "bgm": "bgm_boss",
+      "size": [2048, 1152],
+      "ambient_hex": "#b7d4ec",
+      "base_tile": "res://assets/sprites/tiles/yunlan_marble.png",
+      "default_spawn": [180, 560],
+      "zones": [
+        {
+          "rect": [256, 256, 480, 640],
+          "tile": "res://assets/sprites/tiles/noi_vien_jade.png",
+          "border_hex": "#72EFDD"
+        },
+        {
+          "rect": [992, 192, 832, 768],
+          "tile": "res://assets/sprites/tiles/thien_phan_magma.png",
+          "border_hex": "#00B4D8",
+          "arena_circle": true
+        }
+      ],
+      "signs": [
+        {
+          "pos": [310, 205],
+          "text": "KHÔNG CHIẾN ĐẤU VƯƠNG — ĐẤU KHÍ HÓA DỰC\n(Liên Minh Già Nam & Bảo Tiêu Đấu Tông Mỹ Đỗ Toa Hộ Pháp!)",
+          "color": "#72EFDD"
+        },
+        {
+          "pos": [1120, 145],
+          "text": "TRẬN TỬ CHIẾN THANH TOÁN PHẢN ĐỒ SƯ MÔN\n(FINAL BOSS CH.06: Dược Hoàng Hàn Phong — Hải Tâm Diễm #15!)",
+          "color": "#38BDF8"
+        }
+      ],
+      "props": [
+        { "type": "lantern", "pos": [310, 310] },
+        { "type": "lantern", "pos": [680, 310] },
+        { "type": "lantern", "pos": [310, 830] },
+        { "type": "lantern", "pos": [680, 830] },
+        { "type": "lantern", "pos": [1050, 245] },
+        { "type": "lantern", "pos": [1770, 245] },
+        { "type": "lantern", "pos": [1050, 905] },
+        { "type": "lantern", "pos": [1770, 905] }
+      ],
+      "chests": [
+        {
+          "id": "chest_han_phong_spoils",
+          "name": "Chiến Lợi Phẩm Liên Quân Hắc Giác Vực",
+          "pos": [1720, 855],
+          "gold": 9500,
+          "stones": 45,
+          "gear_template": "ring_duoc_hoang_nap_gioi",
+          "gear_rarity": "de",
+          "items": {
+            "pill_am_duong_huyen_long": 2,
+            "pill_hoang_cuc_dan": 1,
+            "core_bang_5": 1
+          }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch06_medusa_sky",
+          "name": "Nữ Hoàng Mỹ Đỗ Toa (Hộ Pháp Trên Không)",
+          "title": "Uy Áp Đấu Tông Trấn Nhiếp Kim Ngân Nhị Lão",
+          "sprite": "res://assets/sprites/npcs/npc_my_do_toa.png",
+          "pos": [440, 440],
+          "role": "ch06_medusa_sky",
+          "float_anim": true,
+          "glow_hex": "#E0AAFF",
+          "name_hex": "#FF9770",
+          "prompt_text": "[V] Gặp Nữ Hoàng Mỹ Đỗ Toa"
+        },
+        {
+          "id": "npc_ch06_ally_generals",
+          "name": "Lâm Tu Nhai & Liễu Kình (Viện Binh Già Nam)",
+          "title": "Tập Kết Quân Đoàn Viễn Chinh Về Gia Mã Đế Quốc",
+          "sprite": "res://assets/sprites/npcs/npc_lam_tu_nhai.png",
+          "pos": [440, 710],
+          "role": "ch06_ally_generals",
+          "glow_hex": "#80ED99",
+          "name_hex": "#80ED99",
+          "prompt_text": "[V] Hội Quân Cùng Lâm Tu Nhai & Liễu Kình"
+        },
+        {
+          "id": "npc_ch06_gia_ma_scout",
+          "name": "Thám Tử Khẩn Cấp Gia Mã Đế Quốc",
+          "title": "Tin Dữ Tiêu Gia — Khai Màn Chương 07: Tam Thượng Vân Lam Sơn!",
+          "sprite": "res://assets/sprites/npcs/npc_thuong_nhan_gia_ma.png",
+          "pos": [1720, 490],
+          "role": "ch06_gia_ma_scout",
+          "require_flag": "ch06_killed_han_phong",
+          "glow_hex": "#FF4D6D",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Nghe Tin Khẩn Từ Gia Mã Đế Quốc (Hoàn Tất Ch.06!)"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "dau_vuong_hac_giac", "pos": [860, 390], "respawn": 13.0 },
+        { "enemy_id": "dau_vuong_hac_giac", "pos": [860, 750], "respawn": 13.0 },
+        { "enemy_id": "han_phong_boss", "pos": [1440, 560], "respawn": 35.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tower_from_sky",
+          "label": "Hạ Cánh Tây -> Thiên Phần Luyện Khí Tháp",
+          "pos": [112, 560],
+          "target_map": "ch06_thien_phan_noi_thap",
+          "target_spawn": [1024, 210],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch07_tam_thuong_van_lam_future",
+          "label": "Hành Quân Đông -> [CH.07] Tam Thượng Vân Lam Sơn & Độc Tông",
+          "pos": [1940, 560],
+          "target_map": "ch06_bau_troi_noi_vien",
+          "target_spawn": [1740, 560],
+          "require_flag": "ch07_unlocked_future",
+          "locked_hint": "Chúc mừng chinh phục trọn vẹn Chương 06 — Lưu Ly Liên Tâm Hỏa & Đấu Vương Đỉnh Phong! Chương 07: Tam Thượng Vân Lam Sơn sẽ khai mở ở bản cập nhật tiếp theo!"
+        }
+      ]
+    }
+  }
+}

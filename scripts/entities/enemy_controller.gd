@@ -258,7 +258,7 @@ func _load_from_db() -> void:
 	allowed_rarities = edef.get("allowed_rarities", [])
 	is_boss_unit = bool(edef.get("is_boss", false))
 	drop_table = edef.get("drops", [])
-	is_floating_unit = (enemy_id == "hai_ba_dong_boss" or enemy_id == "co_ha_boss" or enemy_id == "tieu_tu_tinh_su_boss" or enemy_id == "lieu_tich_boss")
+	is_floating_unit = (enemy_id == "hai_ba_dong_boss" or enemy_id == "co_ha_boss" or enemy_id == "tieu_tu_tinh_su_boss" or enemy_id == "lieu_tich_boss" or enemy_id == "van_lac_tam_viem_boss" or enemy_id == "han_phong_boss")
 	boss_special_cd = 2.2
 	boss_shield_hp = 0.0
 	boss_shield_timer = 0.0
@@ -331,7 +331,17 @@ func _load_from_db() -> void:
 
 
 func _get_signature_color() -> Color:
-	if enemy_id == "van_phan_boss":
+	if enemy_id == "bach_thanh_boss":
+		return Color("#90E0EF")
+	elif enemy_id == "tuyet_ma_thien_vien_boss":
+		return Color("#72EFDD")
+	elif enemy_id == "lieu_kinh_boss":
+		return Color("#FFD166")
+	elif enemy_id == "van_lac_tam_viem_boss":
+		return Color("#E0AAFF")
+	elif enemy_id == "han_phong_boss":
+		return Color("#00B4D8")
+	elif enemy_id == "van_phan_boss":
 		return Color("#70D6FF")
 	elif enemy_id == "pham_lang_boss":
 		return Color("#EF476F")
@@ -382,6 +392,9 @@ func _update_body_modulate() -> void:
 	if body_sprite == null or is_dying:
 		return
 	var target_a: float = 0.22 if is_burrowed else 1.0
+	if enemy_id == "van_lac_tam_viem_boss" and radar_scanned_timer <= 0.0 and not is_burrowed:
+		# Bản thể Vô Hình Tâm Hỏa (#14): nhấp nháy bán trong suốt trừ khi bị Linh Hồn Cảm Tri [Z] soi lộ hình!
+		target_a = 0.62 + 0.30 * (0.5 + 0.5 * sin(float(Time.get_ticks_msec()) * 0.008))
 	if hit_flash_timer > 0.0:
 		body_sprite.modulate = Color(2.8, 2.8, 2.8, target_a)
 	elif is_priming_bomb:
@@ -760,6 +773,16 @@ func _trigger_boss_phase_2() -> void:
 		cry = "TU LA HUYẾT KIẾM KHAI PHONG — CÀNG ĐỔ MÁU TA CÀNG CUỒNG BẠO!"
 	elif enemy_id == "la_hau_boss":
 		cry = "U MINH LIỆT ĐỊA ẤN — LÃO SINH HẮC BẠCH QUAN SÁT KHÔNG DỄ VƯỢT QUA!"
+	elif enemy_id == "bach_thanh_boss":
+		cry = "BẠCH BANG SƯƠNG ĐAO — TÂN SINH CÁC NGƯƠI DÁM LẬP BÀN MÔN GIÀNH ĐỊA BÀN?!"
+	elif enemy_id == "tuyet_ma_thien_vien_boss":
+		cry = "GÀO Ồ!! TUYẾT MA HỐNG ĐỘNG SƠN HÀ — ĐỂ LẠI ĐỊA TÂM TÔI THỂ NHŨ!!"
+	elif enemy_id == "lieu_kinh_boss":
+		cry = "HA HA HA! THỐNG KHOÁI — TIẾP CHIÊU ĐẠI LIỆT PHÁCH QUAN TRẢO TOÀN LỰC CỦA TA!!"
+	elif enemy_id == "van_lac_tam_viem_boss":
+		cry = "VÔ HÌNH TÂM HỎA PHẦN THÂN — ĐẠI XÀ NUỐT CHỬNG BẢN NGUYÊN DỊ HỎA!!"
+	elif enemy_id == "han_phong_boss":
+		cry = "HẢI TÂM DIỄM (#15) THỦY HỎA SONG TUYỆT — SƯ ĐỆ NGỐC, CHẾT THEO LÃO BẤT TỬ ĐI!!"
 
 	EventBus.floating_text_requested.emit(global_position + Vector2(0, -108), "GIAI ĐOẠN II — CUỒNG BẠO!", Color("#FF4D6D"))
 	EventBus.banter_triggered.emit("[%s]: '%s' (Cẩn thận 3 tia sóng Đấu Khí — bấm Space để lướt né!)" % [display_title, cry])
@@ -942,8 +965,8 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 		var berserk_cd: float = 1.0 / (1.0 + 0.30 * berserk_t)
 		var p2_spd: float = (1.22 if boss_phase >= 2 else 1.0) * slow_m * berserk_spd
 		var p2_cd_mult: float = (0.78 if boss_phase >= 2 else 1.0) * berserk_cd
-		var is_kiter_boss: bool = (enemy_id == "lieu_tich_boss" or enemy_id == "co_ha_boss" or enemy_id == "hai_ba_dong_boss" or enemy_id == "viem_loi_boss" or enemy_id == "van_yen_dai_tran_boss" or enemy_id == "van_son_phan_than_boss")
-		var is_agile_boss: bool = (enemy_id == "tieu_ngoc_boss" or enemy_id == "tieu_ninh_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "nap_lan_yen_nhien_boss" or enemy_id == "van_lang_boss" or enemy_id == "van_phan_boss" or enemy_id == "ngo_hao_boss" or enemy_id == "la_hau_boss")
+		var is_kiter_boss: bool = (enemy_id == "lieu_tich_boss" or enemy_id == "co_ha_boss" or enemy_id == "hai_ba_dong_boss" or enemy_id == "viem_loi_boss" or enemy_id == "van_yen_dai_tran_boss" or enemy_id == "van_son_phan_than_boss" or enemy_id == "van_lac_tam_viem_boss" or enemy_id == "han_phong_boss")
+		var is_agile_boss: bool = (enemy_id == "tieu_ngoc_boss" or enemy_id == "tieu_ninh_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "nap_lan_yen_nhien_boss" or enemy_id == "van_lang_boss" or enemy_id == "van_phan_boss" or enemy_id == "ngo_hao_boss" or enemy_id == "la_hau_boss" or enemy_id == "bach_thanh_boss" or enemy_id == "lieu_kinh_boss")
 
 		if state_phase == "idle":
 			# 1. Chiêu Đặc Thù Riêng Của Từng Boss (Signature Skill — 20+ Boss đa phong cách!)
@@ -975,7 +998,7 @@ func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
 				state_phase = "windup"
 				state_duration = (0.44 if boss_phase >= 2 else 0.54) * berserk_cd
 				state_timer = state_duration
-				boss_combo_dashes_left = 1 if (boss_phase >= 2 and (enemy_id == "tieu_ninh_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "muc_xa_boss" or enemy_id == "nap_lan_yen_nhien_boss" or enemy_id == "van_lang_boss" or enemy_id == "van_phan_boss" or enemy_id == "ngo_hao_boss")) else 0
+				boss_combo_dashes_left = 1 if (boss_phase >= 2 and (enemy_id == "tieu_ninh_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "muc_xa_boss" or enemy_id == "nap_lan_yen_nhien_boss" or enemy_id == "van_lang_boss" or enemy_id == "van_phan_boss" or enemy_id == "ngo_hao_boss" or enemy_id == "bach_thanh_boss" or enemy_id == "lieu_kinh_boss")) else 0
 				charge_dir = to_player.normalized() if dist > 2.0 else Vector2.RIGHT
 				if absf(charge_dir.x) > 0.08:
 					body_sprite.flip_h = charge_dir.x < 0.0
@@ -1450,13 +1473,116 @@ func _execute_boss_signature_skill(player_node: Node2D) -> void:
 				var off: float = (float(i) - 1.0) * 0.19
 				_spawn_boss_projectile(post_origin, post_to_p.rotated(off), 450.0, eff_atk * 1.18, Color("#9D4EDD"), "spear")
 
+	# =========================================================
+	# 5 BOSS ĐỘC QUYỀN CHƯƠNG 06 (NỘI VIỆN GIÀ NAM & ĐÁY THÁP THIÊN PHẦN)
+	# =========================================================
+	elif enemy_id == "bach_thanh_boss":
+		# THỦ LĨNH BẠCH BANG BẠCH THÀNH: Quạt 5-7 đao khí sương trắng + Lao chém chớp nhoáng để lại trụ băng làm chậm!
+		var eff_atk: float = _get_effective_atk()
+		EventBus.audio_sfx_requested.emit("swing_blade")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -104), "BẠCH SƯƠNG ĐAO MẠNG!", Color("#90E0EF"))
+		var w_cnt: int = 7 if p2 else 5
+		for i in range(w_cnt):
+			var off: float = (float(i) - float(w_cnt - 1) * 0.5) * 0.17
+			_spawn_boss_projectile(origin, to_p.rotated(off), 445.0, eff_atk * 1.15, Color("#90E0EF"), "wave", 0.25, 1.5)
+		_spawn_boss_hazard(player_node.global_position, "pillar", 80.0, 0.72, 0.42, eff_atk * 1.26, Color("#90E0EF"), 0.30, 1.8)
+		charge_dir = to_p
+		state_phase = "charging"
+		state_duration = 0.32
+		state_timer = state_duration
+		boss_combo_dashes_left = 1 if p2 else 0
+		afterimage_timer = 0.0
+		attack_cd = 0.0
+		if absf(charge_dir.x) > 0.08:
+			body_sprite.flip_h = charge_dir.x < 0.0
+
+	elif enemy_id == "tuyet_ma_thien_vien_boss":
+		# TUYẾT MA THIÊN VIÊN (MA THÚ CẤP 5 ĐỈNH PHONG): Khiên Băng Giáp + Mưa Trụ Băng Thạch + 5-7 Tảng Đá Băng!
+		var eff_atk: float = _get_effective_atk()
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		if boss_shield_hp <= 0.0 and (p2 or randf() < 0.45):
+			_activate_boss_shield(0.18, 6.0, "TUYẾT MA BĂNG GIÁP!", Color("#72EFDD"))
+		else:
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -106), "TUYẾT MA BĂNG THẠCH TRỤY!", Color("#72EFDD"))
+		var p_cnt: int = 4 if p2 else 3
+		for pi in range(p_cnt):
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(float(pi) * 2.1 + spiral_angle_offset), sin(float(pi) * 2.1 + spiral_angle_offset)) * 112.0
+			_spawn_boss_hazard(player_node.global_position + p_off, "pillar", 92.0, 0.78 + float(pi) * 0.14, 0.45, eff_atk * 1.38, Color("#72EFDD"), 0.40, 2.4)
+		spiral_angle_offset += 0.45
+		var b_cnt: int = 7 if p2 else 5
+		for i in range(b_cnt):
+			var off: float = (float(i) - float(b_cnt - 1) * 0.5) * 0.24
+			_spawn_boss_projectile(origin, to_p.rotated(off), 325.0, eff_atk * 1.18, Color("#72EFDD"), "boulder", 0.35, 2.0)
+
+	elif enemy_id == "lieu_kinh_boss":
+		# BÁ THƯƠNG LIỄU KÌNH (CƯỜNG BẢNG #3): 5 Kim Thương xuyên thấu + 3 Trảo Ấn ĐẠI LIỆT PHÁCH QUAN + Song kích tốc biến!
+		var eff_atk: float = _get_effective_atk()
+		EventBus.audio_sfx_requested.emit("breakthrough" if p2 else "skill_burst")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -108), "ĐẠI LIỆT PHÁCH QUAN TRẢO!!" if p2 else "BÁ THƯƠNG PHÁ QUÂN!", Color("#FFD166"))
+		var sp_cnt: int = 7 if p2 else 5
+		for i in range(sp_cnt):
+			var off: float = (float(i) - float(sp_cnt - 1) * 0.5) * 0.16
+			_spawn_boss_projectile(origin, to_p.rotated(off), 470.0, eff_atk * 1.18, Color("#FFD166"), "spear")
+		var c_cnt: int = 3 if p2 else 2
+		for ci in range(c_cnt):
+			var c_off: Vector2 = to_p * (float(ci) * 84.0)
+			_spawn_boss_hazard(player_node.global_position + c_off, "pillar", 96.0, 0.72 + float(ci) * 0.16, 0.44, eff_atk * 1.44, Color("#FFD166"))
+		charge_dir = to_p
+		state_phase = "charging"
+		state_duration = 0.30
+		state_timer = state_duration
+		boss_combo_dashes_left = 1 if p2 else 0
+		afterimage_timer = 0.0
+		attack_cd = 0.0
+		if absf(charge_dir.x) > 0.08:
+			body_sprite.flip_h = charge_dir.x < 0.0
+
+	elif enemy_id == "van_lac_tam_viem_boss":
+		# BẢN THỂ ĐẠI XÀ VẪN LẠC TÂM VIÊM (#14): Xoáy Vô Hình Tâm Hỏa hút tâm + Hồ Dung Nham + Vòng 8-12 Cầu Tâm Hỏa xoay!
+		var eff_atk: float = _get_effective_atk()
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -110), "VÔ HÌNH TÂM HỎA — PHẦN HỒN LONG TỨC!!", Color("#E0AAFF"))
+		_spawn_boss_hazard(player_node.global_position, "vortex", 122.0, 0.55, 2.8, eff_atk * 1.24, Color("#E0AAFF"), 0.25, 1.6, 160.0)
+		_spawn_boss_hazard(player_node.global_position + to_p * 95.0, "pool", 92.0, 0.65, 4.2, eff_atk * 1.28, Color("#C77DFF"))
+		if p2:
+			_spawn_boss_hazard(player_node.global_position - to_p * 95.0, "pool", 86.0, 0.72, 4.2, eff_atk * 1.22, Color("#FF4D6D"))
+		spiral_angle_offset += 0.34
+		var orb_cnt: int = 12 if p2 else 8
+		for k in range(orb_cnt):
+			var ang: float = spiral_angle_offset + float(k) * (TAU / float(orb_cnt))
+			var col_o: Color = Color("#FFFFFF") if (k % 2 == 0) else Color("#E0AAFF")
+			_spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 355.0, eff_atk * 1.18, col_o, "orb")
+
+	elif enemy_id == "han_phong_boss":
+		# FINAL BOSS CH.06 — DƯỢC HOÀNG HÀN PHONG (HẢI TÂM DIỄM #15): Khiên Hải Tâm + Xoáy Thâm Hải + 3-5 Trụ Thủy Hỏa + 3 Hỏa Long rượt đuổi!
+		var eff_atk: float = _get_effective_atk()
+		EventBus.audio_sfx_requested.emit("breakthrough" if p2 else "skill_fire")
+		if boss_shield_hp <= 0.0 and (p2 or randf() < 0.50):
+			_activate_boss_shield(0.20, 6.5, "HẢI TÂM DIỄM (#15) HỘ THUẪN!", Color("#00B4D8"))
+		else:
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -110), "HẢI TÂM DIỄM — THÂM HẢI PHẦN THIÊN TRẬN!!", Color("#38BDF8"))
+		_spawn_boss_hazard(player_node.global_position, "vortex", 112.0, 0.52, 2.6, eff_atk * 1.22, Color("#00B4D8"), 0.32, 2.0, 150.0)
+		var hp_cnt: int = 5 if p2 else 3
+		for pi in range(hp_cnt):
+			var ang_p: float = float(pi) * (TAU / float(hp_cnt)) + spiral_angle_offset
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(ang_p), sin(ang_p)) * 116.0
+			_spawn_boss_hazard(player_node.global_position + p_off, "pillar", 88.0, 0.74 + float(pi) * 0.14, 0.46, eff_atk * 1.46, Color("#00B4D8"), 0.35, 2.0)
+		for hi in range(3):
+			var h_off: float = (float(hi) - 1.0) * 0.42
+			_spawn_boss_projectile(origin, to_p.rotated(h_off), 345.0, eff_atk * 1.20, Color("#38BDF8"), "orb", 0.25, 1.6, 2.6)
+		if p2:
+			spiral_angle_offset += 0.36
+			for k in range(8):
+				var w_ang: float = spiral_angle_offset + float(k) * (TAU / 8.0)
+				_spawn_boss_projectile(origin, Vector2(cos(w_ang), sin(w_ang)), 405.0, eff_atk * 1.18, Color("#00B4D8"), "wave")
+
 
 func _fire_boss_triple_wave() -> void:
 	EventBus.audio_sfx_requested.emit("skill_fire")
 	var wave_col: Color = _get_signature_color()
-	var style_s: String = "orb" if (enemy_id == "co_ha_boss" or enemy_id == "lieu_tich_boss" or enemy_id == "hoa_linh_xa_boss" or enemy_id == "tieu_tu_tinh_su_boss" or enemy_id == "viem_loi_boss") else ("spear" if (enemy_id == "muc_luc_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "hai_ba_dong_boss" or enemy_id == "nap_lan_yen_nhien_boss" or enemy_id == "van_lang_boss" or enemy_id == "la_hau_boss") else ("boulder" if enemy_id == "moc_chien_boss" else "wave"))
-	var slow_r: float = 0.35 if enemy_id == "hai_ba_dong_boss" else 0.0
-	var slow_d: float = 2.0 if enemy_id == "hai_ba_dong_boss" else 0.0
+	var style_s: String = "orb" if (enemy_id == "co_ha_boss" or enemy_id == "lieu_tich_boss" or enemy_id == "hoa_linh_xa_boss" or enemy_id == "tieu_tu_tinh_su_boss" or enemy_id == "viem_loi_boss" or enemy_id == "van_lac_tam_viem_boss" or enemy_id == "han_phong_boss") else ("spear" if (enemy_id == "muc_luc_boss" or enemy_id == "mac_ba_tu_boss" or enemy_id == "hai_ba_dong_boss" or enemy_id == "nap_lan_yen_nhien_boss" or enemy_id == "van_lang_boss" or enemy_id == "la_hau_boss" or enemy_id == "lieu_kinh_boss") else ("boulder" if (enemy_id == "moc_chien_boss" or enemy_id == "tuyet_ma_thien_vien_boss") else "wave"))
+	var slow_r: float = 0.35 if (enemy_id == "hai_ba_dong_boss" or enemy_id == "tuyet_ma_thien_vien_boss" or enemy_id == "han_phong_boss") else 0.0
+	var slow_d: float = 2.0 if (enemy_id == "hai_ba_dong_boss" or enemy_id == "tuyet_ma_thien_vien_boss" or enemy_id == "han_phong_boss") else 0.0
 	var eff_atk: float = _get_effective_atk()
 	var angles: Array = [-0.28, 0.0, 0.28]
 	for ang_off in angles:

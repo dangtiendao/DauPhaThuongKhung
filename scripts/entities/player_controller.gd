@@ -72,8 +72,9 @@ var flame_clone_radius: float = 135.0
 var flame_clone_angle: float = 0.0
 var flame_clone_r_pen: float = 0.30
 
-# Linh Hồn Cảm Tri — Soul Radar [Z]
+# Linh Hồn Cảm Tri — Soul Radar [Z] & Đếm đòn Nội Thiêu Vẫn Lạc Tâm Viêm (#14)
 var soul_radar_cd: float = 0.0
+var inner_flame_hit_counter: int = 0
 
 var skill_cooldowns: Dictionary = {
 	"Q": 0.0,
@@ -335,7 +336,7 @@ func _physics_process(delta: float) -> void:
 	var move_input: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var desired_vel: Vector2 = Vector2.ZERO
 	if dash_timer > 0.0:
-		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0)
+		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (780.0 if PlayerData.has_dau_vuong_wings() else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0))
 		desired_vel = dash_dir * d_spd
 		velocity = desired_vel
 		if int(floor(dash_timer * 46.0)) != int(floor((dash_timer - delta) * 46.0)):
@@ -821,22 +822,26 @@ func _perform_dash() -> void:
 		body_sprite.flip_h = dash_dir.x < 0.0
 
 	var start_p: Vector2 = global_position
-	var has_wings: bool = PlayerData.has_tu_van_duc_equipped()
+	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
+	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
 	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
-	dash_duration_cur = 0.24 if has_wings else 0.18
+	dash_duration_cur = 0.27 if has_dw_wings else (0.24 if has_wings else 0.18)
 	dash_timer = dash_duration_cur
 	dash_speed_override = 0.0
-	dash_cooldown_total = (0.64 if has_wings else 0.72) * PlayerData.get_cooldown_multiplier()
+	dash_cooldown_total = (0.56 if has_dw_wings else (0.64 if has_wings else 0.72)) * PlayerData.get_cooldown_multiplier()
 	dash_cooldown = dash_cooldown_total
-	invuln_timer = maxf(invuln_timer, 0.42 if has_thunder else (0.34 if has_wings else 0.28))
+	invuln_timer = maxf(invuln_timer, 0.48 if has_dw_wings else (0.42 if has_thunder else (0.34 if has_wings else 0.28)))
 	EventBus.skill_cooldown_updated.emit("SPACE", dash_cooldown, dash_cooldown_total)
 	EventBus.audio_sfx_requested.emit("thunder_blink" if has_thunder else "dash_whoosh")
 	_spawn_dash_afterimage()
 	VfxAssets.spawn_dust_puff(get_parent(), global_position + Vector2(0, 10), Color(0.75, 0.84, 0.96, 0.48), 7, 110.0, 1.15)
-	if has_wings:
+	if has_dw_wings:
+		_spawn_hit_sparks(global_position + Vector2(0, -24), Color("#00F5D4"), -dash_dir, 14)
+		_spawn_hit_sparks(global_position + Vector2(0, -24), Color("#E0AAFF"), -dash_dir, 10)
+	elif has_wings:
 		_spawn_hit_sparks(global_position + Vector2(0, -20), Color("#C77DFF"), -dash_dir, 14)
 	if has_thunder:
-		var est_spd: float = 695.0 if has_wings else 560.0
+		var est_spd: float = 780.0 if has_dw_wings else (695.0 if has_wings else 560.0)
 		var trail_end: Vector2 = start_p + dash_dir * (est_spd * dash_duration_cur)
 		_spawn_skill_vfx(
 			"thunder_blink",
@@ -1000,6 +1005,7 @@ func _execute_melee_strike_impact() -> void:
 			if combo_step == 3 or dot_val >= 0.12:
 				if enemy_node.has_method("receive_hit"):
 					enemy_node.receive_hit(dmg, attack_aim_dir * kb, 0.0, burn_val, 0.0, 1.0, poise_val)
+					_try_trigger_inner_heart_ignition(enemy_node)
 					_spawn_hit_sparks(enemy_node.global_position + Vector2(0, -24), spark_col, attack_aim_dir, 14 if combo_step == 3 else 10)
 					hit_any = true
 
@@ -1456,6 +1462,76 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 		EventBus.screen_shake_requested.emit(5.5, 0.18)
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -80), "HỎA LIÊN PHÂN THÂN!", active_mid_col)
 
+	elif behavior == "tyrant_claw":
+		# ĐẠI LIỆT PHÁCH QUAN TRẢO (Bá Thương Liễu Kình): Vọt mạnh tung trảo kim quang nghiền nát khiên & phá thế cực đại + Choáng 2s!
+		_start_skill_pose(aim_dir, 0.34, "weapon")
+		lunge_vel = aim_dir * 465.0
+		var claw_pos: Vector2 = global_position + aim_dir * 78.0
+		_spawn_skill_vfx("mountain_seal", claw_pos + Vector2(0, -14), aim_dir, rad_px, 0.58, Color("#FFF8D6"), Color("#FFD166"), Color("#FF7B00"))
+		VfxAssets.spawn_spark_burst(get_parent(), claw_pos + Vector2(0, -20), Color("#FFFFFF"), Color("#FFD166"), 28, 125.0, 320.0, 0.44, aim_dir, 140.0, 0.30, 0.72, true)
+		VfxAssets.spawn_dust_puff(get_parent(), claw_pos + Vector2(0, 10), Color(0.96, 0.84, 0.46, 0.54), 12, 175.0, 1.7)
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.audio_sfx_requested.emit("poise_break")
+		EventBus.screen_shake_requested.emit(10.8, 0.30)
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -84), "ĐẠI LIỆT PHÁCH QUAN TRẢO!!", Color("#FFD166"))
+		var stun_tc: float = float(sdef.get("stun_sec", 2.0))
+		var hit_tc: bool = false
+		for en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if claw_pos.distance_to(enemy_node.global_position) <= rad_px:
+					var push_d: Vector2 = (enemy_node.global_position - global_position).normalized()
+					if push_d == Vector2.ZERO:
+						push_d = aim_dir
+					if enemy_node.has_method("break_boss_shield"):
+						enemy_node.break_boss_shield()
+					if enemy_node.has_method("apply_def_shred"):
+						enemy_node.apply_def_shred(0.30, 8.0)
+					if enemy_node.has_method("apply_stun"):
+						enemy_node.apply_stun(stun_tc)
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(dmg, push_d * kb, r_pen, burn_val, 0.20, 1.0, 68.0 * poise_mult)
+						_try_trigger_inner_heart_ignition(enemy_node)
+						_spawn_hit_sparks(enemy_node.global_position + Vector2(0, -24), Color("#FFD166"), push_d, 16)
+						hit_tc = true
+		if hit_tc:
+			EventBus.trigger_hitstop(0.046, 0.08)
+
+	elif behavior == "glazed_lotus_vortex":
+		# LƯU LY LIÊN TÂM ẤN (Song Dị Hỏa #19 + #14): Xoáy Lưu Ly hút tụ địch + Tâm Hỏa Nội Thiêu xuyên giáp + Choáng 1.6s!
+		_start_skill_pose(aim_dir, 0.36, "cast")
+		var v_vec: Vector2 = aim_target - global_position
+		var v_dist: float = v_vec.length()
+		var vortex_pos: Vector2 = (global_position + aim_dir * 135.0) if v_dist < 24.0 else (global_position + aim_dir * minf(v_dist, 225.0))
+		_spawn_skill_vfx("pull_pulse", vortex_pos + Vector2(0, -18), aim_dir, rad_px, 0.60, Color("#FFFFFF"), Color("#00F5D4"), Color("#9D4EDD"))
+		_spawn_skill_vfx("lotus_cast", vortex_pos + Vector2(0, -20), aim_dir, rad_px * 0.92, 0.62, Color("#FFFFFF"), Color("#E0AAFF"), Color("#00F5D4"), { "extra_colors": [Color("#00F5D4"), Color("#E0AAFF")] })
+		VfxAssets.spawn_spark_burst(get_parent(), vortex_pos + Vector2(0, -20), Color("#FFFFFF"), Color("#00F5D4"), 26, 110.0, 290.0, 0.48, Vector2.UP, 180.0, 0.30, 0.72, true)
+		VfxAssets.spawn_spark_burst(get_parent(), vortex_pos + Vector2(0, -20), Color("#FFFFFF"), Color("#E0AAFF"), 20, 95.0, 250.0, 0.46, Vector2.UP, 180.0, 0.28, 0.66, true)
+		EventBus.audio_sfx_requested.emit("skill_fire")
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.screen_shake_requested.emit(11.5, 0.34)
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -86), "LƯU LY LIÊN TÂM ẤN!!", Color("#00F5D4"))
+		var stun_gl: float = float(sdef.get("stun_sec", 1.6))
+		var inner_true_bonus: float = float(PlayerData.get_soul()) * 1.55
+		var hit_gl: bool = false
+		for en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if vortex_pos.distance_to(enemy_node.global_position) <= rad_px:
+					var pull_d: Vector2 = (vortex_pos - enemy_node.global_position).normalized()
+					if pull_d == Vector2.ZERO:
+						pull_d = aim_dir
+					if enemy_node.has_method("apply_stun"):
+						enemy_node.apply_stun(stun_gl)
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(dmg, pull_d * absf(kb), r_pen, burn_val * 1.45, 0.25, 1.0, 54.0 * poise_mult)
+						enemy_node.receive_hit(inner_true_bonus, Vector2.ZERO, 1.0, 0.0, 1.0, 1.0, 16.0 * poise_mult)
+						_try_trigger_inner_heart_ignition(enemy_node)
+						_spawn_hit_sparks(enemy_node.global_position + Vector2(0, -24), Color("#E0AAFF"), pull_d, 14)
+						hit_gl = true
+		if hit_gl:
+			EventBus.trigger_hitstop(0.048, 0.08)
+
 	elif behavior == "flame_wave":
 		_start_skill_pose(aim_dir, 0.28, "weapon")
 		EventBus.audio_sfx_requested.emit("skill_fire")
@@ -1505,6 +1581,22 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 			"flame_def": use_flame,
 			"fusion_list": fusion_list
 		}
+
+
+func _try_trigger_inner_heart_ignition(enemy_node: Node2D) -> void:
+	if not PlayerData.has_van_lac_passive() or not is_instance_valid(enemy_node):
+		return
+	inner_flame_hit_counter += 1
+	if inner_flame_hit_counter < 5:
+		return
+	inner_flame_hit_counter = 0
+	var true_dmg: float = float(PlayerData.get_soul()) * 2.4 + PlayerData.get_atk() * 0.65
+	if enemy_node.has_method("receive_hit"):
+		enemy_node.receive_hit(true_dmg, Vector2.ZERO, 1.0, 0.0, 1.0, 1.0, 22.0 * PlayerData.get_poise_dmg_multiplier())
+	VfxAssets.spawn_spark_burst(get_parent(), enemy_node.global_position + Vector2(0, -28), Color("#FFFFFF"), Color("#E0AAFF"), 18, 90.0, 240.0, 0.36, Vector2.UP, 180.0, 0.28, 0.60, true)
+	VfxAssets.spawn_spark_burst(get_parent(), enemy_node.global_position + Vector2(0, -28), Color("#FFFFFF"), Color("#00F5D4"), 12, 70.0, 190.0, 0.32, Vector2.UP, 180.0, 0.24, 0.52, true)
+	EventBus.audio_sfx_requested.emit("skill_fire")
+	EventBus.floating_text_requested.emit(enemy_node.global_position + Vector2(0, -104), "✦ TÂM HỎA NỘI THIÊU! -%d" % int(round(true_dmg)), Color("#E0AAFF"))
 
 
 func _pulse_flame_clone_burst() -> void:
@@ -1690,6 +1782,35 @@ func _draw() -> void:
 	draw_set_transform(Vector2(0, 12), 0.0, Vector2(1.0, 0.42))
 	draw_circle(Vector2.ZERO, 28.0, Color(0.03, 0.02, 0.06, 0.50))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+	# ĐẤU VƯƠNG (Cảnh giới >= 6 hoặc đeo Cánh Hóa Dực): ĐẤU KHÍ HÓA DỰC — Đôi cánh lưu ly xanh-tím vỗ nhịp sau lưng!
+	if PlayerData.has_dau_vuong_wings():
+		var flap: float = sin(t_sec * (12.0 if dash_timer > 0.0 else 5.2))
+		var flare: float = 1.24 if dash_timer > 0.0 else 1.0
+		var wing_a: float = 0.86 if dash_timer > 0.0 else 0.72
+		var has_vl: bool = PlayerData.has_van_lac_passive()
+		var col_outer: Color = Color(0.0, 0.96, 0.83, 0.42 * wing_a) if has_vl else Color(0.28, 0.84, 1.0, 0.42 * wing_a)
+		var col_mid: Color = Color(0.88, 0.66, 1.0, 0.68 * wing_a) if has_vl else Color(0.45, 0.96, 0.88, 0.66 * wing_a)
+		var col_core: Color = Color(1.0, 1.0, 1.0, 0.85 * wing_a)
+		for side in [-1.0, 1.0]:
+			var root_pt := Vector2(side * 10.0, -34.0)
+			var tip_up := Vector2(side * (56.0 * flare), -64.0 + flap * 9.0)
+			var tip_mid := Vector2(side * (66.0 * flare), -40.0 + flap * 12.0)
+			var tip_low := Vector2(side * (46.0 * flare), -16.0 + flap * 7.0)
+			var inner_low := Vector2(side * 16.0, -20.0)
+			var poly_outer := PackedVector2Array([root_pt, tip_up, tip_mid, tip_low, inner_low])
+			draw_colored_polygon(poly_outer, col_outer)
+			var poly_mid := PackedVector2Array([
+				root_pt + Vector2(side * 3.0, 0.0),
+				root_pt.lerp(tip_up, 0.80),
+				root_pt.lerp(tip_mid, 0.76),
+				root_pt.lerp(tip_low, 0.72),
+				inner_low
+			])
+			draw_colored_polygon(poly_mid, col_mid)
+			draw_line(root_pt, root_pt.lerp(tip_up, 0.88), col_core, 2.2)
+			draw_line(root_pt, root_pt.lerp(tip_mid, 0.84), col_core, 1.8)
+			draw_line(root_pt, root_pt.lerp(tip_low, 0.78), col_core, 1.4)
 
 	# Hào quang Dị Hỏa / Bí Pháp xoay nhẹ quanh chân
 	var f_def: Dictionary = PlayerData.get_active_flame_def()

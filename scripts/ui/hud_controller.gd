@@ -1233,11 +1233,12 @@ func _refresh_moba_dock() -> void:
 			Color("#70D6FF") if t_unl else Color("#ADB5BD")
 		)
 
-	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Tam Thiên Lôi Động hoặc Tử Vân Dực!)
+	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Đấu Khí Hóa Dực / Tam Thiên Lôi Động / Tử Vân Dực!)
+	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
 	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
-	var has_wings: bool = PlayerData.has_tu_van_duc_equipped()
-	var dash_sub: String = "Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt")
-	var dash_col: Color = Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF"))
+	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
+	var dash_sub: String = "Lôi·Dực" if (has_dw_wings and has_thunder) else ("Hóa Dực" if has_dw_wings else ("Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt")))
+	var dash_col: Color = Color("#00F5D4") if has_dw_wings else (Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF")))
 	var dash_tex: Texture2D = _get_cached_tex("res://assets/sprites/icons/skill_tam_thien_loi_dong.png") if has_thunder else (
 		_get_cached_tex("res://assets/sprites/icons/skill_tu_van_duc.png") if has_wings else _get_cached_tex("res://assets/sprites/icons/skill_dash.png")
 	)
@@ -1249,7 +1250,14 @@ func _refresh_moba_dock() -> void:
 		false,
 		dash_col
 	)
-	if has_thunder:
+	if has_dw_wings:
+		slot_dash.set_tooltip_info(
+			"[Space] Đấu Khí Hóa Dực" + (" + Tam Thiên Lôi Động!" if has_thunder else " — Ngự Không Phi Hành!"),
+			"Hồi 0.56s · Tốc độ bay 780px/s · I-frame 0.48s · +15% SPD vĩnh viễn!",
+			"Đôi cánh Đấu Khí Lưu Ly sau lưng Đấu Vương bùng phát tốc độ bay cực hạn" + (" kết hợp Tàn Ảnh Lôi Điện giật tê kẻ địch!" if has_thunder else ", dễ dàng vượt qua đại trận & kỹ năng diện rộng của Boss!"),
+			Color("#00F5D4")
+		)
+	elif has_thunder:
 		slot_dash.set_tooltip_info(
 			"[Space] Tam Thiên Lôi Động — Thân Pháp Lôi Thiểm!",
 			"Hồi 0.62s · I-frame 0.42s · Để lại Tàn Ảnh Lôi Điện giật chậm & phá thế địch!",
@@ -1299,6 +1307,10 @@ func _refresh_moba_dock() -> void:
 		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_huan_nhi.png")
 		c_sub = "Huân Nhi"
 		c_col = Color("#FFD166")
+	elif cur_c == "tu_nghien":
+		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_tu_nghien.png")
+		c_sub = "Tử Nghiên"
+		c_col = Color("#E0AAFF")
 	elif cur_c == "duoc_lao_phantom":
 		c_sub = "Dược Lão"
 		c_col = Color("#70D6FF")
@@ -1312,15 +1324,16 @@ func _refresh_moba_dock() -> void:
 	)
 	slot_companion.set_tooltip_info(
 		"[G] Đồng Hành Trợ Chiến — " + (PlayerData.get_companion_display_name(cur_c) if has_comp else "Chưa mở"),
-		"Bấm để triệu hồi hoặc chuyển đổi Đồng Hành" if has_comp else "Mở khóa: Dược Lão (Ch.01), Tiểu Y Tiên (Ch.02), Thải Lân (Ch.03)",
-		"Tiểu Y Tiên hồi máu & phóng độc châm; Hồn Ảnh Dược Lão phóng Cốt Linh Hỏa; Thần Thú Thải Lân bắn tia 7 màu siêu mạnh & Hộ Chủ cứu nguy khi HP < 35%!",
+		"Bấm để triệu hồi hoặc chuyển đổi Đồng Hành (%d/5)" % PlayerData.unlocked_companions.size() if has_comp else "Mở khóa: Dược Lão (Ch.01), Tiểu Y Tiên (Ch.02), Thải Lân (Ch.03), Huân Nhi (Ch.05), Tử Nghiên (Ch.06)",
+		"Tiểu Y Tiên hồi máu; Dược Lão phóng Cốt Linh Hỏa; Thải Lân bắn tia 7 màu & Hộ Chủ; Huân Nhi phóng Kim Đế Hỏa; Tử Nghiên tung Cổ Long Nhất Quyền gây Choáng & +45% Tầm Radar/Hút Đồ!",
 		c_col
 	)
 
-	# 7. 3 Ô Đan Dược Bấm Uống Ngay [1] [2] [3] (hỗ trợ cả Băng Tâm Đan & Hạt Thanh Liên Tử!)
+	# 7. 3 Ô Đan Dược Bấm Uống Ngay [1] [2] [3] (hỗ trợ cả Băng Tâm Đan, Huyết Ngưng Đan & Hạt Thanh Liên Tử!)
 	var pill_visual_meta: Dictionary = {
 		"pill_ngung_huyet_tan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Hồi ngay +%d HP", "col": Color("#EF476F") },
 		"pill_bang_tam_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Tứ Phẩm · Hồi ngay +%d HP!", "col": Color("#70D6FF") },
+		"pill_huyet_ngung_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Ngũ Phẩm · Hồi ngay +%d HP!", "col": Color("#FF4D6D") },
 		"pill_hoi_khi_dan": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Hồi ngay +%d Đấu Khí (QI)", "col": Color("#38BDF8") },
 		"pill_thanh_lien_tu": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Kỳ Bảo · Hồi ngay +%d Đấu Khí!", "col": Color("#2EC4B6") },
 		"pill_truc_co_linh_dich": { "icon": "res://assets/sprites/icons/pill_exp_jade.png", "sub": "Nhận ngay +%d EXP Đấu Khí", "col": Color("#06D6A0") }
@@ -1358,7 +1371,7 @@ func _refresh_moba_dock() -> void:
 		"B": { "icon": "res://assets/sprites/icons/icon_stone.png", "sub": "Đột!" if PlayerData.is_at_bottleneck() else "Cảnh", "locked": false, "glow": PlayerData.is_at_bottleneck(), "t": "[B] Cảnh Giới & Đột Phá", "d": "Xem tiến độ 12 Đại Cảnh Giới, Linh Hồn Lực và bấm Đột Phá khi đạt 9 Đoạn/Tinh Đỉnh Phong!" },
 		"L": { "icon": "res://assets/sprites/icons/icon_cauldron.png", "sub": "Đan", "locked": not PlayerData.is_alchemy_unlocked(), "glow": false, "t": "[L] Lò Luyện Đan Tương Tác", "d": "Khai lò luyện đan qua Mini-game Khống Hỏa [Space] & Chắn Đan Lôi [E]!" },
 		"H": { "icon": "res://assets/sprites/icons/skill_hoa_lien.png", "sub": "Hỏa", "locked": not PlayerData.is_flames_unlocked(), "glow": false, "t": "[H] Dị Hỏa Bảng & Phần Quyết", "d": "Xem và vận chuyển các Thú Hỏa / Dị Hỏa đã thu phục theo đúng cốt truyện." },
-		"M": { "icon": "res://assets/sprites/icons/icon_pendant.png", "sub": "Map", "locked": false, "glow": false, "t": "[M] Thế Giới · Hồng Nhan · Tâm Ma · Tháp & Đồ Giám", "d": "Xem 25 bản đồ, Buff Hồng Nhan, Tâm Ma Luyện Cảnh (23 Boss), Thiên Phần Tháp Roguelite & Đồ Giám Vạn Thú!" },
+		"M": { "icon": "res://assets/sprites/icons/icon_pendant.png", "sub": "Map", "locked": false, "glow": false, "t": "[M] Thế Giới · Hồng Nhan · Bàn Môn · Tâm Ma · Tháp & Đồ Giám", "d": "Xem %d bản đồ, Quản Trị Bàn Môn & Cường Bảng, Buff Hồng Nhan, Tâm Ma Luyện Cảnh (28 Boss), Thiên Phần Tháp & Đồ Giám Vạn Thú!" % GameDatabase.maps_ordered.size() },
 		"F5": { "icon": "res://assets/sprites/icons/icon_ring.png", "sub": "Lưu", "locked": false, "glow": false, "t": "[F5] Lưu Nhanh Vào Ô %d" % PlayerData.active_save_slot, "d": "Lưu tức thì toàn bộ tiến độ tu luyện, bản đồ & trang bị vào ô hiện tại." },
 		"ESC": { "icon": "res://assets/sprites/icons/icon_necklace.png", "sub": "Menu", "locked": false, "glow": false, "t": "[ESC] Menu Tạm Dừng & Hiển Thị", "d": "Lưu/Tải 3 Ô Nạp Giới, chỉnh Fullscreen/VSync/FPS/Rung màn hình & Âm lượng BGM/SFX." }
 	}
@@ -1696,6 +1709,18 @@ func _execute_dialogue_action(act: String) -> void:
 		_heal_player_full("Đã hồi phục toàn bộ HP & Đấu Khí!")
 	elif act == "open_shop:nha_phi":
 		_open_nha_phi_shop()
+	elif act == "open_pan_gate":
+		world_map_tab = "pan_gate"
+		if current_modal != "world_map":
+			_toggle_modal("world_map")
+		else:
+			_populate_modal()
+	elif act == "open_tower":
+		world_map_tab = "tower"
+		if current_modal != "world_map":
+			_toggle_modal("world_map")
+		else:
+			_populate_modal()
 
 
 func _heal_player_full(msg: String) -> void:
@@ -1758,8 +1783,9 @@ func _refresh_stats() -> void:
 		if not f_def.is_empty():
 			f_tag = str(f_def.get("name", "Phàm Hỏa"))
 
-	sub_stat_lbl.text = "ATK %d · DEF %d · EXP %d/%d · Hỏa: %s" % [
-		int(PlayerData.get_atk()), int(PlayerData.get_def()), PlayerData.current_exp, req_e, f_tag
+	var vl_tag: String = " · ✦Tâm Hỏa 24/7" if PlayerData.has_van_lac_passive() else ""
+	sub_stat_lbl.text = "ATK %d · DEF %d · EXP %d/%d · Hỏa: %s%s" % [
+		int(PlayerData.get_atk()), int(PlayerData.get_def()), PlayerData.current_exp, req_e, f_tag, vl_tag
 	]
 	_refresh_moba_dock()
 
@@ -1768,9 +1794,9 @@ func _refresh_quest_ui() -> void:
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		if PlayerData.is_demo_mode:
-			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ ★\nBấm [M] Dịch Chuyển Nhanh %d Map (Ch01–Ch05), thử [F] Hỏa Liên, [H] 28 Hỏa & [K] Đấu Kỹ!" % GameDatabase.maps_ordered.size()
+			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ ★\nBấm [M] Dịch Chuyển Nhanh %d Map (Ch01–Ch06), Quản Trị Bàn Môn, thử [F] Song Dị Hỏa Liên & Đấu Khí Hóa Dực!" % GameDatabase.maps_ordered.size()
 		else:
-			quest_lbl.text = "★ HOÀN TẤT CHƯƠNG 05 (HẮC GIÁC VỰC & NGOẠI VIỆN) ★\nTự do khiêu chiến Thiên Phần Tháp, Tâm Ma Luyện Cảnh (23 Boss) & chuẩn bị vào Chương 06: Nội Viện!"
+			quest_lbl.text = "★ HOÀN TẤT CHƯƠNG 06 (NỘI VIỆN GIÀ NAM & VẪN LẠC TÂM VIÊM) ★\nTự do nâng cấp Bàn Môn [M], leo Thiên Phần Tháp, Tâm Ma (28 Boss) & chờ Chương 07: Tam Thượng Vân Lam Sơn!"
 	else:
 		var goal: int = int(q.get("target_count", 1))
 		quest_lbl.text = "★ %s (%d/%d)\n%s" % [

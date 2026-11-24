@@ -277,6 +277,44 @@
       "unlocked_start": false,
       "unlock_source": "Chương 05 — Đại Trưởng Lão Tô Thiên khen thưởng Đệ Nhất Tân Sinh Vương",
       "description": "Ngưng tụ Dị Hỏa thành Hỏa Liên Phân Thân tác chiến tự động 6.5 giây thu hút hỏa lực, rồi phát nổ đóa hỏa liên thiêu rụi quần địch!"
+    },
+    {
+      "id": "dai_liet_phach_quan",
+      "name": "Đại Liệt Phách Quan Trảo",
+      "grade": "Địa Giai Trung Cấp",
+      "slot_hint": "E",
+      "icon": "res://assets/sprites/icons/skill_dai_liet_phach_quan.png",
+      "behavior": "tyrant_claw",
+      "qi_cost": 32,
+      "cooldown": 7.5,
+      "atk_ratio": 4.25,
+      "soul_ratio": 0.65,
+      "radius_px": 185,
+      "knockback": 540,
+      "stun_sec": 2.0,
+      "realm_pen": 0.50,
+      "unlocked_start": false,
+      "unlock_source": "Chương 06 — Đấu Trường Cường Bảng: Kịch chiến kết giao Bá Thương Liễu Kình",
+      "description": "Tuyệt học Bá Thương Liễu Kình truyền trao: Hóa Đấu Khí thành cự trảo kim hoàng xé rách không gian, gây sát thương cực đại, phá nát tư thế & choáng 2.0 giây!"
+    },
+    {
+      "id": "luu_ly_lien_tam",
+      "name": "Lưu Ly Liên Tâm Ấn",
+      "grade": "Thiên Giai Sơ Cấp · Song Dị Hỏa",
+      "slot_hint": "R",
+      "icon": "res://assets/sprites/icons/skill_luu_ly_lien_tam.png",
+      "behavior": "glazed_lotus_vortex",
+      "qi_cost": 40,
+      "cooldown": 10.5,
+      "atk_ratio": 4.80,
+      "soul_ratio": 1.35,
+      "radius_px": 235,
+      "knockback": -380,
+      "stun_sec": 1.6,
+      "realm_pen": 0.58,
+      "unlocked_start": false,
+      "unlock_source": "Chương 06 — Vực Thẳm Dung Nham: Dung hợp Thanh Liên (#19) & Vẫn Lạc Tâm Viêm (#14)",
+      "description": "Bí kỹ Song Dị Hỏa Lưu Ly Liên Tâm Hỏa: Tạo xoáy hỏa liên xanh-tím hút gọn quần địch rồi kích nổ Tâm Hỏa Nội Thiêu xuyên giáp gây Sát Thương Chuẩn!"
     }
   ]
 }

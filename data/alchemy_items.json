@@ -215,6 +215,64 @@
       "buff_sec": 30.0,
       "color_hex": "#FFD166",
       "description": "Thất phẩm chí bảo từ Đại Đấu Giá Bát Phiến Môn — Phá Hậu Nhi Lập: hồi đầy HP/QI & +25% ATK trong 30 giây!"
+    },
+    "herb_thanh_moc_tien_dang": {
+      "id": "herb_thanh_moc_tien_dang",
+      "name": "Thanh Mộc Tiên Đằng",
+      "type": "herb",
+      "tier": 5,
+      "color_hex": "#52B788",
+      "description": "Linh thảo Ngũ phẩm mọc sâu trong Hậu Sơn Dược Viên Nội Viện Già Nam — món ăn vặt khoái khẩu của Tử Nghiên & nguyên liệu chính luyện Địa Linh Đan!"
+    },
+    "herb_long_huyet_chi": {
+      "id": "herb_long_huyet_chi",
+      "name": "Long Huyết Chi Ngàn Năm",
+      "type": "herb",
+      "tier": 6,
+      "color_hex": "#E63946",
+      "description": "Linh chi đỏ rực như máu rồng ẩn sâu trong Thung Lũng Tuyết Ma & Hậu Sơn Nội Viện — nguyên liệu luyện Địa Linh Đan & Hoàng Cực Đan!"
+    },
+    "core_bang_5": {
+      "id": "core_bang_5",
+      "name": "Băng Ma Hạch Tuyết Ma (Cấp 5)",
+      "type": "monster_core",
+      "tier": 5,
+      "color_hex": "#72EFDD",
+      "description": "Tinh hạch Cấp 5 cực phẩm của Tuyết Ma Thiên Viên — khảm lên vũ khí tăng +55 ATK, +320 HP, -10% Hồi Chiêu & kháng Tâm Hỏa!"
+    },
+    "pill_dan_hoan_ngot": {
+      "id": "pill_dan_hoan_ngot",
+      "name": "Đan Hoàn Ngọt (Kẹo Đan Tử Nghiên)",
+      "type": "consumable_qi",
+      "tier": 3,
+      "restore_qi": 180,
+      "color_hex": "#E0AAFF",
+      "description": "Viên thảo dược nướng mật thơm ngọt Tiêu Viêm tự tay luyện dụ dỗ 'Tiểu Man Vương' Tử Nghiên! Uống hồi +180 QI hoặc đút cho Tử Nghiên đi tầm bảo!"
+    },
+    "pill_hoa_lien_dan": {
+      "id": "pill_hoa_lien_dan",
+      "name": "Hỏa Liên Đan (Ngũ Phẩm Bàn Môn)",
+      "type": "consumable_hp",
+      "tier": 5,
+      "heal_hp": 520,
+      "color_hex": "#FF9F1C",
+      "description": "Đan dược độc quyền bán chạy số 1 của Đan Đường Bàn Môn — uống vào hồi tức thì +520 HP!"
+    },
+    "pill_dia_linh_dan": {
+      "id": "pill_dia_linh_dan",
+      "name": "Địa Linh Đan (Lục Phẩm)",
+      "type": "breakthrough",
+      "tier": 6,
+      "color_hex": "#2EC4B6",
+      "description": "Lục phẩm bảo đan hộ tâm bảo vệ lục phủ ngũ tạng khi thôn phệ Dị Hỏa #14 Vẫn Lạc Tâm Viêm dưới đáy Thiên Phần Tháp!"
+    },
+    "pill_hoang_cuc_dan": {
+      "id": "pill_hoang_cuc_dan",
+      "name": "Hoàng Cực Đan (Lục Phẩm Đỉnh)",
+      "type": "breakthrough",
+      "tier": 6,
+      "color_hex": "#FFD166",
+      "description": "Lục phẩm đỉnh phong bảo đan giúp Đấu Vương Cửu Tinh Đỉnh Phong phá vỡ gông cùm đột phá ĐẤU HOÀNG!"
     }
   },
   "recipes": [
@@ -337,6 +395,46 @@
       "base_success_rate": 0.60,
       "soul_exp_gain": 65,
       "ingredients": { "herb_huyet_tinh_thao": 3, "herb_that_huyen_tien": 2, "core_loi_5": 2, "core_huyet_5": 2 }
+    },
+    {
+      "id": "recipe_dan_hoan_ngot",
+      "output_item": "pill_dan_hoan_ngot",
+      "output_count": 3,
+      "tier": 3,
+      "req_soul": 40,
+      "base_success_rate": 0.92,
+      "soul_exp_gain": 18,
+      "ingredients": { "herb_hoat_khi_qua": 2, "herb_thanh_moc_tien_dang": 1 }
+    },
+    {
+      "id": "recipe_hoa_lien_dan",
+      "output_item": "pill_hoa_lien_dan",
+      "output_count": 2,
+      "tier": 5,
+      "req_soul": 85,
+      "base_success_rate": 0.80,
+      "soul_exp_gain": 32,
+      "ingredients": { "herb_thanh_moc_tien_dang": 2, "herb_huyet_tinh_thao": 1, "core_hoa_3": 1 }
+    },
+    {
+      "id": "recipe_dia_linh_dan",
+      "output_item": "pill_dia_linh_dan",
+      "output_count": 1,
+      "tier": 6,
+      "req_soul": 125,
+      "base_success_rate": 0.72,
+      "soul_exp_gain": 52,
+      "ingredients": { "herb_thanh_moc_tien_dang": 2, "herb_long_huyet_chi": 1, "core_bang_5": 1 }
+    },
+    {
+      "id": "recipe_hoang_cuc_dan",
+      "output_item": "pill_hoang_cuc_dan",
+      "output_count": 1,
+      "tier": 6,
+      "req_soul": 150,
+      "base_success_rate": 0.65,
+      "soul_exp_gain": 60,
+      "ingredients": { "herb_long_huyet_chi": 2, "herb_that_huyen_tien": 2, "core_bang_5": 1, "core_loi_5": 1 }
     }
   ]
 }

@@ -1,7 +1,7 @@
 extends Control
 ## Màn Hình Chính (Title Screen) Chuẩn HD 32-bit Pixel Art:
 ## - Hỗ trợ: Tiếp Tục (nhớ đúng Ô chơi gần nhất), Chơi Mới (Chuẩn Cốt Truyện),
-##   CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (25 Map · Full 15 Kỹ · 28 Hỏa · 4 Đồng Hành · 10 Ô Thiên Phẩm + 3 Ma Hạch),
+##   CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (31 Map · Full 17 Kỹ · 28 Hỏa · 5 Đồng Hành · Bàn Môn · Đấu Vương Hóa Dực),
 ##   Tùy chọn TỰ ĐỘNG LƯU (Auto-Save) & TỰ ĐỘNG VÀO CHƠI TIẾP LẦN SAU!
 
 const GAME_SCENE_PATH: String = "res://scenes/main_prototype.tscn"
@@ -102,14 +102,14 @@ func _build_title_ui() -> void:
 	menu_col.add_theme_constant_override("separation", 8)
 	add_child(menu_col)
 
-	var badge_lbl := _make_label("FAN-GAME 2D HD PIXEL ACTION RPG  •  TRỌN BỘ QUYỂN I (CHƯƠNG 01–04)", 12, Color("#70D6FF"))
+	var badge_lbl := _make_label("FAN-GAME 2D HD PIXEL ACTION RPG  •  QUYỂN I & II (CHƯƠNG 01–06)", 12, Color("#70D6FF"))
 	menu_col.add_child(badge_lbl)
 
 	var title_lbl := _make_label("ĐẤU PHÁ\nTHƯƠNG KHUNG", 40, Color("#FFD166"))
 	title_lbl.add_theme_constant_override("outline_size", 8)
 	menu_col.add_child(title_lbl)
 
-	var sub_lbl := _make_label("Quyển I: Ô Thản Thành · Ma Thú Sơn Mạch · Tháp Qua Nhĩ · Đế Đô & Vân Lam Sơn", 13, Color("#E9ECEF"))
+	var sub_lbl := _make_label("Ô Thản Thành · Ma Thú Sơn Mạch · Tháp Qua Nhĩ · Đế Đô Vân Lam · Hắc Giác Vực & Nội Viện Già Nam", 13, Color("#E9ECEF"))
 	sub_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	menu_col.add_child(sub_lbl)
 

@@ -93,7 +93,7 @@ func build_modal() -> void:
 	core_bag_row.add_theme_constant_override("v_separation", 4)
 	cv.add_child(core_bag_row)
 	var has_any_core: bool = false
-	for core_k in ["core_hoa_1", "core_moc_2", "core_hoa_3", "core_phong_4", "core_loi_5", "core_huyet_5"]:
+	for core_k in ["core_hoa_1", "core_moc_2", "core_hoa_3", "core_phong_4", "core_loi_5", "core_huyet_5", "core_bang_5"]:
 		var cnt: int = PlayerData.get_item_count(core_k)
 		if cnt <= 0:
 			continue
@@ -193,7 +193,7 @@ func build_modal() -> void:
 	quick_pill_flow.add_theme_constant_override("h_separation", 4)
 	quick_pill_flow.add_theme_constant_override("v_separation", 4)
 	right_col.add_child(quick_pill_flow)
-	for cid in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_huyet_ngung_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich", "pill_am_duong_huyen_long"]:
+	for cid in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_huyet_ngung_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich", "pill_hoa_lien_dan", "pill_am_duong_huyen_long"]:
 		var cid_s: String = str(cid)
 		var p_cnt: int = PlayerData.get_item_count(cid_s)
 		if p_cnt <= 0:

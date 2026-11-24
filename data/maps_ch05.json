@@ -1464,19 +1464,19 @@
           "require_flag": ""
         },
         {
-          "id": "to_ch06_noi_vien_future",
-          "label": "Cổng Đông -> [CH.06] Nội Viện Già Nam & Thiên Phần Tháp",
+          "id": "to_ch06_noi_vien_ban_mon",
+          "label": "Cổng Đông -> [CH.06] Nội Viện Già Nam — Trang Viên Bàn Môn",
           "pos": [
             1940,
             560
           ],
-          "target_map": "ch05_rung_san_hoa_nang",
+          "target_map": "ch06_noi_vien_ban_mon",
           "target_spawn": [
-            1740,
+            180,
             560
           ],
-          "require_flag": "ch06_unlocked_future",
-          "locked_hint": "Chúc mừng chinh phục trọn vẹn Chương 05 — Đệ Nhất Tân Sinh Vương Già Nam! Chương 06: Nội Viện Già Nam & Vẫn Lạc Tâm Viêm sẽ khai mở ở bản cập nhật tới!"
+          "require_flag": "ch05_completed",
+          "locked_hint": "Hãy phản sát Thủ Lĩnh La Hầu và trình Hắc Tinh Thẻ cho Đại Trưởng Lão Tô Thiên để mở Sơn Môn Nội Viện Già Nam (Chương 06)!"
         }
       ]
     }

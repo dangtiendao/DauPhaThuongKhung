@@ -1,0 +1,476 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 06",
+  "dialogues": {
+    "ch06_huan_nhi_ban_mon": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_ban_mon_founded" },
+          "lines": [
+            "Tiêu Huân Nhi (đứng trước Trang Viên Tân Sinh, đôi mắt lấp lánh Kim Hỏa): 'Tiêu Viêm ca ca! Đám lão sinh Bạch Bang của Bạch Thành vừa kéo người sang đánh trọng thương tân sinh để cướp Tinh Hỏa Năng, còn tên Hàn Nhàn của Dược Bang thì độc quyền bán đan dược giá cắt cổ!'",
+            "Tiêu Huân Nhi (mỉm cười tự tin): 'Huynh, muội, Ngô Hạo và Hổ Gia đã bàn xong rồi — chúng ta hãy đập tan Bạch Bang ở Phố Giao Dịch phía Đông, đấu đan khuất phục Hàn Nhàn rồi dựng cờ thành lập [BÀN MÔN] (Vững như bàn thạch)! Để muội hồi đầy thể lực cho huynh!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "has_flag": "ch06_absorbed_van_lac", "missing_flag": "ch06_completed" },
+          "lines": [
+            "Tiêu Huân Nhi (rưng rưng nước mắt xúc động trước đôi cánh Đấu Khí Hóa Dực xanh lưu ly sau lưng bạn): 'Tiêu Viêm ca ca... Hai năm qua mọi người đều tưởng huynh đã mất dưới đáy tháp, chỉ có muội tin huynh nhất định sẽ phá quan trở về! Bây giờ Hàn Phong đang ép sát Bầu Trời Nội Viện — hãy cho hắn trả giá đắt!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Huân Nhi (mỉm cười dịu dàng): 'Trang Viên Bàn Môn ngày càng hưng thịnh! Ca ca nhớ vào bảng [M] -> 🏯 Bàn Môn thu Tinh Hỏa Năng và nâng cấp 3 Đường nhé. Mục tiêu hiện tại: {quest_objective}'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_ngo_hao_ban_mon": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_ban_mon_founded" },
+          "lines": [
+            "Ngô Hạo (vác Huyết Trọng Kiếm đứng gác cổng Trang Viên, giọng hào sảng): 'Tiêu Viêm! Thủ lĩnh Bạch Bang là Bạch Thành (Đấu Linh 7 Tinh) đang dẫn đám tinh nhuệ chắn ngay Phố Giao Dịch phía Đông! Quét sạch bọn chúng rồi đấu đan với Hàn Nhàn đi — Võ Đường Bàn Môn giao cho ta & Hổ Gia!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Ngô Hạo (chắp tay báo cáo): 'Báo cáo Môn Chủ! Võ Đường Bàn Môn đang tuần tra Hậu Sơn và thu thập Ma Hạch đều đặn! Môn chủ muốn mở Bảng Quản Trị Thế Lực Bàn Môn ngay hay nghỉ ngơi hồi thể lực?'"
+          ],
+          "choices": [
+            { "label": "Mở Bảng Quản Trị Thế Lực Bàn Môn (Đan Đường · Võ Đường · Ám Đường · Cường Bảng)", "action": "open_pan_gate" },
+            { "label": "Nghỉ ngơi điều tức hồi đầy HP & Đấu Khí", "action": "heal_full" }
+          ]
+        }
+      ]
+    },
+    "ch06_han_nhan_ban_mon": {
+      "marker_when": { "has_flag": "ch06_killed_bach_thanh", "missing_flag": "ch06_ban_mon_founded" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_killed_bach_thanh" },
+          "lines": [
+            "Hàn Nhàn (Thủ lĩnh Dược Bang, khoanh tay kiêu ngạo): 'Hừ! Đám tân sinh các ngươi còn chưa dẹp nổi Thủ lĩnh Bạch Bang Bạch Thành ở phía Đông mà đã đòi mở sạp bán đan dược cạnh tranh với Dược Bang ta sao? Hạ được Bạch Thành rồi quay lại đây đấu đan với ta!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch06_ban_mon_founded" },
+          "sfx": "breakthrough",
+          "shake": [12.0, 0.45],
+          "lines": [
+            "Giữa Phố Giao Dịch Nội Viện chật kín hàng ngàn học viên và Trưởng lão, Hàn Nhàn dốc toàn lực luyện thành Ngũ Phẩm sơ cấp [Long Lực Đan] rồi ngạo nghễ khiêu khích Tiêu Viêm!",
+            "Tiêu Viêm ung dung phất tay — ngọn [#19 THANH LIÊN ĐỊA TÂM HỎA] xanh ngọc bích bùng lên trong Dược Đỉnh! Chưa đầy nửa nén hương, viên [Ngũ Phẩm Đỉnh Phong Hỏa Liên Đan] tỏa đan hương nồng nàn khắp toàn Nội Viện khiến Dược Đỉnh của Hàn Nhàn nứt toác vì hỏa áp!!",
+            "Hàn Nhàn (sụp gối bái phục, ánh mắt tràn đầy kính nể): 'Dị... Dị Hỏa!! Hàn Nhàn ta cam bái hạ phong! Xin dâng toàn bộ Dược Bang sáp nhập làm [ĐAN ĐƯỜNG CỦA BÀN MÔN] — từ nay mỗi ngày ta sẽ luyện đan thu Tinh Hỏa Năng dâng lên Tiêu Viêm Môn Chủ!!'"
+          ],
+          "action": "effect:eff_ch06_found_ban_mon"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Hàn Nhàn (Đường Chủ Đan Đường Bàn Môn, cung kính cúi chào): 'Bái kiến Tiêu Viêm Môn Chủ! Hỏa Liên Đan & Băng Tâm Đan của Bàn Môn đang cháy hàng khắp Nội Viện! Môn chủ muốn mở Quản Trị Bàn Môn hay mua thêm nguyên liệu luyện đan?'"
+          ],
+          "choices": [
+            { "label": "Mở Quản Trị Bàn Môn (Thu Hỏa Năng · Nâng Cấp 3 Đường · Khiêu Chiến Cường Bảng)", "action": "open_pan_gate" },
+            { "label": "Mở Cửa Hàng Nguyên Liệu & Dược Thảo", "action": "open_shop:nha_phi" },
+            { "label": "Điều tức hồi đầy HP & Đấu Khí", "action": "heal_full" }
+          ]
+        }
+      ]
+    },
+    "ch06_tu_nghien_meet": {
+      "marker_when": { "missing_flag": "ch06_tu_nghien_joined" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_tu_nghien_joined" },
+          "sfx": "breakthrough",
+          "shake": [9.0, 0.35],
+          "lines": [
+            "Cô bé tóc tím tết hai bím xinh như búp bê sứ đang ngồi vắt vẻo trên xác con Ma Thú Cấp 5, miệng nhai rộp rộp nhánh [Thanh Mộc Tiên Đằng] quý hiếm rồi nhăn mặt nhổ phì ra đất!",
+            "Tử Nghiên (phồng má bực bội): 'Phì phì! Đắng chết đi được! Rõ ràng ngửi mùi linh khí thơm phức mà nhai như vỏ cây khô ấy! Này tên áo đen kia, ngươi nhìn lén cái gì — muốn bị bản cô nương đấm bay như con ma thú này hả?!'",
+            "Tiêu Viêm (mồ hôi lạnh chảy ròng nhưng lập tức mỉm cười móc ra viên [Đan Hoàn Ngọt] bóng loáng thơm mùi mật nướng): 'Khụ... Phí của giời quá tiểu cô nương ơi! Nếm thử viên Kẹo Đan do ta luyện xem — nếu ngon thì ta bao ăn trọn đời, cô chỉ việc chỉ chỗ có bảo vật cho ta là được!'",
+            "Tử Nghiên (chộp lấy bỏ vào miệng, hai mắt tím sáng rực như sao trời): 'Ưm!! Ngọt giòn tan luôn!! Thành giao!! Từ nay ngươi là đầu bếp riêng của Tiểu Man Vương Tử Nghiên ta — đi theo ta sang hang động phía Đông, ta ngửi thấy mùi [Địa Tâm Tôi Thể Nhũ] thơm cực phẩm luôn đó!!'"
+          ],
+          "action": "effect:eff_ch06_recruit_tu_nghien"
+        },
+        {
+          "when": { "missing_flag": "ch06_tu_nghien_candy_done", "has_item": "pill_dan_hoan_ngot" },
+          "sfx": "loot_rare",
+          "lines": [
+            "Tử Nghiên (mắt sáng long lanh kéo tay áo Tiêu Viêm): 'Oa!! Trên người đầu bếp có thêm [Đan Hoàn Ngọt] mới luyện kìa!! Cho Tử Nghiên ăn đi — ta vừa đánh hơi thấy một gốc [Long Huyết Chi Ngàn Năm] ẩn trong hốc cổ thụ Hậu Sơn đó!!'",
+            "Tử Nghiên vừa nhai rộp rộp kẹo đan vừa phóng nắm đấm tím đấm nát tảng đá rêu — bên trong lộ ra 2 gốc [Long Huyết Chi Ngàn Năm] rực đỏ! (Vĩnh viễn +500 HP & Cổ Long Nhất Quyền của Tử Nghiên nâng cấp Choáng Boss 2.5 giây!)"
+          ],
+          "action": "effect:eff_ch06_tu_nghien_candy_secret"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tử Nghiên (vung nắm đấm nhỏ xíu lấp lánh tử quang Thái Hư Cổ Long): 'Đầu bếp nhớ bấm phím [G] gọi ta ra đấm phụ nhé! Khi nào có [Đan Hoàn Ngọt] hoặc Tinh Hỏa Năng thì vào [M] -> 🏯 Bàn Môn (Ám Đường) sai ta đi đào kho báu cho!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_dia_tam_nhu": {
+      "marker_when": { "has_flag": "ch06_killed_tuyet_ma", "missing_flag": "ch06_got_dia_tam_nhu" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_killed_tuyet_ma" },
+          "lines": [
+            "Bên trong thạch bồn ngọc bích lấp lánh lớp váng Huyền Hoàng Viêm Tinh và dòng chất lỏng vạn năm [ĐỊA TÂM TÔI THỂ NHŨ] — nhưng con Ma Thú Cấp 5 Đỉnh Phong [Tuyết Ma Thiên Viên] đang gầm thét canh giữ ngay ngoài cửa hang! Hãy đánh bại nó trước!"
+          ],
+          "action": ""
+        },
+        {
+          "when": { "missing_flag": "ch06_got_dia_tam_nhu" },
+          "sfx": "breakthrough",
+          "shake": [12.0, 0.45],
+          "lines": [
+            "Dưới sự dẫn đường của Tử Nghiên, Tiêu Viêm nhanh tay dùng đao ngọc hớt gọn bình [ĐỊA TÂM TÔI THỂ NHŨ] trân quý vạn năm bên dưới lớp váng Huyền Hoàng Viêm Tinh!",
+            "Tiêu Viêm ngâm mình tẩy tủy rèn gân cốt cứng như kim cương (Vĩnh viễn +15% DEF, +1.200 HP & đột phá ĐẤU LINH 8 TINH!), đồng thời dâng giọt tinh túy nhất vào nhẫn đen giúp Sư Tôn Dược Lão khôi phục hoàn toàn Linh Hồn Lực đỉnh phong (+25 SOUL)!",
+            "Dược Lão (cười sang sảng): 'Tuyệt vời!! Đủ cả Thanh Mộc Tiên Đằng, Long Huyết Chi và Băng Ma Hạch Cấp 5 rồi — đồ nhi mau bấm [L] luyện Lục Phẩm [ĐỊA LINH ĐAN] chuẩn bị xuống Đấu Trường Cường Bảng tranh suất Top 10!'"
+          ],
+          "action": "effect:eff_ch06_claim_dia_tam_nhu"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Thạch bồn Địa Tâm Tôi Thể Nhũ vẫn còn vương lại linh khí ôn hòa — giúp bạn lập tức hồi đầy HP & Đấu Khí!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_to_thien_arena": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_beat_lieu_kinh" },
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (lơ lửng trên đài trọng tài, giọng vang rền): 'Hoan nghênh Đệ Nhất Tân Sinh Vương bước vào Đại Thi Đấu Cường Bảng Nội Viện! Muốn nhận vé thông hành xuống Tầng 7–9 Thiên Phần Tháp, hãy đánh bại cao thủ Hạng 3 [Bá Thương Liễu Kình] ngay giữa lôi đài phía trước!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (vỗ tay tán thưởng): 'Trận quyết chiến long trời lở đất giữa Tiêu Viêm và Bá Thương Liễu Kình xứng danh kiệt tác trăm năm của Nội Viện! Cả hai đều được đặc cách vào [Thập Đại Cường Giả Cường Bảng] — mau lên Thiên Phần Luyện Khí Tháp phía Đông chuẩn bị đối phó dị biến!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_lam_tu_nhai_arena": {
+      "marker_when": { "has_flag": "ch06_beat_lieu_kinh", "missing_flag": "ch06_lam_tu_nhai_ally" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_beat_lieu_kinh" },
+          "lines": [
+            "Lâm Tu Nhai (Cường Bảng Đệ Nhị, mỉm cười tao nhã tựa tay lên Thanh Phong Kiếm): 'Ồ, Môn Chủ Bàn Môn Tiêu Viêm danh bất hư truyền! Nếu huynh đánh ngang ngửa được tên cuồng nhân Liễu Kình kia trên lôi đài, Lâm Tu Nhai ta nhất định mời huynh một chén rượu kết giao!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch06_lam_tu_nhai_ally" },
+          "sfx": "level_up",
+          "lines": [
+            "Lâm Tu Nhai (nâng chén rượu mỉm cười hào sảng): 'Bái phục! Ở tuổi này mà đã phá nổi Đại Liệt Phách Quan Trảo của Liễu Kình — tương lai đại lục ắt có tên Tiêu Viêm huynh! Nếu sau này huynh cần viện binh trở về Gia Mã Đế Quốc thanh toán Vân Lam Tông, chỉ cần một tiếng gọi, Lâm Tu Nhai ta nhất định dẫn đội theo cùng!'"
+          ],
+          "action": "effect:eff_ch06_lam_tu_nhai_bond"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Lâm Tu Nhai (gật đầu thân thiết): 'Viện binh Cường Bảng luôn sẵn sàng! Huynh có thể mở [M] -> 🏯 Bàn Môn để giao hữu Cường Bảng bất cứ lúc nào!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_lieu_kinh_brother": {
+      "marker_when": { "has_flag": "ch06_beat_lieu_kinh", "missing_flag": "ch06_got_top10_pass" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_got_top10_pass" },
+          "sfx": "breakthrough",
+          "shake": [11.0, 0.40],
+          "lines": [
+            "Đấu trường Cường Bảng tan hoang như vừa trải qua động đất! Bá Thương Liễu Kình chống cây thiết thương lau vết máu trên cằm, bất ngờ bật cười sang sảng chấn động cả khán đài!",
+            "Bá Thương Liễu Kình: 'Ha ha ha!! Thống khoái!! Từ ngày vào Nội Viện tới giờ, trừ Lâm Tu Nhai ra chưa từng có kẻ nào dám đối cứng một đòn [Đại Liệt Phách Quan Trảo] toàn lực của Liễu Kình ta mà không lùi nửa bước! Tiêu Viêm — từ hôm nay ngươi là huynh đệ sinh tử của Liễu Kình này!'",
+            "Liễu Kình (ném qua quyển bí tịch Địa Giai tỏa kim quang cùng tấm Ngọc Bài Top 10): 'Cầm lấy bí kíp [ĐẠI LIỆT PHÁCH QUAN TRẢO] và vé thông hành Tầng Đáy Thiên Phần Tháp! Sau này huynh về Gia Mã đánh Vân Lam Sơn, Liễu Gia ta cũng mang người đi cùng!'"
+          ],
+          "action": "effect:eff_ch06_lieu_kinh_brotherhood"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Bá Thương Liễu Kình (vỗ vai bạn đầy hào khí): 'Khá lắm huynh đệ! Đừng quên lắp [Đại Liệt Phách Quan Trảo] trong bảng [K] — xuống Tầng 7–9 Thiên Phần Tháp phía Đông cẩn thận bản thể Dị Hỏa #14 đấy!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_to_thien_tower": {
+      "marker_when": { "has_flag": "ch06_got_top10_pass", "missing_flag": "ch06_tower_eruption_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_got_top10_pass" },
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (nghiêm nghị trấn giữ Đại Trận Phong Ấn Tầng 7–9): 'Tiểu tử, áp lực Tâm Hỏa dưới tầng sâu cực kỳ khủng khiếp! Hãy xuống Đấu Trường Cường Bảng phía Nam đánh bại Liễu Kình lọt vào Top 10 Cường Bảng rồi mới được tiếp cận phong ấn!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch06_tower_eruption_done", "missing_item": "pill_dia_linh_dan" },
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (nhíu mày cảm ứng luồng hỏa khí dao động): 'Phong ấn đáy tháp sắp vỡ rồi, nhưng ngươi chưa luyện sẵn Lục Phẩm [Địa Linh Đan] trong Nạp Giới! Mau bấm [L] luyện [Địa Linh Đan] (hoặc về Hậu Sơn hái đủ dược liệu) trước khi đại bạo động bùng nổ!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch06_tower_eruption_done" },
+          "sfx": "boss_roar",
+          "shake": [15.0, 0.65],
+          "lines": [
+            "ẦM ẦM ẦM!! Đúng khoảnh khắc Tiêu Viêm bước tới rìa Đại Trận Phong Ấn Tầng 8, hơn mười luồng khí tức Đấu Hoàng & Đấu Vương tà ác từ Hắc Giác Vực xé rách bầu trời bao vây Nội Viện — dẫn đầu là nghịch đồ phản sư [DƯỢC HOÀNG HÀN PHONG] tay nâng Hải Tâm Diễm #15!!",
+            "Dược Lão (gầm vang hận ý ngập trời trong Cốt Viêm Giới): 'Nghịch đồ Hàn Phong!! Năm đó ngươi cấu kết Hồn Điện đâm lén vi sư, hôm nay còn dám tới Học Viện Già Nam cướp Vẫn Lạc Tâm Viêm?!'",
+            "ĐÙNG!! Mặt đất Thiên Phần Tháp nổ tung! Bản thể [#14 VẪN LẠC TÂM VIÊM] hóa thành con ĐẠI XÀ HỎA DIỄM VÔ HÌNH dài trăm trượng phá vỡ phong ấn, bất ngờ khóa chặt luồng Thanh Liên Hỏa trên người Tiêu Viêm rồi bổ nhào xuống NUỐT CHỬNG kéo tuột bạn rơi thẳng xuống VỰC THẲM DUNG NHAM NGÀN TRƯỢNG!!"
+          ],
+          "action": "effect:eff_ch06_trigger_tower_eruption"
+        },
+        {
+          "when": { "has_flag": "ch06_absorbed_van_lac", "missing_flag": "ch06_cured_to_thien" },
+          "sfx": "breakthrough",
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (khẽ ho ra một ngụm hỏa khí nóng rực, kinh ngạc nhìn ánh lửa Lưu Ly quanh thân bạn): 'Tiêu Viêm... Ngươi thực sự luyện hóa trọn vẹn Vẫn Lạc Tâm Viêm và đột phá Đấu Vương Đỉnh Phong rồi sao?! Khụ... Quanh năm trấn áp Tâm Hỏa khiến kinh mạch lão phu tích tụ Tâm Hỏa Ám Tật...'",
+            "Tiêu Viêm lập tức đưa tay phóng bản nguyên [Lưu Ly Liên Tâm Hỏa] ôn hòa hút sạch toàn bộ hỏa độc trong kinh mạch Đại Trưởng Lão! Tô Thiên đại hỉ truyền thụ cảm ngộ không gian (+30 SOUL · +150 Tinh Hỏa Năng) và thề Học Viện Già Nam sẽ vĩnh viễn làm hậu thuẫn cho Bàn Môn!"
+          ],
+          "action": "effect:eff_ch06_cure_to_thien"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Đại Trưởng Lão Tô Thiên (cười lớn đầy khí phách): 'Có Tiêu Viêm cùng Học Viện Già Nam đồng tâm, lũ tà phái Hắc Giác Vực đừng hòng bước qua nửa bước!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_duoc_lao_han_phong_memory": {
+      "marker_when": { "missing_flag": "ch06_duoc_lao_memory_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_duoc_lao_memory_done" },
+          "sfx": "radar_ping",
+          "shake": [8.0, 0.30],
+          "lines": [
+            "Chiếc Cốt Viêm Giới rung lên bi thương — Dược Lão mở ra một đoạn ký ức đau thương tại Trung Châu năm xưa: Dược Tôn Giả nhặt đứa trẻ mồ côi Hàn Phong về nuôi dạy truyền hết y bát Phần Quyết & Luyện Đan, để rồi bị chính nghịch đồ ấy cấu kết Mộ Cốt Lão Nhân (Hồn Điện) đâm lén khi đang luyện đan!",
+            "Dược Lão (ánh mắt lạnh như băng vạn năm): 'Vi sư truyền thụ trọn vẹn tâm đắc Linh Hồn này cho con (+35 SOUL & vĩnh viễn +25% Sát thương lên phản đồ Hàn Phong và toàn bộ Hồn Điện)! Thanh toán sạch nợ máu sư môn giúp ta!!'"
+          ],
+          "action": "effect:eff_ch06_duoc_lao_memory"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Dược Lão (gật đầu trầm ổn): 'Cẩn thận ngọn Hải Tâm Diễm (#15) của nghịch đồ Hàn Phong — nó vừa có sức nóng thiêu đốt vừa có áp lực nghiền nát như sóng thần biển sâu! Hãy dung hợp Song Dị Hỏa [F] để nghiền nát hắn!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_tower_stele": {
+      "branches": [
+        {
+          "default": true,
+          "lines": [
+            "Bia Tâm Hỏa Luyện Khí tỏa luồng nhiệt lượng rèn luyện Đấu Khí — bạn có thể bước vào Phó Bản Roguelite [Thiên Phần Luyện Khí Tháp] cày Tinh Hỏa Năng & Chúc Phúc Tâm Hỏa ngay tại đây!"
+          ],
+          "choices": [
+            { "label": "Mở Phó Bản Thiên Phần Luyện Khí Tháp (Leo Tầng Vô Tận)", "action": "open_tower" },
+            { "label": "Điều tức hồi đầy HP & Đấu Khí", "action": "heal_full" }
+          ]
+        }
+      ]
+    },
+    "ch06_duoc_lao_abyss": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_killed_van_lac_snake" },
+          "lines": [
+            "Dược Lão (hiện chân thân bạch bào giữa biển nham thạch, đôi tay rực cháy Cốt Linh Lãnh Hỏa #11): 'Đồ nhi đừng sợ! Vi sư sẽ dốc toàn bộ hồn lực dùng Cốt Linh Lãnh Hỏa đóng băng lớp vỏ ngoài của con Đại Xà Vẫn Lạc Tâm Viêm — con hãy thừa cơ áp sát đánh nát ý thức hung bạo của nó thành Bản Nguyên Tâm Hỏa!!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Hư ảnh Dược Lão mỉm cười mãn nguyện rồi dần mờ đi vào Cốt Viêm Giới để điều dưỡng sau khi trợ chiến khóa Dị Hỏa #14..."
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_medusa_abyss": {
+      "marker_when": { "has_flag": "ch06_killed_van_lac_snake", "missing_flag": "ch06_absorbed_van_lac" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_absorbed_van_lac" },
+          "sfx": "breakthrough",
+          "shake": [16.0, 0.70],
+          "lines": [
+            "Tiêu Viêm nuốt chửng Lục Phẩm [Địa Linh Đan] rồi kéo Bản Nguyên [#14 Vẫn Lạc Tâm Viêm] vào kinh mạch! Suốt gần 2 năm bị bọc trong Kén Lửa Vô Hình dưới đáy dung nham, hai ngọn Dị Hỏa điên cuồng va chạm tạo thành [LƯU LY LIÊN TÂM HỎA]!",
+            "Khoảnh khắc tà hỏa bạo tẩu, Thất Thải Thôn Thiên Mãng hoàn tất tiến hóa — NỮ HOÀNG MỸ ĐỖ TOA (ĐẤU TÔNG) kiều diễm tuyệt thế bước ra khỏi kén lửa! Sau biến cố gắn kết sinh mệnh định mệnh dưới đáy dung nham, nàng lạnh lùng kề mũi kiếm sát cổ bạn, đôi gò má kiêu hãnh ửng hồng đầy sát khí...",
+            "Nữ Hoàng Mỹ Đỗ Toa (nghiến răng lạnh giọng): 'Tên nhân loại vô sỉ... Nếu không phải huyết mạch bản vương đã trói buộc sinh tử với ngươi, hôm nay ta đã băm ngươi thành vạn mảnh! Ngươi phải luyện [Thiên Hồn Dung Huyết Đan] cho ta — đổi lại, bổn vương làm Bảo Tiêu Đấu Tông hộ vệ ngươi suốt 1 năm về san bằng Vân Lam Sơn!'",
+            "OẦM!! Kén lửa nổ tung chấn động chín tầng mây!! Công pháp Phần Quyết thăng [ĐỊA GIAI ĐÊ CẤP], mở vĩnh viễn nội tại [TU LUYỆN GIAN LẬN KHÍ 24/7], cảnh giới vọt thẳng lên [ĐẤU VƯƠNG 9 TINH ĐỈNH PHONG], sau lưng mọc đôi cánh [ĐẤU KHÍ HÓA DỰC] xanh lưu ly rực rỡ!! Phía trên Bầu Trời Nội Viện đang có tiếng kêu cứu — PHÁ THÁP XUẤT THẾ NGAY!!"
+          ],
+          "action": "effect:eff_ch06_complete_van_lac_fusion"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Nữ Hoàng Mỹ Đỗ Toa (khoanh tay hừ nhẹ đầy uy nghi): 'Đấu Vương Đỉnh Phong mang Song Dị Hỏa Lưu Ly Liên Tâm Hỏa rồi — mau bay qua Cột Lửa Đông phá tháp lên Bầu Trời Nội Viện thanh toán tên phản đồ Hàn Phong đi!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_luu_ly_tinh": {
+      "marker_when": { "has_flag": "ch06_killed_van_lac_snake", "missing_flag": "ch06_luu_ly_tinh_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_luu_ly_tinh_done" },
+          "sfx": "loot_rare",
+          "lines": [
+            "Bên nhánh sông ngầm nơi Nữ Hoàng Mỹ Đỗ Toa lột xác tiến hóa, lớp vảy Thất Thải Thôn Thiên Mãng hòa quyện tinh thể nham thạch vạn năm kết thành kỳ bảo [ĐỊA HỎA LƯU LY TINH]!",
+            "Bạn khảm trực tiếp viên tinh thể rực sáng lên Huyền Trọng Xích — vĩnh viễn nhận +15% Sát Thương Hỏa, +18 SOUL & cường hóa hiệu ứng thiêu đốt dung nham!"
+          ],
+          "action": "effect:eff_ch06_claim_luu_ly_tinh"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Địa Hỏa Lưu Ly Tinh đã dung hợp hoàn mỹ vào Huyền Trọng Xích — tỏa ánh lưu ly bất diệt!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_medusa_sky": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_killed_han_phong" },
+          "lines": [
+            "Nữ Hoàng Mỹ Đỗ Toa (lơ lửng trên tầng mây tỏa uy áp Đấu Tông khiến Kim Ngân Nhị Lão không dám nhúc nhích): 'Bổn vương đã khóa chặt đường viện trợ của lũ lão quái Hắc Giác Vực! Tên nghịch đồ Đấu Hoàng Hàn Phong kia giao cho ngươi — cho hắn nếm thử uy lực Song Dị Hỏa Phật Nộ Hỏa Liên đi!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Nữ Hoàng Mỹ Đỗ Toa (nhướng mày đầy tán thưởng): 'Một đóa Song Dị Hỏa Hỏa Liên nổ nát bấy nhục thân Đấu Hoàng Hàn Phong — cũng ra dáng lắm! Mau sang gặp tên Thám Tử Gia Mã đẫm máu đằng kia xem chuyện gì xảy ra ở Gia Mã Đế Quốc!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_ally_generals": {
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_killed_han_phong" },
+          "lines": [
+            "Lâm Tu Nhai & Bá Thương Liễu Kình (cùng đồng loạt vung kiếm & trường thương chắn sóng lửa): 'Tiêu Viêm huynh đệ! Đám Đấu Vương tạp binh Hắc Giác Vực cứ để Cường Bảng và Bàn Môn lo — huynh bay thẳng tới thanh toán Dược Hoàng Hàn Phong đi!!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Bá Thương Liễu Kình (cười vang hào sảng): 'Quá đã!! Danh tiếng Đấu Vương Đỉnh Phong Tiêu Viêm trảm Dược Hoàng Hàn Phong đã chấn động toàn bộ Hắc Giác Vực! Quân Đoàn Viễn Chinh đã tập kết đầy đủ — chỉ đợi lệnh huynh hành quân về Gia Mã Đế Quốc san bằng Vân Lam Sơn!!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch06_gia_ma_scout": {
+      "marker_when": { "has_flag": "ch06_killed_han_phong", "missing_flag": "ch06_completed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch06_completed" },
+          "sfx": "breakthrough",
+          "shake": [14.0, 0.60],
+          "lines": [
+            "Một thám tử đẫm máu từ Gia Mã Đế Quốc loạng choạng lao tới quỳ sụp xuống trước mặt Tiêu Viêm: 'Tam... Tam Thiếu Gia!! Tin dữ khẩn cấp từ Gia Mã Đế Quốc — Vân Lam Tông và Đấu Tông Vân Sơn đã câu kết thế lực thần bí Hồn Điện bao vây diệt tộc Tiêu Gia! Phụ thân Tiêu Chiến mất tích không rõ sống chết!!'",
+            "BẦU TRỜI NỘI VIỆN LẬP TỨC ĐÓNG BĂNG BỞI SÁT Ý NGẬP TRỜI!! Hai bàn tay Tiêu Viêm bùng lên Lưu Ly Liên Tâm Hỏa xanh-tím rực cháy không gian, đôi cánh Đấu Khí Hóa Dực giang rộng chấn động vạn dặm!",
+            "Tiêu Viêm (giọng trầm khàn như sấm rền): 'Vân Sơn... Hồn Điện... Đợt trước ta nể mặt tha cho Vân Lam Sơn một đường sống, lần này TIÊU VIÊM TA SẼ DẪN QUÂN ĐOÀN VIỄN CHINH, NỮ HOÀNG MỸ ĐỖ TOA & CƯỜNG GIẢ HẮC GIÁC VỰC SAN BẰNG VÂN LAM TÔNG THÀNH BÌNH ĐỊA!! [HOÀN TẤT TRỌN VẸN CHƯƠNG 06 — HẸN GẶP Ở CHƯƠNG 07: TAM THƯỢNG VÂN LAM SƠN!!]'"
+          ],
+          "action": "effect:eff_ch06_complete_chapter"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Thám Tử Gia Mã (chắp tay kiên định): 'Quân Đoàn Viễn Chinh Già Nam & Hắc Giác Vực đã tập kết dưới cờ Bàn Môn, sẵn sàng xuất phát sang Chương 07: Tam Thượng Vân Lam Sơn ngay khi lệnh mở đường ban xuống!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    }
+  },
+  "effects": {
+    "eff_ch06_found_ban_mon": {
+      "set_flag": "ch06_ban_mon_founded",
+      "heal_full": true
+    },
+    "eff_ch06_recruit_tu_nghien": {
+      "set_flag": "ch06_tu_nghien_joined",
+      "heal_full": true
+    },
+    "eff_ch06_tu_nghien_candy_secret": {
+      "consume_items": { "pill_dan_hoan_ngot": 1 },
+      "set_flag": "ch06_tu_nghien_candy_done",
+      "heal_full": true
+    },
+    "eff_ch06_claim_dia_tam_nhu": {
+      "set_flag": "ch06_got_dia_tam_nhu",
+      "heal_full": true
+    },
+    "eff_ch06_lam_tu_nhai_bond": {
+      "set_flag": "ch06_lam_tu_nhai_ally",
+      "heal_full": true
+    },
+    "eff_ch06_lieu_kinh_brotherhood": {
+      "set_flag": "ch06_got_top10_pass",
+      "heal_full": true
+    },
+    "eff_ch06_trigger_tower_eruption": {
+      "set_flag": "ch06_tower_eruption_done",
+      "warp_map": "ch06_vuc_tham_dung_nham",
+      "warp_spawn": [180, 560],
+      "heal_full": true
+    },
+    "eff_ch06_cure_to_thien": {
+      "set_flag": "ch06_cured_to_thien",
+      "heal_full": true
+    },
+    "eff_ch06_duoc_lao_memory": {
+      "set_flag": "ch06_duoc_lao_memory_done",
+      "heal_full": true
+    },
+    "eff_ch06_complete_van_lac_fusion": {
+      "consume_items": { "pill_dia_linh_dan": 1 },
+      "set_flag": "ch06_absorbed_van_lac",
+      "heal_full": true
+    },
+    "eff_ch06_claim_luu_ly_tinh": {
+      "set_flag": "ch06_luu_ly_tinh_done",
+      "heal_full": true
+    },
+    "eff_ch06_complete_chapter": {
+      "set_flag": "ch06_completed",
+      "heal_full": true
+    }
+  }
+}
