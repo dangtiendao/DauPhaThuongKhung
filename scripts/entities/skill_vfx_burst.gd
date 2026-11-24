@@ -195,6 +195,12 @@ func _draw() -> void:
 			_draw_tyrant_claw(t)
 		"glazed_lotus_vortex":
 			_draw_glazed_lotus_vortex(t)
+		"ocean_seal":
+			_draw_ocean_seal(t)
+		"flame_buff_tier2":
+			_draw_flame_buff_tier2(t)
+		"dia_yeu_khoi_assist":
+			_draw_dia_yeu_khoi_assist(t)
 		_:
 			_draw_generic_ring(t)
 
@@ -1038,6 +1044,89 @@ func _draw_glazed_lotus_vortex(t: float) -> void:
 	draw_arc(Vector2.ZERO, wave_r, 0.0, TAU, 48, Color(emerald.r, emerald.g, emerald.b, 0.82 * fade), 5.0 * fade)
 	draw_arc(Vector2.ZERO, wave_r * 0.78, 0.0, TAU, 40, Color(violet.r, violet.g, violet.b, 0.86 * fade), 3.6 * fade)
 	draw_circle(Vector2.ZERO, (22.0 + 18.0 * (1.0 - t)) * fade, Color(white_hot.r, white_hot.g, white_hot.b, 0.85 * fade))
+
+
+func _draw_ocean_seal(t: float) -> void:
+	# ĐẾ ẤN QUYẾT — PHIÊN HẢI ẤN (Cổ Tộc Ch.07): Trận Ấn Kim Hoàng giáng xuống kích nổ 3 tầng Sóng Thần Thanh Lam!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.75), 0.0, 1.0)
+	var gold := Color("#FFD166")
+	var azure := Color("#38BDF8")
+	var white_hot := Color("#FFFFFF")
+
+	# 1. Trận Ấn Cổ Tộc hình bát giác xoay nhanh trên mặt đất
+	var seal_r: float = radius_px * (0.36 + 0.64 * ease_t)
+	draw_circle(Vector2.ZERO, seal_r * 0.85, Color(azure.r, azure.g, azure.b, 0.16 * fade))
+	var rot: float = elapsed * 2.4
+	var oct_pts := PackedVector2Array()
+	for i in range(9):
+		var a: float = rot + float(i) * (TAU / 8.0)
+		oct_pts.append(Vector2(cos(a), sin(a)) * (seal_r * 0.76))
+	draw_polyline(oct_pts, Color(gold.r, gold.g, gold.b, 0.88 * fade), 3.6 * fade)
+
+	# 2. 3 đợt Sóng Thần Thanh-Kim quét ra phía trước (cung trăng khuyết dồn dập)
+	for layer in range(3):
+		var lt: float = clampf((t - float(layer) * 0.07) / (1.0 - float(layer) * 0.07), 0.0, 1.0)
+		if lt <= 0.0:
+			continue
+		var le: float = _ease_out_expo(lt)
+		var lf: float = clampf(1.0 - lt * lt, 0.0, 1.0)
+		var wr: float = radius_px * (0.34 + 0.78 * le) * (1.0 - float(layer) * 0.12)
+		var col_w: Color = azure if (layer != 1) else gold
+		_draw_tapered_arc_ribbon(Vector2.ZERO, wr, (34.0 - float(layer) * 6.0) * lf, aim_angle - 1.45, aim_angle + 1.45, Color(col_w.r, col_w.g, col_w.b, 0.82 * lf), 22)
+		_draw_tapered_arc_ribbon(Vector2.ZERO, wr * 1.04, 10.0 * lf, aim_angle - 1.15, aim_angle + 1.15, Color(white_hot.r, white_hot.g, white_hot.b, 0.94 * lf), 16)
+
+	# 3. Đế Ấn Kim Quang chấn nát mặt đất
+	draw_arc(Vector2.ZERO, seal_r * 1.04, 0.0, TAU, 48, Color(gold.r, gold.g, gold.b, 0.82 * fade), 5.0 * fade)
+	draw_circle(Vector2.ZERO, (28.0 - 12.0 * t) * fade, Color(white_hot.r, white_hot.g, white_hot.b, 0.78 * fade))
+
+
+func _draw_flame_buff_tier2(t: float) -> void:
+	# THIÊN HỎA TAM HUYỀN BIẾN — NHỊ BIẾN (Ch.07): 3 cột Dị Hỏa xoắn ốc bùng thiên (Thanh Liên + Vẫn Lạc + Bạch Cốt)!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.8), 0.0, 1.0)
+	var cols: Array = [Color("#00F5D4"), Color("#E0AAFF"), Color("#CAF0F8")]
+	var spin: float = elapsed * 8.2
+
+	# Vòng Hỏa Trận tam sắc
+	var r: float = radius_px * (0.30 + 0.78 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.75, Color(0.88, 0.56, 1.0, 0.15 * fade))
+	for k in range(3):
+		var c: Color = cols[k]
+		var a0: float = spin + float(k) * (TAU / 3.0)
+		_draw_tapered_arc_ribbon(Vector2.ZERO, r * (0.94 - float(k) * 0.14), 22.0 * fade, a0 - 1.55, a0, Color(c.r, c.g, c.b, 0.86 * fade), 18)
+		# Cột hỏa bốc thẳng lên trời
+		var px: float = cos(a0) * (r * 0.34)
+		var p_top := Vector2(px, -radius_px * (0.65 + 0.55 * ease_t))
+		var p_bot := Vector2(px, 16.0)
+		draw_line(p_bot, p_top, Color(c.r, c.g, c.b, 0.75 * fade), 14.0 * fade)
+		draw_line(p_bot, p_top, Color(1.0, 1.0, 1.0, 0.92 * fade), 5.0 * fade)
+
+	draw_arc(Vector2.ZERO, r * 1.05, 0.0, TAU, 48, Color(1.0, 0.86, 0.42, 0.85 * fade), 4.8 * fade)
+
+
+func _draw_dia_yeu_khoi_assist(t: float) -> void:
+	# ĐỊA YÊU KHÔI LÔI BỘC (Hỗ Trợ [T] Ch.07): Cột ánh sáng Bạc Kim Loại + 8 tia Lôi Điện Đấu Tông nổ tung!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.65), 0.0, 1.0)
+	var silver := Color("#E2F1FF")
+	var cyan := Color("#48CAE4")
+
+	var r: float = radius_px * (0.28 + 0.88 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.85, Color(cyan.r, cyan.g, cyan.b, 0.18 * fade))
+	# Cột năng lượng bạc từ trời giáng xuống
+	draw_line(Vector2(0, -radius_px * 1.45), Vector2(0, 12.0), Color(cyan.r, cyan.g, cyan.b, 0.62 * fade), 36.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.45), Vector2(0, 12.0), Color(silver.r, silver.g, silver.b, 0.96 * fade), 14.0 * fade)
+	# 8 tia lôi điện tỏa ra 8 hướng
+	for i in range(8):
+		var a: float = float(i) * (TAU / 8.0) + elapsed * 1.5
+		var d := Vector2(cos(a), sin(a))
+		var prp := Vector2(-d.y, d.x)
+		var p1: Vector2 = d * (r * 0.48) + prp * (14.0 if (i % 2 == 0) else -14.0)
+		var p2: Vector2 = d * (r * 1.06)
+		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(cyan.r, cyan.g, cyan.b, 0.85 * fade), 4.6 * fade)
+		draw_polyline(PackedVector2Array([Vector2.ZERO, p1, p2]), Color(1.0, 1.0, 1.0, 0.98 * fade), 1.8 * fade)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 48, Color(silver.r, silver.g, silver.b, 0.90 * fade), 5.6 * fade)
 
 
 func _draw_generic_ring(t: float) -> void:

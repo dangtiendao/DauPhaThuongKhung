@@ -78,6 +78,14 @@
         { "pieces": 2, "desc": "+220 Công kích, +60 Linh Hồn & +28% Sát thương Hỏa", "stats": { "atk": 220, "soul": 60, "flame_dmg": 28 } },
         { "pieces": 4, "desc": "+1.500 Sinh lực, +20% Chí mạng, +10% Hút máu & -18% Hồi chiêu", "stats": { "hp": 1500, "crit_chance": 20, "lifesteal": 10, "cooldown_red": 18 } }
       ]
+    },
+    "set_viem_minh_chi_chu": {
+      "id": "set_viem_minh_chi_chu",
+      "name": "Bộ Viêm Minh Chi Chủ · Đấu Hoàng",
+      "bonuses": [
+        { "pieces": 2, "desc": "+340 Công kích, +95 Linh Hồn & +38% Sát thương Hỏa", "stats": { "atk": 340, "soul": 95, "flame_dmg": 38 } },
+        { "pieces": 4, "desc": "+2.600 Sinh lực, +26% Chí mạng, +14% Hút máu & -22% Hồi chiêu", "stats": { "hp": 2600, "crit_chance": 26, "lifesteal": 14, "cooldown_red": 22 } }
+      ]
     }
   },
   "templates": {
@@ -422,6 +430,54 @@
       "icon": "res://assets/sprites/icons/icon_ring.png",
       "base_stats": { "atk": 72, "soul": 65, "hp": 460, "lifesteal": 8, "exp_bonus": 32 },
       "description": "Chiếc Nạp Giới cổ chứa hàng chục cổ đan phương và tinh hoa Hắc Giác Vực thu được sau khi phá hủy nhục thân Hàn Phong!"
+    },
+    "wpn_xich_tam_sac_viem": {
+      "id": "wpn_xich_tam_sac_viem",
+      "name": "Huyền Trọng Xích · Tam Sắc Dị Hỏa",
+      "slot": "weapon",
+      "set_id": "set_viem_minh_chi_chu",
+      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
+      "attack_speed_mult": 1.08,
+      "base_stats": { "atk": 225, "hp": 720, "crit_chance": 24, "flame_dmg": 52 },
+      "description": "Huyền Trọng Xích khắc ấn Tam Sắc Dị Hỏa (Thanh Liên + Vẫn Lạc + Cốt Linh Ấn Ký) từng chém ngã Đấu Tông Vân Sơn trên Đỉnh Vân Lam Sơn!"
+    },
+    "arm_viem_minh_hoang_bao": {
+      "id": "arm_viem_minh_hoang_bao",
+      "name": "Viêm Minh Chi Chủ · Đấu Hoàng Chiến Bào",
+      "slot": "armor",
+      "set_id": "set_viem_minh_chi_chu",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 1480, "def": 220, "atk": 95, "soul": 82, "cooldown_red": 15 },
+      "description": "Chiến bào tối cao của Minh Chủ Viêm Minh — hội tụ tinh hoa Đan Đường, Hoàng Thất Gia Mã và vảy Hộ Tâm Mỹ Đỗ Toa!"
+    },
+    "wing_thien_yeu_hoang_canh": {
+      "id": "wing_thien_yeu_hoang_canh",
+      "name": "Thiên Yêu Hoàng Cốt Dực (Đấu Hoàng)",
+      "slot": "wings",
+      "set_id": "set_viem_minh_chi_chu",
+      "icon": "res://assets/sprites/icons/icon_wings.png",
+      "base_stats": { "spd": 108, "crit_chance": 26, "cooldown_red": 22, "atk": 115, "flame_dmg": 34 },
+      "description": "Đôi cánh Đấu Khí Hoàng Kim gia cố bằng cánh cốt Ma Thú Thượng Cổ Thiên Yêu Hoàng đoạt từ Đấu Giá Hội Hắc Hoàng Tông!"
+    },
+    "ring_cot_viem_ton_gioi": {
+      "id": "ring_cot_viem_ton_gioi",
+      "name": "Cốt Viêm Tôn Giới (Ấn Ký Dược Lão)",
+      "slot": "ring",
+      "set_id": "set_viem_minh_chi_chu",
+      "icon": "res://assets/sprites/icons/icon_ring.png",
+      "base_stats": { "atk": 122, "soul": 110, "hp": 840, "lifesteal": 12, "exp_bonus": 40 },
+      "description": "Chiếc hắc giới khắc Ấn Ký Bản Nguyên Cốt Linh Lãnh Hỏa (#11) Dược Lão liều mình để lại trước khi bị Vụ Hộ Pháp bắt về Hồn Điện!"
+    },
+    "pend_bo_de_hoa_the_tien": {
+      "id": "pend_bo_de_hoa_the_tien",
+      "name": "Bồ Đề Hóa Thể Tiên (Thượng Cổ Linh Vật)",
+      "slot": "pendant",
+      "set_id": "set_viem_minh_chi_chu",
+      "icon": "res://assets/sprites/icons/icon_pendant.png",
+      "base_stats": { "atk": 98, "soul": 125, "hp": 960, "flame_dmg": 38, "cooldown_red": 16 },
+      "description": "Kỳ vật Thượng Cổ đoạt tại Đấu Giá Hội Hắc Hoàng Tông — ẩn chứa Bồ Đề Tâm giúp cường hóa Linh Hồn Cảnh & mở đường lên Đấu Tông!"
     }
   }
 }

@@ -50,13 +50,30 @@ func configure_companion(new_id: String) -> void:
 	if body_sprite == null:
 		return
 	if companion_id == "tieu_y_tien":
-		body_sprite.texture = load("res://assets/sprites/npcs/npc_tieu_y_tien.png")
-		body_sprite.scale = Vector2(0.86, 0.86)
-		body_sprite.modulate = Color.WHITE
-		aura_light.color = Color("#52B788")
-		aura_light.energy = 0.85
-		name_lbl.text = "Đồng Hành: Tiểu Y Tiên"
-		name_lbl.add_theme_color_override("font_color", Color("#80ED99"))
+		if PlayerData.has_flag("ch07_thien_doc_nu_joined"):
+			body_sprite.texture = load("res://assets/sprites/npcs/npc_thien_doc_nu.png")
+			body_sprite.scale = Vector2(0.88, 0.88)
+			body_sprite.modulate = Color.WHITE
+			aura_light.color = Color("#E0AAFF")
+			aura_light.energy = 1.18
+			name_lbl.text = "Thiên Độc Nữ · Tiểu Y Tiên (Đấu Tông)"
+			name_lbl.add_theme_color_override("font_color", Color("#E0AAFF"))
+		else:
+			body_sprite.texture = load("res://assets/sprites/npcs/npc_tieu_y_tien.png")
+			body_sprite.scale = Vector2(0.86, 0.86)
+			body_sprite.modulate = Color.WHITE
+			aura_light.color = Color("#52B788")
+			aura_light.energy = 0.85
+			name_lbl.text = "Đồng Hành: Tiểu Y Tiên"
+			name_lbl.add_theme_color_override("font_color", Color("#80ED99"))
+	elif companion_id == "dia_yeu_khoi":
+		body_sprite.texture = load("res://assets/sprites/npcs/npc_dia_yeu_khoi.png")
+		body_sprite.scale = Vector2(0.92, 0.92)
+		body_sprite.modulate = Color(0.95, 0.99, 1.08, 1.0)
+		aura_light.color = Color("#90E0EF")
+		aura_light.energy = 1.25
+		name_lbl.text = "Vệ Sĩ Bất Tử: Địa Yêu Khôi (Đấu Tông)"
+		name_lbl.add_theme_color_override("font_color", Color("#CAF0F8"))
 	elif companion_id == "thai_lan":
 		body_sprite.texture = load("res://assets/sprites/enemies/pet_thai_lan.png")
 		body_sprite.scale = Vector2(0.92, 0.92)
@@ -110,6 +127,8 @@ func _physics_process(delta: float) -> void:
 		desired_offset = Vector2(58.0, -20.0)
 	elif companion_id == "tu_nghien":
 		desired_offset = Vector2(-56.0, -24.0)
+	elif companion_id == "dia_yeu_khoi":
+		desired_offset = Vector2(68.0, -18.0)
 	var target_pos: Vector2 = player.global_position + desired_offset
 	var dist_p: float = global_position.distance_to(target_pos)
 	if dist_p > 520.0:
@@ -136,19 +155,47 @@ func _physics_process(delta: float) -> void:
 		body_sprite.position.y = -33.0 + absf(sin(anim_t * 5.6)) * -4.2
 		if aura_light != null:
 			aura_light.energy = 1.10 + sin(anim_t * 6.2) * 0.22
+	elif companion_id == "dia_yeu_khoi":
+		body_sprite.position.y = -36.0 + sin(anim_t * 3.0) * 2.4
+		if aura_light != null:
+			aura_light.energy = 1.18 + sin(anim_t * 7.5) * 0.24
 	else:
 		body_sprite.position.y = -36.0 + sin(anim_t * 4.2) * 2.2
 
 	# 1. Kỹ năng hỗ trợ định kỳ: Tiểu Y Tiên hồi HP / Thải Lân Hộ Chủ / Tiêu Huân Nhi hồi +10% Max QI!
 	if companion_id == "tieu_y_tien":
+		var is_tdn: bool = PlayerData.has_flag("ch07_thien_doc_nu_joined")
 		heal_timer -= delta
 		if heal_timer <= 0.0 and PlayerData.current_hp < PlayerData.get_max_hp() * 0.92:
-			heal_timer = 7.5
-			var heal_amt: float = maxf(24.0, PlayerData.get_max_hp() * 0.12) * PlayerData.get_heal_effectiveness_mult()
+			heal_timer = 6.2 if is_tdn else 7.5
+			var heal_ratio: float = 0.18 if is_tdn else 0.12
+			var heal_amt: float = maxf(24.0, PlayerData.get_max_hp() * heal_ratio) * PlayerData.get_heal_effectiveness_mult()
 			PlayerData.current_hp = minf(PlayerData.get_max_hp(), PlayerData.current_hp + heal_amt)
 			EventBus.stats_changed.emit()
 			EventBus.audio_sfx_requested.emit("loot_pickup")
-			EventBus.floating_text_requested.emit(player.global_position + Vector2(0, -68), "Tiểu Y Tiên +%d HP" % int(round(heal_amt)), Color("#80ED99"))
+			EventBus.floating_text_requested.emit(
+				player.global_position + Vector2(0, -68),
+				"%s +%d HP" % ["Thiên Độc Nữ" if is_tdn else "Tiểu Y Tiên", int(round(heal_amt))],
+				Color("#E0AAFF") if is_tdn else Color("#80ED99")
+			)
+	elif companion_id == "dia_yeu_khoi":
+		# Vệ Sĩ Bất Tử Địa Yêu Khôi: Định kỳ tạo Sóng Lôi Khôi đẩy lùi quái áp sát & hộ thân khi HP < 55%!
+		heal_timer -= delta
+		if heal_timer <= 0.0 and PlayerData.current_hp < PlayerData.get_max_hp() * 0.55:
+			heal_timer = 11.0
+			var shield_gain: float = maxf(140.0, PlayerData.get_max_hp() * 0.16)
+			PlayerData.lotus_shield_hp = maxf(PlayerData.lotus_shield_hp, shield_gain)
+			EventBus.stats_changed.emit()
+			EventBus.audio_sfx_requested.emit("skill_burst")
+			EventBus.floating_text_requested.emit(player.global_position + Vector2(0, -78), "ĐỊA YÊU KHÔI HỘ CHỦ! (+%d KHIÊN BẠC)" % int(round(shield_gain)), Color("#CAF0F8"))
+			for en_n in get_tree().get_nodes_in_group("enemies"):
+				if is_instance_valid(en_n) and en_n is Node2D:
+					var en2: Node2D = en_n as Node2D
+					if player.global_position.distance_to(en2.global_position) <= 240.0 and en2.has_method("receive_hit"):
+						var push_d: Vector2 = (en2.global_position - player.global_position).normalized()
+						en2.receive_hit(PlayerData.get_atk() * 1.65, push_d * 480.0, 0.45, 0.0)
+						if en2.has_method("apply_stun"):
+							en2.apply_stun(1.4)
 	elif companion_id == "thai_lan":
 		heal_timer -= delta
 		if heal_timer <= 0.0 and PlayerData.current_hp < PlayerData.get_max_hp() * 0.38:
@@ -181,32 +228,36 @@ func _physics_process(delta: float) -> void:
 	if attack_timer <= 0.0:
 		var target_en: Node2D = _find_nearest_enemy(385.0)
 		if target_en != null:
-			if companion_id == "thai_lan":
+			var is_tdn_atk: bool = (companion_id == "tieu_y_tien" and PlayerData.has_flag("ch07_thien_doc_nu_joined"))
+			if companion_id == "dia_yeu_khoi":
+				attack_timer = 1.28
+			elif companion_id == "thai_lan":
 				attack_timer = 1.22
 			elif companion_id == "tu_nghien":
 				attack_timer = 1.48
 			elif companion_id == "huan_nhi":
 				attack_timer = 1.32
 			elif companion_id == "tieu_y_tien":
-				attack_timer = 1.65
+				attack_timer = 1.30 if is_tdn_atk else 1.65
 			else:
 				attack_timer = 1.45
 			body_sprite.flip_h = (target_en.global_position.x < global_position.x)
 			var base_atk: float = PlayerData.get_atk()
-			var dmg_mult: float = 0.96 if companion_id == "tu_nghien" else (0.88 if companion_id == "thai_lan" else (0.78 if companion_id == "huan_nhi" else (0.48 if companion_id == "tieu_y_tien" else 0.62)))
+			var dmg_mult: float = 1.24 if companion_id == "dia_yeu_khoi" else (1.06 if is_tdn_atk else (0.96 if companion_id == "tu_nghien" else (0.88 if companion_id == "thai_lan" else (0.78 if companion_id == "huan_nhi" else (0.48 if companion_id == "tieu_y_tien" else 0.62)))))
 			var bolt_dmg: float = base_atk * dmg_mult
-			var bolt_col: Color = Color("#C77DFF") if companion_id == "tu_nghien" else (Color.from_hsv(fmod(anim_t * 0.6, 1.0), 0.72, 1.0) if companion_id == "thai_lan" else (Color("#FFD166") if companion_id == "huan_nhi" else (Color("#52B788") if companion_id == "tieu_y_tien" else Color("#A8DADC"))))
-			var burn_v: float = bolt_dmg * 0.32 if companion_id == "thai_lan" else (base_atk * 0.28 if companion_id == "huan_nhi" else (bolt_dmg * 0.20 if companion_id == "duoc_lao_phantom" else 0.0))
-			var stun_s: float = (2.5 if PlayerData.has_flag("ch06_tu_nghien_candy_done") else 1.5) if companion_id == "tu_nghien" else 0.0
+			var bolt_col: Color = Color("#90E0EF") if companion_id == "dia_yeu_khoi" else (Color("#E0AAFF") if is_tdn_atk else (Color("#C77DFF") if companion_id == "tu_nghien" else (Color.from_hsv(fmod(anim_t * 0.6, 1.0), 0.72, 1.0) if companion_id == "thai_lan" else (Color("#FFD166") if companion_id == "huan_nhi" else (Color("#52B788") if companion_id == "tieu_y_tien" else Color("#A8DADC"))))))
+			var burn_v: float = bolt_dmg * 0.36 if is_tdn_atk else (bolt_dmg * 0.32 if companion_id == "thai_lan" else (base_atk * 0.28 if companion_id == "huan_nhi" else (bolt_dmg * 0.20 if companion_id == "duoc_lao_phantom" else 0.0)))
+			var stun_s: float = 1.4 if companion_id == "dia_yeu_khoi" else ((2.5 if PlayerData.has_flag("ch06_tu_nghien_candy_done") else 1.5) if companion_id == "tu_nghien" else 0.0)
 			active_bolts.append({
 				"pos": global_position + Vector2(0, -30),
 				"target": target_en,
 				"color": bolt_col,
 				"dmg": bolt_dmg,
 				"burn": burn_v,
-				"stun": stun_s
+				"stun": stun_s,
+				"aoe": (companion_id == "dia_yeu_khoi" or is_tdn_atk)
 			})
-			EventBus.audio_sfx_requested.emit("skill_burst" if companion_id == "tu_nghien" else "skill_fire")
+			EventBus.audio_sfx_requested.emit("skill_burst" if (companion_id == "tu_nghien" or companion_id == "dia_yeu_khoi") else "skill_fire")
 
 	# Cập nhật tia năng lượng bay tới mục tiêu
 	var kept_bolts: Array = []
@@ -224,7 +275,15 @@ func _physics_process(delta: float) -> void:
 			var st_val: float = float(b.get("stun", 0.0))
 			if st_val > 0.0 and tgt.has_method("apply_stun"):
 				tgt.apply_stun(st_val)
-				EventBus.floating_text_requested.emit(tgt.global_position + Vector2(0, -82), "CỔ LONG NHẤT QUYỀN! CHOÁNG %.1fs" % st_val, Color("#E0AAFF"))
+				var stun_lbl: String = "ĐỊA YÊU LÔI QUYỀN! CHOÁNG %.1fs" % st_val if companion_id == "dia_yeu_khoi" else "CỔ LONG NHẤT QUYỀN! CHOÁNG %.1fs" % st_val
+				EventBus.floating_text_requested.emit(tgt.global_position + Vector2(0, -82), stun_lbl, Color("#CAF0F8") if companion_id == "dia_yeu_khoi" else Color("#E0AAFF"))
+			if bool(b.get("aoe", false)):
+				# Địa Yêu Khôi & Thiên Độc Nữ: nổ lan sóng chấn động / độc vụ quanh mục tiêu!
+				for splash_n in get_tree().get_nodes_in_group("enemies"):
+					if is_instance_valid(splash_n) and splash_n != tgt and splash_n is Node2D:
+						var s2: Node2D = splash_n as Node2D
+						if tgt.global_position.distance_to(s2.global_position) <= 130.0 and s2.has_method("receive_hit"):
+							s2.receive_hit(float(b.get("dmg", 10.0)) * 0.55, (s2.global_position - tgt.global_position).normalized() * 160.0, 0.30, float(b.get("burn", 0.0)) * 0.6)
 		else:
 			b["pos"] = cur_p + to_t.normalized() * 520.0 * delta
 			kept_bolts.append(b)
@@ -256,6 +315,12 @@ func _draw() -> void:
 	if companion_id == "huan_nhi":
 		var g_pulse: float = 0.85 + 0.15 * sin(anim_t * 5.0)
 		draw_arc(Vector2.ZERO, 26.0, anim_t * 2.2, anim_t * 2.2 + TAU * 0.85, 32, Color(1.0, 0.82, 0.40, 0.62 * g_pulse), 2.8)
+	elif companion_id == "dia_yeu_khoi":
+		var s_pulse: float = 0.85 + 0.15 * sin(anim_t * 7.0)
+		draw_arc(Vector2.ZERO, 28.0, -anim_t * 2.8, -anim_t * 2.8 + TAU * 0.90, 32, Color(0.56, 0.88, 0.98, 0.72 * s_pulse), 3.0)
+	elif companion_id == "tieu_y_tien" and PlayerData.has_flag("ch07_thien_doc_nu_joined"):
+		var v_pulse: float = 0.82 + 0.18 * sin(anim_t * 5.5)
+		draw_arc(Vector2.ZERO, 26.0, anim_t * 2.0, anim_t * 2.0 + TAU * 0.85, 32, Color(0.84, 0.48, 1.0, 0.64 * v_pulse), 2.8)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 	for b in active_bolts:

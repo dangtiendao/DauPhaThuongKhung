@@ -729,13 +729,13 @@
           "require_flag": ""
         },
         {
-          "id": "to_ch07_tam_thuong_van_lam_future",
-          "label": "Hành Quân Đông -> [CH.07] Tam Thượng Vân Lam Sơn & Độc Tông",
+          "id": "to_ch07_dinh_nui_chia_ly",
+          "label": "Viễn Chinh Đông -> [CH.07] Đỉnh Núi Chia Ly · Tam Thượng Vân Lam Sơn!",
           "pos": [1940, 560],
-          "target_map": "ch06_bau_troi_noi_vien",
-          "target_spawn": [1740, 560],
-          "require_flag": "ch07_unlocked_future",
-          "locked_hint": "Chúc mừng chinh phục trọn vẹn Chương 06 — Lưu Ly Liên Tâm Hỏa & Đấu Vương Đỉnh Phong! Chương 07: Tam Thượng Vân Lam Sơn sẽ khai mở ở bản cập nhật tiếp theo!"
+          "target_map": "ch07_dinh_nui_chia_ly",
+          "target_spawn": [190, 560],
+          "require_flag": "ch06_completed",
+          "locked_hint": "Hãy đánh bại Dược Hoàng Hàn Phong và nghe tin khẩn từ Thám Tử Gia Mã [V] hoàn tất Chương 06 trước khi tiến vào Chương 07!"
         }
       ]
     }

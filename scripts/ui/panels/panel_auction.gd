@@ -10,7 +10,7 @@ func _init(hud_ref: CanvasLayer) -> void:
 
 
 func build_content(vbox: VBoxContainer) -> void:
-	var venue_title: String = "ĐẠI ĐẤU GIÁ TRƯỜNG BÁT PHIẾN MÔN (HẮC ẤN THÀNH)" if hud.shop_venue_id == "bat_phien_mon" else "PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ (NHÃ PHI)"
+	var venue_title: String = "ĐẠI ĐẤU GIÁ HỘI HẮC HOÀNG TÔNG (HẮC HOÀNG THÀNH · CH.07)" if hud.shop_venue_id == "hac_hoang_tong" else ("ĐẠI ĐẤU GIÁ TRƯỜNG BÁT PHIẾN MÔN (HẮC ẤN THÀNH)" if hud.shop_venue_id == "bat_phien_mon" else "PHÒNG ĐẤU GIÁ MỄ ĐẶC NHĨ (NHÃ PHI)")
 	hud.modal_title_lbl.text = "%s   |   Kim Tệ: %d   |   SOUL: %d" % [venue_title, PlayerData.gold, PlayerData.get_soul()]
 
 	var tab_row := HBoxContainer.new()

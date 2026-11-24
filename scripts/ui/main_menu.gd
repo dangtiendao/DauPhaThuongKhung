@@ -102,14 +102,14 @@ func _build_title_ui() -> void:
 	menu_col.add_theme_constant_override("separation", 8)
 	add_child(menu_col)
 
-	var badge_lbl := _make_label("FAN-GAME 2D HD PIXEL ACTION RPG  •  QUYỂN I & II (CHƯƠNG 01–06)", 12, Color("#70D6FF"))
+	var badge_lbl := _make_label("FAN-GAME 2D HD PIXEL ACTION RPG  •  TRỌN BỘ QUYỂN I & II (CHƯƠNG 01–07)", 12, Color("#70D6FF"))
 	menu_col.add_child(badge_lbl)
 
 	var title_lbl := _make_label("ĐẤU PHÁ\nTHƯƠNG KHUNG", 40, Color("#FFD166"))
 	title_lbl.add_theme_constant_override("outline_size", 8)
 	menu_col.add_child(title_lbl)
 
-	var sub_lbl := _make_label("Ô Thản Thành · Ma Thú Sơn Mạch · Tháp Qua Nhĩ · Đế Đô Vân Lam · Hắc Giác Vực & Nội Viện Già Nam", 13, Color("#E9ECEF"))
+	var sub_lbl := _make_label("Ô Thản Thành · Ma Thú Sơn Mạch · Tháp Qua Nhĩ · Đế Đô · Già Nam · Tam Thượng Vân Lam · Xuất Vân & Thiên Nhai Thành", 13, Color("#E9ECEF"))
 	sub_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	menu_col.add_child(sub_lbl)
 

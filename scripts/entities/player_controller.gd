@@ -299,12 +299,19 @@ func _update_char_motion_shader(delta: float) -> void:
 	var sway_s: float = 3.4 if anim_state == "idle" else (8.5 if dash_timer > 0.0 else 5.2)
 	var rim_c: Color = active_mid_col
 	var rim_s: float = 0.24 if not PlayerData.get_active_flame_def().is_empty() else 0.0
-	if PlayerData.is_flame_buff_active:
+	if PlayerData.is_nhi_bien_active:
+		rim_c = Color("#00F5D4")
+		rim_s = 1.18
+	elif PlayerData.is_flame_buff_active:
 		rim_c = Color("#FF4D6D")
 		rim_s = 1.05
 	elif PlayerData.is_duoc_lao_active:
-		rim_c = Color("#E0AAFF") if PlayerData.get_assist_mode() == "medusa_dau_tong" else Color("#A8DADC")
-		rim_s = 1.05
+		var am_s: String = PlayerData.get_assist_mode()
+		rim_c = Color("#CAF0F8") if am_s == "dia_yeu_khoi" else (Color("#E0AAFF") if am_s == "medusa_dau_tong" else Color("#A8DADC"))
+		rim_s = 1.12
+	elif PlayerData.realm_index >= 7:
+		rim_c = Color("#FFD166")
+		rim_s = maxf(rim_s, 0.72)
 	elif PlayerData.has_dau_vuong_wings():
 		rim_c = Color("#00F5D4") if not PlayerData.has_van_lac_passive() else Color("#E0AAFF")
 		rim_s = maxf(rim_s, 0.62)
@@ -610,13 +617,15 @@ func _tick_timers(delta: float) -> void:
 			EventBus.stats_changed.emit()
 			EventBus.banter_triggered.emit("Dược Lão: 'Hồn lực lão phu tiêu hao không ít rồi, phần còn lại giao cho con!'")
 
-	if PlayerData.is_flame_buff_active:
+	if PlayerData.is_flame_buff_active or PlayerData.is_nhi_bien_active:
 		flame_buff_timer -= delta
 		if flame_buff_timer <= 0.0:
+			var was_t2: bool = PlayerData.is_nhi_bien_active
 			PlayerData.is_flame_buff_active = false
+			PlayerData.is_nhi_bien_active = false
 			_refresh_flame_shader()
 			EventBus.stats_changed.emit()
-			EventBus.floating_text_requested.emit(global_position + Vector2(0, -68), "Hết Thiên Hỏa Tam Huyền Biến", Color("#ADB5BD"))
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -68), "Hết Thiên Hỏa Nhị Biến" if was_t2 else "Hết Thiên Hỏa Tam Huyền Biến", Color("#ADB5BD"))
 
 	# Hồi Đấu Khí dùng tín hiệu qi_updated siêu nhẹ (KHÔNG gây bão _refresh_moba_dock 60Hz!)
 	var max_qi: float = PlayerData.get_max_qi()
@@ -1081,22 +1090,25 @@ func _execute_melee_strike_impact() -> void:
 	if hit_any:
 		EventBus.trigger_hitstop(0.032 if combo_step == 3 else 0.018, 0.10)
 
-	# ĐẠI ĐẤU SƯ (Cảnh giới >= 4): ĐẤU KHÍ NGOẠI PHÓNG — mỗi cú vung vũ khí khi QI > 40% phóng kiếm khí/xích khí lửa xuyên địch!
-	if PlayerData.realm_index >= 4 and has_wpn and PlayerData.current_qi > PlayerData.get_max_qi() * 0.40:
-		if get_parent() != null:
+	# ĐẠI ĐẤU SƯ (Cảnh giới >= 4) hoặc THIÊN HỎA NHỊ BIẾN: phóng kiếm khí/xích khí Lưu Ly Hỏa xuyên địch!
+	if ((PlayerData.realm_index >= 4 and has_wpn and PlayerData.current_qi > PlayerData.get_max_qi() * 0.40) or PlayerData.is_nhi_bien_active) and get_parent() != null:
+		var use_fl: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("di_hoa_14_van_lac")
+		var wave_angles: Array = [-0.14, 0.14] if PlayerData.is_nhi_bien_active else [0.0]
+		var wave_dmg_m: float = 0.68 if PlayerData.is_nhi_bien_active else 0.58
+		for w_ang in wave_angles:
+			var w_dir: Vector2 = attack_aim_dir.rotated(float(w_ang))
 			var wave_proj: Area2D = SKILL_SCENE.instantiate() as Area2D
 			get_parent().add_child(wave_proj)
-			var use_fl: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("di_hoa_19_thanh_lien")
 			if wave_proj.has_method("configure_skill"):
 				wave_proj.configure_skill(
 					"flame_wave",
-					global_position + attack_aim_dir * 34.0 + Vector2(0, -24),
-					global_position + attack_aim_dir * 320.0,
-					dmg * 0.58,
+					global_position + w_dir * 34.0 + Vector2(0, -24),
+					global_position + w_dir * 340.0,
+					dmg * wave_dmg_m,
 					160.0,
-					0.16,
-					52.0,
-					540.0,
+					0.24 if PlayerData.is_nhi_bien_active else 0.16,
+					54.0,
+					560.0,
 					use_fl,
 					[]
 				)
@@ -1499,6 +1511,8 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 					var push_d: Vector2 = (enemy_node.global_position - seal_pos).normalized()
 					if push_d == Vector2.ZERO:
 						push_d = aim_dir
+					if enemy_node.has_method("apply_def_shred"):
+						enemy_node.apply_def_shred(0.25, 6.0)
 					if enemy_node.has_method("apply_stun"):
 						enemy_node.apply_stun(stun_ms)
 					if enemy_node.has_method("receive_hit"):
@@ -1601,6 +1615,65 @@ func _cast_skill_slot(slot_key: String, skill_id: String) -> void:
 						hit_gl = true
 		if hit_gl:
 			EventBus.trigger_hitstop(0.048, 0.08)
+
+	elif behavior == "ocean_seal":
+		# ĐẾ ẤN QUYẾT — PHIÊN HẢI ẤN (Cổ Tộc Ch.07): Trận Ấn Kim-Thanh giáng sóng thần! CỘNG HƯỞNG 1.8x BẠO KÍCH lên địch đang Phá Giáp / Choáng (combo Khai Sơn Ấn)!
+		_start_skill_pose(aim_dir, 0.36, "cast")
+		var o_vec: Vector2 = aim_target - global_position
+		var o_dist: float = o_vec.length()
+		var seal_pos: Vector2 = (global_position + aim_dir * 145.0) if o_dist < 24.0 else (global_position + aim_dir * minf(o_dist, 240.0))
+		_spawn_skill_vfx("ocean_seal", seal_pos + Vector2(0, -14), aim_dir, rad_px, 0.66, Color("#FFFFFF"), Color("#38BDF8"), Color("#FFD166"))
+		VfxAssets.spawn_spark_burst(get_parent(), seal_pos + Vector2(0, -18), Color("#FFFFFF"), Color("#38BDF8"), 28, 125.0, 320.0, 0.46, aim_dir, 150.0, 0.30, 0.72, true)
+		VfxAssets.spawn_spark_burst(get_parent(), seal_pos + Vector2(0, -18), Color("#FFF8D6"), Color("#FFD166"), 20, 100.0, 260.0, 0.44, Vector2.UP, 180.0, 0.28, 0.64, true)
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.audio_sfx_requested.emit("poise_break")
+		EventBus.screen_shake_requested.emit(12.2, 0.34)
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -86), "ĐẾ ẤN QUYẾT — PHIÊN HẢI ẤN!!", Color("#38BDF8"))
+		var stun_os: float = float(sdef.get("stun_sec", 2.0))
+		var hit_os: bool = false
+		for en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if seal_pos.distance_to(enemy_node.global_position) <= rad_px:
+					var push_d: Vector2 = (enemy_node.global_position - seal_pos).normalized()
+					if push_d == Vector2.ZERO:
+						push_d = aim_dir
+					var has_resonance: bool = (("def_shred_timer" in enemy_node and float(enemy_node.get("def_shred_timer")) > 0.0) or ("stun_timer" in enemy_node and float(enemy_node.get("stun_timer")) > 0.0))
+					var final_os_dmg: float = dmg * (1.80 if has_resonance else 1.0)
+					if enemy_node.has_method("apply_stun"):
+						enemy_node.apply_stun(stun_os)
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(final_os_dmg, push_d * kb, r_pen, burn_val * 1.25, 0.28 if has_resonance else 0.10, 1.0, 68.0 * poise_mult)
+						_try_trigger_inner_heart_ignition(enemy_node)
+						if has_resonance:
+							EventBus.floating_text_requested.emit(enemy_node.global_position + Vector2(0, -108), "✦ CỘNG HƯỞNG ĐẾ ẤN 1.8x!", Color("#FFD166"))
+						_spawn_hit_sparks(enemy_node.global_position + Vector2(0, -24), Color("#FFD166") if has_resonance else Color("#38BDF8"), push_d, 16)
+						hit_os = true
+		if hit_os:
+			EventBus.trigger_hitstop(0.048, 0.08)
+
+	elif behavior == "flame_buff_tier2":
+		# THIÊN HỎA TAM HUYỀN BIẾN — NHỊ BIẾN (Ch.07): 16s bùng phát Song Dị Hỏa (+65% ATK, +30% SPD, đòn đánh thường phóng 2 sóng Lưu Ly Hỏa)!
+		_start_skill_pose(aim_dir, 0.34, "cast")
+		PlayerData.is_flame_buff_active = true
+		PlayerData.is_nhi_bien_active = true
+		flame_buff_timer = float(sdef.get("buff_duration", 16.0))
+		_refresh_flame_shader()
+		_spawn_skill_vfx("flame_buff_tier2", global_position + Vector2(0, -22), Vector2.UP, rad_px, 0.68, Color("#FFFFFF"), Color("#00F5D4"), Color("#E0AAFF"), { "follow_target": self, "follow_offset": Vector2(0, -22) })
+		VfxAssets.spawn_spark_burst(get_parent(), global_position + Vector2(0, -24), Color("#FFFFFF"), Color("#00F5D4"), 26, 110.0, 290.0, 0.48, Vector2.UP, 180.0, 0.30, 0.72, true)
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		EventBus.screen_shake_requested.emit(10.0, 0.30)
+		EventBus.stats_changed.emit()
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -86), "THIÊN HỎA TAM HUYỀN BIẾN — NHỊ BIẾN!! (+65% ATK)", Color("#00F5D4"))
+		for en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if global_position.distance_to(enemy_node.global_position) <= rad_px:
+					var push_d: Vector2 = (enemy_node.global_position - global_position).normalized()
+					if push_d == Vector2.ZERO:
+						push_d = aim_dir
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(dmg, push_d * kb, r_pen, burn_val * 1.35, 0.0, 1.0, 38.0 * poise_mult)
 
 	elif behavior == "flame_wave":
 		_start_skill_pose(aim_dir, 0.28, "weapon")
@@ -1743,9 +1816,28 @@ func _activate_duoc_lao_assist() -> void:
 	_refresh_flame_shader()
 	EventBus.audio_sfx_requested.emit("breakthrough")
 	EventBus.stats_changed.emit()
-	EventBus.screen_shake_requested.emit(10.5 if mode == "medusa_dau_tong" else 8.5, 0.32)
-	EventBus.trigger_hitstop(0.042, 0.08)
-	if mode == "medusa_dau_tong":
+	EventBus.screen_shake_requested.emit(12.0 if mode == "dia_yeu_khoi" else (10.5 if mode == "medusa_dau_tong" else 8.5), 0.34)
+	EventBus.trigger_hitstop(0.044, 0.08)
+	if mode == "dia_yeu_khoi":
+		PlayerData.player_slow_timer = 0.0
+		PlayerData.player_slow_ratio = 0.0
+		_spawn_skill_vfx("dia_yeu_khoi_assist", global_position + Vector2(0, -22), Vector2.UP, 265.0, 0.68, Color("#FFFFFF"), Color("#CAF0F8"), Color("#48CAE4"), { "follow_target": self, "follow_offset": Vector2(0, -22) })
+		_spawn_hit_sparks(global_position + Vector2(0, -24), Color("#90E0EF"), Vector2.UP, 34)
+		var dy_dmg: float = PlayerData.get_atk() * 2.85
+		for en in get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var en_nd: Node2D = en as Node2D
+				if global_position.distance_to(en_nd.global_position) <= 265.0:
+					var push_d: Vector2 = (en_nd.global_position - global_position).normalized()
+					if en_nd.has_method("break_boss_shield"):
+						en_nd.break_boss_shield()
+					if en_nd.has_method("receive_hit"):
+						en_nd.receive_hit(dy_dmg, push_d * 600.0, 0.85, PlayerData.get_core_burn_dps(), 0.25, 1.0, 72.0 * PlayerData.get_poise_dmg_multiplier())
+					if en_nd.has_method("apply_stun"):
+						en_nd.apply_stun(1.8)
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -86), "ĐỊA YÊU KHÔI LÔI BỘC!! (BẤT HOẠI ĐẤU TÔNG)", Color("#CAF0F8"))
+		EventBus.banter_triggered.emit("Vệ Sĩ Bất Tử [Địa Yêu Khôi] vung thiết quyền bạc nện nát hư không — miễn nhiễm làm chậm & tăng vọt +170% ATK trong 12 giây!!")
+	elif mode == "medusa_dau_tong":
 		_spawn_skill_vfx("medusa_assist", global_position + Vector2(0, -20), Vector2.UP, 235.0, 0.65, Color("#FFFFFF"), Color("#E0AAFF"), Color("#7B2CBF"), { "follow_target": self, "follow_offset": Vector2(0, -20) })
 		_spawn_hit_sparks(global_position + Vector2(0, -24), Color("#E0AAFF"), Vector2.RIGHT, 30)
 		var m_dmg: float = PlayerData.get_atk() * 2.4
@@ -1854,15 +1946,16 @@ func _draw() -> void:
 	draw_circle(Vector2.ZERO, 28.0, Color(0.03, 0.02, 0.06, 0.50))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
-	# ĐẤU VƯƠNG (Cảnh giới >= 6 hoặc đeo Cánh Hóa Dực): ĐẤU KHÍ HÓA DỰC — Đôi cánh lưu ly xanh-tím vỗ nhịp sau lưng!
+	# ĐẤU VƯƠNG (>= 6) & ĐẤU HOÀNG (>= 7): Đấu Khí Hóa Dực nâng cấp thành Cánh Hoàng Kim Lưu Ly + Hào Quang Thiên Địa!
 	if PlayerData.has_dau_vuong_wings():
 		var flap: float = sin(t_sec * (12.0 if dash_timer > 0.0 else 5.2))
-		var flare: float = 1.24 if dash_timer > 0.0 else 1.0
-		var wing_a: float = 0.86 if dash_timer > 0.0 else 0.72
+		var is_dh: bool = (PlayerData.realm_index >= 7)
+		var flare: float = (1.30 if dash_timer > 0.0 else 1.08) if is_dh else (1.24 if dash_timer > 0.0 else 1.0)
+		var wing_a: float = 0.88 if dash_timer > 0.0 else 0.74
 		var has_vl: bool = PlayerData.has_van_lac_passive()
-		var col_outer: Color = Color(0.0, 0.96, 0.83, 0.42 * wing_a) if has_vl else Color(0.28, 0.84, 1.0, 0.42 * wing_a)
-		var col_mid: Color = Color(0.88, 0.66, 1.0, 0.68 * wing_a) if has_vl else Color(0.45, 0.96, 0.88, 0.66 * wing_a)
-		var col_core: Color = Color(1.0, 1.0, 1.0, 0.85 * wing_a)
+		var col_outer: Color = Color(1.0, 0.84, 0.30, 0.46 * wing_a) if is_dh else (Color(0.0, 0.96, 0.83, 0.42 * wing_a) if has_vl else Color(0.28, 0.84, 1.0, 0.42 * wing_a))
+		var col_mid: Color = Color(0.0, 0.96, 0.83, 0.70 * wing_a) if is_dh else (Color(0.88, 0.66, 1.0, 0.68 * wing_a) if has_vl else Color(0.45, 0.96, 0.88, 0.66 * wing_a))
+		var col_core: Color = Color(1.0, 1.0, 1.0, 0.88 * wing_a)
 		for side in [-1.0, 1.0]:
 			var root_pt := Vector2(side * 10.0, -34.0)
 			var tip_up := Vector2(side * (56.0 * flare), -64.0 + flap * 9.0)
@@ -1882,6 +1975,11 @@ func _draw() -> void:
 			draw_line(root_pt, root_pt.lerp(tip_up, 0.88), col_core, 2.2)
 			draw_line(root_pt, root_pt.lerp(tip_mid, 0.84), col_core, 1.8)
 			draw_line(root_pt, root_pt.lerp(tip_low, 0.78), col_core, 1.4)
+		if is_dh:
+			# Vòng Điều Động Thiên Địa Năng Lượng (Đấu Hoàng >= 7) xoay tỏa ánh vàng kim!
+			var dh_p: float = 0.86 + 0.14 * sin(t_sec * 4.4)
+			draw_arc(Vector2(0, -26), 44.0, t_sec * 1.4, t_sec * 1.4 + TAU * 0.75, 40, Color(1.0, 0.85, 0.32, 0.56 * dh_p), 2.4)
+			draw_arc(Vector2(0, -26), 49.0, -t_sec * 1.1, -t_sec * 1.1 + TAU * 0.55, 36, Color(0.0, 0.96, 0.83, 0.42 * dh_p), 1.8)
 
 	# Hào quang Dị Hỏa / Bí Pháp xoay nhẹ quanh chân
 	var f_def: Dictionary = PlayerData.get_active_flame_def()

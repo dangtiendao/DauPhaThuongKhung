@@ -315,6 +315,44 @@
       "unlocked_start": false,
       "unlock_source": "Chương 06 — Vực Thẳm Dung Nham: Dung hợp Thanh Liên (#19) & Vẫn Lạc Tâm Viêm (#14)",
       "description": "Bí kỹ Song Dị Hỏa Lưu Ly Liên Tâm Hỏa: Tạo xoáy hỏa liên xanh-tím hút gọn quần địch rồi kích nổ Tâm Hỏa Nội Thiêu xuyên giáp gây Sát Thương Chuẩn!"
+    },
+    {
+      "id": "phien_hai_an",
+      "name": "Đế Ấn Quyết — Phiên Hải Ấn",
+      "grade": "Địa Giai Cao Cấp · Cổ Tộc Ấn Pháp",
+      "slot_hint": "R",
+      "icon": "res://assets/sprites/icons/skill_phien_hai_an.png",
+      "behavior": "ocean_seal",
+      "qi_cost": 38,
+      "cooldown": 8.0,
+      "atk_ratio": 4.95,
+      "soul_ratio": 1.15,
+      "radius_px": 230,
+      "knockback": 600,
+      "stun_sec": 2.0,
+      "realm_pen": 0.62,
+      "unlocked_start": false,
+      "unlock_source": "Chương 07 — Đỉnh Núi Chia Ly: Huân Nhi trao trọn truyền thừa Cổ Tộc trước khi về Đế Tộc",
+      "description": "Tầng thứ 2 của Đế Ấn Quyết: Ngưng tụ sóng thần Kim-Thanh đập nát chiến tuyến! CỘNG HƯỞNG 1.8x BẠO KÍCH lên mục tiêu vừa dính Khai Sơn Ấn / Phá Giáp!"
+    },
+    {
+      "id": "thien_hoa_nhi_bien",
+      "name": "Thiên Hỏa Tam Huyền Biến — Nhị Biến",
+      "grade": "Bí Pháp Thượng Cổ · Nhị Trọng Dị Hỏa",
+      "slot_hint": "E",
+      "icon": "res://assets/sprites/icons/skill_tam_huyen_nhi_bien.png",
+      "behavior": "flame_buff_tier2",
+      "qi_cost": 42,
+      "cooldown": 20.0,
+      "atk_ratio": 2.60,
+      "soul_ratio": 1.00,
+      "radius_px": 200,
+      "buff_duration": 16.0,
+      "knockback": 380,
+      "realm_pen": 0.60,
+      "unlocked_start": false,
+      "unlock_source": "Chương 07 — Sinh Tử Môn Gia Mã Đế Đô: Bế quan đột phá Đấu Hoàng",
+      "description": "Đốt cháy Song Dị Hỏa Lưu Ly Liên Tâm Hỏa trong 16 giây: +65% ATK, +30% SPD, đòn đánh thường tự động phóng Kiếm Khí Lưu Ly Hỏa tầm xa!"
     }
   ]
 }

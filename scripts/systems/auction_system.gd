@@ -10,6 +10,8 @@ extends RefCounted
 
 
 static func get_venue_name(venue_id: String) -> String:
+	if venue_id == "hac_hoang_tong":
+		return "Đại Đấu Giá Hội Hắc Hoàng Tông — Hắc Hoàng Thành (Ch.07)"
 	if venue_id == "bat_phien_mon":
 		return "Đại Đấu Giá Trường Bát Phiến Môn — Hắc Ấn Thành"
 	return "Phòng Đấu Giá Mễ Đặc Nhĩ — Nhã Phi"
@@ -17,7 +19,16 @@ static func get_venue_name(venue_id: String) -> String:
 
 static func _make_rivals(venue_id: String, start_price: int) -> Array:
 	var pool: Array = []
-	if venue_id == "bat_phien_mon":
+	if venue_id == "hac_hoang_tong":
+		pool = [
+			"Mạc Thiên Hành (Hắc Hoàng Tông)",
+			"Hàn Phong (Đấu Tông Ma Viêm)",
+			"Địa Ma Lão Quỷ (Ma Viêm Cốc)",
+			"Ưng Sơn Lão Nhân (Đấu Tông)",
+			"Thiên Xà Phủ Trưởng Lão",
+			"Hồn Điện Hắc Bào Sứ"
+		]
+	elif venue_id == "bat_phien_mon":
 		pool = [
 			"Phạm Lao (Huyết Tông)",
 			"Hàn Phong (Dược Hoàng)",
@@ -102,9 +113,70 @@ static func _build_lot_dict(
 
 
 static func generate_auction_lots(venue_id: String) -> Array:
-	var v_id: String = venue_id if venue_id == "bat_phien_mon" else "nha_phi"
+	var v_id: String = venue_id if (venue_id == "bat_phien_mon" or venue_id == "hac_hoang_tong") else "nha_phi"
 	var realm_idx: int = clampi(PlayerData.realm_index, 1, 12)
 	var lots: Array = []
+
+	if v_id == "hac_hoang_tong":
+		var scale_h: float = 1.0 + maxf(0.0, float(realm_idx - 6) * 0.14)
+		var hp1: int = int(round(1250.0 * scale_h / 10.0)) * 10
+		var hp2: int = int(round(1850.0 * scale_h / 10.0)) * 10
+		var hp3: int = int(round(2600.0 * scale_h / 10.0)) * 10
+
+		lots.append(_build_lot_dict(
+			v_id,
+			"lot_hht_khoang_doc",
+			"Lô Đúc Khôi Lỗi · Thiên Thiết Khoáng x2 & Vạn Hạt Độc Hạch Cấp 6",
+			"Kim loại thượng cổ rèn vệ sĩ [Địa Yêu Khôi] kèm [Vạn Hạt Độc Hạch Cấp 6] khảm vũ khí (+75 ATK, +420 HP, +10% Crit, +28% Burn)!",
+			"res://assets/sprites/pickups/monster_core.png",
+			"#70E000",
+			"item",
+			"item_thien_thiet_khoang",
+			"",
+			"de",
+			2,
+			hp1,
+			{ "extra_items": { "core_doc_6": 1 } }
+		))
+
+		lots.append(_build_lot_dict(
+			v_id,
+			"lot_hht_pha_tong",
+			"Thất Phẩm Thần Đan · Phá Tông Đan x1",
+			"Thất Phẩm bảo đan quý hiếm nhất Hắc Giác Vực giúp Đấu Hoàng Đỉnh Phong phá vỡ gông cùm đột phá ĐẤU TÔNG!",
+			"res://assets/sprites/icons/pill_exp_jade.png",
+			"#FFE66D",
+			"item",
+			"pill_pha_tong_dan",
+			"",
+			"de",
+			1,
+			hp2
+		))
+
+		var hht_tpl: String = "pend_bo_de_hoa_the_tien"
+		if GameDatabase.get_equipment_template(hht_tpl).is_empty():
+			hht_tpl = "caul_hai_tam_dinh"
+		lots.append(_build_lot_dict(
+			v_id,
+			"lot_hht_bo_de",
+			"Chí Bảo Thượng Cổ · Bồ Đề Hóa Thể Tiên & Cánh Thiên Yêu Hoàng",
+			"Gói Trấn Hội Hắc Hoàng Tông: [Bồ Đề Hóa Thể Tiên (Đế Phẩm)] + Di vật Xác Khô Thiên Yêu Hoàng + 12 Đá Cường Hóa + +18 Linh Hồn Lực (SOUL)!",
+			"res://assets/sprites/icons/icon_pendant.png",
+			"#FF4D6D",
+			"relic_pack",
+			"",
+			hht_tpl,
+			"de",
+			1,
+			hp3,
+			{
+				"relic_title": "Chí Bảo Hắc Hoàng Tông: Bồ Đề Hóa Thể Tiên & Xác Khô Thiên Yêu Hoàng",
+				"bonus_stones": 12,
+				"bonus_soul": 18
+			}
+		))
+		return lots
 
 	if v_id == "bat_phien_mon":
 		var scale_m: float = 1.0 + maxf(0.0, float(realm_idx - 4) * 0.12)

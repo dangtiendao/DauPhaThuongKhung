@@ -273,6 +273,81 @@
       "tier": 6,
       "color_hex": "#FFD166",
       "description": "Lục phẩm đỉnh phong bảo đan giúp Đấu Vương Cửu Tinh Đỉnh Phong phá vỡ gông cùm đột phá ĐẤU HOÀNG!"
+    },
+    "herb_hu_cot_thao": {
+      "id": "herb_hu_cot_thao",
+      "name": "Hủ Cốt Thảo (Xuất Vân Độc Cốc)",
+      "type": "herb",
+      "tier": 6,
+      "color_hex": "#C77DFF",
+      "description": "Độc thảo thượng đẳng sinh trưởng giữa Xuất Vân Độc Chướng — lấy độc trị độc để luyện Thanh Hồn Hóa Sinh Đan & Phá Tông Đan!"
+    },
+    "item_hon_tinh_den": {
+      "id": "item_hon_tinh_den",
+      "name": "Hồn Tinh Đen (Hồn Điện)",
+      "type": "material",
+      "tier": 6,
+      "color_hex": "#9D4EDD",
+      "description": "Tinh thể linh hồn kết tinh từ Hộ Pháp Hồn Điện & oán khí Ma Viêm Cốc — chứa linh hồn lực đậm đặc!"
+    },
+    "core_doc_6": {
+      "id": "core_doc_6",
+      "name": "Vạn Hạt Độc Hạch (Cấp 6)",
+      "type": "monster_core",
+      "tier": 6,
+      "color_hex": "#70E000",
+      "description": "Độc Hạch Cấp 6 tuyệt phẩm từ Thánh Địa Vạn Hạt Môn — khảm lên vũ khí tăng +75 ATK, +420 HP, +10% Chí mạng & +28% Hỏa/Độc thiêu đốt!"
+    },
+    "item_thien_thiet_khoang": {
+      "id": "item_thien_thiet_khoang",
+      "name": "Thiên Thiết & Hàn Tinh Khoáng",
+      "type": "material",
+      "tier": 6,
+      "color_hex": "#90E0EF",
+      "description": "Kim loại thượng cổ rèn cốt xác Đấu Tông thành vệ sĩ bất tử [Địa Yêu Khôi] (đấu giá tại Hắc Hoàng Tông)!"
+    },
+    "item_binh_nap_hon": {
+      "id": "item_binh_nap_hon",
+      "name": "Bình Ngọc Nạp Hồn (Hồn Điện)",
+      "type": "material",
+      "tier": 6,
+      "color_hex": "#A9DEF9",
+      "description": "Bảo vật trấn áp linh hồn đoạt từ mật thất Vạn Hạt Môn — dùng nhốt chặt tàn hồn phản đồ Hàn Phong!"
+    },
+    "pill_viem_minh_linh_dan": {
+      "id": "pill_viem_minh_linh_dan",
+      "name": "Viêm Minh Linh Đan (Lục Phẩm)",
+      "type": "consumable_hp",
+      "tier": 6,
+      "heal_hp": 920,
+      "color_hex": "#FF6B6B",
+      "description": "Đan dược chiến lược của Đan Đường Đế Quốc Viêm Minh — uống vào hồi tức thì +920 HP giữa đại chiến Đấu Tông!"
+    },
+    "pill_thien_hon_dung_huyet": {
+      "id": "pill_thien_hon_dung_huyet",
+      "name": "Thiên Hồn Dung Huyết Đan (Lục Phẩm)",
+      "type": "consumable_hp",
+      "tier": 6,
+      "heal_hp": 1150,
+      "color_hex": "#FF4D6D",
+      "description": "Lục Phẩm đỉnh phong bảo đan dung hòa huyết mạch Thải Lân & Tiêu Viêm, an thai tiểu công chúa Tiêu Tiêu (uống hồi +1.150 HP)!"
+    },
+    "pill_thanh_hon_hoa_sinh": {
+      "id": "pill_thanh_hon_hoa_sinh",
+      "name": "Thanh Hồn Hóa Sinh Đan (Lục Phẩm)",
+      "type": "consumable_qi",
+      "tier": 6,
+      "restore_qi": 380,
+      "color_hex": "#56CFE1",
+      "description": "Bảo đan lấy độc công độc hóa giải tàn độc Phệ Sinh Đan cho Nhị ca Tiêu Lệ (uống hồi +380 Đấu Khí)!"
+    },
+    "pill_pha_tong_dan": {
+      "id": "pill_pha_tong_dan",
+      "name": "Phá Tông Đan (Thất Phẩm Sơ Giai)",
+      "type": "breakthrough",
+      "tier": 7,
+      "color_hex": "#FFE66D",
+      "description": "Thất Phẩm thần đan chuẩn bị cho đại đột phá Đấu Hoàng -> Đấu Tông (yêu cầu Cảnh Linh Hồn: Linh Cảnh >= 250 SOUL để luyện)!"
     }
   },
   "recipes": [
@@ -435,6 +510,46 @@
       "base_success_rate": 0.65,
       "soul_exp_gain": 60,
       "ingredients": { "herb_long_huyet_chi": 2, "herb_that_huyen_tien": 2, "core_bang_5": 1, "core_loi_5": 1 }
+    },
+    {
+      "id": "recipe_viem_minh_linh_dan",
+      "output_item": "pill_viem_minh_linh_dan",
+      "output_count": 2,
+      "tier": 6,
+      "req_soul": 155,
+      "base_success_rate": 0.78,
+      "soul_exp_gain": 45,
+      "ingredients": { "herb_long_huyet_chi": 1, "herb_hu_cot_thao": 1, "core_bang_5": 1 }
+    },
+    {
+      "id": "recipe_thien_hon_dung_huyet",
+      "output_item": "pill_thien_hon_dung_huyet",
+      "output_count": 1,
+      "tier": 6,
+      "req_soul": 165,
+      "base_success_rate": 0.72,
+      "soul_exp_gain": 68,
+      "ingredients": { "herb_long_huyet_chi": 2, "herb_thanh_moc_tien_dang": 2, "core_huyet_5": 1 }
+    },
+    {
+      "id": "recipe_thanh_hon_hoa_sinh",
+      "output_item": "pill_thanh_hon_hoa_sinh",
+      "output_count": 1,
+      "tier": 6,
+      "req_soul": 180,
+      "base_success_rate": 0.70,
+      "soul_exp_gain": 72,
+      "ingredients": { "herb_hu_cot_thao": 2, "item_hon_tinh_den": 1, "herb_thanh_moc_tien_dang": 2 }
+    },
+    {
+      "id": "recipe_pha_tong_dan",
+      "output_item": "pill_pha_tong_dan",
+      "output_count": 1,
+      "tier": 7,
+      "req_soul": 250,
+      "base_success_rate": 0.58,
+      "soul_exp_gain": 95,
+      "ingredients": { "herb_long_huyet_chi": 2, "herb_hu_cot_thao": 2, "core_doc_6": 1, "item_hon_tinh_den": 1 }
     }
   ]
 }

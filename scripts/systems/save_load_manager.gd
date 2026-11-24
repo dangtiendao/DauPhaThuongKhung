@@ -148,6 +148,7 @@ static func build_save_payload(pd: Node) -> Dictionary:
 		"fire_energy": pd.fire_energy,
 		"tower_best_floor": pd.tower_best_floor,
 		"pan_gate_state": pd.pan_gate_state.duplicate(true) if ("pan_gate_state" in pd and pd.pan_gate_state is Dictionary) else {},
+		"ma_doc_ban_stacks": int(pd.ma_doc_ban_stacks) if ("ma_doc_ban_stacks" in pd) else 0,
 		"auction_wins": pd.auction_wins,
 		"auction_consigned_total": pd.auction_consigned_total,
 		"quick_hp_pill_id": pd.quick_hp_pill_id,
@@ -221,6 +222,8 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 		pd.pan_gate_state = loaded_pg.duplicate(true)
 	else:
 		pd.pan_gate_state = {}
+	if "ma_doc_ban_stacks" in pd:
+		pd.ma_doc_ban_stacks = int(d.get("ma_doc_ban_stacks", 0))
 	pd.auction_wins = int(d.get("auction_wins", 0))
 	pd.auction_consigned_total = int(d.get("auction_consigned_total", 0))
 	pd.tower_active_buffs.clear()
@@ -239,6 +242,8 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 	pd.is_ruler_sealed = bool(d.get("is_ruler_sealed", false))
 	pd.is_duoc_lao_active = false
 	pd.is_flame_buff_active = false
+	if "is_nhi_bien_active" in pd:
+		pd.is_nhi_bien_active = false
 	pd.equipped_flame_id = str(d.get("equipped_flame_id", ""))
 	pd.unlocked_flames = d.get("unlocked_flames", [])
 	pd.lotus_fusion_flames = d.get("lotus_fusion_flames", [])
