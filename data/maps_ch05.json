@@ -14,7 +14,7 @@
       "id": "ch05_hem_nui_hac_phong",
       "chapter": "Chương 05",
       "name": "Hẻm Núi Hắc Phong — Phục Kích Truy Binh Vân Lam",
-      "bgm": "bgm_yunlan",
+      "bgm": "bgm_hac_giac",
       "size": [
         2048,
         1152
@@ -250,7 +250,7 @@
       "id": "ch05_rung_dem_huyet_vu",
       "chapter": "Chương 05",
       "name": "Rừng Đêm Huyết Vụ — Doanh Trại Huyết Tông",
-      "bgm": "bgm_wild",
+      "bgm": "bgm_hac_giac",
       "size": [
         2048,
         1152
@@ -495,7 +495,7 @@
       "id": "ch05_hac_an_thanh",
       "chapter": "Chương 05",
       "name": "Hắc Ấn Thành — Đại Đấu Giá Trường Bát Phiến Môn",
-      "bgm": "bgm_capital",
+      "bgm": "bgm_hac_giac",
       "size": [
         2048,
         1152
@@ -748,7 +748,7 @@
       "id": "ch05_hoa_binh_tran",
       "chapter": "Chương 05",
       "name": "Hòa Bình Trấn — Ranh Giới Học Viện Già Nam",
-      "bgm": "bgm_peaceful",
+      "bgm": "bgm_gia_nam",
       "size": [
         1792,
         1024
@@ -968,7 +968,7 @@
       "id": "ch05_ngoai_vien_gia_nam",
       "chapter": "Chương 05",
       "name": "Ngoại Viện Học Viện Già Nam — Lôi Đài & Tàng Thư Các",
-      "bgm": "bgm_peaceful",
+      "bgm": "bgm_gia_nam",
       "size": [
         2048,
         1152

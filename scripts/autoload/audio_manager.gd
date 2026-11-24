@@ -1,11 +1,13 @@
 extends Node
 ## Hệ thống Âm Thanh, Nhạc Nền Cổ Phong Tiên Hiệp (Procedural AudioStreamWAV) & Cài Đặt Hiển Thị:
 ## - Không phụ thuộc file MP3 ngoài -> tổng hợp trực tiếp chuẩn Ngũ Cung & Địa Vực (Cổ Tranh / Sáo Trúc / Tỳ Bà / Biên Chung / Trống Chiến).
-## - 7 Bản nhạc nền tự động chuyển mượt theo bản đồ & Boss:
-##   bgm_peaceful, bgm_wild, bgm_boss, bgm_desert, bgm_lava, bgm_capital, bgm_yunlan.
-## - 22 Hiệu ứng SFX chiến đấu (gồm Phá Thế poise_break, Đột Phá breakthrough & Choáng skill_stun hòa âm giàu sắc thái).
+## - 11 Bản nhạc nền tự động chuyển mượt theo bản đồ & Boss:
+##   bgm_peaceful, bgm_wild, bgm_boss, bgm_desert, bgm_lava, bgm_capital, bgm_yunlan,
+##   bgm_hac_giac, bgm_gia_nam, bgm_poison, bgm_zhongzhou.
+## - 24 Hiệu ứng SFX chiến đấu (gồm Phá Thế poise_break, Đột Phá breakthrough & Choáng skill_stun hòa âm giàu sắc thái).
 ## - Lưu & gộp sạch cài đặt Âm Thanh + Hiển Thị (Fullscreen / VSync / FPS / Screen Shake) trong user://dptk_settings.json.
 
+const BgmCh0508 = preload("res://scripts/systems/audio_bgm_ch05_08.gd")
 const SETTINGS_PATH: String = "user://dptk_settings.json"
 const SAMPLE_RATE: int = 22050
 
@@ -68,6 +70,23 @@ func _ready() -> void:
 
 	EventBus.audio_sfx_requested.connect(play_sfx)
 	EventBus.bgm_requested.connect(play_bgm)
+
+
+func _exit_tree() -> void:
+	stop_all_audio()
+	bgm_tracks.clear()
+	sfx_streams.clear()
+
+
+func stop_all_audio() -> void:
+	if bgm_player != null:
+		bgm_player.stop()
+		bgm_player.stream = null
+	for p in sfx_pool:
+		if p != null:
+			p.stop()
+			p.stream = null
+	current_bgm_name = ""
 
 
 func set_bgm_volume(val: float, save_to_disk: bool = true) -> void:
@@ -260,8 +279,12 @@ func play_bgm(track_name: String) -> void:
 	if not bgm_tracks.has(track_name):
 		return
 	current_bgm_name = track_name
+	if bgm_player.playing:
+		bgm_player.stop()
 	bgm_player.stream = bgm_tracks[track_name]
 	_apply_volumes()
+	if AudioServer.get_driver_name() == "Dummy":
+		return
 	bgm_player.play()
 
 
@@ -270,8 +293,12 @@ func play_sfx(sfx_name: String, pitch_jitter: float = 0.07) -> void:
 		return
 	if not sfx_streams.has(sfx_name):
 		return
+	if AudioServer.get_driver_name() == "Dummy":
+		return
 	var p: AudioStreamPlayer = sfx_pool[sfx_pool_idx]
 	sfx_pool_idx = (sfx_pool_idx + 1) % sfx_pool.size()
+	if p.playing:
+		p.stop()
 	p.stream = sfx_streams[sfx_name]
 	p.pitch_scale = randf_range(1.0 - pitch_jitter, 1.0 + pitch_jitter) if pitch_jitter > 0.0 else 1.0
 	p.volume_db = linear_to_db(sfx_volume * 0.72)
@@ -314,6 +341,11 @@ func _build_all_bgm() -> void:
 
 	# 7. Đỉnh Vân Lam Sơn & Ước Hẹn 3 Năm (Sáo trúc vân đỉnh + Kiếm phong hòa âm + Đàn dây & Trống sử thi)
 	bgm_tracks["bgm_yunlan"] = _synth_yunlan_loop()
+
+	# 8–11. Bộ 4 nhạc nền địa vực Chương 05–08 (Hắc Giác Vực, Học Viện Già Nam, Xuất Vân Độc Chướng, Trung Châu Tinh Vực)
+	var extra_tracks: Dictionary = BgmCh0508.build_tracks(SAMPLE_RATE)
+	for tk in extra_tracks.keys():
+		bgm_tracks[str(tk)] = extra_tracks[tk]
 
 
 func _synth_pentatonic_loop(notes: Array, step_sec: float, drone_freq: float, with_drums: bool) -> AudioStreamWAV:

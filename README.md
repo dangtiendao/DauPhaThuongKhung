@@ -1,6 +1,6 @@
 # Đấu Phá Thương Khung — Top-down 2D HD Pixel Action RPG (Godot 4)
 
-Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn vẹn từ tiểu thuyết **Đấu Phá Thương Khung** (Thiên Tằm Thổ Đậu), phát triển trên **Godot Engine 4 (GDScript)** với đồ họa **32-bit HD Pixel Art (`1280×720`, Physics Interpolation & Shader VFX 60–144 FPS)**, giao diện **nút bấm MOBA trực quan**, **Data-Driven Story Engine**, và **tiến trình chuẩn nguyên tác TRỌN BỘ QUYỂN I & II (`v0.6.0`): 38 bản đồ — 56 mốc nhiệm vụ chính (Chương 01 -> Chương 07: Tam Thượng Vân Lam Sơn, Đế Quốc Viêm Minh, Thiên Độc Nữ, Ma Độc Ban, #15 Hải Tâm Diễm, Địa Yêu Khôi & Không Gian Trùng Động Trung Châu)**.
+Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn vẹn từ tiểu thuyết **Đấu Phá Thương Khung** (Thiên Tằm Thổ Đậu), phát triển trên **Godot Engine 4 (GDScript)** với đồ họa **32-bit HD Pixel Art (`1280×720`, Physics Interpolation & VFX 2.0 Shader 60–144 FPS)**, giao diện **nút bấm MOBA trực quan**, **Data-Driven Story Engine**, **11 Bản Nhạc Nền Ngũ Cung Địa Vực**, và **tiến trình chuẩn nguyên tác TRỌN BỘ QUYỂN I, QUYỂN II & MỞ MÀN QUYỂN III (`v0.7.2`): 46 bản đồ — 66 mốc nhiệm vụ chính (Chương 01 -> Chương 08: Bắc Vực Trung Châu, Đột Phá Đấu Tông, Giải Ma Độc Ban, Thiên Hỏa Tôn Giả, Quán Quân Đan Hội Bát Phẩm Ngũ Sắc Đan Lôi, #12 Cửu Long & #9 Tam Thiên Diễm Viêm Hỏa)**.
 
 ---
 
@@ -8,12 +8,12 @@ Dự án Fan-game phi thương mại / học tập lấy cảm hứng trọn v�
 
 1. **Chơi ngay**: Nhấp đúp file **`CHAY_GAME.bat`** trong thư mục dự án (`e:\Project\DauPhaThuongKhung\CHAY_GAME.bat`).
 2. **Mở trình soạn thảo Godot Editor**: Nhấp đúp file **`MO_GODOT_EDITOR.bat`** (hoặc mở Godot 4 -> Import `project.godot` -> nhấn `F5`).
-3. **Chạy bộ kiểm thử tự động (1.096 assertions · 11 Suites)**: Chạy **`tests\run_tests.bat`** (hoặc `Godot --headless --path . res://tests/test_runner.tscn`).
-4. **Đóng gói Windows `.exe`**: Cấu hình sẵn preset **`Windows Desktop`** trong `export_presets.cfg` (`0.6.0.0`, tích hợp `icon.ico`, nhúng `.pck`, xuất ra `builds/DauPhaThuongKhung.exe`).
+3. **Chạy bộ kiểm thử tự động (1.461 assertions · 13 Suites)**: Chạy **`tests\run_tests.bat`** (hoặc `Godot --headless --path . res://tests/test_runner.tscn`).
+4. **Đóng gói Windows `.exe`**: Cấu hình sẵn preset **`Windows Desktop`** trong `export_presets.cfg` (`0.7.2.0`, tích hợp `icon.ico`, nhúng `.pck`, xuất ra `builds/DauPhaThuongKhung.exe`).
 
 ---
 
-## 2. Lộ Trình Chuẩn Nguyên Tác (38 Bản Đồ — 56 Mốc Cốt Truyện — 65 Quái & 34 Boss Độc Chiêu)
+## 2. Lộ Trình Chuẩn Nguyên Tác (46 Bản Đồ — 66 Mốc Cốt Truyện — 79 Quái & 41 Boss Độc Chiêu)
 
 Khởi đầu **Phút 0**, Tiêu Viêm đứng tại **Quảng Trường Tiêu Gia** với **Đấu Chi Khí 3 Đoạn**, **Tay Không** (chưa có vũ khí, chưa thức tỉnh Dược Lão, chưa mở Lò Luyện Đan `[L]` / Dị Hỏa `[H]`, chưa có Đấu Kỹ hay Phật Nộ Hỏa Liên):
 
@@ -95,18 +95,28 @@ Khởi đầu **Phút 0**, Tiêu Viêm đứng tại **Quảng Trường Tiêu G
 36. **Hắc Hoàng Thành & Tổng Đàn Ma Viêm Cốc (`ch07_hac_hoang_ma_viem`)**: Tham dự **Đấu Giá Hội Hắc Hoàng Tông** (#3 Venue — *Bồ Đề Hóa Thể Tiên*, *Thiên Thiết Khoáng*, *Vạn Hạt Độc Hạch Cấp 6*, *Phá Tông Đan*), nhận viện binh **Đại Trưởng Lão Tô Thiên** (`+15%` ATK), nhốt tàn hồn **[BOSS] Hàn Phong Đấu Tông** đoạt **`#15 Hải Tâm Diễm`**, trảm **[FINAL BOSS QUYỂN II] Địa Ma Lão Quỷ (Đấu Tông 7 Tinh)** và đúc xác lão quỷ thành Vệ Sĩ Bất Tử **`ĐỊA YÊU KHÔI`** (Đồng Hành #6 `[G]` & Hỗ Trợ `[T]` Lôi Bộc Bất Hoại)!
 37. **Thiên Nhai Thành — Không Gian Trùng Động (`ch07_thien_nhai_trung_dong`)**: Chia tay **Nữ Hoàng Thải Lân** ở lại Viêm Minh dưỡng thai Tiêu Tiêu, rồi cùng **Thiên Độc Nữ, Tử Nghiên & Địa Yêu Khôi** bước vào Không Gian Trùng Động tiến về **Đại Lục Trung Châu (Quyển III — Chương 08)**!
 
+### Chương 08 — Bắc Vực Trung Châu & Đan Hội (8 Bản Đồ · NV 57–66 · Mở Màn Quyển III · Đủ 24/24 Đấu Kỹ GDD)
+38. **Hoang Mạc Bắc Vực & Hẻm Núi Vạn Phong Giản (`ch08_hoang_mac_van_phong`)**: Lạc giữa bão không gian Trung Châu, giải cứu đoàn xe Nhị Tiểu Thư **Hàn Tuyết** (Hàn Gia — kèm kỳ ngộ phụ *Trích Thủy Chi Ân*).
+39. **Thiên Bắc Thành — Sinh Tử Đài & Phủ Hàn Gia (`ch08_thien_bac_thanh`)**: Giao đấu trên Sinh Tử Đài & phá vòng vây truy sát của **[BOSS] Thiên Lôi Tử Phí Thiên** (Phong Lôi Các).
+40. **Thiên Mục Sơn Mạch & Đáy Thiên Sơn Huyết Đàm (`ch08_thien_muc_huyet_dam`)**: Diệt **[BOSS] Huyết Sát Vương Trần** (Hoàng Tuyền Các), Kỳ Ngộ *Phệ Kim Thử Cổ*, tắm Huyết Đàm đột phá **ĐẤU TÔNG** (*Đạp Hư Không `860 px/s`*, `1.42×` tầm đánh) & lĩnh ngộ **`Không Gian Phong Tỏa`**!
+41. **Đỉnh Lôi Sơn — Đại Hội Tứ Phương Các (`ch08_loi_son_tu_phuong`)**: Xé hắc bào chấn động Bắc Vực, tái ngộ **Phong Tôn Giả (Phong Nhàn)** & quyết chiến **[BOSS] Phượng Thanh Nhi** (Thiên Yêu Hoàng Tộc).
+42. **Lạc Thần Giản & Bầu Trời Diệp Thành (`ch08_lac_than_diep_thanh`)**: Phá vây **[BOSS] Cốc Chủ Băng Hà & Thanh Hải Tôn Giả** (Hồn Điện), **hóa giải hoàn toàn `Ma Độc Ban`** (`+15% ATK`, Tiểu Y Tiên tiến hóa **Tam Tinh Đấu Tôn**), phục sinh **Đồng Hành #7 `[G]` Thiên Hỏa Tôn Giả** (*Ngũ Luân Ly Hỏa Pháp*), và chứng kiến **Cổ Huân Nhi** xé trời giáng lâm truyền thụ tầng cuối Đế Ấn Quyết **`Cổ Đế Ấn`**!
+43. **Thánh Địa Phần Viêm Cốc — Hỏa Đàn Cửu Long (`ch08_phan_viem_coc`)**: Trợ giúp Cốc Chủ **Đường Chấn**, vượt khảo nghiệm **[BOSS] #12 Cửu Long Lôi Cương Hỏa** & lĩnh ngộ tầng tối hậu **`Thiên Hỏa Tam Huyền Biến — Tam Biến`** (`+85% ATK`, `-30%` hồi chiêu).
+44. **Thánh Đan Thành & Nội Vực Đan Tháp (`ch08_thanh_dan_thanh`)**: Tham gia **Đấu Giá Thiên Bảo Phường (#4)**, diện kiến **Huyền Không Tử** & **Yêu Nữ Tào Dĩnh** (kèm *Hồi Ức Huyền Y* nhận *Huyền Tâm Hộ Hồn Bội -25% DMG Hồn Điện*), nổ tung **Bia Trắc Hồn** lĩnh ngộ Hồn Kỹ **`Kinh Hồn Chưởng`**, rồi luyện Bát Phẩm **`Sinh Cốt Dung Huyết Đan`** (yêu cầu Thiên Cảnh `900+ SOUL`) đón **Ngũ Sắc Đan Lôi giáng trực tiếp xuống bản đồ** đăng quang **Quán Quân Đan Hội**, mở **`Tam Thiên Lôi Huyễn Thân`** & tiến hóa **Chuẩn Thiên Yêu Khôi** (`[G]` & `[T]` Ngũ Sắc Thiên Lôi)!
+45. **Vạn Dặm Đan Giới & Ngân Hà Tinh Vực (`ch08_tinh_vuc_phong_an`)**: Kết nghĩa **Long Hùng Hoàng Hùng Chiến**, đánh lui **[BOSS] Mộ Cốt Lão Nhân** (Hồn Điện), hàng phục **[FINAL BOSS CH.08] #9 Thái Hư Tử Hắc Cự Long** đoạt **`#9 Tam Thiên Diễm Viêm Hỏa`** (*Bất Tử Chi Thân* hồi `+3.5% HP/s` & hồi sinh `45% HP / 180s`) + **Tứ Sắc Hủy Diệt Hỏa Liên** (`#19 + #14 + #11 + #9`), mở cổng chờ **Chương 09 — Vong Hồn Điện**!
+
 ---
 
-## 3. Tính Năng Gameplay Nổi Bật (v0.6.0 — Trọn Bộ Quyển I & II)
+## 3. Tính Năng Gameplay Nổi Bật (v0.7.1 — VFX 2.0 · Quyển I, II & Ch.08 Quyển III)
 
-* **Chiến đấu 60–144 FPS & Procedural VFX Polish**: 2D Physics Interpolation, Shader nhân vật pixel-crisp `char_motion_polish.gdshader` (khóa bàn chân, gió phất tà áo, viền Đấu Khí Rim-Glow & Hit-Flash), Input Buffer, Hitstop toàn cục, Camera Look-Ahead, **Thanh Phá Thế Boss (Poise/Stagger)** (`+35%` DMG khi vỡ thế), **Độ Thông Thạo 19 Đấu Kỹ** (có **Cộng Hưởng Đế Ấn Quyết 1.8×** giữa *Khai Sơn Ấn → Phiên Hải Ấn* & *Thiên Hỏa Nhị Biến* phóng song sóng Lưu Ly!), 7 mẫu AI quái thường, **34/34 Boss độc chiêu chuẩn 8-frame (`4×2`)**, cơ chế **Đấu Hoàng (`realm >= 7`) — Điều Động Thiên Địa Năng Lượng** (cánh Hoàng Kim Lưu Ly, `+64% DEF`, `+22% SPD`, `1.35×` tầm đánh), **Ma Độc Ban** & **Tam Sắc Phật Nộ Hỏa Liên** (`#19 + #14 + #11`).
-* **Quản Trị Thế Lực Bàn Môn → Đế Quốc VIÊM MINH (`[M] -> 👑 Viêm Minh`)**: Tiến hóa từ 3 Phân Đường Bàn Môn lên **4 Đường Đế Quốc Viêm Minh** (*Đan Đường*, *Hình Đường*, *Ám Đường Tầm Bảo*, *Ám Võng Tình Báo* Lv.0→3 — đạt Max mở `FLAG_YAN_ALLIANCE_MAX`), thu hoạch thụ động tài nguyên cao cấp, cử **Tử Nghiên** tầm bảo & khiêu chiến **8 cao thủ Cường Bảng / Đấu Tông**!
-* **Khảm Ma Hạch 3 Rãnh & Trang Bị 10 Ô `[I]`**: 41 mẫu trang bị, 6 phẩm chất, **7 bộ Set** (*Tiêu Gia → Ma Thú → Sa Mạc → Đế Đô → Tân Sinh Vương → Nội Viện Bá Chủ → **Viêm Minh Chi Chủ***), cường hóa `+0 → +15` và **khảm trực tiếp Ma Hạch Cấp 1–6** (gồm *Vạn Hạt Độc Hạch Cấp 6* `core_doc_6`).
-* **Lò Luyện Đan `[L]` & 3 Đấu Trường Đấu Giá + Ký Gửi**: **20 đan phương** Phẩm 1–7 (gồm *Viêm Minh Linh Đan*, *Thiên Hồn Dung Huyết Đan*, *Thanh Hồn Hóa Sinh Đan*, Thất Phẩm *Phá Tông Đan* tôn trọng Cảnh Linh Hồn `alchemy_max_tier >= 7`); **3 đấu trường** (**Mễ Đặc Nhĩ**, **Bát Phiến Môn** & **Hắc Hoàng Tông Ch.07**).
+* **Chiến đấu 60–144 FPS & Gói VFX 2.0 (`v0.7.1`)**: 2D Physics Interpolation, **4 Shader GLSL (`gl_compatibility` 100%)** gồm `char_motion_polish` (gió phất áo + Rim-Glow), `di_hoa_palette`, `space_shockwave` (sóng khúc xạ bẻ cong không gian + tách sắc RGB qua `ScreenFxOverlay`) & `vfx_energy_dissolve` (**Cánh Đấu Khí Hóa Dực sprite-shader** đổi màu theo cảnh giới/Dị Hỏa); Input Buffer, Hitstop, Camera Look-Ahead, **Thanh Phá Thế Boss (Poise/Stagger)** (`+35%` DMG), **sét phân nhánh đa tầng, trận đồ cổ tự, hố nứt 3s & Ngũ Sắc Đan Lôi giáng thực chiến**, **Độ Thông Thạo đủ 24/24 Đấu Kỹ (100% GDD)**, 7 mẫu AI quái thường, **41/41 Boss độc chiêu chuẩn 8-frame (`4×2`)**, cơ chế **Đấu Hoàng** → **Đấu Tông Đạp Hư Không (`860 px/s`, `1.42×` reach)**, **Tứ Sắc Hủy Diệt Hỏa Liên** (`#19 + #14 + #11 + #9`) & nội tại **Bất Tử Chi Thân** (`#9`).
+* **Quản Trị Thế Lực Bàn Môn → Đế Quốc VIÊM MINH (`[M] -> 👑 Viêm Minh`)**: Tiến hóa từ 3 Phân Đường Bàn Môn lên **4 Đường Đế Quốc Viêm Minh** (*Đan Đường*, *Hình Đường*, *Ám Đường Tầm Bảo*, *Ám Võng Tình Báo* Lv.0→3 — đạt Max mở `FLAG_YAN_ALLIANCE_MAX`), thu hoạch thụ động tài nguyên cao cấp, cử **Tử Nghiên** tầm bảo & khiêu chiến **11 cao thủ Cường Bảng / Đấu Tông / Dị Hỏa**!
+* **Khảm Ma Hạch 3 Rãnh & Trang Bị 10 Ô `[I]`**: **46 mẫu trang bị**, 6 phẩm chất, **8 bộ Set** (*Tiêu Gia → Ma Thú → Sa Mạc → Đế Đô → Tân Sinh Vương → Nội Viện Bá Chủ → Viêm Minh Chi Chủ → **Trung Châu Đan Vương***), cường hóa `+0 → +15` và **khảm trực tiếp Ma Hạch Cấp 1–7** (gồm Song Ma Hạch Cấp 7 `core_loi_7`, `core_tinh_7`).
+* **Lò Luyện Đan `[L]` & 4 Đấu Trường Đấu Giá + Ký Gửi**: **52 vật phẩm & 24 đan phương** Phẩm 1–8 (gồm Thất Phẩm *Phá Tông Đan* và Bát Phẩm *Sinh Cốt Dung Huyết Đan* yêu cầu Thiên Cảnh `900+ SOUL` + giáng Ngũ Sắc Đan Lôi); **4 đấu trường** (**Mễ Đặc Nhĩ**, **Bát Phiến Môn**, **Hắc Hoàng Tông** & **Thiên Bảo Phường Ch.08**).
 * **Endgame & Khám Phá**:
-  * **Thiên Phần Luyện Khí Tháp (Roguelite)** & **Đấu Trường Cường Bảng + Đấu Tông Viêm Minh** trong `[M]`.
-  * **Tâm Ma Luyện Cảnh** trong `[M]`: Tái đấu toàn bộ **34 Boss** ở 3 độ khó (`Thường / Ác Mộng / Đấu Tông`), chấm hạng `C → SSS`.
-  * **Đồ Giám Vạn Thú (65 loài)**, **6 Đồng Hành AI `[G]`** (thêm **Địa Yêu Khôi** Khiên Bạc & Lôi Quyền Choáng + tiến hóa **Thiên Độc Nữ Tiểu Y Tiên**), **5 Hồng Nhan Tri Kỷ** & **Radar Linh Hồn `[Z]`**.
+  * **Thiên Phần Luyện Khí Tháp (Roguelite)** & **Đấu Trường Cường Bảng + Trung Châu (11 Boss)** trong `[M]`.
+  * **Tâm Ma Luyện Cảnh** trong `[M]`: Tái đấu toàn bộ **41 Boss** ở 3 độ khó (`Thường / Ác Mộng / Đấu Tông`), chấm hạng `C → SSS`.
+  * **Đồ Giám Vạn Thú (79 loài)**, **7 Đồng Hành AI `[G]`** (thêm **Thiên Hỏa Tôn Giả #7** với *Ngũ Luân Ly Hỏa 3D-Tilt*, tiến hóa **Chuẩn Thiên Yêu Khôi** & **Tiểu Y Tiên Tam Tinh Đấu Tôn** + vệt đuôi đạn Đồng Hành 2.0), **5 Hồng Nhan Tri Kỷ** & **Radar Linh Hồn `[Z]`**.
 
 ---
 
@@ -119,14 +129,14 @@ Toàn bộ chiêu thức, kỹ năng cơ động, đan dược và 8 bảng hệ
 | `W A S D` / Phím mũi tên | Di chuyển 8 hướng |
 | `V` hoặc `Enter` *(Ô `[V]`)* | **Tương tác gần nhất** (NPC / Ma Thạch Bi / Đấu Giá / Bảo Rương / Cổng Chuyển Bản Đồ) |
 | `Chuột Trái (LMB)` | Đánh thường Combo 3 nhịp (Tay Không Quyền Cước -> Vũ Khí liền thân + SFX riêng) |
-| `Q` / `E` / `R` / `F` / `T` | **19 Đấu Kỹ** tự do lắp trong `[K]`, **Tam/Tứ Sắc Phật Nộ Hỏa Liên** `[F]` & **Dược Lão → Mỹ Đỗ Toa → Địa Yêu Khôi** `[T]` |
-| `Space` *(Ô `[SPC]`)* | Thân pháp Lướt né có I-frame *(tiến hóa: Lướt thường -> **Tử Vân Dực** -> **Tam Thiên Lôi Động** -> **Đấu Khí Hóa Dực**!)* |
+| `Q` / `E` / `R` / `F` / `T` | **24/24 Đấu Kỹ** tự do lắp trong `[K]`, **Tứ Sắc Hủy Diệt Hỏa Liên** `[F]` & **Dược Lão → Mỹ Đỗ Toa → Địa Yêu Khôi → Chuẩn Thiên Yêu Khôi** `[T]` |
+| `Space` *(Ô `[SPC]`)* | Thân pháp Lướt né có I-frame *(tiến hóa: Lướt thường -> **Tử Vân Dực** -> **Tam Thiên Lôi Động** -> **Đấu Khí Hóa Dực** -> **Đấu Tông Đạp Hư Không**!)* |
 | `Chuột Phải (RMB)` / `C` | Bật/Tắt **Phong Ấn Trọng Xích** (`-15% SPD, +30% EXP` khi đeo Huyền Trọng Xích) |
-| `G` | **Triệu Hồi / Chuyển 6 Đồng Hành AI** (*Dược Lão* / *Thiên Độc Nữ Tiểu Y Tiên* / *Thải Lân* / *Tiêu Huân Nhi* / *Tử Nghiên* / *Địa Yêu Khôi*) |
+| `G` | **Triệu Hồi / Chuyển 7 Đồng Hành AI** (*Dược Lão* / *Thiên Độc Nữ Tam Tinh Đấu Tôn* / *Thải Lân* / *Tiêu Huân Nhi* / *Tử Nghiên* / *Chuẩn Thiên Yêu Khôi* / *Thiên Hỏa Tôn Giả*) |
 | `Z` | **Radar Linh Hồn** — Phóng sóng cảm ứng rương báu ẩn & lộ hình kẻ địch *(+45% tầm khi gọi Tử Nghiên!)* |
 | `1` / `2` / `3` | Uống nhanh: *Đan HP* / *Đan Đấu Khí* / *Đan EXP* (tự chuyển đan cao cấp khi hết) |
-| `I` / `K` / `B` / `L` / `H` | Trang Bị 10 Ô & Khảm Ma Hạch / Kho 19 Đấu Kỹ & Hỏa Liên / Đột Phá / Lò Luyện Đan / Dị Hỏa Bảng |
-| `M` | **Thế Giới (38 Map · Ch.01–07)** · **5 Hồng Nhan** · **👑 Viêm Minh & Cường Bảng** · **Tâm Ma (34 Boss)** · **Thiên Phần Tháp** · **Đồ Giám** |
+| `I` / `K` / `B` / `L` / `H` | Trang Bị 10 Ô & Khảm Ma Hạch / Kho 24 Đấu Kỹ & Hỏa Liên / Đột Phá / Lò Luyện Đan / Dị Hỏa Bảng |
+| `M` | **Thế Giới (46 Map · Ch.01–08)** · **5 Hồng Nhan** · **👑 Viêm Minh & Cường Bảng (11 Boss)** · **Tâm Ma (41 Boss)** · **Thiên Phần Tháp** · **Đồ Giám (79 loài)** |
 | `ESC` / `F5` / `F9` | Menu Tạm Dừng (**Đổi Phím**, **Hiển Thị Fullscreen/VSync/FPS/Shake**, **Auto-Save**, **DEMO**, Save/Load 3 Ô) / Lưu / Tải nhanh |
 
 ---
@@ -134,10 +144,10 @@ Toàn bộ chiêu thức, kỹ năng cơ động, đan dược và 8 bảng hệ
 ## 5. Chế Độ DEMO (Mở Khóa Tất Cả) & Tự Động Lưu / Chơi Tiếp
 
 ### Option 1 — ★ Chế Độ DEMO (Mở Khóa Tất Cả)
-* **Bật từ Màn Hình Chính**: Bấm **`★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (38 MAP · FULL ĐỒ)`** (tự động chạy riêng trên **Ô Lưu 3** để bảo toàn tuyệt đối bản lưu chuẩn cốt truyện ở **Ô 1 & Ô 2**), hoặc bật ngay trong game qua **`[ESC] -> ★ Bật Chế Độ DEMO`** hay chọn nút **`Demo`** ở từng ô trong *Quản Lý 3 Ô Lưu*.
+* **Bật từ Màn Hình Chính**: Bấm **`★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (46 MAP · FULL ĐỒ)`** (tự động chạy riêng trên **Ô Lưu 3** để bảo toàn tuyệt đối bản lưu chuẩn cốt truyện ở **Ô 1 & Ô 2**), hoặc bật ngay trong game qua **`[ESC] -> ★ Bật Chế Độ DEMO`** hay chọn nút **`Demo`** ở từng ô trong *Quản Lý 3 Ô Lưu*.
 * **Toàn bộ nội dung mở sẵn**:
-  * Toàn bộ **38 Bản Đồ (Trọn Quyển I & II · Chương 01–07)** mở cổng + nút bấm **`Dịch Chuyển ->`** 1 chạm ngay trong **`[M]`**, vẫn giữ nguyên toàn bộ **34 Boss** để vào đánh thử thoải mái!
-  * Cảnh giới **Đấu Hoàng — 9 Tinh (Đỉnh Phong)** kích hoạt sẵn **Cánh Hoàng Kim Lưu Ly**, nội tại **#14 Vẫn Lạc Tâm Viêm 24/7** & đủ *Phá Tông Đan* sẵn sàng đột phá Đấu Tông, đủ **19 Đấu Kỹ**, **`[T]` Địa Yêu Khôi Lôi Bộc**, trọn bộ **28 loại Hỏa `[H]`** (lắp sẵn 4 Dị Hỏa dung hợp `#19 + #14 + #11 + #15` trong **`[F]` Phật Nộ Hỏa Liên**), trọn bộ **6 Đồng Hành AI `[G]`** (kèm **Thiên Độc Nữ** & **Địa Yêu Khôi**), **Đế Quốc Viêm Minh Cấp 2** cả 4 Đường, **10 ô trang bị Bộ Viêm Minh Chi Chủ Đế Phẩm + 3 Ma Hạch Cấp 5–6 khảm sẵn**, **850 Hỏa Năng**, **x20** toàn bộ đan dược & thảo dược, **180.000 Kim Tệ**, **999 Đá Cường Hóa**, và **100/100 Hảo Cảm** 5 Hồng Nhan.
+  * Toàn bộ **46 Bản Đồ (Trọn Quyển I–II & Chương 08 Quyển III)** mở cổng + nút bấm **`Dịch Chuyển ->`** 1 chạm ngay trong **`[M]`**, vẫn giữ nguyên toàn bộ **41 Boss** để vào đánh thử thoải mái!
+  * Cảnh giới **Đấu Tông — 9 Tinh (Đỉnh Phong)** + **Thiên Cảnh Linh Hồn (`980+ SOUL`)** kích hoạt sẵn **Đạp Hư Không**, **Cánh Đấu Khí Hóa Dực Shader**, nội tại **#14 Vẫn Lạc Tâm Viêm 24/7** & **#9 Bất Tử Chi Thân**, đủ **24/24 Đấu Kỹ**, **`[T]` Chuẩn Thiên Yêu Khôi Ngũ Lôi**, trọn bộ **28 loại Hỏa `[H]`** (lắp sẵn **Tứ Sắc Hủy Diệt Hỏa Liên `#19 + #14 + #11 + #9`**), trọn bộ **7 Đồng Hành AI `[G]`** (kèm **Thiên Hỏa Tôn Giả**, **Chuẩn Thiên Yêu Khôi** & **Tiểu Y Tiên Tam Tinh Đấu Tôn**), **Đế Quốc Viêm Minh Cấp 2** cả 4 Đường, **10 ô trang bị Bộ #8 Trung Châu Đan Vương Đế Phẩm + 3 Ma Hạch Cấp 6–7 (`core_tinh_7`, `core_loi_7`, `core_doc_6`) khảm sẵn**, **1.500 Hỏa Năng**, **x20** toàn bộ 52 đan dược/thảo dược/ma hạch, **380.000 Kim Tệ**, **999 Đá Cường Hóa**, và **100/100 Hảo Cảm** 5 Hồng Nhan.
 
 ### Option 2 — Tự Động Lưu & Tự Động Chơi Tiếp (Auto-Save & Auto-Continue)
 * **Lưu cài đặt vĩnh viễn** trong `user://dptk_settings.json` (gồm cả phím tùy chỉnh, hiển thị và âm lượng), có 2 công tắc bật/tắt ngay trên **Màn Hình Chính** và **Menu Tạm Dừng `[ESC]`**:
@@ -148,10 +158,10 @@ Toàn bộ chiêu thức, kỹ năng cơ động, đan dược và 8 bảng hệ
 
 ## 6. Cấu Trúc Thư Mục Dự Án
 
-* `docs/` — **25 Tài liệu Thiết kế Game (GDD) & Tiến Độ** chia chi tiết 11 Chương (4 Quyển), 23 Dị Hỏa, 12 Cảnh giới, Đấu Kỹ, Luyện Đan, Quái & 25 Boss, kèm bảng theo dõi tiến độ & lộ trình phát triển tại [`docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md`](docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md).
-* `data/` — **24 Cơ sở dữ liệu JSON** (`maps.json`, `maps_ch04/05/06/07.json` — 38 map; `quests_ch01/04/05/06/07.json` — 56 NV chính; `dialogues_ch04/05/06/07.json`; `enemies.json`, `enemies_ch04/05/06/07.json` — 65 quái/34 Boss; `realms.json`, `flames.json`, `skills.json`, `alchemy_items.json`, `equipment.json`).
-* `assets/` — **185 tài nguyên 32-bit HD Pixel Art & Shader** (chuẩn mặc định **8 frame**: trọn bộ **42/42 spritesheet hoạt ảnh** gồm 8 sheet Tiêu Viêm `idle/run/cast/dash/4×attack` và trọn bộ **34/34 Boss `*_boss_anim.png`** đều là **8 frame** `4×2`/`8×1`; **31 NPC**, **35 icon MOBA** (19/19 Đấu Kỹ có icon riêng), **16 tileset vùng** gồm Đế Đô / Vân Lam Sơn / Hắc Giác Vực / Già Nam / Nội Viện / Đáy Tháp Dung Nham / Xuất Vân Độc Chướng / Thiên Nhai Trùng Động, props/VFX, `di_hoa_palette.gdshader` & `char_motion_polish.gdshader`).
-* `scripts/` & `scenes/` — **33 script GDScript** (đã tách mô-đun `SaveLoadManager`, `PanGateManager` (Bàn Môn → Viêm Minh), `BossRushManager`, `ThienPhanTowerManager`, `StoryDialogueRunner`, 6 panel UI trong `scripts/ui/panels/`, `AuctionSystem` (3 đấu trường), `AlchemySystem`, `EquipmentSystem`, **7 BGM ngũ cung Procedural** & 21+ SFX) & **9 scene `.tscn`**.
-* `tests/` — Bộ kiểm thử tự động Godot headless (`tests/test_runner.tscn`, `tests/test_suite.gd`, `tests/run_tests.bat`) — **11 Suites / 1.096 assertions** kiểm tra JSON schema, tồn tại asset `res://`, liên thông BFS 38 bản đồ, `alchemy_max_tier`, Save/Load, DEMO, live UI/Endgame, 42/42 sheet 8-frame, Ch.06 & Ch.07.
+* `docs/` — **25 Tài liệu Thiết kế Game (GDD), Tiến Độ & Sổ Nợ Đồ Họa** chia chi tiết 11 Chương (4 Quyển), 23 Dị Hỏa, 12 Cảnh giới, Đấu Kỹ, Luyện Đan, Quái & 25+ Boss, kèm bảng theo dõi tiến độ tại [`docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md`](docs/00_Tong_Quan_Kien_Truc/02_Tien_Do_Va_Lo_Trinh_Phat_Trien.md) và sổ theo dõi đồ họa tại [`docs/00_Tong_Quan_Kien_Truc/03_Danh_Sach_Do_Hoa_Va_VFX_Can_Nang_Cap.md`](docs/00_Tong_Quan_Kien_Truc/03_Danh_Sach_Do_Hoa_Va_VFX_Can_Nang_Cap.md).
+* `data/` — **28 Cơ sở dữ liệu JSON** (`maps.json`, `maps_ch04..08.json` — 46 map; `quests_ch01`, `quests_ch04..08.json` — 66 NV chính; `dialogues_ch04..08.json`; `enemies.json`, `enemies_ch04..08.json` — 79 quái/41 Boss; `realms.json`, `flames.json`, `skills.json` — 24 Đấu Kỹ; `alchemy_items.json` — 52 vật phẩm/24 đan phương; `equipment.json` — 46 mẫu/8 Set).
+* `assets/` — **215 tài nguyên sprite/texture 32-bit HD Pixel Art & 4 Shader GLSL** (chuẩn mặc định **8 frame**: trọn bộ **49/49 spritesheet hoạt ảnh** gồm 8 sheet Tiêu Viêm `idle/run/cast/dash/4×attack` và trọn bộ **41/41 Boss `*_boss_anim.png`** đều là **8 frame** `4×2`/`8×1`; **38 NPC**, **40 icon** gồm 24/24 Đấu Kỹ có icon riêng, **21 tileset vùng** từ Ô Thản Thành tới Thánh Đan Thành & Ngân Hà Tinh Vực, texture VFX `128×128` / `wing_plume` `96×128`, 3 pickup `32×32`, và 4 shader `di_hoa_palette`, `char_motion_polish`, `space_shockwave`, `vfx_energy_dissolve`).
+* `scripts/` & `scenes/` — **44 script GDScript** (`24.5K` LOC · mọi file lõi `< 1.700` dòng sau đợt mô-đun hóa `v0.7.2`: `SaveLoadManager`, `PanGateManager`, `HeroineAffectionManager`, `StoryProgressionHelper`, `RegionalWeatherBuilder`, `WorldNavigationHelper`, `BossSkillExecutor`, `PlayerSkillExecutor`, `BossRushManager`, `ThienPhanTowerManager`, `StoryDialogueRunner`, `ScreenFxOverlay`, `AudioBgmCh0508`, **9 mô-đun UI** trong `scripts/ui/panels/`, `AuctionSystem`, `AlchemySystem`, `EquipmentSystem`, **11 BGM ngũ cung địa vực Procedural** & **24 SFX**) & **9 scene `.tscn`**.
+* `tests/` — Bộ kiểm thử tự động Godot headless (`tests/test_runner.tscn`, `tests/test_suite.gd`, `tests/run_tests.bat`) — **13 Suites / 1.461 assertions (0 FAILED · 0 leaks)** kiểm tra JSON schema, tồn tại asset `res://`, liên thông BFS 46 bản đồ, `alchemy_max_tier`, Save/Load, DEMO, live UI/VFX 2.0/Endgame, 49/49 sheet 8-frame, Ch.06–08, 11 BGM / 46-map BGM & 10 mô-đun refactor `v0.7.2`.
 * `tools/` — Công cụ tự động chuẩn hóa spritesheet `tools/normalize_spritesheet.py`.
-* `export_presets.cfg` & `icon.ico` — Cấu hình đóng gói Windows x64 (`GL Compatibility`) độc lập.
+* `export_presets.cfg` & `icon.ico` — Cấu hình đóng gói Windows x64 (`GL Compatibility`, `v0.7.2.0`) độc lập.

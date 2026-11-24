@@ -66,6 +66,7 @@ func _run_all_suites() -> void:
 	_suite_10_ch06_systems()
 	_suite_11_ch07_systems()
 	_suite_12_ch08_systems()
+	_suite_13_audio_and_modular_refactor()
 
 	_restore_user_settings()
 
@@ -480,8 +481,9 @@ func _suite_08_live_scene_and_panels() -> void:
 		and hud.get("panel_tower_boss_rush") != null
 		and hud.get("panel_alchemy") != null
 		and hud.get("panel_auction") != null
-		and hud.get("panel_equipment") != null,
-		"All 6 extracted HUD panels initialized"
+		and hud.get("panel_equipment") != null
+		and hud.get("panel_skills_cultivation") != null,
+		"All 7 extracted HUD panels initialized"
 	)
 
 	# Mở toàn bộ modal & tab để đảm bảo 0 lỗi dựng UI sau refactor
@@ -945,5 +947,70 @@ func _suite_12_ch08_systems() -> void:
 		var vtex: Texture2D = load(str(vp))
 		var exp_sz: Vector2i = vfx_dims[vp]
 		_assert(vtex != null and vtex.get_width() == exp_sz.x and vtex.get_height() == exp_sz.y, "VFX 2.0 HD texture matches %dx%d: %s" % [exp_sz.x, exp_sz.y, str(vp)], "got %s" % (str(vtex.get_size()) if vtex != null else "null"))
+
+
+# =========================================================
+# SUITE 13: v0.7.2 AUDIO CH.05–08 (11 BGMs) & MODULAR REFACTOR GUARD
+# =========================================================
+func _suite_13_audio_and_modular_refactor() -> void:
+	print("[Suite 13] v0.7.2 Ch.05-08 BGMs (11 Tracks), 46-Map BGM Links & 10 Extracted Modules...")
+	var expected_bgms: Array[String] = [
+		"bgm_peaceful", "bgm_wild", "bgm_boss", "bgm_desert", "bgm_lava", "bgm_capital", "bgm_yunlan",
+		"bgm_hac_giac", "bgm_gia_nam", "bgm_poison", "bgm_zhongzhou"
+	]
+	_assert(AudioManager.bgm_tracks.size() >= 11, "AudioManager built 11+ procedural BGM tracks", "got %d" % AudioManager.bgm_tracks.size())
+	for bk in expected_bgms:
+		var st = AudioManager.bgm_tracks.get(bk, null)
+		_assert(st is AudioStreamWAV and (st as AudioStreamWAV).data.size() > 10000 and (st as AudioStreamWAV).loop_mode == AudioStreamWAV.LOOP_FORWARD, "BGM track valid looping WAV: " + bk)
+
+	# Xác nhận toàn bộ 46 bản đồ dùng khóa chuẩn "bgm" (không còn "bgm_track" lỗi) và trỏ tới track hợp lệ
+	var used_bgms: Dictionary = {}
+	for mid in GameDatabase.maps_by_id.keys():
+		var md: Dictionary = GameDatabase.maps_by_id[mid]
+		var bm: String = str(md.get("bgm", ""))
+		_assert(not md.has("bgm_track"), "Map has no stale bgm_track key: " + str(mid))
+		_assert(bm != "" and AudioManager.bgm_tracks.has(bm), "Map BGM resolves to valid AudioManager track: %s -> %s" % [str(mid), bm])
+		used_bgms[bm] = true
+	for new_bk in ["bgm_hac_giac", "bgm_gia_nam", "bgm_poison", "bgm_zhongzhou"]:
+		_assert(used_bgms.has(new_bk), "New Ch.05-08 BGM actively wired to maps: " + new_bk)
+		AudioManager.play_bgm(new_bk)
+		_assert(AudioManager.current_bgm_name == new_bk, "AudioManager switches active BGM cleanly: " + new_bk)
+
+	# Xác nhận toàn bộ 10 mô-đun mới tách ở v0.7.2 nạp sạch & hoạt động đúng hợp đồng
+	var new_modules: Array[String] = [
+		"res://scripts/systems/audio_bgm_ch05_08.gd",
+		"res://scripts/systems/heroine_affection_manager.gd",
+		"res://scripts/systems/story_progression_helper.gd",
+		"res://scripts/systems/regional_weather_builder.gd",
+		"res://scripts/systems/world_navigation_helper.gd",
+		"res://scripts/entities/boss_skill_executor.gd",
+		"res://scripts/entities/player_skill_executor.gd",
+		"res://scripts/ui/panels/panel_skills_cultivation.gd",
+		"res://scripts/ui/panels/hud_moba_dock_helper.gd",
+		"res://scripts/ui/panels/hud_dialogue_controller.gd"
+	]
+	for mp in new_modules:
+		var sc: Script = load(mp)
+		_assert(sc != null, "Extracted module script loads cleanly: " + mp)
+
+	var h_mod = load("res://scripts/systems/heroine_affection_manager.gd")
+	_assert(h_mod.get_heroine_profiles().size() == 5, "HeroineAffectionManager returns all 5 heroines")
+	var b_mod = load("res://scripts/entities/boss_skill_executor.gd")
+	for bid in ["gia_liet_ao_boss", "nap_lan_yen_nhien_boss", "la_hau_boss", "han_phong_boss", "dia_ma_lao_quy_boss", "tam_thien_diem_viem_boss"]:
+		var col: Color = b_mod.get_signature_color(bid)
+		_assert(col.a > 0.9, "BossSkillExecutor signature color valid for " + bid)
+
+	# Bảo vệ kiến trúc: không script cốt lõi nào trong 5 file đã refactor vượt quá 2.000 dòng
+	for core_p in [
+		"res://scripts/autoload/player_data.gd",
+		"res://scripts/entities/enemy_controller.gd",
+		"res://scripts/entities/player_controller.gd",
+		"res://scripts/ui/hud_controller.gd",
+		"res://scripts/systems/world_stage_manager.gd"
+	]:
+		var f := FileAccess.open(core_p, FileAccess.READ)
+		var loc: int = f.get_as_text().split("\n").size() if f != null else 99999
+		_assert(loc < 2000, "Refactored core script stays under 2000 LOC: %s (%d LOC)" % [core_p, loc])
+
 
 

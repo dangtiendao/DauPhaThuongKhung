@@ -15,14 +15,18 @@ const PanelTowerBossRushScript = preload("res://scripts/ui/panels/panel_tower_bo
 const PanelAlchemyScript = preload("res://scripts/ui/panels/panel_alchemy.gd")
 const PanelAuctionScript = preload("res://scripts/ui/panels/panel_auction.gd")
 const PanelEquipmentScript = preload("res://scripts/ui/panels/panel_equipment.gd")
+const PanelSkillsCultivationScript = preload("res://scripts/ui/panels/panel_skills_cultivation.gd")
+const HudMobaDock = preload("res://scripts/ui/panels/hud_moba_dock_helper.gd")
+const HudDialogueCtrl = preload("res://scripts/ui/panels/hud_dialogue_controller.gd")
 
-# 6 Panel UI mô-đun tách biệt (scripts/ui/panels/)
+# 7 Panel UI mô-đun tách biệt (scripts/ui/panels/)
 var panel_pause_settings: RefCounted
 var panel_world_map_bestiary: RefCounted
 var panel_tower_boss_rush: RefCounted
 var panel_alchemy: RefCounted
 var panel_auction: RefCounted
 var panel_equipment: RefCounted
+var panel_skills_cultivation: RefCounted
 
 # Khung trạng thái góc trái trên (lerp mượt)
 var hp_bar: ProgressBar
@@ -168,6 +172,7 @@ func _exit_tree() -> void:
 	panel_alchemy = null
 	panel_auction = null
 	panel_equipment = null
+	panel_skills_cultivation = null
 
 
 func _ready() -> void:
@@ -177,6 +182,7 @@ func _ready() -> void:
 	panel_alchemy = PanelAlchemyScript.new(self)
 	panel_auction = PanelAuctionScript.new(self)
 	panel_equipment = PanelEquipmentScript.new(self)
+	panel_skills_cultivation = PanelSkillsCultivationScript.new(self)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build_hud_layout()
 	_refresh_all()
@@ -1120,318 +1126,7 @@ func _refresh_interact_button() -> void:
 
 
 func _refresh_moba_dock() -> void:
-	# 1. Ô Đánh Thường [LMB]
-	if slot_lmb != null:
-		var has_w: bool = PlayerData.has_weapon_equipped()
-		var w_icon_p: String = "res://assets/sprites/icons/skill_unarmed.png"
-		var w_name: String = "Quyền Cước (Tay Không)"
-		if has_w:
-			var w_inst: Dictionary = PlayerData.equipped_gear.get("weapon", {})
-			var tdef: Dictionary = GameDatabase.get_equipment_template(str(w_inst.get("template_id", "")))
-			w_icon_p = str(tdef.get("icon", w_icon_p))
-			w_name = EquipmentSystem.get_item_display_name(w_inst)
-		slot_lmb.set_slot_visual(_get_cached_tex(w_icon_p), "ATK %d" % int(PlayerData.get_atk()), false, false, false, Color("#FFE599"))
-		slot_lmb.set_tooltip_info(
-			"Đánh Thường [Chuột Trái] — %s" % w_name,
-			"Combo 3 nhịp liền thân · Công kích: %d" % int(PlayerData.get_atk()),
-			"Nhấp Chuột Trái lên màn hình để tung 3 đòn liên hoàn theo hướng con trỏ chuột (nhịp 3 đánh diện rộng + rung chấn).",
-			Color("#FFE599")
-		)
-
-	# 2. 4 Ô Đấu Kỹ [Q] [E] [R] [F]
-	var default_locked_icons: Dictionary = {
-		"Q": "res://assets/sprites/icons/skill_toai_thach.png",
-		"E": "res://assets/sprites/icons/skill_bat_cuc_bang.png",
-		"R": "res://assets/sprites/icons/skill_phe_lang_xich.png",
-		"F": "res://assets/sprites/icons/skill_hoa_lien.png"
-	}
-	var lock_hints: Dictionary = {
-		"Q": "Bái sư Dược Lão tại Vách Đá Hậu Sơn để học Toái Thạch Chưởng [Q]!",
-		"E": "Đánh bại Tiêu Ninh ở Lễ Thành Niên hoặc mở Rương Cổ Hậu Sơn!",
-		"R": "Sang Chương 02 (Ma Thú Sơn Mạch) gặp Tiểu Y Tiên để học Diễm Phân Phệ Lãng Xích!",
-		"F": "Chỉ mở khóa ở Chương 03 Sa Mạc Tháp Qua Nhĩ sau khi thu phục Thanh Liên Địa Tâm Hỏa (#19)!"
-	}
-	_slot_qi_costs.clear()
-	for slot_k in ["Q", "E", "R", "F"]:
-		var btn: MobaSlotButton = skill_slots[slot_k]
-		var sid: String = PlayerData.get_skill_in_slot(slot_k)
-		if sid == "":
-			btn.set_slot_visual(_get_cached_tex(str(default_locked_icons[slot_k])), "KHÓA", true, false, false)
-			btn.set_tooltip_info(
-				"Ô Đấu Kỹ [%s] — Chưa Mở Khóa" % slot_k,
-				"Chuẩn nguyên tác · Mở dần theo cốt truyện",
-				str(lock_hints[slot_k]),
-				Color("#ADB5BD")
-			)
-		else:
-			var sdef: Dictionary = GameDatabase.get_skill_def(sid)
-			var ic_p: String = str(sdef.get("icon", default_locked_icons[slot_k]))
-			var qi_c: float = float(sdef.get("qi_cost", 15.0))
-			if str(sdef.get("behavior", "")) == "fire_lotus_ult":
-				qi_c *= PlayerData.get_lotus_qi_cost_multiplier()
-			_slot_qi_costs[slot_k] = qi_c
-			var low_qi: bool = (PlayerData.current_qi < qi_c)
-			var is_buff_on: bool = (sid == "thien_hoa_tam_huyen_bien" and PlayerData.is_flame_buff_active)
-			var mi: Dictionary = PlayerData.get_skill_mastery_info(sid)
-			var eff_cd: float = float(sdef.get("cooldown", 5.0)) * float(mi.get("cd_mult", 1.0))
-			var dmg_pct: int = int(round((float(mi.get("dmg_mult", 1.0)) - 1.0) * 100.0))
-			var m_tag: String = " · %s (+%d%% DMG)" % [str(mi.get("tier_name", "Sơ Khuy")), dmg_pct] if dmg_pct > 0 else " · %s" % str(mi.get("tier_name", "Sơ Khuy"))
-			btn.set_slot_visual(_get_cached_tex(ic_p), "%d QI" % int(qi_c), false, is_buff_on, low_qi, Color("#FF758F") if low_qi else Color("#70D6FF"))
-			btn.set_tooltip_info(
-				"[%s] %s" % [slot_k, str(sdef.get("name", sid))],
-				"%s%s · Tốn %d Đấu Khí · Hồi %.1fs" % [str(sdef.get("grade", "")), m_tag, int(qi_c), eff_cd],
-				str(sdef.get("description", "")) + "\n(Thông thạo: %d lần xuất chiêu · Mở [K] để xem thưởng Thông Thạo & đổi chiêu!)" % int(mi.get("uses", 0)),
-				mi.get("color", Color("#FFD166")) as Color
-			)
-
-	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa / Địa Yêu Khôi / Chuẩn Thiên Yêu Khôi
-	var btn_t: MobaSlotButton = skill_slots["T"]
-	var t_mode: String = PlayerData.get_assist_mode()
-	if t_mode == "thien_yeu_khoi":
-		btn_t.set_slot_visual(
-			_get_cached_tex("res://assets/sprites/npcs/npc_dia_yeu_khoi.png"),
-			"THIÊN KHÔI",
-			false,
-			PlayerData.is_duoc_lao_active,
-			false,
-			Color("#FFD166")
-		)
-		btn_t.set_tooltip_info(
-			"[T] Vệ Sĩ Hoàng Kim — Chuẩn Thiên Yêu Khôi (Ngũ Sắc Thiên Lôi)",
-			"Hồi 45s · Duy trì 12s · ATK x3.05 · SPD +52% · Khiên 30% HP · Phá Khiên & Choáng 2.2s",
-			"Hấp thu trọn vẹn Ngũ Sắc Đan Lôi Chung Kết Đan Hội! Giáng cột Thiên Lôi Hoàng Kim 300px, tạo Khiên 30% Max HP, miễn làm chậm & tăng +205% ATK suốt 12 giây!",
-			Color("#FFD166")
-		)
-	elif t_mode == "dia_yeu_khoi":
-		btn_t.set_slot_visual(
-			_get_cached_tex("res://assets/sprites/npcs/npc_dia_yeu_khoi.png"),
-			"YÊU KHÔI",
-			false,
-			PlayerData.is_duoc_lao_active,
-			false,
-			Color("#CAF0F8")
-		)
-		btn_t.set_tooltip_info(
-			"[T] Vệ Sĩ Bất Tử — Địa Yêu Khôi Lôi Bộc",
-			"Hồi 45s · Duy trì 12s · ATK x2.70 · SPD +45% · Miễn Nhiễm Làm Chậm · Phá Khiên Boss",
-			"Rèn từ thi thể Đấu Tông 7 Tinh Địa Ma Lão Quỷ! Nện Lôi Bộc bạc 265px gây choáng 1.8s, phá vỡ mọi khiên Boss & miễn nhiễm làm chậm suốt 12 giây!",
-			Color("#CAF0F8")
-		)
-	elif t_mode == "medusa_dau_tong":
-		btn_t.set_slot_visual(
-			_get_cached_tex("res://assets/sprites/npcs/npc_my_do_toa.png"),
-			"ĐẤU TÔNG",
-			false,
-			PlayerData.is_duoc_lao_active,
-			false,
-			Color("#E0AAFF")
-		)
-		btn_t.set_tooltip_info(
-			"[T] Đấu Tông Mỹ Đỗ Toa Hộ Pháp",
-			"Hồi 45s · Duy trì 12s · ATK x2.45 · SPD +40% · Sóng Không Gian",
-			"Thỏa thuận Phục Linh Tử Đan! Triệu hồi bản thể Đấu Tông Mỹ Đỗ Toa bộc phát sóng xung kích Thất Thải & tăng cường chiến lực cực hạn!",
-			Color("#E0AAFF")
-		)
-	elif t_mode == "sleeping":
-		btn_t.set_slot_visual(
-			_get_cached_tex("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
-			"NGỦ SAY",
-			true,
-			false,
-			false,
-			Color("#ADB5BD")
-		)
-		btn_t.set_tooltip_info(
-			"[T] Dược Lão Đang Ngủ Say Trong Nhẫn Đen",
-			"Tạm khóa theo cốt truyện Chương 04 (sau vụ nổ Song Sắc Hỏa Liên tại Mặc Gia)",
-			"Dược Lão đã tiêu hao toàn bộ tàn hồn che chở cho bạn trước Mặc Thừa & Bát Dực Hắc Xà Hoàng! Hãy tự lực chinh phục Đế Đô & Vân Lam Sơn (tới khi Đấu Tông Mỹ Đỗ Toa xuất thế bảo hộ)!",
-			Color("#ADB5BD")
-		)
-	else:
-		var t_unl: bool = (t_mode == "duoc_lao")
-		btn_t.set_slot_visual(
-			_get_cached_tex("res://assets/sprites/icons/skill_duoc_lao_assist.png"),
-			"PHỤ THỂ" if t_unl else "KHÓA",
-			not t_unl,
-			PlayerData.is_duoc_lao_active,
-			false,
-			Color("#A8DADC")
-		)
-		btn_t.set_tooltip_info(
-			"[T] Cốt Linh Phụ Thể (Dược Lão)" + ("" if t_unl else " — Chưa Mở Khóa"),
-			"Hồi 45s · Duy trì 12s · ATK x2.2 & Cốt Linh Lãnh Hỏa" if t_unl else "Mở khóa khi hạ Boss Chương 01: Gia Liệt Áo",
-			"Dược Lão mượn thân thể Tiêu Viêm xuất chiến trong 12 giây, bùng phát ngọn Cốt Linh Lãnh Hỏa (#11)!" if t_unl else "Hoàn thành trận đánh bại Gia Liệt Áo cuối Chương 01 để mở khóa chiêu này.",
-			Color("#70D6FF") if t_unl else Color("#ADB5BD")
-		)
-
-	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Đấu Khí Hóa Dực / Tam Thiên Lôi Động / Tử Vân Dực!)
-	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
-	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
-	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
-	var dash_sub: String = "Lôi·Dực" if (has_dw_wings and has_thunder) else ("Hóa Dực" if has_dw_wings else ("Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt")))
-	var dash_col: Color = Color("#00F5D4") if has_dw_wings else (Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF")))
-	var dash_tex: Texture2D = _get_cached_tex("res://assets/sprites/icons/skill_tam_thien_loi_dong.png") if has_thunder else (
-		_get_cached_tex("res://assets/sprites/icons/skill_tu_van_duc.png") if has_wings else _get_cached_tex("res://assets/sprites/icons/skill_dash.png")
-	)
-	slot_dash.set_slot_visual(
-		dash_tex,
-		dash_sub,
-		false,
-		has_wings or has_thunder,
-		false,
-		dash_col
-	)
-	if has_dw_wings:
-		slot_dash.set_tooltip_info(
-			"[Space] Đấu Khí Hóa Dực" + (" + Tam Thiên Lôi Động!" if has_thunder else " — Ngự Không Phi Hành!"),
-			"Hồi 0.56s · Tốc độ bay 780px/s · I-frame 0.48s · +15% SPD vĩnh viễn!",
-			"Đôi cánh Đấu Khí Lưu Ly sau lưng Đấu Vương bùng phát tốc độ bay cực hạn" + (" kết hợp Tàn Ảnh Lôi Điện giật tê kẻ địch!" if has_thunder else ", dễ dàng vượt qua đại trận & kỹ năng diện rộng của Boss!"),
-			Color("#00F5D4")
-		)
-	elif has_thunder:
-		slot_dash.set_tooltip_info(
-			"[Space] Tam Thiên Lôi Động — Thân Pháp Lôi Thiểm!",
-			"Hồi 0.62s · I-frame 0.42s · Để lại Tàn Ảnh Lôi Điện giật chậm & phá thế địch!",
-			"Thân pháp Địa Giai của Phong Lôi Các: mỗi lần lướt né hóa hồ quang sấm sét để lại Lôi Ảnh gây tê liệt kẻ địch áp sát!",
-			Color("#72EFDD")
-		)
-	else:
-		slot_dash.set_tooltip_info(
-			"[Space] Lướt Tử Vân Dực (ĐÃ NÂNG CẤP!)" if has_wings else "[Space] Thân Pháp Lướt Né",
-			"Hồi 0.64s · Tăng +35% cự ly & I-frame dài hơn!" if has_wings else "Hồi 0.7s · Có khung bất tử (I-frame)",
-			"Đôi cánh Tử Vân Dực bùng phát lông vũ tím giúp bay vọt vượt đạn Boss cực nhanh!" if has_wings else "Lướt nhanh né cú húc Sơn Trư và 3 tia Nguyệt Nha của Boss! (Lấy Tử Vân Dực ở Huyền Nhai Sơn Động để nâng cấp!)",
-			Color("#C77DFF") if has_wings else Color("#4CC9F0")
-		)
-
-	# 5. Ô Trọng Áp [C]
-	var has_xich: bool = PlayerData.has_huyen_trong_xich_equipped()
-	var sealed: bool = has_xich and PlayerData.is_ruler_sealed
-	slot_weight.set_slot_visual(
-		_get_cached_tex("res://assets/sprites/weapons/huyen_trong_xich.png"),
-		"+30%" if sealed else ("Mở" if has_xich else "KHÓA"),
-		not has_xich,
-		sealed,
-		false,
-		Color("#70D6FF") if sealed else Color("#FFE599")
-	)
-	slot_weight.set_tooltip_info(
-		"[C] Phong Ấn Huyền Trọng Xích" + (" (ĐANG BẬT)" if sealed else ""),
-		"Trạng thái: Trọng Áp (-15% SPD, +30% EXP) <-> Giải Phong" if has_xich else "Cần đeo vũ khí [Huyền Trọng Xích]",
-		"Bấm để chuyển đổi tức thì giữa chế độ Khổ Tu (+30% EXP) và Giải Phong toàn tốc khi đánh Boss!" if has_xich else "Hạ Boss Gia Liệt Áo cuối Chương 01 để Dược Lão trao Huyền Trọng Xích.",
-		Color("#70D6FF")
-	)
-
-	# 6. Ô Đồng Hành [G]
-	var has_comp: bool = not PlayerData.unlocked_companions.is_empty()
-	var cur_c: String = PlayerData.active_companion_id
-	var c_tex: Texture2D = _get_cached_tex("res://assets/sprites/npcs/npc_duoc_lao.png")
-	var c_sub: String = "Bật" if cur_c != "" else ("Tắt" if has_comp else "KHÓA")
-	var c_col: Color = Color("#80ED99")
-	if cur_c == "tieu_y_tien":
-		if PlayerData.has_flag("ch07_thien_doc_nu_joined"):
-			c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_thien_doc_nu.png")
-			c_sub = "Thiên Độc"
-			c_col = Color("#E0AAFF")
-		else:
-			c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_tieu_y_tien.png")
-			c_sub = "Y Tiên"
-	elif cur_c == "dia_yeu_khoi":
-		var is_tyk_ic: bool = PlayerData.has_flag("ch08_dan_hoi_champion")
-		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_dia_yeu_khoi.png")
-		c_sub = "Thiên Khôi" if is_tyk_ic else "Yêu Khôi"
-		c_col = Color("#FFD166") if is_tyk_ic else Color("#CAF0F8")
-	elif cur_c == "thien_hoa_ton_gia":
-		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_thien_hoa_ton_gia.png")
-		c_sub = "Thiên Hỏa"
-		c_col = Color("#FF9F1C")
-	elif cur_c == "thai_lan":
-		c_tex = _get_cached_tex("res://assets/sprites/enemies/pet_thai_lan.png")
-		c_sub = "Thải Lân"
-		c_col = Color("#72EFDD")
-	elif cur_c == "huan_nhi":
-		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_huan_nhi.png")
-		c_sub = "Huân Nhi"
-		c_col = Color("#FFD166")
-	elif cur_c == "tu_nghien":
-		c_tex = _get_cached_tex("res://assets/sprites/npcs/npc_tu_nghien.png")
-		c_sub = "Tử Nghiên"
-		c_col = Color("#E0AAFF")
-	elif cur_c == "duoc_lao_phantom":
-		c_sub = "Dược Lão"
-		c_col = Color("#70D6FF")
-	slot_companion.set_slot_visual(
-		c_tex,
-		c_sub,
-		not has_comp,
-		cur_c != "",
-		false,
-		c_col
-	)
-	slot_companion.set_tooltip_info(
-		"[G] Đồng Hành Trợ Chiến — " + (PlayerData.get_companion_display_name(cur_c) if has_comp else "Chưa mở"),
-		"Bấm để triệu hồi hoặc chuyển đổi Đồng Hành (%d/6)" % PlayerData.unlocked_companions.size() if has_comp else "Mở khóa: Dược Lão (Ch.01), Tiểu Y Tiên/Thiên Độc Nữ (Ch.02/07), Thải Lân (Ch.03), Huân Nhi (Ch.05), Tử Nghiên (Ch.06), Địa Yêu Khôi (Ch.07)",
-		"Thiên Độc Nữ hồi 18% HP + nổ độc AoE; Dược Lão phóng Cốt Linh Hỏa; Thải Lân Hộ Chủ; Huân Nhi hồi QI; Tử Nghiên Choáng + Radar; Địa Yêu Khôi tạo Khiên Bạc & Lôi Quyền Choáng AoE!",
-		c_col
-	)
-
-	# 7. 3 Ô Đan Dược Bấm Uống Ngay [1] [2] [3] (hỗ trợ đầy đủ đan Ch.01–Ch.07!)
-	var pill_visual_meta: Dictionary = {
-		"pill_ngung_huyet_tan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Hồi ngay +%d HP", "col": Color("#EF476F") },
-		"pill_bang_tam_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Tứ Phẩm · Hồi ngay +%d HP!", "col": Color("#70D6FF") },
-		"pill_huyet_ngung_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Ngũ Phẩm · Hồi ngay +%d HP!", "col": Color("#FF4D6D") },
-		"pill_hoa_lien_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Ngũ Phẩm Bàn Môn · Hồi +%d HP!", "col": Color("#FF9F1C") },
-		"pill_viem_minh_linh_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Lục Phẩm Viêm Minh · Hồi +%d HP!", "col": Color("#FF4D6D") },
-		"pill_hoi_khi_dan": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Hồi ngay +%d Đấu Khí (QI)", "col": Color("#38BDF8") },
-		"pill_thanh_lien_tu": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Kỳ Bảo · Hồi ngay +%d Đấu Khí!", "col": Color("#2EC4B6") },
-		"pill_dan_hoan_ngot": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Kẹo Đan Tử Nghiên · Hồi +%d QI!", "col": Color("#E0AAFF") },
-		"pill_thanh_hon_hoa_sinh": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Lục Phẩm · Hồi ngay +%d Đấu Khí!", "col": Color("#56CFE1") },
-		"pill_truc_co_linh_dich": { "icon": "res://assets/sprites/icons/pill_exp_jade.png", "sub": "Nhận ngay +%d EXP Đấu Khí", "col": Color("#06D6A0") }
-	}
-	for pi in range(3):
-		var slot_n: int = pi + 1
-		var pid: String = PlayerData.get_effective_quick_pill(slot_n)
-		var idef: Dictionary = GameDatabase.get_item_def(pid)
-		var pmeta: Dictionary = pill_visual_meta.get(pid, { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Đan dược", "col": Color("#FFE599") })
-		var cnt: int = PlayerData.get_item_count(pid)
-		var pb: MobaSlotButton = pill_slots[pi]
-		var badge_col: Color = Color("#72EFDD") if (pid == "pill_bang_tam_dan" or pid == "pill_thanh_lien_tu") and cnt > 0 else (Color("#FFFFFF") if cnt > 0 else Color("#6C757D"))
-		pb.set_slot_visual(_get_cached_tex(str(pmeta["icon"])), "x%d" % cnt, false, false, cnt <= 0, badge_col)
-
-		var eff_amt: int = 0
-		var itype: String = str(idef.get("type", ""))
-		if itype == "consumable_hp":
-			eff_amt = int(round(float(idef.get("heal_hp", 75.0)) * PlayerData.get_heal_effectiveness_mult()))
-		elif itype == "consumable_qi":
-			eff_amt = int(round(float(idef.get("restore_qi", 55.0))))
-		elif itype == "consumable_exp":
-			eff_amt = int(idef.get("grant_exp", 240))
-		var sub_str: String = (str(pmeta["sub"]) % eff_amt) if str(pmeta["sub"]).find("%d") != -1 else str(pmeta["sub"])
-		pb.set_tooltip_info(
-			"[%d] %s (Đang có: %d)" % [slot_n, str(idef.get("name", pid)), cnt],
-			sub_str,
-			str(idef.get("description", "")) + "\n(Tự động chuyển sang Băng Tâm Đan / Hạt Thanh Liên Tử khi hết đan sơ cấp — hoặc đổi trực tiếp trong [L] / [I]!)",
-			pmeta["col"] as Color
-		)
-
-	# 8. 8 Nút Hệ Thống góc trái dưới
-	var sys_meta: Dictionary = {
-		"I": { "icon": "res://assets/sprites/icons/icon_armor.png", "sub": "Đồ", "locked": false, "glow": false, "t": "[I] Trang Bị 10 Ô & Cường Hóa", "d": "Mặc/tháo 10 ô trang bị, xem Set Bonus, cường hóa & phân giải đồ thừa." },
-		"K": { "icon": "res://assets/sprites/icons/skill_toai_thach.png", "sub": "Kỹ", "locked": false, "glow": false, "t": "[K] Kho %d Đấu Kỹ & Xưởng Hỏa Liên" % GameDatabase.skills_by_id.size(), "d": "Tự do lắp các Đấu Kỹ đã lĩnh ngộ vào phím Q/E/R, xem Độ Thông Thạo và ghép Hỏa cho Phật Nộ Hỏa Liên." },
-		"B": { "icon": "res://assets/sprites/icons/icon_stone.png", "sub": "Đột!" if PlayerData.is_at_bottleneck() else "Cảnh", "locked": false, "glow": PlayerData.is_at_bottleneck(), "t": "[B] Cảnh Giới & Đột Phá", "d": "Xem tiến độ 12 Đại Cảnh Giới, Linh Hồn Lực và bấm Đột Phá khi đạt 9 Đoạn/Tinh Đỉnh Phong!" },
-		"L": { "icon": "res://assets/sprites/icons/icon_cauldron.png", "sub": "Đan", "locked": not PlayerData.is_alchemy_unlocked(), "glow": false, "t": "[L] Lò Luyện Đan Tương Tác", "d": "Khai lò luyện đan qua Mini-game Khống Hỏa [Space] & Chắn Đan Lôi [E]!" },
-		"H": { "icon": "res://assets/sprites/icons/skill_hoa_lien.png", "sub": "Hỏa", "locked": not PlayerData.is_flames_unlocked(), "glow": false, "t": "[H] Dị Hỏa Bảng & Phần Quyết", "d": "Xem và vận chuyển các Thú Hỏa / Dị Hỏa đã thu phục theo đúng cốt truyện." },
-		"M": { "icon": "res://assets/sprites/icons/icon_pendant.png", "sub": "Map", "locked": false, "glow": false, "t": "[M] Thế Giới · Hồng Nhan · Viêm Minh · Tâm Ma · Tháp & Đồ Giám", "d": "Xem %d bản đồ (Ch.01–07), Quản Trị Bàn Môn / Đế Quốc Viêm Minh, Buff Hồng Nhan, Tâm Ma Luyện Cảnh (34 Boss), Thiên Phần Tháp & Đồ Giám Vạn Thú!" % GameDatabase.maps_ordered.size() },
-		"F5": { "icon": "res://assets/sprites/icons/icon_ring.png", "sub": "Lưu", "locked": false, "glow": false, "t": "[F5] Lưu Nhanh Vào Ô %d" % PlayerData.active_save_slot, "d": "Lưu tức thì toàn bộ tiến độ tu luyện, bản đồ & trang bị vào ô hiện tại." },
-		"ESC": { "icon": "res://assets/sprites/icons/icon_necklace.png", "sub": "Menu", "locked": false, "glow": false, "t": "[ESC] Menu Tạm Dừng & Hiển Thị", "d": "Lưu/Tải 3 Ô Nạp Giới, chỉnh Fullscreen/VSync/FPS/Rung màn hình & Âm lượng BGM/SFX." }
-	}
-	for k in sys_meta.keys():
-		if sys_buttons.has(k):
-			var sm: Dictionary = sys_meta[k]
-			var b: MobaSlotButton = sys_buttons[k]
-			b.set_slot_visual(_get_cached_tex(str(sm["icon"])), str(sm["sub"]), bool(sm["locked"]), bool(sm["glow"]), false)
-			b.set_tooltip_info(str(sm["t"]), "Bấm chuột trực tiếp hoặc nhấn phím [%s]" % str(k), str(sm["d"]), Color("#FFD166"))
-
-	_refresh_interact_button()
+	HudMobaDock.refresh_moba_dock(self)
 
 
 func _on_boss_status_updated(boss_name: String, realm_badge: String, cur_hp: float, max_hp: float, phase: int, visible_bar: bool) -> void:
@@ -1554,224 +1249,28 @@ func _open_auction_house(venue_id: String = "nha_phi") -> void:
 # =========================================================
 # HỘP THOẠI CỐT TRUYỆN NPC & CHỌN NHÁNH HẢO CẢM
 # =========================================================
-func _open_dialogue(speaker: String, avatar_path: String, lines: Array, finish_action: String) -> void:
-	if lines.is_empty():
-		return
-	if current_modal != "":
-		_close_modal()
-	_hide_slot_tooltip()
-
-	dialogue_active = true
-	dialogue_lines = lines
-	dialogue_index = 0
-	dialogue_finish_action = finish_action
-	dialogue_choices = []
-	dlg_speaker_lbl.text = speaker
-	if avatar_path != "":
-		dlg_avatar_rect.texture = load(avatar_path)
-	dialogue_panel.visible = true
-	_render_dialogue_line()
-	_sync_player_input_block()
+func _open_dialogue(speaker: String, avatar_path: String, lines_arr: Array, finish_action: String) -> void:
+	HudDialogueCtrl.open_dialogue(self, speaker, avatar_path, lines_arr, finish_action)
 
 
-func _open_choice_dialogue(speaker: String, avatar_path: String, lines: Array, choices: Array) -> void:
-	if lines.is_empty():
-		return
-	if current_modal != "":
-		_close_modal()
-	_hide_slot_tooltip()
-
-	dialogue_active = true
-	dialogue_lines = lines
-	dialogue_index = 0
-	dialogue_finish_action = ""
-	dialogue_choices = choices
-	dlg_speaker_lbl.text = speaker
-	if avatar_path != "":
-		dlg_avatar_rect.texture = load(avatar_path)
-	dialogue_panel.visible = true
-	_render_dialogue_line()
-	_sync_player_input_block()
+func _open_choice_dialogue(speaker: String, avatar_path: String, lines_arr: Array, choices: Array) -> void:
+	HudDialogueCtrl.open_choice_dialogue(self, speaker, avatar_path, lines_arr, choices)
 
 
 func _render_dialogue_line() -> void:
-	if dialogue_index >= dialogue_lines.size():
-		return
-	dlg_body_lbl.text = str(dialogue_lines[dialogue_index])
-	var is_last: bool = (dialogue_index >= dialogue_lines.size() - 1)
-
-	for ch in dlg_choices_vbox.get_children():
-		ch.queue_free()
-
-	if is_last and not dialogue_choices.is_empty():
-		dialogue_panel.offset_top = -336
-		dlg_choices_vbox.visible = true
-		dlg_next_btn.visible = false
-		for c_entry in dialogue_choices:
-			if not (c_entry is Dictionary):
-				continue
-			var cd: Dictionary = c_entry
-			var act_str: String = str(cd.get("action", ""))
-			var cb := Button.new()
-			cb.text = "▸ " + str(cd.get("label", "Chọn"))
-			cb.alignment = HORIZONTAL_ALIGNMENT_LEFT
-			cb.custom_minimum_size = Vector2(0, 30)
-			cb.add_theme_font_size_override("font_size", 13)
-			cb.add_theme_color_override("font_color", Color("#FFD166"))
-			cb.pressed.connect(func() -> void:
-				AudioManager.play_sfx("ui_click")
-				dialogue_finish_action = act_str
-				_close_dialogue(true)
-			)
-			dlg_choices_vbox.add_child(cb)
-	else:
-		dialogue_panel.offset_top = -288
-		dlg_choices_vbox.visible = false
-		dlg_next_btn.visible = true
-		dlg_next_btn.text = ("Hoàn tất [V / Enter] (%d/%d)" % [dialogue_index + 1, dialogue_lines.size()]) if is_last else ("Tiếp tục [V / Enter] (%d/%d)" % [dialogue_index + 1, dialogue_lines.size()])
+	HudDialogueCtrl.render_dialogue_line(self)
 
 
 func _advance_dialogue() -> void:
-	if not dialogue_active:
-		return
-	AudioManager.play_sfx("ui_click")
-	dialogue_index += 1
-	if dialogue_index < dialogue_lines.size():
-		_render_dialogue_line()
-	else:
-		_close_dialogue(true)
+	HudDialogueCtrl.advance_dialogue(self)
 
 
 func _close_dialogue(run_finish_action: bool) -> void:
-	var act: String = dialogue_finish_action
-	dialogue_active = false
-	dialogue_lines = []
-	dialogue_index = 0
-	dialogue_finish_action = ""
-	dialogue_choices = []
-	dlg_choices_vbox.visible = false
-	dialogue_panel.visible = false
-	_sync_player_input_block()
-
-	if run_finish_action and act != "":
-		_execute_dialogue_action(act)
+	HudDialogueCtrl.close_dialogue(self, run_finish_action)
 
 
 func _execute_dialogue_action(act: String) -> void:
-	if act.begins_with("effect:"):
-		var eff_id: String = act.substr(7)
-		var eff: Dictionary = GameDatabase.get_story_effect(eff_id)
-		if not eff.is_empty():
-			var res: Dictionary = PlayerData.execute_story_effect(eff)
-			if bool(res.get("heal_full", false)):
-				_heal_player_full("")
-			var oshop: String = str(res.get("open_shop", ""))
-			if oshop != "":
-				shop_venue_id = "nha_phi"
-				shop_tab = "shop"
-				_open_nha_phi_shop()
-			var oauc: String = str(res.get("open_auction", ""))
-			if oauc != "":
-				_open_auction_house(oauc)
-			var warp_m: String = str(eff.get("warp_map", ""))
-			if warp_m != "":
-				var w: Node = _find_world()
-				if w != null and w.has_method("load_map"):
-					var wsp_arr: Array = eff.get("warp_spawn", [])
-					var wsp: Vector2 = Vector2(float(wsp_arr[0]), float(wsp_arr[1])) if wsp_arr.size() >= 2 else Vector2.ZERO
-					w.load_map(warp_m, wsp, true)
-		return
-	elif act.begins_with("flag:"):
-		var flag_id: String = act.substr(5)
-		PlayerData.set_story_flag(flag_id)
-		if flag_id == "met_tieu_y_tien" or flag_id == "met_tieu_dinh_le" or flag_id == "pact_hai_ba_dong":
-			_heal_player_full("")
-		elif flag_id == "absorbed_tu_hoa":
-			PlayerData.set_story_flag("van_chi_departed")
-			_heal_player_full("")
-	elif act == "choice:lang_anh_quiet":
-		PlayerData.set_story_flag("secret_lang_anh_done")
-		_on_banter("Lăng Ảnh khẽ gật đầu rồi tan biến vào bóng đêm, để lại kỳ vật [Hắc Ảnh Phù (+8% Tốc Chạy)]!")
-	elif act == "choice:lang_anh_bow":
-		PlayerData.set_story_flag("secret_lang_anh_done")
-		PlayerData.add_affection("huan_nhi", 10)
-		PlayerData.bonus_soul += 4
-		EventBus.stats_changed.emit()
-		_on_banter("Lăng Ảnh hơi kinh ngạc trước sự bình tĩnh của bạn, để lại [Hắc Ảnh Phù], +10 Hảo Cảm Huân Nhi & +4 Linh Hồn!")
-	elif act == "choice:van_chi_herb_fish":
-		PlayerData.add_affection("van_chi", 30)
-		PlayerData.set_story_flag("met_van_chi")
-		_heal_player_full("Vân Chi khẽ mỉm cười trước tài nướng cá thảo mộc (+30 Hảo Cảm Vân Chi)! Giờ tiến vào Hang Tím phía Đông hạ Tiểu Sư Vương!")
-	elif act == "choice:van_chi_pink_powder":
-		PlayerData.add_affection("van_chi", 15)
-		PlayerData.add_story_relic("Kỷ Niệm Ẩn: Bữa Cá Nướng 'Bỏng Môi' Bên Suối")
-		PlayerData.set_story_flag("met_van_chi")
-		_heal_player_full("Vân Chi ăn xong đỏ bừng mặt lao thẳng xuống Bờ Suối Trăng Bạc mắng 'tiểu tặc vô sỉ'! (+15 Hảo Cảm & Kỷ Niệm Ẩn!)")
-	elif act == "choice:u_lan_hug":
-		PlayerData.add_affection("tieu_y_tien", 40)
-		PlayerData.set_story_flag("ch02_farewell_done")
-		_heal_player_full("Tiêu Viêm bọc Tử Hỏa ôm chặt Tiểu Y Tiên giữa vòng cỏ héo (+40 Hảo Cảm)! Hẹn ngày tương phùng tại Xuất Vân Đế Quốc!")
-	elif act == "choice:u_lan_promise":
-		PlayerData.add_affection("tieu_y_tien", 20)
-		PlayerData.set_story_flag("ch02_farewell_done")
-		_heal_player_full("Tiểu Y Tiên lau nước mắt mỉm cười (+20 Hảo Cảm) rồi lặng lẽ để lại bức thư chia ly hướng về Xuất Vân Đế Quốc!")
-	elif act == "choice:thanh_lan_sister":
-		PlayerData.add_affection("thanh_lan", 35)
-		PlayerData.set_story_flag("met_thanh_lan")
-		_heal_player_full("Thanh Lân bật khóc cảm động (+35 Hảo Cảm Thanh Lân)! Bích Xà Tam Hoa Đồng mở lối xuống Hố Cát Bắc Địa Huyệt Dung Nham!")
-	elif act == "choice:thanh_lan_protect":
-		PlayerData.add_affection("thanh_lan", 20)
-		PlayerData.set_story_flag("met_thanh_lan")
-		_heal_player_full("Thanh Lân gật đầu biết ơn (+20 Hảo Cảm Thanh Lân)! Hố Cát Bắc dẫn xuống Địa Huyệt Dung Nham đã mở!")
-	elif act == "choice:van_van_call_name":
-		PlayerData.add_affection("van_chi", 35)
-		PlayerData.set_story_flag("van_van_ch03_done")
-		PlayerData.add_story_relic("Kỷ Niệm: Mũi Kiếm Nghiêng Ba Tấc Của Vân Vận")
-		_heal_player_full("Đôi mắt phượng của Vân Vận nhòe đi, nàng khẽ nghiêng kiếm mở lối giữa bão cát (+35 Hảo Cảm Vân Vận)!")
-	elif act == "choice:van_van_silent":
-		PlayerData.add_affection("van_chi", 20)
-		PlayerData.set_story_flag("van_van_ch03_done")
-		_heal_player_full("Vân Vận nghiêng mũi kiếm ba tấc giữ kín bí mật cho Tiêu Viêm (+20 Hảo Cảm Vân Vận)!")
-	elif act == "choice:devour_bang_tam":
-		if PlayerData.get_item_count("pill_bang_tam_dan") > 0:
-			PlayerData.remove_item("pill_bang_tam_dan", 1)
-			PlayerData.add_exp(400)
-		PlayerData.set_story_flag("ch03_completed")
-		EventBus.screen_shake_requested.emit(12.0, 0.45)
-		_heal_player_full("NIẾT BÀN THÀNH CÔNG! Băng Tâm Đan bảo vệ kinh mạch — thu phục [#19 Thanh Liên Địa Tâm Hỏa] + Thần Thú [Thải Lân] + Tuyệt Kỹ [F] PHẬT NỘ HỎA LIÊN!!")
-	elif act == "choice:devour_iron_will":
-		PlayerData.bonus_soul += 6
-		PlayerData.set_story_flag("ch03_completed")
-		EventBus.screen_shake_requested.emit(12.0, 0.45)
-		_heal_player_full("Ý CHÍ ƯỚC HẸN 3 NĂM BẤT KHUẤT (+6 SOUL)! Thu phục [#19 Thanh Liên Địa Tâm Hỏa] + Thần Thú [Thải Lân] + Tuyệt Kỹ [F] PHẬT NỘ HỎA LIÊN!!")
-	elif act == "feed_thai_lan":
-		PlayerData.add_affection("my_do_toa", 15)
-		_heal_player_full("Thải Lân vui vẻ nuốt Hỏa Tinh tỏa Thất Thải Quang Mang (+15 Hảo Cảm Thải Lân / Mỹ Đỗ Toa)!")
-	elif act == "gift_huan_nhi":
-		PlayerData.set_story_flag("huan_nhi_gift")
-		PlayerData.add_affection("huan_nhi", 15)
-		PlayerData.add_item("herb_ngung_huyet_thao", 2)
-		PlayerData.add_item("pill_ngung_huyet_tan", 1)
-		AudioManager.play_sfx("loot_rare")
-		_on_banter("Tiêu Huân Nhi tặng bạn: Ngưng Huyết Thảo x2 & Ngưng Huyết Tán x1 (+15 Hảo Cảm)! Hãy tới gặp Nạp Lan Yên Nhiên [V].")
-	elif act == "heal_full":
-		_heal_player_full("Đã hồi phục toàn bộ HP & Đấu Khí!")
-	elif act == "open_shop:nha_phi":
-		_open_nha_phi_shop()
-	elif act.begins_with("open_auction:"):
-		_open_auction_house(act.substr(13))
-	elif act == "open_pan_gate":
-		world_map_tab = "pan_gate"
-		if current_modal != "world_map":
-			_toggle_modal("world_map")
-		else:
-			_populate_modal()
-	elif act == "open_tower":
-		world_map_tab = "tower"
-		if current_modal != "world_map":
-			_toggle_modal("world_map")
-		else:
-			_populate_modal()
+	HudDialogueCtrl.execute_dialogue_action(self, act)
 
 
 func _heal_player_full(msg: String) -> void:
@@ -2003,123 +1502,7 @@ func _build_tower_blessing_content(vbox: VBoxContainer) -> void:
 # [K] KHO ĐẤU KỸ (CÓ ICON HD RIÊNG TỪNG CHIÊU + LẮP Q/E/R + HỎA LIÊN)
 # =========================================================
 func _build_skills_codex_content(vbox: VBoxContainer) -> void:
-	modal_title_lbl.text = "[K] KHO ĐẤU KỸ (%d / %d ĐÃ LĨNH NGỘ) & XƯỞNG DUNG HỢP HỎA LIÊN" % [PlayerData.unlocked_skills.size(), GameDatabase.skills_by_id.size()]
-
-	var active_bar := _make_styled_panel(Color(0.10, 0.11, 0.20, 0.94), Color("#FFD166"), 1, 8)
-	vbox.add_child(active_bar)
-	var q_n: String = str(GameDatabase.get_skill_def(PlayerData.slot_q_skill).get("name", "(Trống)")) if PlayerData.slot_q_skill != "" else "(Trống)"
-	var e_n: String = str(GameDatabase.get_skill_def(PlayerData.slot_e_skill).get("name", "(Trống)")) if PlayerData.slot_e_skill != "" else "(Trống)"
-	var r_n: String = str(GameDatabase.get_skill_def(PlayerData.slot_r_skill).get("name", "(Trống)")) if PlayerData.slot_r_skill != "" else "(Trống)"
-	var f_n: String = str(GameDatabase.get_skill_def(PlayerData.slot_f_skill).get("name", "(Khóa — Ch.03)")) if PlayerData.slot_f_skill != "" else "(Khóa — Chương 03)"
-	active_bar.add_child(_make_label("Bộ Chiêu Đang Lắp:  [Q] %s   |   [E] %s   |   [R] %s   |   [F] %s" % [q_n, e_n, r_n, f_n], 13, Color("#FFE599")))
-
-	for sid in GameDatabase.skills_by_id.keys():
-		var sdef: Dictionary = GameDatabase.get_skill_def(str(sid))
-		var is_unl: bool = PlayerData.is_skill_unlocked(str(sid))
-		var is_ult: bool = (str(sid) == "phat_no_hoa_lien")
-		var border_c: Color = Color("#FF9F1C") if is_unl else Color("#343A40")
-		var card := _make_styled_panel(Color(0.08, 0.09, 0.16, 0.94), border_c, 1, 7)
-		vbox.add_child(card)
-
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 10)
-		card.add_child(row)
-
-		var ic_p: String = str(sdef.get("icon", "res://assets/sprites/icons/skill_toai_thach.png"))
-		var ic_box: PanelContainer = _make_icon_box(ic_p, border_c, 44)
-		if not is_unl:
-			ic_box.modulate = Color(0.45, 0.48, 0.55, 0.70)
-		row.add_child(ic_box)
-
-		var info_v := VBoxContainer.new()
-		info_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(info_v)
-
-		var title_col: Color = Color("#FFD166") if is_unl else Color("#6C757D")
-		var lock_tag: String = "" if is_unl else " [KHÓA]"
-		var mi: Dictionary = PlayerData.get_skill_mastery_info(str(sid))
-		var eff_cd: float = float(sdef.get("cooldown", 5.0)) * float(mi.get("cd_mult", 1.0))
-		info_v.add_child(_make_label("%s  <%s>%s   |   QI: %d  |  CD: %.1fs" % [
-			str(sdef.get("name", sid)), str(sdef.get("grade", "")), lock_tag,
-			int(sdef.get("qi_cost", 15)), eff_cd
-		], 13, title_col))
-
-		if is_unl:
-			var m_tier_idx: int = int(mi.get("tier", 0))
-			var m_tier: String = str(mi.get("tier_name", "Sơ Khuy"))
-			var m_uses: int = int(mi.get("uses", 0))
-			var m_next: int = int(mi.get("next_uses", 8))
-			var dmg_b: int = int(round((float(mi.get("dmg_mult", 1.0)) - 1.0) * 100.0))
-			var cd_b: int = int(round((1.0 - float(mi.get("cd_mult", 1.0))) * 100.0))
-			var rad_b: int = int(round((float(mi.get("radius_mult", 1.0)) - 1.0) * 100.0))
-			var m_col: Color = mi.get("color", Color("#A8DADC")) as Color
-			var prog_s: String = "ĐẠT TỐI ĐA (%d lần)" % m_uses if m_tier_idx >= 3 else "%d / %d lần" % [m_uses, m_next]
-			var bonus_s: String = "+%d%% DMG · -%d%% CD · +%d%% Phạm Vi" % [dmg_b, cd_b, rad_b] if dmg_b > 0 else "Dùng %d lần để đạt Tiểu Thành (+12%% DMG, -6%% CD)" % m_next
-			info_v.add_child(_make_label("★ Thông Thạo: %s (%s) — %s" % [m_tier, prog_s, bonus_s], 11, m_col))
-			var m_bar := _make_bar(m_col, 5, 220)
-			m_bar.max_value = 100.0
-			m_bar.value = 100.0 if m_tier_idx >= 3 else clampf(100.0 * float(m_uses) / float(max(1, m_next)), 0.0, 100.0)
-			info_v.add_child(m_bar)
-
-		var sub_txt: String = str(sdef.get("description", "")) if is_unl else ("Nguồn mở khóa: " + str(sdef.get("unlock_source", "")))
-		var dl := _make_label(sub_txt, 11, Color("#CED4DA") if is_unl else Color("#868E96"))
-		dl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		info_v.add_child(dl)
-
-		if is_unl and not is_ult:
-			var sk_key: String = str(sid)
-			for slot_k in ["Q", "E", "R"]:
-				var k_cap: String = slot_k
-				var is_here: bool = (PlayerData.get_skill_in_slot(k_cap) == sk_key)
-				var b := Button.new()
-				b.text = "Đang ở [%s]" % k_cap if is_here else "Gắn [%s]" % k_cap
-				b.disabled = is_here
-				b.add_theme_font_size_override("font_size", 11)
-				b.pressed.connect(func() -> void:
-					PlayerData.assign_skill_to_slot(k_cap, sk_key)
-					modal_status_lbl.text = "Đã lắp [%s] vào ô [%s] trên thanh MOBA!" % [str(sdef.get("name", sk_key)), k_cap]
-				)
-				row.add_child(b)
-
-	var lotus_card := _make_styled_panel(Color(0.12, 0.06, 0.14, 0.94), Color("#C77DFF"), 2, 10)
-	vbox.add_child(lotus_card)
-	var lv := VBoxContainer.new()
-	lv.add_theme_constant_override("separation", 6)
-	lotus_card.add_child(lv)
-
-	var bonus_pct: int = max(0, PlayerData.lotus_fusion_flames.size() - 1) * 28
-	lv.add_child(_make_label("XƯỞNG DUNG HỢP PHẬT NỘ HỎA LIÊN (%d/4 Hỏa đã ghép — Uy lực +%d%% + Hiệu ứng riêng từng Hỏa!)" % [PlayerData.lotus_fusion_flames.size(), bonus_pct], 14, Color("#E0AAFF")))
-	if PlayerData.unlocked_flames.is_empty():
-		lv.add_child(_make_label("Chưa thu phục ngọn Hỏa nào! Hãy bái sư Dược Lão (Phàm Hỏa) -> Hạ Mục Xà (Tử Hỏa) -> Sa Mạc Chương 03 (Thanh Liên Địa Tâm Hỏa).", 12, Color("#ADB5BD")))
-	else:
-		# Đổi sang HFlowContainer để tự xuống dòng gọn gàng kể cả khi mở đủ 28 Hỏa trong Chế Độ DEMO!
-		var f_flow := HFlowContainer.new()
-		f_flow.add_theme_constant_override("h_separation", 6)
-		f_flow.add_theme_constant_override("v_separation", 6)
-		lv.add_child(f_flow)
-		for fid in PlayerData.unlocked_flames:
-			var f_str: String = str(fid)
-			var fdef: Dictionary = GameDatabase.get_flame_def(f_str)
-			var in_lotus: bool = PlayerData.lotus_fusion_flames.has(f_str)
-			var fb := Button.new()
-			fb.text = ("★ " if in_lotus else "+ ") + str(fdef.get("name", f_str))
-			fb.tooltip_text = "Hiệu ứng Hỏa Liên: " + str(fdef.get("lotus_effect", ""))
-			fb.add_theme_font_size_override("font_size", 11)
-			if in_lotus:
-				fb.add_theme_color_override("font_color", Color(str(fdef.get("mid_hex", "#FFD166"))).lightened(0.28))
-			fb.pressed.connect(func() -> void:
-				modal_status_lbl.text = PlayerData.toggle_lotus_fusion_flame(f_str)
-			)
-			f_flow.add_child(fb)
-
-		if not PlayerData.lotus_fusion_flames.is_empty():
-			var eff_lines: Array = []
-			for lf in PlayerData.lotus_fusion_flames:
-				var ldef: Dictionary = GameDatabase.get_flame_def(str(lf))
-				eff_lines.append("• %s: %s" % [str(ldef.get("name", lf)), str(ldef.get("lotus_effect", ""))])
-			var eff_lbl := _make_label("Hiệu ứng Đang Kích Hoạt trong [F] Phật Nộ Hỏa Liên:\n" + "\n".join(eff_lines), 11, Color("#80ED99"))
-			eff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			lv.add_child(eff_lbl)
+	panel_skills_cultivation.build_skills_codex_content(vbox)
 
 
 # =========================================================
@@ -2153,99 +1536,8 @@ func _build_equipment_modal() -> void:
 # [B] TU LUYỆN & ĐỘT PHÁ CẢNH GIỚI
 # =========================================================
 func _build_breakthrough_content(vbox: VBoxContainer) -> void:
-	modal_title_lbl.text = "[B] TU LUYỆN CẢNH GIỚI & LINH HỒN (12 ĐẠI CẢNH GIỚI)"
-	var r_def: Dictionary = GameDatabase.get_realm_def(PlayerData.realm_index)
-	var req_item_id: String = str(r_def.get("breakthrough_item", "none"))
-	var req_item_name: String = "Không cần"
-	var owned_cnt: int = 0
-	if req_item_id != "none":
-		var idef: Dictionary = GameDatabase.get_item_def(req_item_id)
-		req_item_name = str(idef.get("name", req_item_id))
-		owned_cnt = PlayerData.get_item_count(req_item_id)
-
-	var info_txt: String = (
-		"• Cảnh giới hiện tại: %s (EXP: %d / %d)\n" % [PlayerData.get_realm_display_title(), PlayerData.current_exp, PlayerData.get_required_exp()]
-		+ "• Cảnh giới Linh Hồn: %s (%d SOUL)\n" % [PlayerData.get_soul_realm_name(), PlayerData.get_soul()]
-		+ "• Hệ số nhận EXP hiện tại: x%.2f\n" % PlayerData.get_exp_multiplier()
-		+ "• Đan dược đột phá Đại Cảnh Giới kế tiếp: %s (Đang có: %d)\n" % [req_item_name, owned_cnt]
-		+ "• Đặc quyền cảnh giới hiện tại: %s" % str(r_def.get("unlock_feature", ""))
-	)
-	var info_lbl := _make_label(info_txt, 14, Color("#E9ECEF"))
-	info_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vbox.add_child(info_lbl)
-
-	var bt_btn := Button.new()
-	bt_btn.text = "PHÁ QUAN ĐỘT PHÁ ĐẠI CẢNH GIỚI!"
-	bt_btn.add_theme_font_size_override("font_size", 15)
-	bt_btn.pressed.connect(func() -> void:
-		var res: Dictionary = PlayerData.try_breakthrough()
-		modal_status_lbl.text = str(res.get("msg", ""))
-		_populate_modal()
-	)
-	vbox.add_child(bt_btn)
+	panel_skills_cultivation.build_breakthrough_content(vbox)
 
 
-# =========================================================
-# [H] DỊ HỎA BẢNG & PHẦN QUYẾT
-# =========================================================
 func _build_flames_content(vbox: VBoxContainer) -> void:
-	modal_title_lbl.text = "[H] DỊ HỎA BẢNG & PHẦN QUYẾT (ĐÃ THU PHỤC: %d / %d)" % [PlayerData.unlocked_flames.size(), GameDatabase.flames_ordered.size()]
-	var hint := _make_label("Chuẩn cốt truyện: Chỉ những ngọn Hỏa bạn thực sự thu phục qua các Chương mới có thể vận chuyển!", 13, Color("#A8DADC"))
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	vbox.add_child(hint)
-
-	for fl in GameDatabase.flames_ordered:
-		if not (fl is Dictionary):
-			continue
-		var f_dict: Dictionary = fl
-		var fid: String = str(f_dict.get("id", ""))
-		var fname: String = str(f_dict.get("name", fid))
-		var pq: String = str(f_dict.get("phan_quyet_tier", ""))
-		var ch_src: String = str(f_dict.get("chapter_source", "Chưa mở khóa"))
-		var atk_m: float = float(f_dict.get("atk_mult", 1.0))
-		var exp_b: float = float(f_dict.get("exp_bonus_pct", 0.0))
-
-		var is_unlocked: bool = PlayerData.unlocked_flames.has(fid)
-		var is_cur: bool = (PlayerData.equipped_flame_id == fid)
-
-		var row := HBoxContainer.new()
-		vbox.add_child(row)
-
-		var swatch := ColorRect.new()
-		swatch.custom_minimum_size = Vector2(22, 22)
-		swatch.color = Color(str(f_dict.get("mid_hex", "#FF7B00"))) if is_unlocked else Color("#2A2E39")
-		row.add_child(swatch)
-
-		var txt_str: String = ""
-		var txt_col: Color = Color("#6C757D")
-		if is_unlocked:
-			var leff: String = str(f_dict.get("lotus_effect", ""))
-			txt_str = " %s  |  Phần Quyết: %s  |  ATK x%.2f  |  +%d%% EXP  |  Luyện Đan +%d%%\n    ✦ Hỏa Liên: %s" % [
-				fname, pq, atk_m, int(exp_b), int(float(f_dict.get("alchemy_bonus_pct", 0.0))), leff
-			]
-			txt_col = Color("#FFD166") if is_cur else Color("#F8F9FA")
-		else:
-			txt_str = " ???  [Chưa thu phục — %s]" % ch_src
-			txt_col = Color("#6C757D")
-
-		var lbl := _make_label(txt_str, 12, txt_col)
-		lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_child(lbl)
-
-		var btn := Button.new()
-		if not is_unlocked:
-			btn.text = "Khóa"
-			btn.disabled = true
-		elif is_cur:
-			btn.text = "Đang dùng"
-			btn.disabled = true
-		else:
-			btn.text = "Vận Chuyển"
-			btn.pressed.connect(func() -> void:
-				PlayerData.equip_flame(fid)
-				modal_status_lbl.text = "Đã vận chuyển %s — Phần Quyết: %s!" % [fname, pq]
-				_populate_modal()
-			)
-		btn.add_theme_font_size_override("font_size", 12)
-		row.add_child(btn)
+	panel_skills_cultivation.build_flames_content(vbox)
