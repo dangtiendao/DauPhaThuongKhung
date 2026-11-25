@@ -1,7 +1,34 @@
 @echo off
-set "GODOT_EXE=C:\Users\asus\AppData\Local\Microsoft\WinGet\Packages\GodotEngine.GodotEngine_Microsoft.Winget.Source_8wekyb3d8bbwe\Godot_v4.7.2-stable_win64.exe"
-if exist "%GODOT_EXE%" (
-    start "" "%GODOT_EXE%" --path "%~dp0."
-) else (
-    start "" godot --path "%~dp0."
+setlocal EnableDelayedExpansion
+set "PROJECT_DIR=%~dp0"
+set "BIN_EXE="
+
+if defined GODOT_EXE if exist "%GODOT_EXE%" set "BIN_EXE=%GODOT_EXE%"
+
+if not defined BIN_EXE (
+    for /f "delims=" %%I in ('where godot 2^>nul') do (
+        if not defined BIN_EXE set "BIN_EXE=%%I"
+    )
 )
+
+if not defined BIN_EXE if exist "%LOCALAPPDATA%\Microsoft\WinGet\Packages" (
+    for /f "delims=" %%I in ('dir /b /s /a:-d "%LOCALAPPDATA%\Microsoft\WinGet\Packages\Godot*_win64.exe" 2^>nul') do (
+        set "CAND=%%I"
+        echo !CAND! | findstr /i "_console.exe" >nul
+        if errorlevel 1 if not defined BIN_EXE set "BIN_EXE=%%I"
+    )
+)
+
+if defined BIN_EXE (
+    start "" "%BIN_EXE%" --path "%PROJECT_DIR%."
+    exit /b 0
+)
+
+if exist "%PROJECT_DIR%builds\DauPhaThuongKhung.exe" (
+    start "" "%PROJECT_DIR%builds\DauPhaThuongKhung.exe"
+    exit /b 0
+)
+
+echo [LOI] Khong tim thay Godot 4 (bien moi truong GODOT_EXE / PATH / WinGet) va chua co builds\DauPhaThuongKhung.exe.
+pause
+exit /b 1
