@@ -129,3 +129,56 @@
 3. ~~**Đợt C (16 file — 8 Tileset `128×128` & 8 Icon Đấu Kỹ `56×56` Ch.06–08)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.3`**. *(3 Pickup `pickups/` đã nâng cấp xong ở `v0.7.1`).*
 4. ~~**Đợt D (VFX 2.0)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.1`** (`space_shockwave.gdshader`, `vfx_energy_dissolve.gdshader`, `ScreenFxOverlay`, Cánh Hóa Dực sprite-shader, `128×128` VFX textures, Đồng Hành 2.0 & Ngũ Sắc Đan Lôi giáng thực tế).
 5. ~~**Đợt E (P3.2 & P3.3 — 43 file PNG HD Polish `v1.1.0`)**~~: ✅ **ĐÃ HOÀN TẤT ở `v1.1.0`** — 12 quái vùng mới (`0` quái mượn ảnh Boss/NPC) + 18 sheet 8-frame quái thường + 9 prop địa vực + 4 biến thể Huyền Trọng Xích (`374 PNG · 0 file thừa · 2.466/2.466 test PASSED`).
+
+---
+
+## Phụ Lục — Danh Sách Chi Tiết 43 File `v1.1.0` Bị Ảnh Hưởng Bởi Lỗi Quá Tải Server `HTTP 503` (Sẵn Sàng Thay Nóng 1-Đổi-1)
+
+> **Nguyên nhân ghi nhận (25/11/2026)**: Khi triển khai Giai đoạn B (`v1.1.0`), máy chủ tạo ảnh AI `gemini-3.1-flash-image` trả lỗi `HTTP 503 UNAVAILABLE (No capacity available)`. Để không chặn tiến độ và giữ đồng bộ phong cách 32-bit HD SNES, toàn bộ 43 file dưới đây đã được **rèn pixel HD / kitbashing từ sprite 32-bit HD gốc có sẵn trong repo** (`semi_alpha = 0`, viền `#141020`, không mượn ảnh Boss/NPC cho quái).
+> **Cách nâng cấp sau này**: Khi server ảnh hoạt động trở lại, chỉ cần ghi đè ảnh vẽ mới đúng **Kích thước chuẩn** bên dưới rồi chạy `Godot --headless --path . --import --quit` — **không cần sửa code hay JSON**.
+
+### Nhóm 1 — Ưu Tiên Vẽ Mới AI Thuần: 12 Quái Vùng Ch.04–09 (24 File: `96×96` + `384×192` `4×2`)
+
+| STT | File tĩnh (`96×96`) & Sheet 8f (`384×192`) | Hiện trạng (`v1.1.0`) | Chủ thể gợi ý khi vẽ mới AI thuần | Trạng thái AI thuần |
+| :---: | :--- | :--- | :--- | :---: |
+| 1 | `assets/sprites/enemies/mob_van_lam_kiem_si.png` + `_anim.png` | Reforge từ `gia_dinh_gia_liet` | **Vân Lam Kiếm Sĩ**: đạo bào trắng-xanh da trời thêu vân mây bạc, búi tóc trâm ngọc, kiếm phong lam phát sáng | [ ] Chờ vẽ AI |
+| 2 | `assets/sprites/enemies/mob_gia_nam_tinh_nhue.png` + `_anim.png` | Reforge từ `thien_mo_nang_luong_the` | **Già Nam Tinh Nhuệ**: chiến bào học viện xanh lục bảo viền vàng, trường kích mang lõi tinh hỏa cam | [ ] Chờ vẽ AI |
+| 3 | `assets/sprites/enemies/mob_huyet_tong_dao_khach.png` + `_anim.png` | Reforge từ `lang_dau_tinh_anh` | **Huyết Tông / Hắc Giác Đao Khách**: giáp hắc thiết Hắc Giác Vực, áo choàng đỏ máu, chiến phủ/đao huyết quang | [ ] Chờ vẽ AI |
+| 4 | `assets/sprites/enemies/mob_xuat_van_doc_su.png` + `_anim.png` | Reforge từ `vong_hon_thuc_cot_ve` | **Xuất Vân Độc Sư**: mũ trùm tím đậm Độc Tông, trượng/liềm độc nhỏ giọt dịch lục phát sáng | [ ] Chờ vẽ AI |
+| 5 | `assets/sprites/enemies/mob_hon_dien_hac_y_su.png` + `_anim.png` | Reforge từ `hu_vo_tu_hoa_clone` | **Hồn Điện Hắc Y Sứ**: hắc vụ linh thể, mắt tím điện quang, xiềng xích câu hồn quấn quanh thân | [ ] Chờ vẽ AI |
+| 6 | `assets/sprites/enemies/mob_bang_ha_ho_phap.png` + `_anim.png` | Reforge từ `yeu_hoa_thanh_no` | **Băng Hà Cốc Hộ Pháp**: hàn băng chiến giáp lam thẫm, gai băng & băng diễm trắng-lam phủ vai và tay | [ ] Chờ vẽ AI |
+| 7 | `assets/sprites/enemies/mob_hoang_tuyen_dao_khach.png` + `_anim.png` | Reforge từ `hon_toc_huyet_ve` | **Hoàng Tuyền Đao Khách**: hắc đồng cổ giáp, trường đao quỷ hỏa xanh ngọc u minh | [ ] Chờ vẽ AI |
+| 8 | `assets/sprites/enemies/mob_xich_hoa_thach_nhan.png` + `_anim.png` | Reforge từ `co_de_thach_ve` | **Xích Hỏa Thạch Nhân**: thạch khôi đá bazan đen nứt mạch dung nham cam-vàng rực cháy | [ ] Chờ vẽ AI |
+| 9 | `assets/sprites/enemies/mob_vien_co_thu_linh.png` + `_anim.png` | Reforge từ `hoa_tinh_vien` | **Viễn Cổ Thụ Linh Vệ**: cự thú vỏ cây cổ thụ + linh diễm mộc lục phát sáng trên bờm và quyền | [ ] Chờ vẽ AI |
+| 10 | `assets/sprites/enemies/mob_dung_nham_hoa_xa.png` + `_anim.png` | Reforge từ `hu_khong_loi_giao` | **Dung Nham Hỏa Xà**: cự xà vảy nham thạch đỏ rực, bụng vảy vàng nóng chảy, sừng lửa | [ ] Chờ vẽ AI |
+| 11 | `assets/sprites/enemies/mob_van_xa_doc_mang.png` + `_anim.png` | Reforge từ `xa_nhan_chien_binh` | **Vạn Xà Độc Mãng**: xà nhân vảy tử độc tím thẫm, đinh ba/giáp phủ độc dịch xanh dạ quang | [ ] Chờ vẽ AI |
+| 12 | `assets/sprites/enemies/mob_phe_kim_thu.png` + `_anim.png` | Reforge từ `thiet_boi_son_tru` | **Phệ Kim Thử**: ma thú bốn chân lông thép xám, giáp vảy hoàng kim có gai nhọn, mắt đỏ sắc bén | [ ] Chờ vẽ AI |
+
+### Nhóm 2 — Ưu Tiên Vẽ Mới AI Thuần: 9 Prop Địa Vực (9 File)
+
+| STT | Đường dẫn file | Kích thước chuẩn | Chủ thể gợi ý khi vẽ mới AI thuần | Trạng thái AI thuần |
+| :---: | :--- | :---: | :--- | :---: |
+| 1 | `assets/sprites/props/blood_pool_altar.png` | `112×112` | **Thiên Sơn Huyết Đàm**: bồn đá núi lửa đen chứa hồ huyết dịch sủi bọt, 4 trụ cổ tự đỏ & huyết tinh lơ lửng | [ ] Chờ vẽ AI |
+| 2 | `assets/sprites/props/ancient_altar.png` | `112×128` | **Tế Đàn Viễn Cổ**: bệ đá cổ 2 tầng chạm vân mây, hai đèn đá hai bên, đóa liên hoa cổ quang lơ lửng | [ ] Chờ vẽ AI |
+| 3 | `assets/sprites/props/forge_cauldron.png` | `104×124` | **Lò Rèn / Đại Dược Đỉnh**: đỉnh đồng-vàng ba chân chạm rồng đặt trên bệ đá, ngọn đan hỏa bùng cháy | [ ] Chờ vẽ AI |
+| 4 | `assets/sprites/props/ice_pillar.png` | `96×136` | **Cột Hàn Băng**: trụ tinh thể băng lam sắc nhọn tỏa hàn khí trên bệ đá cổ | [ ] Chờ vẽ AI |
+| 5 | `assets/sprites/props/soul_tower.png` | `96×140` | **Hồn Tháp (Hồn Điện)**: bảo tháp hắc thiết 2 tầng tỏa quỷ hỏa tím u ám & linh hồn lượn quanh | [ ] Chờ vẽ AI |
+| 6 | `assets/sprites/props/dragon_core_orb.png` | `104×124` | **Bản Nguyên Long Châu**: bệ hắc kim có móng rồng vàng nâng viên Long Châu tinh hà tím-vàng | [ ] Chờ vẽ AI |
+| 7 | `assets/sprites/props/poison_totem.png` | `96×132` | **Trụ Độc Đồ Đằng**: cột đá đen khắc cổ tự độc xanh lục phát sáng, đỉnh gắn độc tinh thạch | [ ] Chờ vẽ AI |
+| 8 | `assets/sprites/props/lava_crystal.png` | `104×116` | **Tinh Thể Dung Nham**: cụm đá bazan nứt rực lửa nham thạch cam-vàng & tàn lửa bay lên | [ ] Chờ vẽ AI |
+| 9 | `assets/sprites/props/star_obelisk.png` | `96×140` | **Tinh Thần Bi**: tháp bia lam ngọc viền vàng chứa dòng ngân hà lấp lánh trên bệ cẩm thạch xanh | [ ] Chờ vẽ AI |
+
+### Nhóm 3 — Tùy Chọn Nâng Cấp Sau (Độ Ưu Tiên Thấp — Đã Rèn Trực Tiếp Từ Tranh AI Gốc)
+
+* **6 Sheet `4×2` quái kinh điển** *(hiện mở rộng sinh cơ học 8-frame từ sprite tĩnh AI gốc)*:
+  * [ ] `assets/sprites/enemies/hoang_da_son_lang_anim.png` (`432×152`, cell `108×76`)
+  * [ ] `assets/sprites/enemies/thiet_boi_son_tru_anim.png` (`432×168`, cell `108×84`)
+  * [ ] `assets/sprites/enemies/hoa_tinh_vien_anim.png` (`472×228`, cell `118×114`)
+  * [ ] `assets/sprites/enemies/lang_dau_tinh_anh_anim.png` (`432×208`, cell `108×104`)
+  * [ ] `assets/sprites/enemies/sa_doc_hat_vuong_anim.png` (`464×208`, cell `116×104`)
+  * [ ] `assets/sprites/enemies/xa_nhan_chien_binh_anim.png` (`456×216`, cell `114×108`)
+* **4 Biến thể Huyền Trọng Xích (`96×36`)** *(hiện rèn sắc nét từ `huyen_trong_xich.png` gốc)*:
+  * [ ] `assets/sprites/weapons/xich_luu_ly_viem.png` (`96×36`) — *Lưu Ly Liên Tâm Xích* (cổ tự ngọc bích-tím)
+  * [ ] `assets/sprites/weapons/xich_tam_thien_tinh_viem.png` (`96×36`) — *Tam Thiên Tinh Viêm Xích* (tinh không tím-lam)
+  * [ ] `assets/sprites/weapons/xich_tinh_lien_luan_hoi.png` (`96×36`) — *Luân Hồi Tịnh Liên Xích* (bạch kim-hồng sen lửa)
+  * [ ] `assets/sprites/weapons/xich_di_hoa_hang_co.png` (`96×36`) — *Dị Hỏa Hằng Cổ Xích* (thân đen vàng kim, cổ tự 23 sắc cầu vồng)
