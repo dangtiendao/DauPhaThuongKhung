@@ -263,7 +263,11 @@ static func activate_demo_unlock_all(pd, slot_idx: int = 3) -> void:
 		"ach_11_05_chua_te_dai_thien": true,
 		"FLAG_CH11_COMPLETED": true
 	}
-	pd.affection = { "huan_nhi": 100, "tieu_y_tien": 100, "van_chi": 100, "thanh_lan": 100, "my_do_toa": 100 }
+	pd.affection = {
+		"huan_nhi": 100, "tieu_y_tien": 100, "van_chi": 100, "thanh_lan": 100,
+		"my_do_toa": 100, "tu_nghien": 100, "nha_phi": 100, "nap_lan_yen_nhien": 100
+	}
+	pd.active_title_id = "ach_11_03_tam_thap_nien"
 	pd.story_relics = [
 		"Chế Độ DEMO v1.0.0 — Trọn 11/11 Chương (%d Map · VIÊM ĐẾ 23/23 Dị Hỏa · 12 Đồng Hành · Đại Thiên Thế Giới & NG+)" % GameDatabase.maps_ordered.size(),
 		"Ấn Ký Tôn Nghiêm (+5% Công Kích)",
@@ -424,7 +428,11 @@ static func init_canon_starter_state(pd) -> void:
 	pd.am_duong_buff_timer = 0.0
 	pd.story_flags = {}
 	pd.opened_chests = {}
-	pd.affection = { "huan_nhi": 20, "tieu_y_tien": 0, "van_chi": 0, "thanh_lan": 0, "my_do_toa": 0 }
+	pd.affection = {
+		"huan_nhi": 20, "tieu_y_tien": 0, "van_chi": 0, "thanh_lan": 0,
+		"my_do_toa": 0, "tu_nghien": 0, "nha_phi": 0, "nap_lan_yen_nhien": 0
+	}
+	pd.active_title_id = ""
 	pd.story_relics = []
 	pd.claimed_affection_milestones = {}
 	pd.lotus_shield_hp = 0.0
@@ -630,9 +638,23 @@ static func set_story_flag(pd, flag_name: String) -> void:
 		for fid_emp in ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_09_tam_thien", "di_hoa_04_kim_de", "di_hoa_03_tinh_lien", "di_hoa_02_hu_vo", "di_hoa_01_de_viem"]:
 			if fid_emp in ["di_hoa_02_hu_vo", "di_hoa_01_de_viem"] or pd.unlocked_flames.has(fid_emp):
 				pd.lotus_fusion_flames.append(fid_emp)
+	elif flag_name == "met_nha_phi":
+		pd.add_affection("nha_phi", 15)
+	elif flag_name == "ch04_uoc_hen_revealed":
+		pd.add_affection("nap_lan_yen_nhien", 15)
+	elif flag_name == "ch06_tu_nghien_joined":
+		pd.add_affection("tu_nghien", 25)
+	elif flag_name == "ch09_co_long_unified":
+		pd.add_affection("tu_nghien", 35)
 	elif flag_name == "ch11_all_23_flames_hunted":
 		EmperorRealmManager.unlock_all_23_heavenly_flames(pd)
 	elif flag_name in ["ch11_wedding_completed", "eq_11_01_tieu_y_tien_done", "eq_11_02_van_van_done", "eq_11_03_nha_phi_done", "eq_11_04_candy_party_done", "eq_11_05_ancestor_oath_done"]:
+		if flag_name == "eq_11_02_van_van_done":
+			pd.add_affection("nap_lan_yen_nhien", 25)
+		elif flag_name == "eq_11_03_nha_phi_done":
+			pd.add_affection("nha_phi", 30)
+		elif flag_name == "eq_11_04_candy_party_done":
+			pd.add_affection("tu_nghien", 25)
 		EmperorRealmManager.check_and_award_epilogue_platinum(pd)
 
 	var fe: Dictionary = GameDatabase.get_flag_effect(flag_name)
@@ -688,6 +710,10 @@ static func evaluate_story_condition(pd, cond: Dictionary) -> bool:
 	var ma: Dictionary = cond.get("min_affection", {})
 	for hk in ma.keys():
 		if pd.get_affection(str(hk)) < int(ma[hk]):
+			return false
+	if cond.has("is_ng_plus"):
+		var want_ng: bool = bool(cond.get("is_ng_plus", false))
+		if EmperorRealmManager.is_ng_plus_active(pd) != want_ng:
 			return false
 	return true
 

@@ -19,11 +19,23 @@
       "exp_reward": 52000,
       "gold_reward": 9200,
       "gear_drop_chance": 0.72,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["arm_tinh_van_thieu_cac_bao", "pend_thiet_kiem_trung_nghia", "wing_xe_rach_hu_khong"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "arm_tinh_van_thieu_cac_bao",
+        "pend_thiet_kiem_trung_nghia",
+        "wing_xe_rach_hu_khong"
+      ],
       "drops": [
-        { "item_id": "item_hon_tinh_den", "chance": 0.80 },
-        { "item_id": "herb_hon_anh_yeu_qua", "chance": 0.55 }
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 0.8
+        },
+        {
+          "item_id": "herb_hon_anh_yeu_qua",
+          "chance": 0.55
+        }
       ]
     },
     "hon_dien_ton_lao": {
@@ -43,11 +55,23 @@
       "exp_reward": 61000,
       "gold_reward": 10800,
       "gear_drop_chance": 0.76,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["caul_ban_thanh_tinh_than_dinh", "arm_tinh_van_thieu_cac_bao", "ring_yeu_lien_co_ngoc"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "caul_ban_thanh_tinh_than_dinh",
+        "arm_tinh_van_thieu_cac_bao",
+        "ring_yeu_lien_co_ngoc"
+      ],
       "drops": [
-        { "item_id": "item_hon_tinh_den", "chance": 0.85 },
-        { "item_id": "pill_phuc_hon_thanh_dan", "chance": 0.30 }
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 0.85
+        },
+        {
+          "item_id": "pill_phuc_hon_thanh_dan",
+          "chance": 0.3
+        }
       ]
     },
     "thien_minh_ta_ve": {
@@ -57,7 +81,7 @@
       "realm_index": 9,
       "realm_label": "Tam Tinh Đấu Tôn · Huyết Sát Độc Chưởng",
       "ai_type": "charger",
-      "sprite": "res://assets/sprites/enemies/lang_dau_tinh_anh.png",
+      "sprite": "res://assets/sprites/enemies/mob_hoang_tuyen_dao_khach.png",
       "max_hp": 53000,
       "atk": 910,
       "def": 415,
@@ -67,12 +91,25 @@
       "exp_reward": 66000,
       "gold_reward": 11800,
       "gear_drop_chance": 0.76,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wing_xe_rach_hu_khong", "arm_tinh_van_thieu_cac_bao", "pend_thiet_kiem_trung_nghia"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wing_xe_rach_hu_khong",
+        "arm_tinh_van_thieu_cac_bao",
+        "pend_thiet_kiem_trung_nghia"
+      ],
       "drops": [
-        { "item_id": "pill_bach_hoa_ngoc_lo", "chance": 0.45 },
-        { "item_id": "herb_hon_anh_yeu_qua", "chance": 0.62 }
-      ]
+        {
+          "item_id": "pill_bach_hoa_ngoc_lo",
+          "chance": 0.45
+        },
+        {
+          "item_id": "herb_hon_anh_yeu_qua",
+          "chance": 0.62
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_hoang_tuyen_dao_khach_anim.png"
     },
     "vien_co_thu_linh_ve": {
       "id": "vien_co_thu_linh_ve",
@@ -81,7 +118,7 @@
       "realm_index": 9,
       "realm_label": "Tứ Tinh Đấu Tôn · Thạch Khôi Phá Giáp",
       "ai_type": "shieldbearer",
-      "sprite": "res://assets/sprites/enemies/thach_khoi_boss.png",
+      "sprite": "res://assets/sprites/enemies/mob_vien_co_thu_linh.png",
       "max_hp": 59000,
       "atk": 980,
       "def": 465,
@@ -91,12 +128,25 @@
       "exp_reward": 74000,
       "gold_reward": 13200,
       "gear_drop_chance": 0.78,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tao_hoa_thien_mo", "caul_ban_thanh_tinh_than_dinh", "arm_tinh_van_thieu_cac_bao"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tao_hoa_thien_mo",
+        "caul_ban_thanh_tinh_than_dinh",
+        "arm_tinh_van_thieu_cac_bao"
+      ],
       "drops": [
-        { "item_id": "herb_vien_co_thu_cot", "chance": 0.72 },
-        { "item_id": "core_nang_luong_8", "chance": 0.35 }
-      ]
+        {
+          "item_id": "herb_vien_co_thu_cot",
+          "chance": 0.72
+        },
+        {
+          "item_id": "core_nang_luong_8",
+          "chance": 0.35
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_vien_co_thu_linh_anim.png"
     },
     "hu_khong_loi_giao": {
       "id": "hu_khong_loi_giao",
@@ -114,12 +164,24 @@
       "attack_range": 450,
       "exp_reward": 85000,
       "gold_reward": 15200,
-      "gear_drop_chance": 0.80,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wing_xe_rach_hu_khong", "wpn_xich_tao_hoa_thien_mo", "ring_yeu_lien_co_ngoc"],
+      "gear_drop_chance": 0.8,
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wing_xe_rach_hu_khong",
+        "wpn_xich_tao_hoa_thien_mo",
+        "ring_yeu_lien_co_ngoc"
+      ],
       "drops": [
-        { "item_id": "herb_long_huyet_qua", "chance": 0.74 },
-        { "item_id": "pill_kim_cuong_bat_hoai", "chance": 0.32 }
+        {
+          "item_id": "herb_long_huyet_qua",
+          "chance": 0.74
+        },
+        {
+          "item_id": "pill_kim_cuong_bat_hoai",
+          "chance": 0.32
+        }
       ]
     },
     "co_long_dao_ve": {
@@ -139,11 +201,23 @@
       "exp_reward": 92000,
       "gold_reward": 16800,
       "gear_drop_chance": 0.82,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["arm_tinh_van_thieu_cac_bao", "wing_xe_rach_hu_khong", "pend_thiet_kiem_trung_nghia"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "arm_tinh_van_thieu_cac_bao",
+        "wing_xe_rach_hu_khong",
+        "pend_thiet_kiem_trung_nghia"
+      ],
       "drops": [
-        { "item_id": "herb_long_huyet_qua", "chance": 0.78 },
-        { "item_id": "core_nang_luong_8", "chance": 0.50 }
+        {
+          "item_id": "herb_long_huyet_qua",
+          "chance": 0.78
+        },
+        {
+          "item_id": "core_nang_luong_8",
+          "chance": 0.5
+        }
       ]
     },
     "thien_mo_nang_luong_the": {
@@ -163,12 +237,29 @@
       "exp_reward": 125000,
       "gold_reward": 12000,
       "gear_drop_chance": 0.85,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tao_hoa_thien_mo", "arm_tinh_van_thieu_cac_bao", "wing_xe_rach_hu_khong", "ring_yeu_lien_co_ngoc", "caul_ban_thanh_tinh_than_dinh"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tao_hoa_thien_mo",
+        "arm_tinh_van_thieu_cac_bao",
+        "wing_xe_rach_hu_khong",
+        "ring_yeu_lien_co_ngoc",
+        "caul_ban_thanh_tinh_than_dinh"
+      ],
       "drops": [
-        { "item_id": "core_nang_luong_8", "chance": 0.85 },
-        { "item_id": "core_nang_luong_9", "chance": 0.45 },
-        { "item_id": "pill_cuu_chuyen_ton_nguyen", "chance": 0.35 }
+        {
+          "item_id": "core_nang_luong_8",
+          "chance": 0.85
+        },
+        {
+          "item_id": "core_nang_luong_9",
+          "chance": 0.45
+        },
+        {
+          "item_id": "pill_cuu_chuyen_ton_nguyen",
+          "chance": 0.35
+        }
       ]
     },
     "trich_tinh_lao_quy_boss": {
@@ -190,11 +281,23 @@
       "gold_reward": 185000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["pend_thiet_kiem_trung_nghia", "arm_tinh_van_thieu_cac_bao", "wing_xe_rach_hu_khong"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "pend_thiet_kiem_trung_nghia",
+        "arm_tinh_van_thieu_cac_bao",
+        "wing_xe_rach_hu_khong"
+      ],
       "drops": [
-        { "item_id": "herb_hon_anh_yeu_qua", "chance": 1.0 },
-        { "item_id": "item_hon_tinh_den", "chance": 1.0 }
+        {
+          "item_id": "herb_hon_anh_yeu_qua",
+          "chance": 1.0
+        },
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 1.0
+        }
       ]
     },
     "hac_bach_thien_ton_boss": {
@@ -216,11 +319,23 @@
       "gold_reward": 210000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["arm_tinh_van_thieu_cac_bao", "caul_ban_thanh_tinh_than_dinh", "wing_xe_rach_hu_khong"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "arm_tinh_van_thieu_cac_bao",
+        "caul_ban_thanh_tinh_than_dinh",
+        "wing_xe_rach_hu_khong"
+      ],
       "drops": [
-        { "item_id": "pill_phuc_hon_thanh_dan", "chance": 1.0 },
-        { "item_id": "herb_hon_anh_yeu_qua", "chance": 1.0 }
+        {
+          "item_id": "pill_phuc_hon_thanh_dan",
+          "chance": 1.0
+        },
+        {
+          "item_id": "herb_hon_anh_yeu_qua",
+          "chance": 1.0
+        }
       ]
     },
     "yeu_hoa_ta_quan_boss": {
@@ -242,11 +357,23 @@
       "gold_reward": 235000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wing_xe_rach_hu_khong", "arm_tinh_van_thieu_cac_bao", "ring_yeu_lien_co_ngoc"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wing_xe_rach_hu_khong",
+        "arm_tinh_van_thieu_cac_bao",
+        "ring_yeu_lien_co_ngoc"
+      ],
       "drops": [
-        { "item_id": "pill_bach_hoa_ngoc_lo", "chance": 1.0 },
-        { "item_id": "herb_hon_anh_yeu_qua", "chance": 1.0 }
+        {
+          "item_id": "pill_bach_hoa_ngoc_lo",
+          "chance": 1.0
+        },
+        {
+          "item_id": "herb_hon_anh_yeu_qua",
+          "chance": 1.0
+        }
       ]
     },
     "tan_hon_tao_hoa_boss": {
@@ -268,11 +395,23 @@
       "gold_reward": 270000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tao_hoa_thien_mo", "caul_ban_thanh_tinh_than_dinh", "pend_thiet_kiem_trung_nghia"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tao_hoa_thien_mo",
+        "caul_ban_thanh_tinh_than_dinh",
+        "pend_thiet_kiem_trung_nghia"
+      ],
       "drops": [
-        { "item_id": "herb_vien_co_thu_cot", "chance": 1.0 },
-        { "item_id": "herb_hon_anh_yeu_qua", "chance": 1.0 }
+        {
+          "item_id": "herb_vien_co_thu_cot",
+          "chance": 1.0
+        },
+        {
+          "item_id": "herb_hon_anh_yeu_qua",
+          "chance": 1.0
+        }
       ]
     },
     "bac_long_vuong_boss": {
@@ -294,11 +433,23 @@
       "gold_reward": 315000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wing_xe_rach_hu_khong", "wpn_xich_tao_hoa_thien_mo", "ring_yeu_lien_co_ngoc"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wing_xe_rach_hu_khong",
+        "wpn_xich_tao_hoa_thien_mo",
+        "ring_yeu_lien_co_ngoc"
+      ],
       "drops": [
-        { "item_id": "herb_long_huyet_qua", "chance": 1.0 },
-        { "item_id": "pill_kim_cuong_bat_hoai", "chance": 1.0 }
+        {
+          "item_id": "herb_long_huyet_qua",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_kim_cuong_bat_hoai",
+          "chance": 1.0
+        }
       ]
     },
     "co_yeu_do_thong_boss": {
@@ -320,11 +471,23 @@
       "gold_reward": 350000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["arm_tinh_van_thieu_cac_bao", "ring_yeu_lien_co_ngoc", "wpn_xich_tao_hoa_thien_mo"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "arm_tinh_van_thieu_cac_bao",
+        "ring_yeu_lien_co_ngoc",
+        "wpn_xich_tao_hoa_thien_mo"
+      ],
       "drops": [
-        { "item_id": "core_nang_luong_8", "chance": 1.0 },
-        { "item_id": "pill_cuu_chuyen_ton_nguyen", "chance": 1.0 }
+        {
+          "item_id": "core_nang_luong_8",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_cuu_chuyen_ton_nguyen",
+          "chance": 1.0
+        }
       ]
     },
     "huyet_dao_thanh_gia_boss": {
@@ -346,11 +509,26 @@
       "gold_reward": 460000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tao_hoa_thien_mo", "arm_tinh_van_thieu_cac_bao", "wing_xe_rach_hu_khong", "pend_thiet_kiem_trung_nghia", "ring_yeu_lien_co_ngoc", "caul_ban_thanh_tinh_than_dinh"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tao_hoa_thien_mo",
+        "arm_tinh_van_thieu_cac_bao",
+        "wing_xe_rach_hu_khong",
+        "pend_thiet_kiem_trung_nghia",
+        "ring_yeu_lien_co_ngoc",
+        "caul_ban_thanh_tinh_than_dinh"
+      ],
       "drops": [
-        { "item_id": "core_nang_luong_9", "chance": 1.0 },
-        { "item_id": "item_bo_de_tu", "chance": 1.0 }
+        {
+          "item_id": "core_nang_luong_9",
+          "chance": 1.0
+        },
+        {
+          "item_id": "item_bo_de_tu",
+          "chance": 1.0
+        }
       ]
     }
   }

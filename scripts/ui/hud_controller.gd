@@ -17,10 +17,11 @@ const PanelAuctionScript = preload("res://scripts/ui/panels/panel_auction.gd")
 const PanelEquipmentScript = preload("res://scripts/ui/panels/panel_equipment.gd")
 const PanelSkillsCultivationScript = preload("res://scripts/ui/panels/panel_skills_cultivation.gd")
 const PanelEndingCreditsScript = preload("res://scripts/ui/panels/panel_ending_credits.gd")
+const PanelAchievementsScript = preload("res://scripts/ui/panels/panel_achievements.gd")
 const HudMobaDock = preload("res://scripts/ui/panels/hud_moba_dock_helper.gd")
 const HudDialogueCtrl = preload("res://scripts/ui/panels/hud_dialogue_controller.gd")
 
-# 8 Panel UI mô-đun tách biệt (scripts/ui/panels/)
+# 9 Panel UI mô-đun tách biệt (scripts/ui/panels/)
 var panel_pause_settings: RefCounted
 var panel_world_map_bestiary: RefCounted
 var panel_tower_boss_rush: RefCounted
@@ -29,6 +30,7 @@ var panel_auction: RefCounted
 var panel_equipment: RefCounted
 var panel_skills_cultivation: RefCounted
 var panel_ending_credits: RefCounted
+var panel_achievements: RefCounted
 
 # Khung trạng thái góc trái trên (lerp mượt)
 var hp_bar: ProgressBar
@@ -143,10 +145,11 @@ var alc_info_lbl: Label
 var alc_lightning_btn: Button
 var alc_pulse_btn: Button
 
-var world_map_tab: String = "maps" # "maps" | "heroines" | "boss_rush" | "bestiary"
+var world_map_tab: String = "maps" # "maps" | "heroines" | "boss_rush" | "bestiary" | "tower" | "pan_gate" | "achievements"
 var selected_gift_heroine: String = "huan_nhi"
 var boss_rush_diff: String = "normal" # "normal" | "nightmare" | "dau_tong"
 var bestiary_filter: String = "all" # "all" | "boss" | "mob"
+var achievements_filter: String = "all" # "all" | "story" | "grind"
 var _bestiary_thumb_cache: Dictionary = {}
 
 var interact_poll_accum: float = 0.0
@@ -165,7 +168,7 @@ var autosave_toast_timer: float = 0.0
 
 
 func _exit_tree() -> void:
-	for p in [panel_pause_settings, panel_world_map_bestiary, panel_tower_boss_rush, panel_alchemy, panel_auction, panel_equipment, panel_skills_cultivation, panel_ending_credits]:
+	for p in [panel_pause_settings, panel_world_map_bestiary, panel_tower_boss_rush, panel_alchemy, panel_auction, panel_equipment, panel_skills_cultivation, panel_ending_credits, panel_achievements]:
 		if p != null:
 			p.hud = null
 	panel_pause_settings = null
@@ -176,6 +179,7 @@ func _exit_tree() -> void:
 	panel_equipment = null
 	panel_skills_cultivation = null
 	panel_ending_credits = null
+	panel_achievements = null
 
 
 func _ready() -> void:
@@ -187,6 +191,7 @@ func _ready() -> void:
 	panel_equipment = PanelEquipmentScript.new(self)
 	panel_skills_cultivation = PanelSkillsCultivationScript.new(self)
 	panel_ending_credits = PanelEndingCreditsScript.new(self)
+	panel_achievements = PanelAchievementsScript.new(self)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build_hud_layout()
 	_refresh_all()
@@ -1307,7 +1312,9 @@ func _refresh_all() -> void:
 
 func _refresh_stats() -> void:
 	var bottleneck_tag: String = " [ĐỈNH PHONG!]" if PlayerData.is_at_bottleneck() else ""
-	realm_lbl.text = "%s%s" % [PlayerData.get_realm_display_title(), bottleneck_tag]
+	var title_tag: String = PlayerData.get_active_title_display()
+	var title_prefix: String = ("%s " % title_tag) if title_tag != "" else ""
+	realm_lbl.text = "%s%s%s" % [title_prefix, PlayerData.get_realm_display_title(), bottleneck_tag]
 	var fe_txt: String = " · %d Hỏa Năng" % PlayerData.fire_energy if PlayerData.fire_energy > 0 else ""
 	currency_lbl.text = "%d Kim Tệ · %d Đá%s" % [PlayerData.gold, PlayerData.enhance_stones, fe_txt]
 

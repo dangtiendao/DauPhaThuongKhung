@@ -82,6 +82,18 @@ func build_content(vbox: VBoxContainer) -> void:
 	end_btns.add_theme_constant_override("separation", 10)
 	vbox.add_child(end_btns)
 
+	var ach_b := Button.new()
+	ach_b.text = "🏆 Thành Tựu & Danh Hiệu"
+	ach_b.add_theme_font_size_override("font_size", 13)
+	ach_b.add_theme_color_override("font_color", Color("#FFD700"))
+	ach_b.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		hud.world_map_tab = "achievements"
+		hud.current_modal = "world_map"
+		hud._populate_modal()
+	)
+	end_btns.add_child(ach_b)
+
 	var credits_b := Button.new()
 	credits_b.text = "🎬 Xem True Ending Credits (Viêm Đế)"
 	credits_b.add_theme_font_size_override("font_size", 13)

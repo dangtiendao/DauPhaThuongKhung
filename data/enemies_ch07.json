@@ -9,7 +9,7 @@
       "realm_index": 6,
       "realm_label": "Ngũ Tinh Đấu Vương · Kiếm Trận Vân Lam",
       "ai_type": "shieldbearer",
-      "sprite": "res://assets/sprites/enemies/van_phan_boss.png",
+      "sprite": "res://assets/sprites/enemies/mob_van_lam_kiem_si.png",
       "max_hp": 7600,
       "atk": 288,
       "def": 135,
@@ -19,12 +19,26 @@
       "exp_reward": 10500,
       "gold_reward": 2800,
       "gear_drop_chance": 0.68,
-      "allowed_rarities": ["thien", "de"],
-      "gear_pool": ["arm_viem_minh_hoang_bao", "wing_thien_yeu_hoang_canh", "wpn_xich_tam_sac_viem"],
+      "allowed_rarities": [
+        "thien",
+        "de"
+      ],
+      "gear_pool": [
+        "arm_viem_minh_hoang_bao",
+        "wing_thien_yeu_hoang_canh",
+        "wpn_xich_tam_sac_viem"
+      ],
       "drops": [
-        { "item_id": "herb_long_huyet_chi", "chance": 0.72 },
-        { "item_id": "pill_viem_minh_linh_dan", "chance": 0.45 }
-      ]
+        {
+          "item_id": "herb_long_huyet_chi",
+          "chance": 0.72
+        },
+        {
+          "item_id": "pill_viem_minh_linh_dan",
+          "chance": 0.45
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_van_lam_kiem_si_anim.png"
     },
     "am_anh_hon_su": {
       "id": "am_anh_hon_su",
@@ -33,7 +47,7 @@
       "realm_index": 6,
       "realm_label": "Bát Tinh Đấu Vương · Hắc Vụ Tỏa Hồn",
       "ai_type": "artillery",
-      "sprite": "res://assets/sprites/enemies/la_hau_boss.png",
+      "sprite": "res://assets/sprites/enemies/mob_hon_dien_hac_y_su.png",
       "max_hp": 8400,
       "atk": 318,
       "def": 128,
@@ -42,13 +56,26 @@
       "attack_range": 410,
       "exp_reward": 12500,
       "gold_reward": 3300,
-      "gear_drop_chance": 0.70,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["ring_cot_viem_ton_gioi", "arm_viem_minh_hoang_bao", "pend_bo_de_hoa_the_tien"],
+      "gear_drop_chance": 0.7,
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "ring_cot_viem_ton_gioi",
+        "arm_viem_minh_hoang_bao",
+        "pend_bo_de_hoa_the_tien"
+      ],
       "drops": [
-        { "item_id": "item_hon_tinh_den", "chance": 0.80 },
-        { "item_id": "pill_viem_minh_linh_dan", "chance": 0.48 }
-      ]
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 0.8
+        },
+        {
+          "item_id": "pill_viem_minh_linh_dan",
+          "chance": 0.48
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_hon_dien_hac_y_su_anim.png"
     },
     "van_son_boss": {
       "id": "van_son_boss",
@@ -69,12 +96,27 @@
       "gold_reward": 32000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tam_sac_viem", "arm_viem_minh_hoang_bao", "wing_thien_yeu_hoang_canh"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tam_sac_viem",
+        "arm_viem_minh_hoang_bao",
+        "wing_thien_yeu_hoang_canh"
+      ],
       "drops": [
-        { "item_id": "pill_viem_minh_linh_dan", "chance": 1.0 },
-        { "item_id": "herb_long_huyet_chi", "chance": 1.0 },
-        { "item_id": "core_loi_5", "chance": 1.0 }
+        {
+          "item_id": "pill_viem_minh_linh_dan",
+          "chance": 1.0
+        },
+        {
+          "item_id": "herb_long_huyet_chi",
+          "chance": 1.0
+        },
+        {
+          "item_id": "core_loi_5",
+          "chance": 1.0
+        }
       ]
     },
     "vu_ho_phap_boss": {
@@ -96,11 +138,23 @@
       "gold_reward": 36000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["ring_cot_viem_ton_gioi", "wpn_xich_tam_sac_viem", "arm_viem_minh_hoang_bao"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "ring_cot_viem_ton_gioi",
+        "wpn_xich_tam_sac_viem",
+        "arm_viem_minh_hoang_bao"
+      ],
       "drops": [
-        { "item_id": "item_hon_tinh_den", "chance": 1.0 },
-        { "item_id": "pill_viem_minh_linh_dan", "chance": 1.0 }
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_viem_minh_linh_dan",
+          "chance": 1.0
+        }
       ]
     },
     "doc_thi_chien_binh": {
@@ -110,7 +164,7 @@
       "realm_index": 6,
       "realm_label": "Cửu Tinh Đấu Vương · Độc Vụ Cuồng Bạo",
       "ai_type": "charger",
-      "sprite": "res://assets/sprites/enemies/xa_nhan_chien_binh.png",
+      "sprite": "res://assets/sprites/enemies/mob_xuat_van_doc_su.png",
       "max_hp": 9600,
       "atk": 335,
       "def": 148,
@@ -120,12 +174,25 @@
       "exp_reward": 14800,
       "gold_reward": 3800,
       "gear_drop_chance": 0.72,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["arm_viem_minh_hoang_bao", "wing_thien_yeu_hoang_canh", "ring_cot_viem_ton_gioi"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "arm_viem_minh_hoang_bao",
+        "wing_thien_yeu_hoang_canh",
+        "ring_cot_viem_ton_gioi"
+      ],
       "drops": [
-        { "item_id": "herb_hu_cot_thao", "chance": 0.82 },
-        { "item_id": "core_doc_6", "chance": 0.40 }
-      ]
+        {
+          "item_id": "herb_hu_cot_thao",
+          "chance": 0.82
+        },
+        {
+          "item_id": "core_doc_6",
+          "chance": 0.4
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_xuat_van_doc_su_anim.png"
     },
     "nhan_lac_thien_boss": {
       "id": "nhan_lac_thien_boss",
@@ -146,12 +213,27 @@
       "gold_reward": 40000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wing_thien_yeu_hoang_canh", "wpn_xich_tam_sac_viem", "arm_viem_minh_hoang_bao"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wing_thien_yeu_hoang_canh",
+        "wpn_xich_tam_sac_viem",
+        "arm_viem_minh_hoang_bao"
+      ],
       "drops": [
-        { "item_id": "herb_hu_cot_thao", "chance": 1.0 },
-        { "item_id": "item_hon_tinh_den", "chance": 1.0 },
-        { "item_id": "pill_viem_minh_linh_dan", "chance": 1.0 }
+        {
+          "item_id": "herb_hu_cot_thao",
+          "chance": 1.0
+        },
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_viem_minh_linh_dan",
+          "chance": 1.0
+        }
       ]
     },
     "huyet_ngat_doc_su": {
@@ -161,7 +243,7 @@
       "realm_index": 7,
       "realm_label": "Nhị Tinh Đấu Hoàng · Độc Bộc Hạt Vĩ",
       "ai_type": "bomber",
-      "sprite": "res://assets/sprites/enemies/sa_doc_hat_vuong.png",
+      "sprite": "res://assets/sprites/enemies/mob_xuat_van_doc_su.png",
       "max_hp": 10800,
       "atk": 362,
       "def": 156,
@@ -171,12 +253,25 @@
       "exp_reward": 17200,
       "gold_reward": 4400,
       "gear_drop_chance": 0.72,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["ring_cot_viem_ton_gioi", "pend_bo_de_hoa_the_tien", "arm_viem_minh_hoang_bao"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "ring_cot_viem_ton_gioi",
+        "pend_bo_de_hoa_the_tien",
+        "arm_viem_minh_hoang_bao"
+      ],
       "drops": [
-        { "item_id": "herb_hu_cot_thao", "chance": 0.88 },
-        { "item_id": "core_doc_6", "chance": 0.65 }
-      ]
+        {
+          "item_id": "herb_hu_cot_thao",
+          "chance": 0.88
+        },
+        {
+          "item_id": "core_doc_6",
+          "chance": 0.65
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_xuat_van_doc_su_anim.png"
     },
     "hat_tat_nham_boss": {
       "id": "hat_tat_nham_boss",
@@ -197,12 +292,27 @@
       "gold_reward": 45000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["ring_cot_viem_ton_gioi", "arm_viem_minh_hoang_bao", "wpn_xich_tam_sac_viem"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "ring_cot_viem_ton_gioi",
+        "arm_viem_minh_hoang_bao",
+        "wpn_xich_tam_sac_viem"
+      ],
       "drops": [
-        { "item_id": "core_doc_6", "chance": 1.0 },
-        { "item_id": "herb_hu_cot_thao", "chance": 1.0 },
-        { "item_id": "item_hon_tinh_den", "chance": 1.0 }
+        {
+          "item_id": "core_doc_6",
+          "chance": 1.0
+        },
+        {
+          "item_id": "herb_hu_cot_thao",
+          "chance": 1.0
+        },
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 1.0
+        }
       ]
     },
     "ma_viem_chap_phap": {
@@ -212,7 +322,7 @@
       "realm_index": 7,
       "realm_label": "Ngũ Tinh Đấu Hoàng · Hàn Viêm Sát Trận",
       "ai_type": "charger",
-      "sprite": "res://assets/sprites/enemies/lang_dau_tinh_anh.png",
+      "sprite": "res://assets/sprites/enemies/mob_huyet_tong_dao_khach.png",
       "max_hp": 12400,
       "atk": 388,
       "def": 172,
@@ -222,12 +332,25 @@
       "exp_reward": 20500,
       "gold_reward": 5200,
       "gear_drop_chance": 0.75,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tam_sac_viem", "wing_thien_yeu_hoang_canh", "pend_bo_de_hoa_the_tien"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tam_sac_viem",
+        "wing_thien_yeu_hoang_canh",
+        "pend_bo_de_hoa_the_tien"
+      ],
       "drops": [
-        { "item_id": "item_hon_tinh_den", "chance": 0.78 },
-        { "item_id": "item_thien_thiet_khoang", "chance": 0.55 }
-      ]
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 0.78
+        },
+        {
+          "item_id": "item_thien_thiet_khoang",
+          "chance": 0.55
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_huyet_tong_dao_khach_anim.png"
     },
     "han_phong_dau_tong_boss": {
       "id": "han_phong_dau_tong_boss",
@@ -248,12 +371,27 @@
       "gold_reward": 52000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tam_sac_viem", "ring_cot_viem_ton_gioi", "pend_bo_de_hoa_the_tien"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tam_sac_viem",
+        "ring_cot_viem_ton_gioi",
+        "pend_bo_de_hoa_the_tien"
+      ],
       "drops": [
-        { "item_id": "item_hon_tinh_den", "chance": 1.0 },
-        { "item_id": "pill_pha_tong_dan", "chance": 1.0 },
-        { "item_id": "core_doc_6", "chance": 1.0 }
+        {
+          "item_id": "item_hon_tinh_den",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_pha_tong_dan",
+          "chance": 1.0
+        },
+        {
+          "item_id": "core_doc_6",
+          "chance": 1.0
+        }
       ]
     },
     "dia_ma_lao_quy_boss": {
@@ -275,12 +413,28 @@
       "gold_reward": 68000,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["wpn_xich_tam_sac_viem", "arm_viem_minh_hoang_bao", "wing_thien_yeu_hoang_canh", "pend_bo_de_hoa_the_tien"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "wpn_xich_tam_sac_viem",
+        "arm_viem_minh_hoang_bao",
+        "wing_thien_yeu_hoang_canh",
+        "pend_bo_de_hoa_the_tien"
+      ],
       "drops": [
-        { "item_id": "item_thien_thiet_khoang", "chance": 1.0 },
-        { "item_id": "pill_pha_tong_dan", "chance": 1.0 },
-        { "item_id": "core_doc_6", "chance": 1.0 }
+        {
+          "item_id": "item_thien_thiet_khoang",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_pha_tong_dan",
+          "chance": 1.0
+        },
+        {
+          "item_id": "core_doc_6",
+          "chance": 1.0
+        }
       ]
     }
   }

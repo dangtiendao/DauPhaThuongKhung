@@ -2389,6 +2389,20 @@
             1635,
             745
           ]
+        },
+        {
+          "type": "lava_crystal",
+          "pos": [
+            1452,
+            210
+          ]
+        },
+        {
+          "type": "lava_crystal",
+          "pos": [
+            896,
+            200
+          ]
         }
       ],
       "chests": [

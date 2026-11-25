@@ -10,6 +10,8 @@ const PanGateMgr = preload("res://scripts/systems/pan_gate_manager.gd")
 const NineTurnMgr = preload("res://scripts/systems/nine_turn_manager.gd")
 const SaintRealmMgr = preload("res://scripts/systems/saint_realm_manager.gd")
 const EmperorRealmMgr = preload("res://scripts/systems/emperor_realm_manager.gd")
+const AchMgr = preload("res://scripts/systems/achievement_manager.gd")
+const HeroineMgr = preload("res://scripts/systems/heroine_affection_manager.gd")
 
 var passed_count: int = 0
 var failed_count: int = 0
@@ -73,6 +75,7 @@ func _run_all_suites() -> void:
 	_suite_14_ch09_systems()
 	_suite_15_ch10_systems()
 	await _suite_16_ch11_systems()
+	await _suite_17_v110_polish()
 
 	_restore_user_settings()
 
@@ -1049,7 +1052,7 @@ func _suite_13_audio_and_modular_refactor() -> void:
 		_assert(sc != null, "Extracted module script loads cleanly: " + mp)
 
 	var h_mod = load("res://scripts/systems/heroine_affection_manager.gd")
-	_assert(h_mod.get_heroine_profiles().size() == 5, "HeroineAffectionManager returns all 5 heroines")
+	_assert(h_mod.get_heroine_profiles().size() == 8, "HeroineAffectionManager returns all 8 heroines")
 	var b_mod = load("res://scripts/entities/boss_skill_executor.gd")
 	for bid in ["gia_liet_ao_boss", "nap_lan_yen_nhien_boss", "la_hau_boss", "han_phong_boss", "dia_ma_lao_quy_boss", "tam_thien_diem_viem_boss"]:
 		var col: Color = b_mod.get_signature_color(bid)
@@ -1553,6 +1556,170 @@ func _suite_16_ch11_systems() -> void:
 		var f11 := FileAccess.open(core_p11, FileAccess.READ)
 		var loc11: int = f11.get_as_text().split("\n").size() if f11 != null else 99999
 		_assert(loc11 < 1800, "v1.0.0 core script stays strictly under 1800 LOC: %s (%d LOC)" % [core_p11, loc11])
+
+
+# =========================================================
+# SUITE 17: v1.1.0 POLISH (P3.2 MOBS/ANIMS · P3.3 PROPS/WEAPONS · 8/8 HEROINES · ACHIEVEMENTS · CH.01-03 JSON · <1400 LOC)
+# =========================================================
+func _suite_17_v110_polish() -> void:
+	print("[Suite 17] v1.1.0 Polish (P3.2 12 Mobs + 18 8f Sheets, P3.3 9 Props + 4 Rulers, 8/8 Heroines, 20 Achievements, Ch.01-03 JSON, <1400 LOC)...")
+	PlayerData.reset_for_new_game(1)
+
+	# 1. Kiến trúc bảo trì: player_data.gd < 1400 LOC, story_dialogue_runner.gd < 120 LOC & 4 mô-đun mới nạp sạch
+	for mod_p in [
+		"res://scripts/systems/player_gear_core_manager.gd",
+		"res://scripts/systems/player_mastery_quest_manager.gd",
+		"res://scripts/systems/achievement_manager.gd",
+		"res://scripts/ui/panels/panel_achievements.gd"
+	]:
+		_assert(load(mod_p) != null, "v1.1.0 module loads cleanly: " + mod_p)
+
+	var f_pd := FileAccess.open("res://scripts/autoload/player_data.gd", FileAccess.READ)
+	var pd_loc: int = f_pd.get_as_text().split("\n").size() if f_pd != null else 99999
+	_assert(pd_loc < 1400, "player_data.gd strictly under 1400 LOC (%d LOC)" % pd_loc)
+
+	var f_sdr := FileAccess.open("res://scripts/systems/story_dialogue_runner.gd", FileAccess.READ)
+	var sdr_loc: int = f_sdr.get_as_text().split("\n").size() if f_sdr != null else 99999
+	_assert(sdr_loc < 120, "story_dialogue_runner.gd strictly under 120 LOC (%d LOC)" % sdr_loc)
+
+	# 2. Hội thoại Ch.01-03 Data-Driven JSON (19 vai NPC) + nhánh NG+ Từ Hôn
+	var ch01_03_roles: Array[String] = [
+		"story_tieu_chien", "story_huan_nhi", "story_tu_hon", "story_nhuoc_lam",
+		"secret_lang_anh", "story_duoc_lao", "shop_nha_phi",
+		"story_muc_luc_intro", "story_tieu_y_tien", "story_van_chi", "story_tieu_y_tien_farewell",
+		"story_tieu_dinh", "story_tieu_le", "story_hai_ba_dong", "story_thanh_lan",
+		"story_van_van_ch03", "story_my_do_toa", "story_devour_thanh_lien", "story_thai_lan_pet"
+	]
+	for r_id in ch01_03_roles:
+		_assert(not GameDatabase.get_dialogue_def(r_id).is_empty(), "Ch.01-03 JSON dialogue role loaded: " + r_id)
+
+	var emitted17: Array = [false]
+	var cb17a := func(_s: String, _a: String, _l: Array, _x: Variant) -> void: emitted17[0] = true
+	var cb17b := func(_s: String, _a: String, _l: Array, _x: String) -> void: emitted17[0] = true
+	EventBus.dialogue_choice_requested.connect(cb17a)
+	EventBus.dialogue_requested.connect(cb17b)
+	var ran_th: bool = StoryDlgRunner.run_data_driven_dialogue(GameDatabase.get_dialogue_def("story_tu_hon"), "Nạp Lan Yên Nhiên", "res://assets/sprites/npcs/npc_nap_lan_yen_nhien.png")
+	_assert(ran_th and bool(emitted17[0]), "Ch.01 story_tu_hon JSON runs cleanly")
+	emitted17[0] = false
+	PlayerData.ng_plus_cycle = 1
+	var ran_ng: bool = StoryDlgRunner.run_data_driven_dialogue(GameDatabase.get_dialogue_def("story_tu_hon"), "Nạp Lan Yên Nhiên", "res://assets/sprites/npcs/npc_nap_lan_yen_nhien.png")
+	_assert(ran_ng and bool(emitted17[0]), "Ch.01 story_tu_hon NG+ branch runs cleanly")
+	PlayerData.ng_plus_cycle = 0
+	EventBus.dialogue_choice_requested.disconnect(cb17a)
+	EventBus.dialogue_requested.disconnect(cb17b)
+
+	# 3. Đủ 8/8 Hồng Nhan Tri Kỷ (thêm Tử Nghiên, Nhã Phi, Nạp Lan Yên Nhiên) + Buff Phá Thế + Save/Load
+	var profiles: Array = HeroineMgr.get_heroine_profiles()
+	_assert(profiles.size() == 8, "HeroineAffectionManager has all 8 heroines", "got %d" % profiles.size())
+	for hk in ["huan_nhi", "tieu_y_tien", "van_chi", "thanh_lan", "my_do_toa", "tu_nghien", "nha_phi", "nap_lan_yen_nhien"]:
+		_assert(PlayerData.affection.has(hk), "PlayerData.affection contains key: " + hk)
+	for hp in profiles:
+		var sp_h: String = str((hp as Dictionary).get("sprite", ""))
+		_assert(ResourceLoader.exists(sp_h), "Heroine portrait exists: " + sp_h)
+
+	PlayerData.add_item("pill_dan_hoan_ngot", 2)
+	var pre_tn: int = PlayerData.get_affection("tu_nghien")
+	var gift_res: Dictionary = PlayerData.give_gift_to_heroine("tu_nghien", "pill_dan_hoan_ngot")
+	_assert(bool(gift_res.get("ok", false)) and PlayerData.get_affection("tu_nghien") >= pre_tn + 16, "Favorite gift doubles Tu Nghien affection gain", str(gift_res))
+	PlayerData.add_affection("tu_nghien", 85)
+	PlayerData.add_affection("nha_phi", 60)
+	PlayerData.add_affection("nap_lan_yen_nhien", 55)
+	_assert(PlayerData.get_poise_dmg_multiplier() > 1.05, "Tu Nghien + Nap Lan affection boosts Poise damage multiplier", "got %.2f" % PlayerData.get_poise_dmg_multiplier())
+
+	# 4. Hệ Thống Thành Tựu & Danh Hiệu (20 mục + Trang bị Danh Hiệu + Lưu/Tải + Render PanelAchievements)
+	var defs: Array = AchMgr.get_all_definitions()
+	_assert(defs.size() == 20, "AchievementManager defines all 20 achievements & titles", "got %d" % defs.size())
+	PlayerData.set_story_flag("ach_11_03_tam_thap_nien")
+	var sum_ach: Dictionary = AchMgr.get_summary(PlayerData)
+	_assert(int(sum_ach.get("total", 0)) == 20 and int(sum_ach.get("unlocked", 0)) >= 1 and int(sum_ach.get("platinum_unlocked", 0)) >= 1, "AchievementManager summary counts unlocked platinum cleanly", str(sum_ach))
+	var eq_res: Dictionary = AchMgr.equip_title(PlayerData, "ach_11_03_tam_thap_nien")
+	_assert(bool(eq_res.get("ok", false)) and PlayerData.get_active_title_display().find("VIÊM ĐẾ TIÊU VIÊM") != -1, "Equipping achievement title displays on HUD", PlayerData.get_active_title_display())
+
+	var tmp_p17: String = "user://dptk_autotest_v110.json"
+	var save_ok: bool = SaveLoadMgr.save_to_path(PlayerData, tmp_p17)
+	_assert(save_ok and FileAccess.file_exists(tmp_p17), "Save with 8 heroines + active_title_id succeeds")
+	PlayerData.reset_for_new_game(1)
+	var load_ok: bool = SaveLoadMgr.load_from_path(PlayerData, tmp_p17, false)
+	_assert(load_ok and PlayerData.get_affection("tu_nghien") >= 100 and PlayerData.get_affection("nha_phi") == 60 and PlayerData.get_affection("nap_lan_yen_nhien") == 55 and PlayerData.active_title_id == "ach_11_03_tam_thap_nien", "Load restores all 8 heroines & active_title_id")
+	if FileAccess.file_exists(tmp_p17):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(tmp_p17))
+
+	var main_sc: PackedScene = load("res://scenes/main_prototype.tscn")
+	var main_inst: Node = main_sc.instantiate()
+	add_child(main_inst)
+	await get_tree().process_frame
+	var hud_node: Node = main_inst.get_node_or_null("GameHUD")
+	_assert(hud_node != null and hud_node.get("panel_achievements") != null, "GameHUD instantiates PanelAchievements cleanly")
+	if hud_node != null:
+		var m_host: Control = hud_node.get("modal_content_host") as Control
+		hud_node.set("world_map_tab", "achievements")
+		hud_node.set("current_modal", "world_map")
+		hud_node.call("_populate_modal")
+		_assert(m_host != null and m_host.get_child_count() > 0, "HUD achievements tab renders PanelAchievements cleanly")
+		hud_node.call("_close_modal")
+	main_inst.queue_free()
+	await get_tree().process_frame
+
+	# 5. P3.2 Quái thường: 0 quái thường mượn ảnh Boss/NPC + 12 quái vùng mới + 18 sheet 8-frame (4x2) hợp lệ
+	var borrowed_cnt: int = 0
+	var anim_normal_cnt: int = 0
+	for eid in GameDatabase.enemies_by_id.keys():
+		var ed: Dictionary = GameDatabase.enemies_by_id[eid]
+		if bool(ed.get("is_boss", false)) or str(eid).ends_with("_boss"):
+			continue
+		var sp_e: String = str(ed.get("sprite", ""))
+		var an_e: String = str(ed.get("anim_sheet", ""))
+		if sp_e.find("_boss") != -1 or sp_e.find("/npcs/") != -1 or an_e.find("_boss") != -1:
+			borrowed_cnt += 1
+		if an_e != "":
+			anim_normal_cnt += 1
+	_assert(borrowed_cnt == 0, "Zero normal mobs borrow Boss/NPC sprites across all 11 chapters", "borrowed=%d" % borrowed_cnt)
+	_assert(anim_normal_cnt >= 35, "35+ normal mobs equipped with 8-frame anim_sheets", "got %d" % anim_normal_cnt)
+
+	var new_mob_sheets: Array[String] = [
+		"mob_van_lam_kiem_si", "mob_huyet_tong_dao_khach", "mob_gia_nam_tinh_nhue", "mob_dung_nham_hoa_xa",
+		"mob_xuat_van_doc_su", "mob_hon_dien_hac_y_su", "mob_bang_ha_ho_phap", "mob_xich_hoa_thach_nhan",
+		"mob_phe_kim_thu", "mob_hoang_tuyen_dao_khach", "mob_van_xa_doc_mang", "mob_vien_co_thu_linh",
+		"hoang_da_son_lang", "thiet_boi_son_tru", "hoa_tinh_vien", "lang_dau_tinh_anh",
+		"sa_doc_hat_vuong", "xa_nhan_chien_binh"
+	]
+	for m_key in new_mob_sheets:
+		var s_path: String = "res://assets/sprites/enemies/%s_anim.png" % m_key
+		_assert(ResourceLoader.exists(s_path), "Normal mob 8f anim sheet exists: " + s_path)
+		var tex_m: Texture2D = load(s_path)
+		var meta_m: Dictionary = SpriteAnimHelper.inspect_sheet(tex_m, "enemy_anim", 4, 2)
+		_assert(int(meta_m.get("total_frames", 0)) == 8, "Normal mob sheet has valid 8 frames (4x2): " + m_key, str(meta_m))
+
+	# 6. P3.3 Props địa vực (9 loại mới đặt phủ bản đồ) & 4 biến thể vũ khí Huyền Trọng Xích
+	var regional_props: Array[String] = [
+		"blood_pool_altar", "ancient_altar", "forge_cauldron", "ice_pillar",
+		"soul_tower", "dragon_core_orb", "poison_totem", "lava_crystal", "star_obelisk"
+	]
+	var prop_usage: Dictionary = {}
+	for mid_p in GameDatabase.maps_by_id.keys():
+		var m_d: Dictionary = GameDatabase.maps_by_id[mid_p]
+		for pr in (m_d.get("props", []) as Array):
+			if pr is Dictionary:
+				var pt: String = str((pr as Dictionary).get("type", ""))
+				prop_usage[pt] = int(prop_usage.get(pt, 0)) + 1
+	for rp in regional_props:
+		var rp_path: String = "res://assets/sprites/props/%s.png" % rp
+		_assert(ResourceLoader.exists(rp_path), "Regional prop PNG exists: " + rp_path)
+		_assert(int(prop_usage.get(rp, 0)) >= 2, "Regional prop placed actively on maps: %s (count=%d)" % [rp, int(prop_usage.get(rp, 0))])
+
+	var wpn_variants: Dictionary = {
+		"wpn_xich_luu_ly_viem": "res://assets/sprites/weapons/xich_luu_ly_viem.png",
+		"wpn_xich_tam_thien_tinh_viem": "res://assets/sprites/weapons/xich_tam_thien_tinh_viem.png",
+		"wpn_xich_tinh_lien_luan_hoi": "res://assets/sprites/weapons/xich_tinh_lien_luan_hoi.png",
+		"wpn_di_hoa_hang_co_xich": "res://assets/sprites/weapons/xich_di_hoa_hang_co.png"
+	}
+	for wid_v in wpn_variants.keys():
+		var exp_sp: String = str(wpn_variants[wid_v])
+		_assert(ResourceLoader.exists(exp_sp), "Heavy Ruler variant PNG exists: " + exp_sp)
+		var gear_v: Dictionary = EquipmentSystem.roll_equipment_instance(wid_v, "de")
+		PlayerData.equipped_gear["weapon"] = gear_v
+		_assert(PlayerData.get_equipped_weapon_sprite_path() == exp_sp, "Equipped %s resolves variant sprite %s" % [wid_v, exp_sp], PlayerData.get_equipped_weapon_sprite_path())
+
 
 
 

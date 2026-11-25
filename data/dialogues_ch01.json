@@ -1,0 +1,186 @@
+{
+  "version": "1.1",
+  "chapter": "Chương 01",
+  "dialogues": {
+    "story_tieu_chien": {
+      "branches": [
+        {
+          "when": { "missing_flag": "tu_hon_done" },
+          "lines": [
+            "Tiêu Chiến (vỗ vai con trai, ánh mắt trầm ổn): 'Viêm nhi, ba năm qua dù tộc nhân có bàn tán ra sao, trong lòng vi phụ con vẫn là niềm tự hào của Tiêu Gia!'",
+            "Tiêu Chiến (nhíu mày): 'Hôm nay phái đoàn Vân Lam Tông bất ngờ ghé thăm — Nạp Lan Yên Nhiên đang đợi ở sân trước, con đi cùng ta xem chúng giở trò gì!'"
+          ],
+          "action": ""
+        },
+        {
+          "when": { "missing_flag": "unlocked_bat_cuc_bang" },
+          "lines": [
+            "Tiêu Chiến (cười lớn đầy khí phách): 'Viết Hưu Thư trả lại Tụ Khí Tán trước mặt Chấp sự Vân Lam Tông — thật xứng là con trai của Tiêu Chiến ta!'",
+            "Tiêu Chiến: 'Cố gắng tu luyện chuẩn bị cho Lễ Thành Niên Tiêu Gia, đừng để tên Tiêu Ninh kia coi thường!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch01_completed" },
+          "lines": [
+            "Tiêu Chiến (tự hào): 'Một chiêu đánh bay Tiêu Ninh khỏi Lôi Đài! Đám trưởng lão nay câm nín hết rồi!'",
+            "Tiêu Chiến (lo lắng): 'Gần đây Gia Liệt Gia thuê được Luyện Đan Sư Liễu Tịch chèn ép phường thị Tiêu Gia ở Ô Thản Thành... Con nhớ cẩn thận nếu ra thành!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Chiến (rưng rưng tự hào): 'Gia Liệt Gia đã bị diệt, Tiêu Gia nay đứng đầu Ô Thản Thành! Con trai, đường lớn bên ngoài Ma Thú Sơn Mạch đang chờ con — hãy bình an trở về!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_huan_nhi": {
+      "marker_when": { "missing_flag": "huan_nhi_gift" },
+      "branches": [
+        {
+          "when": { "missing_flag": "huan_nhi_gift" },
+          "lines": [
+            "Tiêu Huân Nhi (dịu dàng): 'Tiêu Viêm ca ca, huynh đừng buồn vì Ma Thạch Bi vẫn là Tam Đoạn... Muội nhớ suốt 2 năm thuở nhỏ mỗi đêm huynh đều vụng về ôn dưỡng kinh mạch cho muội.'",
+            "Tiêu Huân Nhi (đưa túi thảo dược): 'Đây là 2 cây Ngưng Huyết Thảo và 1 viên Ngưng Huyết Tán muội để dành. Bên kia Nạp Lan Yên Nhiên của Vân Lam Tông đang đứng chờ kìa!'"
+          ],
+          "action": "gift_huan_nhi"
+        },
+        {
+          "when": { "missing_flag": "duoc_lao_awake" },
+          "lines": [
+            "Tiêu Huân Nhi (ánh mắt lấp lánh tia Kim Hỏa rồi dịu lại): 'Tiêu Viêm ca ca thật khí phách khi viết Hưu Thư trước mặt Vân Lam Tông! Huynh cứ lên Hậu Sơn cho khuây khỏa nhé.'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Huân Nhi (mỉm cười ấm áp): 'Khí tức trên người Tiêu Viêm ca ca mạnh lên từng ngày! Muội sẽ chờ huynh ở Học Viện Già Nam — để muội hồi đầy thể lực cho huynh nhé!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_tu_hon": {
+      "marker_when": { "missing_flag": "tu_hon_done" },
+      "branches": [
+        {
+          "when": { "is_ng_plus": true },
+          "lines": [
+            "Nạp Lan Yên Nhiên (lạnh nhạt): 'Tiêu Viêm công tử, ba năm qua ngươi dậm chân tại Đấu Chi Khí Tam Đoạn. Khoảng cách giữa chúng ta đã là trời vực...'",
+            "Cát Diệp Trưởng Lão (phóng uy áp Đấu Linh): 'Vân Lam Tông tặng Tiêu Gia một viên Tụ Khí Tán Tam Phẩm, chỉ mong công tử hủy bỏ hôn ước này!'",
+            "Tiểu Y (ngồi trên vai Tiêu Viêm nháy mắt tinh nghịch — chỉ Tiêu Viêm thấy): 'Y Y nha~ Ông lão Đấu Linh này dám khoe uy áp trước mặt Đế Cảnh Viêm Đế sao?!'"
+          ],
+          "choices": [
+            {
+              "label": "☯ [NG+ Đế Cảnh] Phóng 0,01% Uy Áp Đế Cảnh Linh Hồn làm Cát Diệp & Nạp Lan đánh rơi chén trà ngơ ngác!",
+              "action": "choice:tu_hon_ng_plus_flex"
+            },
+            {
+              "label": "Rạch tay viết Hưu Thư chuẩn nguyên tác: 'Tam Thập Niên Hà Đông, Tam Thập Niên Hà Tây!'",
+              "action": "flag:tu_hon_done"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Nạp Lan Yên Nhiên (lạnh nhạt): 'Tiêu Viêm công tử, ba năm qua ngươi dậm chân tại Đấu Chi Khí Tam Đoạn. Khoảng cách giữa chúng ta đã là trời vực...'",
+            "Cát Diệp Trưởng Lão (phóng uy áp Đấu Linh): 'Vân Lam Tông tặng Tiêu Gia một viên Tụ Khí Tán Tam Phẩm, chỉ mong công tử hủy bỏ hôn ước này!'",
+            "Tiêu Viêm (rạch tay viết Hưu Thư đẫm máu): 'Lấy Tụ Khí Tán về đi! Không phải ngươi từ hôn ta, mà là TIÊU VIÊM TA HƯU NGƯƠI!'",
+            "Tiêu Viêm (gằn từng chữ): 'TAM THẬP NIÊN HÀ ĐÔNG, TAM THẬP NIÊN HÀ TÂY — MẠC KHI THIẾU NIÊN CÙNG! Ba năm sau ta sẽ bước lên Vân Lam Sơn rửa nhục!'",
+            "Nạp Lan Yên Nhiên tái mặt phất tay áo rời khỏi Tiêu Gia... (Nhận Buff [Ấn Ký Tôn Nghiêm +5% ATK] & mở Cổng Bắc lên Hậu Sơn!)"
+          ],
+          "action": "flag:tu_hon_done"
+        }
+      ]
+    },
+    "story_nhuoc_lam": {
+      "marker_when": { "missing_flag": "got_gia_nam_leave" },
+      "branches": [
+        {
+          "when": { "missing_flag": "got_gia_nam_leave" },
+          "lines": [
+            "Nhược Lâm Đạo Sư (mỉm cười tán thưởng): 'Thật kinh ngạc! Một năm từ Tam Đoạn vọt lên đánh bại cả Tiêu Ninh uống Tăng Khí Tán — Học Viện Già Nam đặc cách tuyển thẳng em và Huân Nhi!'",
+            "Tiêu Viêm (chắp tay kiên định): 'Đa tạ Đạo sư! Đệ tử có một Ước Hẹn 3 Năm cần tự mình khổ tu bên ngoài, xin Đạo sư cho phép nghỉ phép 2 năm trước khi nhập học!'",
+            "Nhược Lâm Đạo Sư (trao ngọc bài xanh biếc): 'Chí khí đáng khen! Đây là [Già Nam Ngọc Bài] — hai năm sau ta chờ hai đứa tại Nội Viện Già Nam!'"
+          ],
+          "action": "flag:got_gia_nam_leave"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Nhược Lâm Đạo Sư: 'Cầm chắc Già Nam Ngọc Bài nhé! Hãy đột phá lên Đấu Giả rồi ra ngoài rèn luyện cho thật vững vàng.'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "secret_lang_anh": {
+      "marker_when": { "missing_flag": "secret_lang_anh_done" },
+      "branches": [
+        {
+          "default": true,
+          "lines": [
+            "Dược Lão (truyền âm kinh hãi): 'Tiểu tử DỪNG LẠI NGAY! Trong bóng tối gốc tùng kia là một cường giả Đấu Hoàng Cửu Tinh ẩn thân — chắc chắn là ám vệ bảo vệ Huân Nhi!'",
+            "Bóng đen mặc hắc bào khẽ hé đôi mắt tím sắc lạnh nhìn về phía bạn..."
+          ],
+          "choices": [
+            {
+              "label": "Nín thở đứng im không động đậy (Nghe lời Dược Lão -> Nhận Hắc Ảnh Phù +8% SPD!)",
+              "action": "choice:lang_anh_quiet"
+            },
+            {
+              "label": "Chắp tay kính lễ cảm ơn tiền bối bảo vệ Huân Nhi (+10 Hảo Cảm Huân Nhi & +4 SOUL!)",
+              "action": "choice:lang_anh_bow"
+            }
+          ]
+        }
+      ]
+    },
+    "story_duoc_lao": {
+      "marker_when": { "missing_flag": "duoc_lao_awake" },
+      "branches": [
+        {
+          "when": { "missing_flag": "duoc_lao_awake" },
+          "lines": [
+            "Hắc giới mẫu thân để lại đột nhiên bốc khói trắng — một lão giả bạch bào lơ lửng hiện thân giữa Vách Đá Hậu Sơn!",
+            "Dược Lão (cười khà khà): 'Hắc hắc tiểu tử, ba năm qua chính lão phu đã hấp thu Đấu Chi Khí của con để thức tỉnh linh hồn từ giấc ngủ say!'",
+            "Tiêu Viêm (quỳ xuống hành lễ): 'Tiền bối là Luyện Dược Đại Sư?! Xin nhận đồ nhi một lạy — chỉ cần giúp con thắng ước hẹn ba năm, khổ cực mấy con cũng chịu!'",
+            "Dược Lão: 'Khá lắm! Vi sư truyền cho con [Q] Toái Thạch Chưởng, ngọn [Phàm Hỏa], Kho Đấu Kỹ [K] và mở Lò Luyện Đan [L]! Hãy luyện Trúc Cơ Linh Dịch đầu đời đi!'"
+          ],
+          "action": "flag:duoc_lao_awake"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Dược Lão: 'Tiểu tử cố lên! Mục tiêu hiện tại của con: {quest_objective}'",
+            "Dược Lão: 'Vi sư vừa dùng linh hồn lực điều tức lại toàn bộ HP và Đấu Khí cho con rồi đấy!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "shop_nha_phi": {
+      "branches": [
+        {
+          "when": { "missing_flag": "met_nha_phi" },
+          "on_open_flag": "met_nha_phi",
+          "lines": [
+            "Nhã Phi (mỉm cười quyến rũ): 'Ô kìa, đây chẳng phải Tam Thiếu Gia Tiêu Gia sao? Hoan nghênh tới Phòng Đấu Giá Mễ Đặc Nhĩ!'",
+            "Nhã Phi: 'Bản phòng vừa nhập về Bí Tịch [Hấp Chưởng], [Bạo Bộ], Thanh Thiết Kiếm, Tinh Cương Chiến Đao và thảo dược luyện đan — mời công tử xem hàng!'"
+          ],
+          "action": "open_shop:nha_phi"
+        },
+        {
+          "default": true,
+          "direct_action": "open_shop"
+        }
+      ]
+    }
+  },
+  "effects": {}
+}

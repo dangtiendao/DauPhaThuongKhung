@@ -300,7 +300,11 @@ static func _infer_grid_from_dimensions(w: int, h: int, kind: String, fallback_h
 		return Vector2i(est_h, 1)
 
 	if kind == "enemy_anim":
-		# Hỗ trợ lưới Boss nhiều hàng nếu chiều cao >= 240px (gấp 2–4 lần ô ~128px)
+		# Hỗ trợ lưới Boss & Quái Thường chuẩn mặc định 4×2 (8 frame, cả ô vuông 96×96 lẫn thú bốn chân 108×76)
+		var aspect: float = float(w) / maxf(1.0, float(h))
+		if fallback_h == 4 and fallback_v == 2 and h >= 140 and h < 330 and w % 4 == 0 and h % 2 == 0 and aspect >= 1.50 and aspect <= 3.15:
+			return Vector2i(4, 2)
+		# Hỗ trợ lưới nhiều hàng tùy chỉnh (4×3, 4×4) hoặc dải 1 hàng cũ
 		var est_v: int = 1
 		if h >= 440:
 			est_v = 4

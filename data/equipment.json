@@ -1,122 +1,439 @@
 {
   "version": "1.0",
   "slots": [
-    { "id": "weapon", "name": "Vũ Khí", "default_icon": "res://assets/sprites/weapons/huyen_trong_xich.png" },
-    { "id": "armor", "name": "Áo / Nội Giáp", "default_icon": "res://assets/sprites/icons/icon_armor.png" },
-    { "id": "legs", "name": "Quần / Hộ Tối", "default_icon": "res://assets/sprites/icons/icon_legs.png" },
-    { "id": "boots", "name": "Giày / Chiến Hài", "default_icon": "res://assets/sprites/icons/icon_boots.png" },
-    { "id": "gloves", "name": "Hộ Uyển / Găng", "default_icon": "res://assets/sprites/icons/icon_gloves.png" },
-    { "id": "necklace", "name": "Dây Chuyền", "default_icon": "res://assets/sprites/icons/icon_necklace.png" },
-    { "id": "pendant", "name": "Ngọc Bội", "default_icon": "res://assets/sprites/icons/icon_pendant.png" },
-    { "id": "ring", "name": "Nạp Giới / Nhẫn", "default_icon": "res://assets/sprites/icons/icon_ring.png" },
-    { "id": "wings", "name": "Phi Hành Đấu Dực", "default_icon": "res://assets/sprites/icons/icon_wings.png" },
-    { "id": "cauldron", "name": "Dược Đỉnh", "default_icon": "res://assets/sprites/icons/icon_cauldron.png" }
+    {
+      "id": "weapon",
+      "name": "Vũ Khí",
+      "default_icon": "res://assets/sprites/weapons/huyen_trong_xich.png"
+    },
+    {
+      "id": "armor",
+      "name": "Áo / Nội Giáp",
+      "default_icon": "res://assets/sprites/icons/icon_armor.png"
+    },
+    {
+      "id": "legs",
+      "name": "Quần / Hộ Tối",
+      "default_icon": "res://assets/sprites/icons/icon_legs.png"
+    },
+    {
+      "id": "boots",
+      "name": "Giày / Chiến Hài",
+      "default_icon": "res://assets/sprites/icons/icon_boots.png"
+    },
+    {
+      "id": "gloves",
+      "name": "Hộ Uyển / Găng",
+      "default_icon": "res://assets/sprites/icons/icon_gloves.png"
+    },
+    {
+      "id": "necklace",
+      "name": "Dây Chuyền",
+      "default_icon": "res://assets/sprites/icons/icon_necklace.png"
+    },
+    {
+      "id": "pendant",
+      "name": "Ngọc Bội",
+      "default_icon": "res://assets/sprites/icons/icon_pendant.png"
+    },
+    {
+      "id": "ring",
+      "name": "Nạp Giới / Nhẫn",
+      "default_icon": "res://assets/sprites/icons/icon_ring.png"
+    },
+    {
+      "id": "wings",
+      "name": "Phi Hành Đấu Dực",
+      "default_icon": "res://assets/sprites/icons/icon_wings.png"
+    },
+    {
+      "id": "cauldron",
+      "name": "Dược Đỉnh",
+      "default_icon": "res://assets/sprites/icons/icon_cauldron.png"
+    }
   ],
   "rarities": {
-    "pham": { "id": "pham", "name": "Phàm Phẩm", "color_hex": "#E0E1DD", "stat_mult": 1.0, "affix_count": 0, "weight": 42, "salvage_gold": 15, "salvage_stones": 1 },
-    "linh": { "id": "linh", "name": "Linh Phẩm", "color_hex": "#52B788", "stat_mult": 1.25, "affix_count": 1, "weight": 30, "salvage_gold": 32, "salvage_stones": 2 },
-    "huyen": { "id": "huyen", "name": "Huyền Phẩm", "color_hex": "#38BDF8", "stat_mult": 1.55, "affix_count": 2, "weight": 17, "salvage_gold": 65, "salvage_stones": 3 },
-    "dia": { "id": "dia", "name": "Địa Phẩm", "color_hex": "#C77DFF", "stat_mult": 1.95, "affix_count": 3, "weight": 7, "salvage_gold": 130, "salvage_stones": 5 },
-    "thien": { "id": "thien", "name": "Thiên Phẩm", "color_hex": "#FF9F1C", "stat_mult": 2.45, "affix_count": 4, "weight": 3, "salvage_gold": 260, "salvage_stones": 8 },
-    "de": { "id": "de", "name": "Đế Phẩm", "color_hex": "#FF4D6D", "stat_mult": 3.20, "affix_count": 4, "weight": 1, "salvage_gold": 500, "salvage_stones": 15 }
+    "pham": {
+      "id": "pham",
+      "name": "Phàm Phẩm",
+      "color_hex": "#E0E1DD",
+      "stat_mult": 1.0,
+      "affix_count": 0,
+      "weight": 42,
+      "salvage_gold": 15,
+      "salvage_stones": 1
+    },
+    "linh": {
+      "id": "linh",
+      "name": "Linh Phẩm",
+      "color_hex": "#52B788",
+      "stat_mult": 1.25,
+      "affix_count": 1,
+      "weight": 30,
+      "salvage_gold": 32,
+      "salvage_stones": 2
+    },
+    "huyen": {
+      "id": "huyen",
+      "name": "Huyền Phẩm",
+      "color_hex": "#38BDF8",
+      "stat_mult": 1.55,
+      "affix_count": 2,
+      "weight": 17,
+      "salvage_gold": 65,
+      "salvage_stones": 3
+    },
+    "dia": {
+      "id": "dia",
+      "name": "Địa Phẩm",
+      "color_hex": "#C77DFF",
+      "stat_mult": 1.95,
+      "affix_count": 3,
+      "weight": 7,
+      "salvage_gold": 130,
+      "salvage_stones": 5
+    },
+    "thien": {
+      "id": "thien",
+      "name": "Thiên Phẩm",
+      "color_hex": "#FF9F1C",
+      "stat_mult": 2.45,
+      "affix_count": 4,
+      "weight": 3,
+      "salvage_gold": 260,
+      "salvage_stones": 8
+    },
+    "de": {
+      "id": "de",
+      "name": "Đế Phẩm",
+      "color_hex": "#FF4D6D",
+      "stat_mult": 3.2,
+      "affix_count": 4,
+      "weight": 1,
+      "salvage_gold": 500,
+      "salvage_stones": 15
+    }
   },
   "affix_pool": [
-    { "stat": "crit_chance", "label": "Chí mạng", "unit": "%", "min": 4, "max": 12 },
-    { "stat": "lifesteal", "label": "Hút máu", "unit": "%", "min": 2, "max": 7 },
-    { "stat": "exp_bonus", "label": "EXP Đấu Khí", "unit": "%", "min": 6, "max": 18 },
-    { "stat": "cooldown_red", "label": "Giảm hồi chiêu", "unit": "%", "min": 4, "max": 12 },
-    { "stat": "flame_dmg", "label": "Sát thương Hỏa", "unit": "%", "min": 8, "max": 22 },
-    { "stat": "atk", "label": "Công kích", "unit": "", "min": 4, "max": 14 },
-    { "stat": "hp", "label": "Sinh lực", "unit": "", "min": 25, "max": 85 },
-    { "stat": "soul", "label": "Linh Hồn Lực", "unit": "", "min": 3, "max": 11 }
+    {
+      "stat": "crit_chance",
+      "label": "Chí mạng",
+      "unit": "%",
+      "min": 4,
+      "max": 12
+    },
+    {
+      "stat": "lifesteal",
+      "label": "Hút máu",
+      "unit": "%",
+      "min": 2,
+      "max": 7
+    },
+    {
+      "stat": "exp_bonus",
+      "label": "EXP Đấu Khí",
+      "unit": "%",
+      "min": 6,
+      "max": 18
+    },
+    {
+      "stat": "cooldown_red",
+      "label": "Giảm hồi chiêu",
+      "unit": "%",
+      "min": 4,
+      "max": 12
+    },
+    {
+      "stat": "flame_dmg",
+      "label": "Sát thương Hỏa",
+      "unit": "%",
+      "min": 8,
+      "max": 22
+    },
+    {
+      "stat": "atk",
+      "label": "Công kích",
+      "unit": "",
+      "min": 4,
+      "max": 14
+    },
+    {
+      "stat": "hp",
+      "label": "Sinh lực",
+      "unit": "",
+      "min": 25,
+      "max": 85
+    },
+    {
+      "stat": "soul",
+      "label": "Linh Hồn Lực",
+      "unit": "",
+      "min": 3,
+      "max": 11
+    }
   ],
   "sets": {
     "set_tieu_gia": {
       "id": "set_tieu_gia",
       "name": "Bộ Hắc Bào Tiêu Gia",
       "bonuses": [
-        { "pieces": 2, "desc": "+15% EXP Đấu Khí & +12 Công kích", "stats": { "exp_bonus": 15, "atk": 12 } },
-        { "pieces": 3, "desc": "+12% Chí mạng & +25% Sát thương Hỏa", "stats": { "crit_chance": 12, "flame_dmg": 25 } }
+        {
+          "pieces": 2,
+          "desc": "+15% EXP Đấu Khí & +12 Công kích",
+          "stats": {
+            "exp_bonus": 15,
+            "atk": 12
+          }
+        },
+        {
+          "pieces": 3,
+          "desc": "+12% Chí mạng & +25% Sát thương Hỏa",
+          "stats": {
+            "crit_chance": 12,
+            "flame_dmg": 25
+          }
+        }
       ]
     },
     "set_ma_thu": {
       "id": "set_ma_thu",
       "name": "Bộ Thợ Săn Ma Thú Sơn Mạch",
       "bonuses": [
-        { "pieces": 2, "desc": "+22 Tốc chạy & +14 Phòng ngự", "stats": { "spd": 22, "def": 14 } },
-        { "pieces": 4, "desc": "+8% Hút máu & -15% Hồi chiêu Đấu Kỹ", "stats": { "lifesteal": 8, "cooldown_red": 15 } }
+        {
+          "pieces": 2,
+          "desc": "+22 Tốc chạy & +14 Phòng ngự",
+          "stats": {
+            "spd": 22,
+            "def": 14
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+8% Hút máu & -15% Hồi chiêu Đấu Kỹ",
+          "stats": {
+            "lifesteal": 8,
+            "cooldown_red": 15
+          }
+        }
       ]
     },
     "set_sa_mac": {
       "id": "set_sa_mac",
       "name": "Bộ Dị Hỏa Đại Mạc Tháp Qua Nhĩ",
       "bonuses": [
-        { "pieces": 2, "desc": "+22 Công kích & +25% Sát thương Hỏa", "stats": { "atk": 22, "flame_dmg": 25 } },
-        { "pieces": 3, "desc": "+22 Linh Hồn Lực & -18% Hồi chiêu Đấu Kỹ", "stats": { "soul": 22, "cooldown_red": 18 } }
+        {
+          "pieces": 2,
+          "desc": "+22 Công kích & +25% Sát thương Hỏa",
+          "stats": {
+            "atk": 22,
+            "flame_dmg": 25
+          }
+        },
+        {
+          "pieces": 3,
+          "desc": "+22 Linh Hồn Lực & -18% Hồi chiêu Đấu Kỹ",
+          "stats": {
+            "soul": 22,
+            "cooldown_red": 18
+          }
+        }
       ]
     },
     "set_de_do": {
       "id": "set_de_do",
       "name": "Bộ Quán Quân Đế Đô Gia Mã",
       "bonuses": [
-        { "pieces": 2, "desc": "+35 Công kích, +35 Phòng ngự & +25 Linh Hồn", "stats": { "atk": 35, "def": 35, "soul": 25 } },
-        { "pieces": 3, "desc": "+18% Chí mạng, +30% Sát thương Hỏa & -20% Hồi chiêu", "stats": { "crit_chance": 18, "flame_dmg": 30, "cooldown_red": 20 } }
+        {
+          "pieces": 2,
+          "desc": "+35 Công kích, +35 Phòng ngự & +25 Linh Hồn",
+          "stats": {
+            "atk": 35,
+            "def": 35,
+            "soul": 25
+          }
+        },
+        {
+          "pieces": 3,
+          "desc": "+18% Chí mạng, +30% Sát thương Hỏa & -20% Hồi chiêu",
+          "stats": {
+            "crit_chance": 18,
+            "flame_dmg": 30,
+            "cooldown_red": 20
+          }
+        }
       ]
     },
     "set_tan_sinh_vuong": {
       "id": "set_tan_sinh_vuong",
       "name": "Bộ Già Nam Tân Sinh Vương",
       "bonuses": [
-        { "pieces": 2, "desc": "+120 Công kích & +15% Chí mạng", "stats": { "atk": 120, "crit_chance": 15 } },
-        { "pieces": 4, "desc": "+650 Sinh lực, +20% Sát thương Hỏa & -12% Hồi chiêu", "stats": { "hp": 650, "flame_dmg": 20, "cooldown_red": 12 } }
+        {
+          "pieces": 2,
+          "desc": "+120 Công kích & +15% Chí mạng",
+          "stats": {
+            "atk": 120,
+            "crit_chance": 15
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+650 Sinh lực, +20% Sát thương Hỏa & -12% Hồi chiêu",
+          "stats": {
+            "hp": 650,
+            "flame_dmg": 20,
+            "cooldown_red": 12
+          }
+        }
       ]
     },
     "set_noi_vien_ba_chu": {
       "id": "set_noi_vien_ba_chu",
       "name": "Bộ Lưu Ly Bá Chủ Nội Viện",
       "bonuses": [
-        { "pieces": 2, "desc": "+220 Công kích, +60 Linh Hồn & +28% Sát thương Hỏa", "stats": { "atk": 220, "soul": 60, "flame_dmg": 28 } },
-        { "pieces": 4, "desc": "+1.500 Sinh lực, +20% Chí mạng, +10% Hút máu & -18% Hồi chiêu", "stats": { "hp": 1500, "crit_chance": 20, "lifesteal": 10, "cooldown_red": 18 } }
+        {
+          "pieces": 2,
+          "desc": "+220 Công kích, +60 Linh Hồn & +28% Sát thương Hỏa",
+          "stats": {
+            "atk": 220,
+            "soul": 60,
+            "flame_dmg": 28
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+1.500 Sinh lực, +20% Chí mạng, +10% Hút máu & -18% Hồi chiêu",
+          "stats": {
+            "hp": 1500,
+            "crit_chance": 20,
+            "lifesteal": 10,
+            "cooldown_red": 18
+          }
+        }
       ]
     },
     "set_viem_minh_chi_chu": {
       "id": "set_viem_minh_chi_chu",
       "name": "Bộ Viêm Minh Chi Chủ · Đấu Hoàng",
       "bonuses": [
-        { "pieces": 2, "desc": "+340 Công kích, +95 Linh Hồn & +38% Sát thương Hỏa", "stats": { "atk": 340, "soul": 95, "flame_dmg": 38 } },
-        { "pieces": 4, "desc": "+2.600 Sinh lực, +26% Chí mạng, +14% Hút máu & -22% Hồi chiêu", "stats": { "hp": 2600, "crit_chance": 26, "lifesteal": 14, "cooldown_red": 22 } }
+        {
+          "pieces": 2,
+          "desc": "+340 Công kích, +95 Linh Hồn & +38% Sát thương Hỏa",
+          "stats": {
+            "atk": 340,
+            "soul": 95,
+            "flame_dmg": 38
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+2.600 Sinh lực, +26% Chí mạng, +14% Hút máu & -22% Hồi chiêu",
+          "stats": {
+            "hp": 2600,
+            "crit_chance": 26,
+            "lifesteal": 14,
+            "cooldown_red": 22
+          }
+        }
       ]
     },
     "set_trung_chau_dan_vuong": {
       "id": "set_trung_chau_dan_vuong",
       "name": "Bộ Trung Châu Đấu Tông · Đan Hội Quán Quân",
       "bonuses": [
-        { "pieces": 2, "desc": "+520 Công kích, +160 Linh Hồn & +52% Sát thương Hỏa", "stats": { "atk": 520, "soul": 160, "flame_dmg": 52 } },
-        { "pieces": 4, "desc": "+4.400 Sinh lực, +32% Chí mạng, +18% Hút máu & -26% Hồi chiêu", "stats": { "hp": 4400, "crit_chance": 32, "lifesteal": 18, "cooldown_red": 26 } }
+        {
+          "pieces": 2,
+          "desc": "+520 Công kích, +160 Linh Hồn & +52% Sát thương Hỏa",
+          "stats": {
+            "atk": 520,
+            "soul": 160,
+            "flame_dmg": 52
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+4.400 Sinh lực, +32% Chí mạng, +18% Hút máu & -26% Hồi chiêu",
+          "stats": {
+            "hp": 4400,
+            "crit_chance": 32,
+            "lifesteal": 18,
+            "cooldown_red": 26
+          }
+        }
       ]
     },
     "set_tinh_van_thien_mo": {
       "id": "set_tinh_van_thien_mo",
       "name": "Bộ Tinh Vẫn Thiên Mộ · Cửu Chuyển Đấu Tôn",
       "bonuses": [
-        { "pieces": 2, "desc": "+920 Công kích, +280 Linh Hồn & +75% Sát thương Hỏa", "stats": { "atk": 920, "soul": 280, "flame_dmg": 75 } },
-        { "pieces": 4, "desc": "+8.500 Sinh lực, +40% Chí mạng, +22% Hút máu & -30% Hồi chiêu", "stats": { "hp": 8500, "crit_chance": 40, "lifesteal": 22, "cooldown_red": 30 } }
+        {
+          "pieces": 2,
+          "desc": "+920 Công kích, +280 Linh Hồn & +75% Sát thương Hỏa",
+          "stats": {
+            "atk": 920,
+            "soul": 280,
+            "flame_dmg": 75
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+8.500 Sinh lực, +40% Chí mạng, +22% Hút máu & -30% Hồi chiêu",
+          "stats": {
+            "hp": 8500,
+            "crit_chance": 40,
+            "lifesteal": 22,
+            "cooldown_red": 30
+          }
+        }
       ]
     },
     "set_tinh_lien_dau_thanh": {
       "id": "set_tinh_lien_dau_thanh",
       "name": "Bộ Tịnh Liên Đấu Thánh · Thiên Phủ Thống Soái",
       "bonuses": [
-        { "pieces": 2, "desc": "+1.650 Công kích, +520 Linh Hồn & +105% Sát thương Hỏa", "stats": { "atk": 1650, "soul": 520, "flame_dmg": 105 } },
-        { "pieces": 4, "desc": "+16.000 Sinh lực, +48% Chí mạng, +26% Hút máu & -35% Hồi chiêu", "stats": { "hp": 16000, "crit_chance": 48, "lifesteal": 26, "cooldown_red": 35 } }
+        {
+          "pieces": 2,
+          "desc": "+1.650 Công kích, +520 Linh Hồn & +105% Sát thương Hỏa",
+          "stats": {
+            "atk": 1650,
+            "soul": 520,
+            "flame_dmg": 105
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+16.000 Sinh lực, +48% Chí mạng, +26% Hút máu & -35% Hồi chiêu",
+          "stats": {
+            "hp": 16000,
+            "crit_chance": 48,
+            "lifesteal": 26,
+            "cooldown_red": 35
+          }
+        }
       ]
     },
     "set_vinh_hang_viem_de": {
       "id": "set_vinh_hang_viem_de",
       "name": "Bộ Vĩnh Hằng Viêm Đế · Chúa Tể Đại Thiên",
       "bonuses": [
-        { "pieces": 2, "desc": "+5.800 Công kích, +1.800 Linh Hồn & +220% Sát thương 23 Dị Hỏa", "stats": { "atk": 5800, "soul": 1800, "flame_dmg": 220 } },
-        { "pieces": 4, "desc": "+65.000 Sinh lực, +60% Chí mạng, +35% Hút máu & -45% Hồi chiêu", "stats": { "hp": 65000, "crit_chance": 60, "lifesteal": 35, "cooldown_red": 45 } }
+        {
+          "pieces": 2,
+          "desc": "+5.800 Công kích, +1.800 Linh Hồn & +220% Sát thương 23 Dị Hỏa",
+          "stats": {
+            "atk": 5800,
+            "soul": 1800,
+            "flame_dmg": 220
+          }
+        },
+        {
+          "pieces": 4,
+          "desc": "+65.000 Sinh lực, +60% Chí mạng, +35% Hút máu & -45% Hồi chiêu",
+          "stats": {
+            "hp": 65000,
+            "crit_chance": 60,
+            "lifesteal": 35,
+            "cooldown_red": 45
+          }
+        }
       ]
     }
   },
@@ -129,8 +446,12 @@
       "icon": "res://assets/sprites/weapons/thanh_thiet_kiem.png",
       "weapon_sprite": "res://assets/sprites/weapons/thanh_thiet_kiem.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_sword.png",
-      "attack_speed_mult": 1.20,
-      "base_stats": { "atk": 9, "spd": 14, "crit_chance": 5 },
+      "attack_speed_mult": 1.2,
+      "base_stats": {
+        "atk": 9,
+        "spd": 14,
+        "crit_chance": 5
+      },
       "description": "Thanh trường kiếm thép rèn chuẩn của đệ tử Tiêu Gia — nhẹ nhàng, xuất chiêu nhanh."
     },
     "wpn_tinh_cuong_dao": {
@@ -142,7 +463,11 @@
       "weapon_sprite": "res://assets/sprites/weapons/tinh_cuong_dao.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_sabre.png",
       "attack_speed_mult": 1.05,
-      "base_stats": { "atk": 15, "crit_chance": 10, "flame_dmg": 10 },
+      "base_stats": {
+        "atk": 15,
+        "crit_chance": 10,
+        "flame_dmg": 10
+      },
       "description": "Chiến đao uốn cong rèn từ tinh cương thợ săn Ma Thú Sơn Mạch, chém cực bén."
     },
     "wpn_huyen_trong_xich": {
@@ -154,7 +479,11 @@
       "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 0.92,
-      "base_stats": { "atk": 20, "hp": 35, "exp_bonus": 10 },
+      "base_stats": {
+        "atk": 20,
+        "hp": 35,
+        "exp_bonus": 10
+      },
       "description": "Bảo vật Dược Lão trao tặng Tiêu Viêm! Rèn từ Diễm Vẫn Huyền Thiết, mang uy lực áp chế Đấu Khí."
     },
     "arm_ao_vai_tu_luyen": {
@@ -163,7 +492,11 @@
       "slot": "armor",
       "set_id": "set_tieu_gia",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 45, "def": 6, "qi": 15 },
+      "base_stats": {
+        "hp": 45,
+        "def": 6,
+        "qi": 15
+      },
       "description": "Chiếc hắc bào quen thuộc của Tiêu Viêm khi ẩn danh lịch luyện khắp đại lục."
     },
     "arm_giap_da_son_tru": {
@@ -172,7 +505,10 @@
       "slot": "armor",
       "set_id": "set_ma_thu",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 90, "def": 14 },
+      "base_stats": {
+        "hp": 90,
+        "def": 14
+      },
       "description": "Thuộc da từ lưng Thiết Bối Sơn Trư Cấp 1, cứng cáp chống chém cực tốt."
     },
     "arm_hai_tam_giap": {
@@ -181,7 +517,12 @@
       "slot": "armor",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 140, "def": 22, "qi": 40, "soul": 8 },
+      "base_stats": {
+        "hp": 140,
+        "def": 22,
+        "qi": 40,
+        "soul": 8
+      },
       "description": "Nội giáp phòng ngự kỳ bảo Vân Chi tặng Tiêu Viêm tại Ma Thú Sơn Mạch!"
     },
     "leg_hac_bao_kho": {
@@ -190,7 +531,11 @@
       "slot": "legs",
       "set_id": "set_tieu_gia",
       "icon": "res://assets/sprites/icons/icon_legs.png",
-      "base_stats": { "hp": 30, "def": 5, "spd": 8 },
+      "base_stats": {
+        "hp": 30,
+        "def": 5,
+        "spd": 8
+      },
       "description": "Quần vải tơ tằm đen dẻo dai, tiện lợi thi triển thân pháp tốc độ cao."
     },
     "leg_bi_giap_kho": {
@@ -199,7 +544,11 @@
       "slot": "legs",
       "set_id": "set_ma_thu",
       "icon": "res://assets/sprites/icons/icon_legs.png",
-      "base_stats": { "hp": 60, "def": 10, "spd": 12 },
+      "base_stats": {
+        "hp": 60,
+        "def": 10,
+        "spd": 12
+      },
       "description": "Quần giáp khâu từ da Sơn Lang rừng trúc, tăng mạnh linh hoạt và hộ thân."
     },
     "boot_phong_hanh_hai": {
@@ -208,7 +557,11 @@
       "slot": "boots",
       "set_id": "set_ma_thu",
       "icon": "res://assets/sprites/icons/icon_boots.png",
-      "base_stats": { "spd": 24, "def": 4, "cooldown_red": 6 },
+      "base_stats": {
+        "spd": 24,
+        "def": 4,
+        "cooldown_red": 6
+      },
       "description": "Đôi hài khắc phù văn hệ Phong giúp chạy nhanh như gió và lướt né liên tục."
     },
     "glv_thiet_quyen_uyen": {
@@ -217,7 +570,11 @@
       "slot": "gloves",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_gloves.png",
-      "base_stats": { "atk": 11, "crit_chance": 8, "def": 4 },
+      "base_stats": {
+        "atk": 11,
+        "crit_chance": 8,
+        "def": 4
+      },
       "description": "Hộ uyển bọc thép bảo vệ cổ tay khi xuất chiêu Bát Cực Băng bộc phát 8 tầng Ám Kình."
     },
     "neck_hon_linh_lien": {
@@ -226,7 +583,11 @@
       "slot": "necklace",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_necklace.png",
-      "base_stats": { "soul": 10, "qi": 35, "flame_dmg": 10 },
+      "base_stats": {
+        "soul": 10,
+        "qi": 35,
+        "flame_dmg": 10
+      },
       "description": "Dây chuyền khảm linh thạch ôn dưỡng thức hải, tăng tốc độ hồi Đấu Khí và Linh Hồn Lực."
     },
     "neck_lang_nha_lien": {
@@ -235,7 +596,11 @@
       "slot": "necklace",
       "set_id": "set_ma_thu",
       "icon": "res://assets/sprites/icons/icon_necklace.png",
-      "base_stats": { "atk": 12, "lifesteal": 4, "crit_chance": 6 },
+      "base_stats": {
+        "atk": 12,
+        "lifesteal": 4,
+        "crit_chance": 6
+      },
       "description": "Dây chuyền nanh Ma Lang khát máu, hấp thụ sinh khí địch thủ mỗi khi vung thước."
     },
     "pend_thanh_ngoc_boi": {
@@ -244,7 +609,11 @@
       "slot": "pendant",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "hp": 40, "qi": 25, "exp_bonus": 10 },
+      "base_stats": {
+        "hp": 40,
+        "qi": 25,
+        "exp_bonus": 10
+      },
       "description": "Ngọc bội thanh ngọc giúp tâm cảnh an tĩnh, tăng tốc độ hấp thu Đấu Khí thiên địa."
     },
     "pend_co_de_ngoc": {
@@ -253,7 +622,12 @@
       "slot": "pendant",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "soul": 18, "exp_bonus": 22, "flame_dmg": 18, "qi": 45 },
+      "base_stats": {
+        "soul": 18,
+        "exp_bonus": 22,
+        "flame_dmg": 18,
+        "qi": 45
+      },
       "description": "Kỷ vật bí ẩn truyền đời của Tiêu Gia — chìa khóa mở Đà Xá Cổ Đế Động Phủ!"
     },
     "ring_nap_gioi_so_cap": {
@@ -262,7 +636,10 @@
       "slot": "ring",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_ring.png",
-      "base_stats": { "qi": 20, "loot_magnet": 60 },
+      "base_stats": {
+        "qi": 20,
+        "loot_magnet": 60
+      },
       "description": "Chiếc nhẫn không gian cơ bản giúp hút vật phẩm rớt trên mặt đất từ xa."
     },
     "ring_cot_viem_gioi": {
@@ -271,7 +648,12 @@
       "slot": "ring",
       "set_id": "set_tieu_gia",
       "icon": "res://assets/sprites/icons/icon_ring.png",
-      "base_stats": { "soul": 15, "alchemy_bonus": 12, "loot_magnet": 150, "flame_dmg": 12 },
+      "base_stats": {
+        "soul": 15,
+        "alchemy_bonus": 12,
+        "loot_magnet": 150,
+        "flame_dmg": 12
+      },
       "description": "Chiếc nhẫn đen mẫu thân để lại — nơi trú ngụ của Dược Trần, mở rộng tầm hút đồ cực lớn!"
     },
     "wing_tu_van_duc": {
@@ -280,7 +662,11 @@
       "slot": "wings",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 32, "cooldown_red": 12, "crit_chance": 6 },
+      "base_stats": {
+        "spd": 32,
+        "cooldown_red": 12,
+        "crit_chance": 6
+      },
       "description": "Phi hành Đấu Kỹ cổ đại tìm thấy ở Huyền Nhai Sơn Động — tăng vọt thân pháp!"
     },
     "caul_hac_ma_dinh": {
@@ -289,7 +675,11 @@
       "slot": "cauldron",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 14, "alchemy_bonus": 18, "flame_dmg": 15 },
+      "base_stats": {
+        "soul": 14,
+        "alchemy_bonus": 18,
+        "flame_dmg": 15
+      },
       "description": "Danh đỉnh xếp thứ 8 Thiên Đỉnh Bảng — tăng mạnh tỷ lệ thành đan và sát thương Dị Hỏa!"
     },
     "arm_giap_vay_xa_hoang": {
@@ -298,7 +688,12 @@
       "slot": "armor",
       "set_id": "set_sa_mac",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 220, "def": 34, "atk": 14, "flame_dmg": 14 },
+      "base_stats": {
+        "hp": 220,
+        "def": 34,
+        "atk": 14,
+        "flame_dmg": 14
+      },
       "description": "Chiến giáp luyện từ vảy hoàng kim cận vệ Thánh Thành Xà Nhân, kháng lửa và chịu đòn siêu hạng!"
     },
     "neck_bang_hoang_tam": {
@@ -307,7 +702,12 @@
       "slot": "necklace",
       "set_id": "set_sa_mac",
       "icon": "res://assets/sprites/icons/icon_necklace.png",
-      "base_stats": { "soul": 22, "qi": 60, "crit_chance": 10, "cooldown_red": 10 },
+      "base_stats": {
+        "soul": 22,
+        "qi": 60,
+        "crit_chance": 10,
+        "cooldown_red": 10
+      },
       "description": "Tinh thể hàn băng do Băng Hoàng Hải Ba Đông ngưng luyện, giúp trấn định tâm thần giữa sa mạc lửa!"
     },
     "pend_thanh_lien_dai": {
@@ -316,7 +716,13 @@
       "slot": "pendant",
       "set_id": "set_sa_mac",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "hp": 110, "qi": 75, "exp_bonus": 25, "soul": 20, "flame_dmg": 22 },
+      "base_stats": {
+        "hp": 110,
+        "qi": 75,
+        "exp_bonus": 25,
+        "soul": 20,
+        "flame_dmg": 22
+      },
       "description": "Tọa đài sen ngọc bích ngàn năm đào từ đáy hồ dung nham Sa Mạc Tháp Qua Nhĩ — bảo vật tu luyện cực phẩm!"
     },
     "wpn_chien_phu_thanh_moc": {
@@ -328,7 +734,12 @@
       "weapon_sprite": "res://assets/sprites/weapons/tinh_cuong_dao.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_sabre.png",
       "attack_speed_mult": 0.96,
-      "base_stats": { "atk": 34, "hp": 85, "crit_chance": 12, "lifesteal": 5 },
+      "base_stats": {
+        "atk": 34,
+        "hp": 85,
+        "crit_chance": 12,
+        "lifesteal": 5
+      },
       "description": "Chiến lợi phẩm đánh gục thiếu gia Mộc Chiến tại Tổng Bộ Mễ Đặc Nhĩ — chém nặng đầy sinh khí Mộc!"
     },
     "caul_xich_duong_dinh": {
@@ -337,7 +748,12 @@
       "slot": "cauldron",
       "set_id": "set_de_do",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 26, "alchemy_bonus": 24, "flame_dmg": 22, "qi": 45 },
+      "base_stats": {
+        "soul": 26,
+        "alchemy_bonus": 24,
+        "flame_dmg": 22,
+        "qi": 45
+      },
       "description": "Bảo đỉnh Tứ Phẩm Nhã Phi thưởng sau khi chỉnh đốn nội tộc Mễ Đặc Nhĩ — tăng cực mạnh vùng Đan Tâm!"
     },
     "arm_phap_bao_truong_lao": {
@@ -346,7 +762,13 @@
       "slot": "armor",
       "set_id": "set_de_do",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 310, "def": 48, "soul": 28, "qi": 80, "cooldown_red": 10 },
+      "base_stats": {
+        "hp": 310,
+        "def": 48,
+        "soul": 28,
+        "qi": 80,
+        "cooldown_red": 10
+      },
       "description": "Pháp bào danh dự Quán Quân Đan Hội Gia Mã — biểu tượng bảo hộ của Pháp Mã & Gia Hình Thiên!"
     },
     "pend_kim_viem_ho_hon_ngoc": {
@@ -355,7 +777,13 @@
       "slot": "pendant",
       "set_id": "set_de_do",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "hp": 180, "soul": 36, "atk": 24, "flame_dmg": 28, "exp_bonus": 25 },
+      "base_stats": {
+        "hp": 180,
+        "soul": 36,
+        "atk": 24,
+        "flame_dmg": 28,
+        "exp_bonus": 25
+      },
       "description": "Lá Ngọc Vàng Cổ Tộc Huân Nhi nhờ Lăng Ảnh gửi tặng — mang sức mạnh hồi sinh hộ mệnh trước đòn chí mạng!"
     },
     "wpn_xich_ngung_vat": {
@@ -363,11 +791,16 @@
       "name": "Huyền Trọng Xích · Ngưng Vật Hóa Viêm",
       "slot": "weapon",
       "set_id": "",
-      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
-      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "icon": "res://assets/sprites/weapons/xich_luu_ly_viem.png",
+      "weapon_sprite": "res://assets/sprites/weapons/xich_luu_ly_viem.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 0.98,
-      "base_stats": { "atk": 68, "hp": 220, "crit_chance": 16, "flame_dmg": 24 },
+      "base_stats": {
+        "atk": 68,
+        "hp": 220,
+        "crit_chance": 16,
+        "flame_dmg": 24
+      },
       "description": "Huyền Trọng Xích tôi luyện qua Đấu Khí Ngưng Vật (Đấu Linh) & Dị Hỏa giữa Hắc Giác Vực — mỗi đòn vung thước mang uy áp phá thế cực mạnh!"
     },
     "caul_song_long_huyet_dinh": {
@@ -376,7 +809,12 @@
       "slot": "cauldron",
       "set_id": "",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 45, "alchemy_bonus": 35, "flame_dmg": 28, "qi": 95 },
+      "base_stats": {
+        "soul": 45,
+        "alchemy_bonus": 35,
+        "flame_dmg": 28,
+        "qi": 95
+      },
       "description": "Dược đỉnh bảo vật lưu lạc tại Đại Đấu Giá Trường Bát Phiến Môn — khống hỏa siêu phàm (+35% Luyện Đan, +45 SOUL)!"
     },
     "arm_hac_bao_an_danh": {
@@ -385,7 +823,13 @@
       "slot": "armor",
       "set_id": "set_tan_sinh_vuong",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 460, "def": 72, "atk": 28, "soul": 32, "cooldown_red": 8 },
+      "base_stats": {
+        "hp": 460,
+        "def": 72,
+        "atk": 28,
+        "soul": 32,
+        "cooldown_red": 8
+      },
       "description": "Chiến bào hắc ti hộ thân khi Tiêu Viêm ẩn danh xông pha Hắc Ấn Thành & Rừng Đêm Huyết Vụ."
     },
     "glv_ho_thu_am_thiet": {
@@ -394,7 +838,12 @@
       "slot": "gloves",
       "set_id": "set_tan_sinh_vuong",
       "icon": "res://assets/sprites/icons/icon_gloves.png",
-      "base_stats": { "atk": 46, "crit_chance": 14, "def": 28, "lifesteal": 6 },
+      "base_stats": {
+        "atk": 46,
+        "crit_chance": 14,
+        "def": 28,
+        "lifesteal": 6
+      },
       "description": "Hộ uyển ám thiết rèn tại Hòa Bình Trấn — khuếch đại kình lực Đế Ấn Quyết và Tam Thiên Lôi Động!"
     },
     "wing_hac_diem_tu_van_duc": {
@@ -403,7 +852,12 @@
       "slot": "wings",
       "set_id": "set_tan_sinh_vuong",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 56, "crit_chance": 16, "cooldown_red": 14, "atk": 32 },
+      "base_stats": {
+        "spd": 56,
+        "crit_chance": 16,
+        "cooldown_red": 14,
+        "atk": 32
+      },
       "description": "Đôi cánh Tử Vân Dực tôi luyện qua Hắc Diễm & Lôi Khí Hắc Giác Vực — thân pháp nhanh như tia chớp!"
     },
     "pend_hac_tinh_the_gia_nam": {
@@ -412,7 +866,13 @@
       "slot": "pendant",
       "set_id": "set_tan_sinh_vuong",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "atk": 42, "soul": 48, "hp": 320, "flame_dmg": 26, "exp_bonus": 28 },
+      "base_stats": {
+        "atk": 42,
+        "soul": 48,
+        "hp": 320,
+        "flame_dmg": 26,
+        "exp_bonus": 28
+      },
       "description": "Hắc Tinh Thẻ chứa 240 ngày Tinh Hỏa Năng của Đệ Nhất Tân Sinh Vương Ngoại Viện Già Nam!"
     },
     "wpn_xich_luu_ly_viem": {
@@ -420,11 +880,16 @@
       "name": "Huyền Trọng Xích · Lưu Ly Liên Tâm",
       "slot": "weapon",
       "set_id": "set_noi_vien_ba_chu",
-      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
-      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "icon": "res://assets/sprites/weapons/xich_luu_ly_viem.png",
+      "weapon_sprite": "res://assets/sprites/weapons/xich_luu_ly_viem.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 1.04,
-      "base_stats": { "atk": 135, "hp": 420, "crit_chance": 20, "flame_dmg": 38 },
+      "base_stats": {
+        "atk": 135,
+        "hp": 420,
+        "crit_chance": 20,
+        "flame_dmg": 38
+      },
       "description": "Huyền Trọng Xích tôi luyện suốt 2 năm dưới đáy biển dung nham Thiên Phần Tháp, khắc ấn Lưu Ly Liên Tâm Hỏa (#19 + #14)!"
     },
     "arm_luu_ly_dau_vuong_bao": {
@@ -433,7 +898,13 @@
       "slot": "armor",
       "set_id": "set_noi_vien_ba_chu",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 880, "def": 135, "atk": 58, "soul": 52, "cooldown_red": 12 },
+      "base_stats": {
+        "hp": 880,
+        "def": 135,
+        "atk": 58,
+        "soul": 52,
+        "cooldown_red": 12
+      },
       "description": "Chiến bào Nội Viện gia cố bằng Địa Tâm Tôi Thể Nhũ & bản nguyên Tâm Hỏa, tỏa uy áp Đấu Vương Đỉnh Phong!"
     },
     "wing_dau_khi_hoa_duc": {
@@ -442,7 +913,13 @@
       "slot": "wings",
       "set_id": "set_noi_vien_ba_chu",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 82, "crit_chance": 22, "cooldown_red": 18, "atk": 68, "flame_dmg": 24 },
+      "base_stats": {
+        "spd": 82,
+        "crit_chance": 22,
+        "cooldown_red": 18,
+        "atk": 68,
+        "flame_dmg": 24
+      },
       "description": "Đôi cánh Đấu Khí thực chất hóa màu xanh lưu ly ánh tím khi đột phá Đấu Vương — không chiến tự do trên bầu trời Nội Viện!"
     },
     "caul_hai_tam_dinh": {
@@ -451,7 +928,12 @@
       "slot": "cauldron",
       "set_id": "set_noi_vien_ba_chu",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 68, "alchemy_bonus": 48, "flame_dmg": 42, "qi": 180 },
+      "base_stats": {
+        "soul": 68,
+        "alchemy_bonus": 48,
+        "flame_dmg": 42,
+        "qi": 180
+      },
       "description": "Chiến lợi phẩm đoạt từ Dược Hoàng Hàn Phong! Lò đan Lục Phẩm danh chấn Hắc Giác Vực, tăng cực mạnh tỷ lệ luyện đan & chống nổ Đan Lôi!"
     },
     "ring_duoc_hoang_nap_gioi": {
@@ -460,7 +942,13 @@
       "slot": "ring",
       "set_id": "set_noi_vien_ba_chu",
       "icon": "res://assets/sprites/icons/icon_ring.png",
-      "base_stats": { "atk": 72, "soul": 65, "hp": 460, "lifesteal": 8, "exp_bonus": 32 },
+      "base_stats": {
+        "atk": 72,
+        "soul": 65,
+        "hp": 460,
+        "lifesteal": 8,
+        "exp_bonus": 32
+      },
       "description": "Chiếc Nạp Giới cổ chứa hàng chục cổ đan phương và tinh hoa Hắc Giác Vực thu được sau khi phá hủy nhục thân Hàn Phong!"
     },
     "wpn_xich_tam_sac_viem": {
@@ -468,11 +956,16 @@
       "name": "Huyền Trọng Xích · Tam Sắc Dị Hỏa",
       "slot": "weapon",
       "set_id": "set_viem_minh_chi_chu",
-      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
-      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "icon": "res://assets/sprites/weapons/xich_tam_thien_tinh_viem.png",
+      "weapon_sprite": "res://assets/sprites/weapons/xich_tam_thien_tinh_viem.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 1.08,
-      "base_stats": { "atk": 225, "hp": 720, "crit_chance": 24, "flame_dmg": 52 },
+      "base_stats": {
+        "atk": 225,
+        "hp": 720,
+        "crit_chance": 24,
+        "flame_dmg": 52
+      },
       "description": "Huyền Trọng Xích khắc ấn Tam Sắc Dị Hỏa (Thanh Liên + Vẫn Lạc + Cốt Linh Ấn Ký) từng chém ngã Đấu Tông Vân Sơn trên Đỉnh Vân Lam Sơn!"
     },
     "arm_viem_minh_hoang_bao": {
@@ -481,7 +974,13 @@
       "slot": "armor",
       "set_id": "set_viem_minh_chi_chu",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 1480, "def": 220, "atk": 95, "soul": 82, "cooldown_red": 15 },
+      "base_stats": {
+        "hp": 1480,
+        "def": 220,
+        "atk": 95,
+        "soul": 82,
+        "cooldown_red": 15
+      },
       "description": "Chiến bào tối cao của Minh Chủ Viêm Minh — hội tụ tinh hoa Đan Đường, Hoàng Thất Gia Mã và vảy Hộ Tâm Mỹ Đỗ Toa!"
     },
     "wing_thien_yeu_hoang_canh": {
@@ -490,7 +989,13 @@
       "slot": "wings",
       "set_id": "set_viem_minh_chi_chu",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 108, "crit_chance": 26, "cooldown_red": 22, "atk": 115, "flame_dmg": 34 },
+      "base_stats": {
+        "spd": 108,
+        "crit_chance": 26,
+        "cooldown_red": 22,
+        "atk": 115,
+        "flame_dmg": 34
+      },
       "description": "Đôi cánh Đấu Khí Hoàng Kim gia cố bằng cánh cốt Ma Thú Thượng Cổ Thiên Yêu Hoàng đoạt từ Đấu Giá Hội Hắc Hoàng Tông!"
     },
     "ring_cot_viem_ton_gioi": {
@@ -499,7 +1004,13 @@
       "slot": "ring",
       "set_id": "set_viem_minh_chi_chu",
       "icon": "res://assets/sprites/icons/icon_ring.png",
-      "base_stats": { "atk": 122, "soul": 110, "hp": 840, "lifesteal": 12, "exp_bonus": 40 },
+      "base_stats": {
+        "atk": 122,
+        "soul": 110,
+        "hp": 840,
+        "lifesteal": 12,
+        "exp_bonus": 40
+      },
       "description": "Chiếc hắc giới khắc Ấn Ký Bản Nguyên Cốt Linh Lãnh Hỏa (#11) Dược Lão liều mình để lại trước khi bị Vụ Hộ Pháp bắt về Hồn Điện!"
     },
     "pend_bo_de_hoa_the_tien": {
@@ -508,7 +1019,13 @@
       "slot": "pendant",
       "set_id": "set_viem_minh_chi_chu",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "atk": 98, "soul": 125, "hp": 960, "flame_dmg": 38, "cooldown_red": 16 },
+      "base_stats": {
+        "atk": 98,
+        "soul": 125,
+        "hp": 960,
+        "flame_dmg": 38,
+        "cooldown_red": 16
+      },
       "description": "Kỳ vật Thượng Cổ đoạt tại Đấu Giá Hội Hắc Hoàng Tông — ẩn chứa Bồ Đề Tâm giúp cường hóa Linh Hồn Cảnh & mở đường lên Đấu Tông!"
     },
     "wpn_xich_tam_thien_tinh_viem": {
@@ -516,11 +1033,16 @@
       "name": "Huyền Trọng Xích · Tam Thiên Tinh Viêm",
       "slot": "weapon",
       "set_id": "set_trung_chau_dan_vuong",
-      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
-      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "icon": "res://assets/sprites/weapons/xich_tam_thien_tinh_viem.png",
+      "weapon_sprite": "res://assets/sprites/weapons/xich_tam_thien_tinh_viem.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 1.12,
-      "base_stats": { "atk": 380, "hp": 1200, "crit_chance": 28, "flame_dmg": 72 },
+      "base_stats": {
+        "atk": 380,
+        "hp": 1200,
+        "crit_chance": 28,
+        "flame_dmg": 72
+      },
       "description": "Huyền Trọng Xích tôi luyện giữa Ngân Hà Tinh Vực, khắc ấn Bất Tử Chi Hỏa [#9 Tam Thiên Diễm Viêm Hỏa] — uy áp chấn nhiếp Đấu Tông Đỉnh Phong!"
     },
     "arm_dan_hoi_quan_quan_bao": {
@@ -529,7 +1051,13 @@
       "slot": "armor",
       "set_id": "set_trung_chau_dan_vuong",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 2500, "def": 360, "atk": 160, "soul": 150, "cooldown_red": 18 },
+      "base_stats": {
+        "hp": 2500,
+        "def": 360,
+        "atk": 160,
+        "soul": 150,
+        "cooldown_red": 18
+      },
       "description": "Thánh bào vinh dự của Quán Quân Đan Hội Trung Châu do Tam Cự Đầu Đan Tháp ban tặng!"
     },
     "wing_dap_hu_khong_anh": {
@@ -538,7 +1066,13 @@
       "slot": "wings",
       "set_id": "set_trung_chau_dan_vuong",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 135, "crit_chance": 30, "cooldown_red": 25, "atk": 185, "flame_dmg": 46 },
+      "base_stats": {
+        "spd": 135,
+        "crit_chance": 30,
+        "cooldown_red": 25,
+        "atk": 185,
+        "flame_dmg": 46
+      },
       "description": "Đạp Hư Không kết hợp tinh huyết Thiên Yêu Hoàng trên Lôi Sơn — lướt nhanh như tia sét xuyên không!"
     },
     "pend_huyen_tam_ho_hon": {
@@ -547,7 +1081,13 @@
       "slot": "pendant",
       "set_id": "set_trung_chau_dan_vuong",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "atk": 150, "soul": 220, "hp": 1650, "flame_dmg": 52, "cooldown_red": 20 },
+      "base_stats": {
+        "atk": 150,
+        "soul": 220,
+        "hp": 1650,
+        "flame_dmg": 52,
+        "cooldown_red": 20
+      },
       "description": "Pháp bảo hộ hồn Cự Đầu Huyền Y trao tặng đệ tử Dược Trần — giảm 25% sát thương từ Hồn Điện & mở rộng Radar Linh Hồn!"
     },
     "caul_thien_dinh_dan_thap": {
@@ -556,7 +1096,12 @@
       "slot": "cauldron",
       "set_id": "set_trung_chau_dan_vuong",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 185, "alchemy_bonus": 65, "flame_dmg": 62, "qi": 360 },
+      "base_stats": {
+        "soul": 185,
+        "alchemy_bonus": 65,
+        "flame_dmg": 62,
+        "qi": 360
+      },
       "description": "Thánh đỉnh Bát Phẩm thưởng Quán Quân Đan Hội Trung Châu — chịu trọn Ngũ Sắc Đan Lôi & luyện Sinh Cốt Dung Huyết Đan!"
     },
     "wpn_xich_tao_hoa_thien_mo": {
@@ -564,11 +1109,16 @@
       "name": "Huyền Trọng Xích · Tạo Hóa Ngũ Sắc",
       "slot": "weapon",
       "set_id": "set_tinh_van_thien_mo",
-      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
-      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "icon": "res://assets/sprites/weapons/xich_tinh_lien_luan_hoi.png",
+      "weapon_sprite": "res://assets/sprites/weapons/xich_tinh_lien_luan_hoi.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 1.16,
-      "base_stats": { "atk": 680, "hp": 2200, "crit_chance": 34, "flame_dmg": 96 },
+      "base_stats": {
+        "atk": 680,
+        "hp": 2200,
+        "crit_chance": 34,
+        "flame_dmg": 96
+      },
       "description": "Huyền Trọng Xích tắm qua Hắc Ma Lôi Trì & khắc ấn Tộc Văn Tiêu Huyền dưới Đáy Thiên Mộ — mang thần uy Cửu Chuyển Đấu Tôn!"
     },
     "arm_tinh_van_thieu_cac_bao": {
@@ -577,7 +1127,13 @@
       "slot": "armor",
       "set_id": "set_tinh_van_thien_mo",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 4600, "def": 620, "atk": 290, "soul": 260, "cooldown_red": 22 },
+      "base_stats": {
+        "hp": 4600,
+        "def": 620,
+        "atk": 290,
+        "soul": 260,
+        "cooldown_red": 22
+      },
       "description": "Thánh bào Thiếu Các Chủ Tinh Vẫn Các dệt từ Tinh Thần Ti và vảy Đông Long Đảo — hộ thân trước áp lực Đấu Thánh!"
     },
     "wing_xe_rach_hu_khong": {
@@ -586,7 +1142,13 @@
       "slot": "wings",
       "set_id": "set_tinh_van_thien_mo",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 168, "crit_chance": 36, "cooldown_red": 28, "atk": 320, "flame_dmg": 68 },
+      "base_stats": {
+        "spd": 168,
+        "crit_chance": 36,
+        "cooldown_red": 28,
+        "atk": 320,
+        "flame_dmg": 68
+      },
       "description": "Đôi cánh Đấu Tôn gia trì tinh huyết Long Hoàng Tử Nghiên — xé rách không gian tức thì xuyên mọi trận pháp!"
     },
     "pend_thiet_kiem_trung_nghia": {
@@ -595,7 +1157,13 @@
       "slot": "pendant",
       "set_id": "set_tinh_van_thien_mo",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "atk": 280, "soul": 340, "hp": 2900, "flame_dmg": 72, "lifesteal": 14 },
+      "base_stats": {
+        "atk": 280,
+        "soul": 340,
+        "hp": 2900,
+        "flame_dmg": 72,
+        "lifesteal": 14
+      },
       "description": "Di sản khắc từ thanh kiếm gãy của Thiết Kiếm Tôn Giả trên đỉnh Tinh Vẫn Các — tăng +15% sát thương phản kích khi HP dưới 50%!"
     },
     "ring_yeu_lien_co_ngoc": {
@@ -604,7 +1172,13 @@
       "slot": "ring",
       "set_id": "set_tinh_van_thien_mo",
       "icon": "res://assets/sprites/icons/icon_ring.png",
-      "base_stats": { "atk": 310, "soul": 360, "hp": 2600, "flame_dmg": 84, "exp_bonus": 55 },
+      "base_stats": {
+        "atk": 310,
+        "soul": 360,
+        "hp": 2600,
+        "flame_dmg": 84,
+        "exp_bonus": 55
+      },
       "description": "Tứ Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (4/4) hợp nhất thành Cổ Ngọc — chìa khóa duy nhất tiến vào Yêu Hỏa Không Gian (Ch.10)!"
     },
     "caul_ban_thanh_tinh_than_dinh": {
@@ -613,7 +1187,12 @@
       "slot": "cauldron",
       "set_id": "set_tinh_van_thien_mo",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 320, "alchemy_bonus": 82, "flame_dmg": 88, "qi": 640 },
+      "base_stats": {
+        "soul": 320,
+        "alchemy_bonus": 82,
+        "flame_dmg": 88,
+        "qi": 640
+      },
       "description": "Thánh Đỉnh Bát Phẩm Đỉnh Phong do Bán Thánh Dược Trần truyền lại — chịu trọn Thất Sắc Đan Lôi luyện Chuẩn Bồ Đề Hóa Thể Đan!"
     },
     "wpn_xich_tinh_lien_luan_hoi": {
@@ -621,11 +1200,16 @@
       "name": "Huyền Trọng Xích · Luân Hồi Tịnh Liên",
       "slot": "weapon",
       "set_id": "set_tinh_lien_dau_thanh",
-      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
-      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "icon": "res://assets/sprites/weapons/xich_tinh_lien_luan_hoi.png",
+      "weapon_sprite": "res://assets/sprites/weapons/xich_tinh_lien_luan_hoi.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 1.24,
-      "base_stats": { "atk": 1350, "hp": 4800, "crit_chance": 42, "flame_dmg": 140 },
+      "base_stats": {
+        "atk": 1350,
+        "hp": 4800,
+        "crit_chance": 42,
+        "flame_dmg": 140
+      },
       "description": "Huyền Trọng Xích thấm đẫm Tịnh Liên Yêu Hỏa (#3) & Kim Đế Phần Thiên Viêm (#4) — vung Xích xé toạc không gian Đấu Thánh!"
     },
     "arm_thien_phu_thong_soai_bao": {
@@ -634,7 +1218,13 @@
       "slot": "armor",
       "set_id": "set_tinh_lien_dau_thanh",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 9200, "def": 1180, "atk": 560, "soul": 480, "cooldown_red": 26 },
+      "base_stats": {
+        "hp": 9200,
+        "def": 1180,
+        "atk": 560,
+        "soul": 480,
+        "cooldown_red": 26
+      },
       "description": "Chiến bào tối cao của Thống Soái Thiên Phủ Liên Minh — trấn áp vạn quân Hồn Điện Nhân Điện!"
     },
     "wing_tinh_lien_song_phung_duc": {
@@ -643,7 +1233,13 @@
       "slot": "wings",
       "set_id": "set_tinh_lien_dau_thanh",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 215, "crit_chance": 44, "cooldown_red": 32, "atk": 620, "flame_dmg": 115 },
+      "base_stats": {
+        "spd": 215,
+        "crit_chance": 44,
+        "cooldown_red": 32,
+        "atk": 620,
+        "flame_dmg": 115
+      },
       "description": "Đôi cánh sen lửa trắng-hồng pha vàng kim từ nghi thức song luyện của Tiêu Viêm & Cổ Huân Nhi!"
     },
     "pend_phu_nu_dong_tam_ket": {
@@ -652,7 +1248,13 @@
       "slot": "pendant",
       "set_id": "set_tinh_lien_dau_thanh",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "atk": 540, "soul": 580, "hp": 6400, "flame_dmg": 108, "lifesteal": 18 },
+      "base_stats": {
+        "atk": 540,
+        "soul": 580,
+        "hp": 6400,
+        "flame_dmg": 108,
+        "lifesteal": 18
+      },
       "description": "Bùa hộ mệnh gia đình do bé Tiêu Tiêu & Thải Lân tự tay kết — tăng +10% toàn bộ chỉ số khi HP dưới 50%!"
     },
     "ring_bo_de_thanh_tam_gioi": {
@@ -661,7 +1263,13 @@
       "slot": "ring",
       "set_id": "set_tinh_lien_dau_thanh",
       "icon": "res://assets/sprites/icons/icon_ring.png",
-      "base_stats": { "atk": 590, "soul": 680, "hp": 5800, "flame_dmg": 122, "exp_bonus": 75 },
+      "base_stats": {
+        "atk": 590,
+        "soul": 680,
+        "hp": 5800,
+        "flame_dmg": 122,
+        "exp_bonus": 75
+      },
       "description": "Nhẫn ngọc bích kết tinh từ nhựa tim Bồ Đề Cổ Thụ — bảo hộ Đạo Tâm bất diệt trước mọi Tâm Ma!"
     },
     "caul_thien_phu_thanh_dinh": {
@@ -670,7 +1278,12 @@
       "slot": "cauldron",
       "set_id": "set_tinh_lien_dau_thanh",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 620, "alchemy_bonus": 98, "flame_dmg": 135, "qi": 1250 },
+      "base_stats": {
+        "soul": 620,
+        "alchemy_bonus": 98,
+        "flame_dmg": 135,
+        "qi": 1250
+      },
       "description": "Thánh Đỉnh Chuẩn Cửu Phẩm do Đan Tháp Lão Tổ ban tặng — chống trọn Cửu Sắc & Hắc Kim Đan Lôi!"
     },
     "wpn_di_hoa_hang_co_xich": {
@@ -678,11 +1291,18 @@
       "name": "Dị Hỏa Hằng Cổ Xích (Thần Binh 23 Dị Hỏa)",
       "slot": "weapon",
       "set_id": "set_vinh_hang_viem_de",
-      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
-      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "icon": "res://assets/sprites/weapons/xich_di_hoa_hang_co.png",
+      "weapon_sprite": "res://assets/sprites/weapons/xich_di_hoa_hang_co.png",
       "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
       "attack_speed_mult": 1.38,
-      "base_stats": { "atk": 6800, "hp": 28000, "soul": 1600, "crit_chance": 45, "flame_dmg": 260, "lifesteal": 25 },
+      "base_stats": {
+        "atk": 6800,
+        "hp": 28000,
+        "soul": 1600,
+        "crit_chance": 45,
+        "flame_dmg": 260,
+        "lifesteal": 25
+      },
       "description": "Thần binh chí tôn dung hợp trọn vẹn 23 Dị Hỏa thiên địa — chém gãy Trảm Đế Quỷ Huyết Đao của Hồn Thiên Đế!"
     },
     "arm_vinh_hang_viem_de_bao": {
@@ -691,7 +1311,13 @@
       "slot": "armor",
       "set_id": "set_vinh_hang_viem_de",
       "icon": "res://assets/sprites/icons/icon_armor.png",
-      "base_stats": { "hp": 52000, "def": 3600, "qi": 6500, "soul": 1200, "flame_dmg": 150 },
+      "base_stats": {
+        "hp": 52000,
+        "def": 3600,
+        "qi": 6500,
+        "soul": 1200,
+        "flame_dmg": 150
+      },
       "description": "Đế bào đen tuyền thêu 23 sắc cầu vồng Dị Hỏa — biểu tượng bất diệt của Viêm Đế Tiêu Viêm trên Cửu Tiêu Thương Khung!"
     },
     "wing_van_hoa_thai_so_duc": {
@@ -700,7 +1326,13 @@
       "slot": "wings",
       "set_id": "set_vinh_hang_viem_de",
       "icon": "res://assets/sprites/icons/icon_wings.png",
-      "base_stats": { "spd": 185, "atk": 2900, "crit_chance": 38, "cooldown_red": 32, "flame_dmg": 180 },
+      "base_stats": {
+        "spd": 185,
+        "atk": 2900,
+        "crit_chance": 38,
+        "cooldown_red": 32,
+        "flame_dmg": 180
+      },
       "description": "Đôi cánh ngưng tụ từ 23 ngọn Dị Hỏa nguyên thủy — một nhịp vỗ vượt ngàn dặm Đế Bước Hư Không!"
     },
     "pend_loi_de_to_phu_an": {
@@ -709,7 +1341,13 @@
       "slot": "pendant",
       "set_id": "set_vinh_hang_viem_de",
       "icon": "res://assets/sprites/icons/icon_pendant.png",
-      "base_stats": { "atk": 3200, "def": 1800, "hp": 32000, "soul": 1400, "crit_chance": 30 },
+      "base_stats": {
+        "atk": 3200,
+        "def": 1800,
+        "hp": 32000,
+        "soul": 1400,
+        "crit_chance": 30
+      },
       "description": "Tín vật giao hữu của Võ Tổ Lâm Động & Đại Chúa Tể Mục Trần tại Đại Thiên Thế Giới — cộng +15% toàn bộ sát thương Đấu Kỹ!"
     },
     "ring_da_xa_co_de_gioi": {
@@ -718,7 +1356,13 @@
       "slot": "ring",
       "set_id": "set_vinh_hang_viem_de",
       "icon": "res://assets/sprites/icons/icon_ring.png",
-      "base_stats": { "atk": 2800, "soul": 2200, "hp": 26000, "flame_dmg": 210, "exp_bonus": 120 },
+      "base_stats": {
+        "atk": 2800,
+        "soul": 2200,
+        "hp": 26000,
+        "flame_dmg": 210,
+        "exp_bonus": 120
+      },
       "description": "Chiếc nhẫn kết tinh từ giọt Nguyên Khí Đấu Đế cuối cùng của Đà Xá Cổ Đế — Đế Cảnh Linh Hồn vạn cổ bất diệt!"
     },
     "caul_duoc_de_bach_kim_dinh": {
@@ -727,7 +1371,12 @@
       "slot": "cauldron",
       "set_id": "set_vinh_hang_viem_de",
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
-      "base_stats": { "soul": 2500, "alchemy_bonus": 150, "flame_dmg": 240, "qi": 5000 },
+      "base_stats": {
+        "soul": 2500,
+        "alchemy_bonus": 150,
+        "flame_dmg": 240,
+        "qi": 5000
+      },
       "description": "Đỉnh luyện đan chí tôn trấn áp mọi Hắc Ma Lôi Kiếp Cửu Phẩm & Đế Phẩm — bảo chứng danh hiệu Đan Tháp Vô Thượng Tôn!"
     }
   }

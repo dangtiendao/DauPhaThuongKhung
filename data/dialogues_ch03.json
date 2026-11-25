@@ -1,0 +1,196 @@
+{
+  "version": "1.1",
+  "chapter": "Chương 03",
+  "dialogues": {
+    "story_tieu_dinh": {
+      "marker_when": { "missing_flag": "met_tieu_dinh_le" },
+      "branches": [
+        {
+          "when": { "missing_flag": "met_tieu_dinh_le" },
+          "lines": [
+            "Tiêu Đỉnh (vỗ mạnh vai em trai, mắt ánh lên niềm vui khôn xiết): 'Hảo tiểu tử! Mới hơn một năm xa Ô Thản Thành, tam đệ nhà họ Tiêu chúng ta đã trở thành một vị Đấu Sư đường đường chính chính!'",
+            "Tiêu Đỉnh (đưa bình nước lạnh & dược tán): 'Đệ muốn mua bản đồ vùng lõi Sa Mạc Tháp Qua Nhĩ? Ở góc Tây Nam thành có một lão quái vẽ bản đồ cổ cực kỳ bí ẩn — nhớ giữ an toàn nhé!'"
+          ],
+          "action": "flag:met_tieu_dinh_le"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Đỉnh (mỉm cười trầm ổn): 'Tổng bộ Mạc Thiết Đoàn mãi là nhà của tam đệ! Mệt mỏi cứ về đây đại ca chuẩn bị tiếp tế và hồi đầy thể lực cho!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_tieu_le": {
+      "marker_when": { "missing_flag": "met_tieu_dinh_le" },
+      "branches": [
+        {
+          "when": { "missing_flag": "met_tieu_dinh_le" },
+          "lines": [
+            "Tiêu Lệ (cười gằn lạnh lùng bên ngọn Huyết Thương nhưng ánh mắt nhìn em trai cực kỳ ấm áp): 'Hắc! Ở cái Thạch Mạc Thành này, đứa nào dám động tới một cọng tóc của tam đệ, nhị ca đem cả đoàn đánh thuê nhà nó chôn sống dưới cát vàng!'",
+            "Tiêu Lệ: 'Lão quái vẽ bản đồ ở góc Tây Nam sát khí nặng lắm đấy, nhưng tam đệ giờ đã là Đấu Sư, cứ đi thử xem sao!'"
+          ],
+          "action": "flag:met_tieu_dinh_le"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiêu Lệ (vung Huyết Thương): 'Đám Sa Chi Đoàn & Xà Nhân ngoài thành mà dám cản đường đệ, cứ kêu nhị ca dẫn anh em Mạc Thiết chém sạch!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_hai_ba_dong": {
+      "marker_when": { "missing_flag": "pact_hai_ba_dong" },
+      "branches": [
+        {
+          "when": { "missing_flag": "pact_hai_ba_dong" },
+          "lines": [
+            "Hải Ba Đông (lau vết sương lạnh bên mép, ánh mắt kinh hãi nhìn hư ảnh bạch bào của Dược Lão): 'Cốt Linh Lãnh Hỏa?! Tiền bối... xin tha mạng! Lão phu vốn là Băng Hoàng Hải Ba Đông, bị Mỹ Đỗ Toa hạ Xà Chi Phong Ấn Chú nên thực lực rớt xuống Đấu Linh!'",
+            "Dược Lão (cười khà khà): 'Hắc hắc, muốn đồ đệ ta sau này luyện Lục phẩm Phá Ách Đan giải phong ấn cho ngươi? Giao ngay Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa #2 ra đây, và ký giao ước làm Bảo Tiêu Đấu Hoàng miễn phí 1 năm!'",
+            "Hải Ba Đông (cắn răng trao nửa mảnh da dê cổ & viên Hàn Băng Chi Tâm): 'Thành giao!! Ta giao [Mảnh Tàn Đồ #2 (2/4)] và bản đồ lõi sa mạc! Nghe nói cô bé Thanh Lân ở Mạc Thiết Đoàn cảm ứng được nguồn lửa cực mạnh dưới Hố Cát Bắc đấy!'"
+          ],
+          "action": "flag:pact_hai_ba_dong"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Hải Ba Đông (khoanh tay ngạo nghễ): 'Yên tâm tiểu tử, giao ước của Băng Hoàng ta nặng tựa núi! Chờ ngươi thu phục Thanh Liên Địa Tâm Hỏa rồi luyện Phá Ách Đan cho lão phu đấy!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_thanh_lan": {
+      "marker_when": { "missing_flag": "met_thanh_lan" },
+      "branches": [
+        {
+          "when": { "missing_flag": "met_thanh_lan" },
+          "lines": [
+            "Thanh Lân (cúi gằm mặt che cánh tay có vảy rắn xanh, nước mắt lưng tròng): 'Tam thiếu gia đừng chạm vào nô tỳ... Người trong thành đều gọi Thanh Lân là quái vật lai Xà Nhân, chạm vào sẽ gặp xui xẻo...'",
+            "Đôi mắt xanh biếc của cô bé bỗng lấp lánh ba chấm hoa ngọc bích — Bích Xà Tam Hoa Đồng bắt đầu cảm ứng mãnh liệt về phía Hố Cát Bắc!"
+          ],
+          "choices": [
+            {
+              "label": "Dịu dàng xoa đầu gỡ băng vải: 'Từ nay muội là muội muội của 3 huynh đệ Tiêu Gia!' (+35 Hảo Cảm Thanh Lân!)",
+              "action": "choice:thanh_lan_sister"
+            },
+            {
+              "label": "Đứng chắn trước mặt dặn hai huynh trưởng bảo vệ Thanh Lân thật tốt (+20 Hảo Cảm Thanh Lân!)",
+              "action": "choice:thanh_lan_protect"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Thanh Lân (mỉm cười rạng rỡ với đôi mắt Bích Xà Tam Hoa Đồng): 'Tiêu Viêm thiếu gia cẩn thận nhé! Dưới Hố Cát phía Bắc có một con Song Đầu Hỏa Linh Xà rất hung dữ canh giữ đóa sen xanh khổng lồ!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_van_van_ch03": {
+      "marker_when": { "missing_flag": "van_van_ch03_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "van_van_ch03_done" },
+          "lines": [
+            "Giữa chiến trường bão cát Thánh Thành Xà Nhân, tà váy trắng che mạng mỏng chặn đứng đường bạn! Kiếm phong xanh biếc xé rách vạt Hắc Bào, để lộ ánh sáng lam quen thuộc của chiếc [Hải Tâm Giáp] trên ngực Tiêu Viêm!",
+            "Vân Vận — Tông Chủ Vân Lam Tông — đồng tử co rút kịch liệt, bàn tay cầm cổ kiếm run lên bần bật: 'Hải Tâm Giáp... Dược Nham?! Sao... sao lại là ngươi?!'"
+          ],
+          "choices": [
+            {
+              "label": "Khẽ thì thầm qua lớp áo choàng: 'Vân Chi... bảo trọng! Đừng để Cổ Hà cản ta!' (+35 Hảo Cảm Vân Vận!)",
+              "action": "choice:van_van_call_name"
+            },
+            {
+              "label": "Im lặng cúi đầu vỗ Tử Vân Dực lướt qua mũi kiếm nghiêng ba tấc của nàng (+20 Hảo Cảm Vân Vận!)",
+              "action": "choice:van_van_silent"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Vân Vận (mắt phượng u buồn quay mặt cản hướng gió): 'Ta sẽ giữ chân Phong Lê và Cổ Hà thêm vài nhịp... Ngươi mau đoạt lấy Dị Hỏa rồi rời khỏi đại mạc đi!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_my_do_toa": {
+      "marker_when": { "has_flag": "beat_co_ha_mac_ba_tu", "missing_flag": "snatched_thanh_lien_hoa" },
+      "branches": [
+        {
+          "when": { "missing_flag": "beat_co_ha_mac_ba_tu" },
+          "lines": [
+            "Dược Lão (truyền âm khẩn cấp): 'Khoan đã tiểu tử! Đại Thống Lĩnh Mặc Ba Tư và Đan Vương Cổ Hà vẫn đang chặn bên ngoài — phải đánh bại cả HAI tên đó trước mới có thể đột kích Đảo Thánh Trì đoạt lửa an toàn!'"
+          ],
+          "action": ""
+        },
+        {
+          "default": true,
+          "sfx": "boss_roar",
+          "shake": [11.0, 0.45],
+          "lines": [
+            "Mỹ Đỗ Toa Nữ Vương (kiêu diễm đứng giữa Thánh Trì Đảo Tâm Hồ, ngẩng đầu đối diện chín tầng Tử Sắc Thiên Lôi): 'Xà Nhân Tộc ta đã khát máu nơi sa mạc cằn cỗi ngàn năm! Hôm nay bổn vương lấy thân nhập Dị Hỏa — hoặc hóa tro bụi, hoặc bước vào ĐẤU TÔNG!!'",
+            "ẦM ẦM!! Chín đạo Thiên Lôi Tím giáng tan lớp vảy cháy đen! Từ trong ngọn lửa xanh ngọc chui ra một sinh vật nhỏ bé 7 màu cầu vồng lấp lánh — Thượng Cổ Thần Thú [THẤT THẢI THÔN THIÊN MÃNG] rơi vào hôn mê bên cạnh Hỏa Chủng Thanh Liên Địa Tâm Hỏa!",
+            "Tiêu Viêm vỗ Tử Vân Dực lao như tia chớp đen đoạt gọn [HỎA CHỦNG THANH LIÊN ĐỊA TÂM HỎA] cùng con rắn nhỏ 7 màu nhét vào ngực áo! Vân Vận nghiêng mũi kiếm mở đường máu — mau bay qua Cổng Đông Nam tới [Ốc Đảo Diêm Lệ]!!"
+          ],
+          "action": "flag:snatched_thanh_lien_hoa"
+        }
+      ]
+    },
+    "story_devour_thanh_lien": {
+      "marker_when": { "missing_flag": "ch03_completed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch03_completed" },
+          "lines": [
+            "Dược Lão (giăng kết giới linh hồn quanh Thanh Liên Đài giữa Ốc Đảo Diêm Lệ): 'Hỏa Chủng sắp phá bình ngọc rồi! Thôn phệ Dị Hỏa là cửu tử nhất sinh — một khi thành công, Phần Quyết thăng thẳng Huyền Giai Trung Cấp và con có thể dung hợp Song Hỏa sáng tạo tuyệt kỹ độc tôn!'",
+            "Ngọn lửa xanh ngọc #19 Thanh Liên Địa Tâm Hỏa bùng cháy rực trời trước mặt Tiêu Viêm..."
+          ],
+          "choices": [
+            {
+              "when": { "has_item": "pill_bang_tam_dan" },
+              "label": "Uống [Băng Tâm Đan] + Vận Phần Quyết nuốt trọn #19 Thanh Liên Hỏa (+400 EXP & Mở [F] Hỏa Liên!)",
+              "action": "choice:devour_bang_tam"
+            },
+            {
+              "when": { "missing_item": "pill_bang_tam_dan" },
+              "label": "Vận Phần Quyết + Thanh Liên Đài nuốt trọn #19 Thanh Liên Hỏa (Mở [F] Phật Nộ Hỏa Liên!)",
+              "action": "choice:devour_bang_tam"
+            },
+            {
+              "label": "Gầm vang lời thề Ước Hẹn 3 Năm dùng ý chí sắt đá nghiền nát Dị Hỏa (+6 SOUL & Mở [F] Hỏa Liên!)",
+              "action": "choice:devour_iron_will"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Dược Lão (cười vang tự hào): 'TUYỆT ĐỈNH! Vừa thu phục [#19 Thanh Liên Địa Tâm Hỏa], vừa có Thần Thú [Thải Lân] hộ thân, lại tự sáng tạo ra [F] PHẬT NỘ HỎA LIÊN rung chuyển thiên địa! Mau ra Bãi Thử phía Đông bắn thử một đóa Hỏa Liên xem uy lực cỡ nào!!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_thai_lan_pet": {
+      "branches": [
+        {
+          "default": true,
+          "lines": [
+            "Thải Lân (con rắn nhỏ 7 màu đội vương miện vàng quấn quanh cổ tay Tiêu Viêm, mắt lấp lánh đòi ăn Hỏa Tinh như trẻ con): 'Xì xì~ ♪'",
+            "Tiêu Viêm mỉm cười đút cho Thải Lân một mảnh Địa Tâm Hỏa Tinh — nàng vui vẻ tỏa ra luồng Thất Thải Quang Mang hồi đầy HP & Đấu Khí cho bạn (+15 Hảo Cảm Thải Lân / Mỹ Đỗ Toa)!"
+          ],
+          "action": "feed_thai_lan"
+        }
+      ]
+    }
+  },
+  "effects": {}
+}

@@ -142,6 +142,7 @@ static func build_save_payload(pd: Node) -> Dictionary:
 		"opened_chests": pd.opened_chests.duplicate(true),
 		"affection": pd.affection.duplicate(true),
 		"story_relics": pd.story_relics.duplicate(true),
+		"active_title_id": str(pd.active_title_id) if ("active_title_id" in pd) else "",
 		"claimed_affection_milestones": pd.claimed_affection_milestones.duplicate(true),
 		"enemies_killed_total": pd.enemies_killed_total,
 		"enemy_kill_counts": pd.enemy_kill_counts.duplicate(true),
@@ -200,15 +201,20 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 	pd.opened_chests = d.get("opened_chests", {})
 	if d.has("affection") and d["affection"] is Dictionary:
 		pd.affection = d["affection"]
-		for ak in ["huan_nhi", "tieu_y_tien", "van_chi", "thanh_lan", "my_do_toa"]:
+		for ak in ["huan_nhi", "tieu_y_tien", "van_chi", "thanh_lan", "my_do_toa", "tu_nghien", "nha_phi", "nap_lan_yen_nhien"]:
 			if not pd.affection.has(ak):
 				pd.affection[ak] = 0
 	else:
-		pd.affection = { "huan_nhi": 20, "tieu_y_tien": 0, "van_chi": 0, "thanh_lan": 0, "my_do_toa": 0 }
+		pd.affection = {
+			"huan_nhi": 20, "tieu_y_tien": 0, "van_chi": 0, "thanh_lan": 0,
+			"my_do_toa": 0, "tu_nghien": 0, "nha_phi": 0, "nap_lan_yen_nhien": 0
+		}
 	if d.has("story_relics") and d["story_relics"] is Array:
 		pd.story_relics = d["story_relics"]
 	else:
 		pd.story_relics = []
+	if "active_title_id" in pd:
+		pd.active_title_id = str(d.get("active_title_id", ""))
 	if d.has("claimed_affection_milestones") and d["claimed_affection_milestones"] is Dictionary:
 		pd.claimed_affection_milestones = d["claimed_affection_milestones"]
 	else:

@@ -1,7 +1,7 @@
 extends Node
-## Lưu trữ toàn bộ trạng thái tu luyện Chuẩn Cốt Truyện 100% — Chương 01 -> Chương 08 (Quyển I, II & Mở Màn Quyển III):
+## Lưu trữ toàn bộ trạng thái tu luyện Chuẩn Cốt Truyện 100% — Chương 01 -> Chương 11 (Trọn 4/4 Quyển · v1.1.0):
 ## - Khởi đầu phút 0: Đấu Chi Khí 3 Đoạn, TAY KHÔNG, chưa có Dược Lão, chưa có vũ khí, chưa có Đấu Kỹ, chưa có Hỏa Liên!
-## - Hỗ trợ Save 3 Ô, Auto-Save/Auto-Continue, Chế Độ DEMO, 10 Ô Trang Bị + Khảm Ma Hạch, 24 Đấu Kỹ, 46 Bản Đồ, 66 Mốc Cốt Truyện, Viêm Minh & 7 Đồng Hành!
+## - Hỗ trợ Save 3 Ô, Auto-Save/Auto-Continue, Chế Độ DEMO, 10 Ô Trang Bị + Khảm Ma Hạch, 37 Đấu Kỹ, 67 Bản Đồ, 96 Mốc Cốt Truyện, 8 Hồng Nhan, 20 Thành Tựu & NG+!
 
 const LEGACY_SAVE_PATH: String = "user://dptk_savegame.json"
 const SaveLoadMgr = preload("res://scripts/systems/save_load_manager.gd")
@@ -11,6 +11,9 @@ const StoryProgHelper = preload("res://scripts/systems/story_progression_helper.
 const NineTurnMgr = preload("res://scripts/systems/nine_turn_manager.gd")
 const SaintRealmMgr = preload("res://scripts/systems/saint_realm_manager.gd")
 const EmperorRealmMgr = preload("res://scripts/systems/emperor_realm_manager.gd")
+const GearCoreMgr = preload("res://scripts/systems/player_gear_core_manager.gd")
+const MasteryQuestMgr = preload("res://scripts/systems/player_mastery_quest_manager.gd")
+const AchievementMgr = preload("res://scripts/systems/achievement_manager.gd")
 const REALM_DEF_MULT: Dictionary = { 3: 1.18, 4: 1.32, 5: 1.42, 6: 1.52, 7: 1.64, 8: 1.78, 9: 1.95, 10: 2.12, 11: 2.35, 12: 2.85 }
 const REALM_SPD_MULT: Dictionary = { 7: 1.22, 8: 1.30, 9: 1.36, 10: 1.42, 11: 1.48, 12: 1.60 }
 const REALM_POISE_BONUS: Dictionary = { 5: 15.0, 6: 25.0, 7: 35.0, 8: 48.0, 9: 62.0, 10: 72.0, 11: 82.0, 12: 95.0 }
@@ -47,7 +50,7 @@ var current_qi: float = 70.0
 var gold: int = 35
 var enhance_stones: int = 0
 
-# Cờ cốt truyện, Rương bí mật, Hảo Cảm Hồng Nhan & Kỳ Vật Cốt Truyện
+# Cờ cốt truyện, Rương bí mật, Hảo Cảm 8/8 Hồng Nhan, Kỳ Vật & Danh Hiệu Hiển Thị
 var story_flags: Dictionary = {}
 var opened_chests: Dictionary = {}
 var affection: Dictionary = {
@@ -55,9 +58,13 @@ var affection: Dictionary = {
 	"tieu_y_tien": 0,
 	"van_chi": 0,
 	"thanh_lan": 0,
-	"my_do_toa": 0
+	"my_do_toa": 0,
+	"tu_nghien": 0,
+	"nha_phi": 0,
+	"nap_lan_yen_nhien": 0
 }
 var story_relics: Array = []
+var active_title_id: String = ""
 var claimed_affection_milestones: Dictionary = {}
 var cached_affection_bonuses: Dictionary = {}
 
@@ -844,7 +851,7 @@ func get_cooldown_multiplier() -> float:
 
 func get_poise_dmg_multiplier() -> float:
 	var core_t: Dictionary = get_core_socket_totals()
-	var bonus_pct: float = float(core_t.get("poise_pct", 0.0)) + float(tower_active_buffs.get("poise_pct", 0.0)) + float(REALM_POISE_BONUS.get(mini(realm_index, 12), 0.0))
+	var bonus_pct: float = float(core_t.get("poise_pct", 0.0)) + get_affection_bonus("poise_pct") + float(tower_active_buffs.get("poise_pct", 0.0)) + float(REALM_POISE_BONUS.get(mini(realm_index, 12), 0.0))
 	return 1.0 + bonus_pct / 100.0
 
 
@@ -1006,132 +1013,33 @@ func get_exp_multiplier() -> float:
 	return mult * NineTurnMgr.get_map_exp_multiplier(self)
 
 
-# --- TRANG BỊ 10 Ô ---
+# --- TRANG BỊ 10 Ô (Ủy quyền cho PlayerGearCoreManager) ---
 func add_gear_to_bag(inst: Dictionary) -> void:
-	if inst.is_empty():
-		return
-	gear_bag.append(inst)
-	EventBus.equipment_changed.emit()
+	GearCoreMgr.add_gear_to_bag(self, inst)
 
 
 func equip_gear_from_bag(uid: String) -> String:
-	var found_idx: int = -1
-	for i in range(gear_bag.size()):
-		if str(gear_bag[i].get("uid", "")) == uid:
-			found_idx = i
-			break
-	if found_idx == -1:
-		return "Không tìm thấy trang bị!"
-	var inst: Dictionary = gear_bag[found_idx]
-	var tdef: Dictionary = GameDatabase.get_equipment_template(str(inst.get("template_id", "")))
-	var slot_id: String = str(tdef.get("slot", "weapon"))
-
-	gear_bag.remove_at(found_idx)
-	var prev = equipped_gear.get(slot_id, {})
-	if prev is Dictionary and not prev.is_empty():
-		gear_bag.append(prev)
-	equipped_gear[slot_id] = inst
-
-	if not has_huyen_trong_xich_equipped():
-		is_ruler_sealed = false
-	_rebuild_gear_cache()
-	recalculate_and_clamp(false)
-	EventBus.audio_sfx_requested.emit("ui_click")
-	EventBus.equipment_changed.emit()
-	EventBus.stats_changed.emit()
-	return "Đã trang bị: %s!" % EquipmentSystem.get_item_display_name(inst)
+	return GearCoreMgr.equip_gear_from_bag(self, uid)
 
 
 func unequip_slot(slot_id: String) -> String:
-	var prev = equipped_gear.get(slot_id, {})
-	if not (prev is Dictionary) or prev.is_empty():
-		return ""
-	equipped_gear[slot_id] = {}
-	gear_bag.append(prev)
-	if not has_huyen_trong_xich_equipped():
-		is_ruler_sealed = false
-	_rebuild_gear_cache()
-	recalculate_and_clamp(false)
-	EventBus.audio_sfx_requested.emit("ui_click")
-	EventBus.equipment_changed.emit()
-	EventBus.stats_changed.emit()
-	return "Đã tháo: %s vào Nạp Giới." % EquipmentSystem.get_item_display_name(prev)
+	return GearCoreMgr.unequip_slot(self, slot_id)
 
 
 func enhance_gear_by_uid(uid: String) -> Dictionary:
-	var target: Dictionary = _find_gear_ref(uid)
-	if target.is_empty():
-		return { "ok": false, "msg": "Không tìm thấy trang bị!" }
-	var cur_enh: int = int(target.get("enhance", 0))
-	if cur_enh >= EquipmentSystem.MAX_ENHANCE_LEVEL:
-		return { "ok": false, "msg": "Trang bị đã đạt cực hạn +%d!" % EquipmentSystem.MAX_ENHANCE_LEVEL }
-	var cost: Dictionary = EquipmentSystem.get_enhance_cost(target)
-	var c_gold: int = int(cost.get("gold", 50))
-	var c_stones: int = int(cost.get("stones", 1))
-	if gold < c_gold or enhance_stones < c_stones:
-		return { "ok": false, "msg": "Cần %d Kim Tệ & %d Đá Cường Hóa! (Hiện có: %d Kim Tệ, %d Đá)" % [c_gold, c_stones, gold, enhance_stones] }
-	gold -= c_gold
-	enhance_stones -= c_stones
-	target["enhance"] = cur_enh + 1
-	_rebuild_gear_cache()
-	recalculate_and_clamp(false)
-	EventBus.audio_sfx_requested.emit("level_up")
-	EventBus.equipment_changed.emit()
-	EventBus.stats_changed.emit()
-	return { "ok": true, "msg": "CƯỜNG HÓA THÀNH CÔNG: %s (+12%% chỉ số gốc)!" % EquipmentSystem.get_item_display_name(target) }
+	return GearCoreMgr.enhance_gear_by_uid(self, uid)
 
 
 func salvage_gear_by_uid(uid: String) -> String:
-	for i in range(gear_bag.size()):
-		if str(gear_bag[i].get("uid", "")) == uid:
-			var inst: Dictionary = gear_bag[i]
-			var y: Dictionary = EquipmentSystem.get_salvage_yield(inst)
-			gold += int(y.get("gold", 15))
-			enhance_stones += int(y.get("stones", 1))
-			gear_bag.remove_at(i)
-			EventBus.audio_sfx_requested.emit("loot_pickup")
-			EventBus.equipment_changed.emit()
-			EventBus.stats_changed.emit()
-			return "Đã phân giải %s -> +%d Kim Tệ, +%d Đá Cường Hóa!" % [
-				EquipmentSystem.get_item_display_name(inst), int(y.get("gold", 15)), int(y.get("stones", 1))
-			]
-	return "Chỉ có thể phân giải đồ trong túi."
+	return GearCoreMgr.salvage_gear_by_uid(self, uid)
 
 
 func salvage_low_rarity_gear() -> String:
-	var count_s: int = 0
-	var total_g: int = 0
-	var total_st: int = 0
-	var kept: Array = []
-	for item in gear_bag:
-		var rid: String = str(item.get("rarity", "pham"))
-		if (rid == "pham" or rid == "linh") and int(item.get("enhance", 0)) == 0:
-			var y: Dictionary = EquipmentSystem.get_salvage_yield(item)
-			total_g += int(y.get("gold", 15))
-			total_st += int(y.get("stones", 1))
-			count_s += 1
-		else:
-			kept.append(item)
-	if count_s == 0:
-		return "Không có đồ Phàm/Linh (+0) nào trong túi để phân giải."
-	gear_bag = kept
-	gold += total_g
-	enhance_stones += total_st
-	EventBus.audio_sfx_requested.emit("loot_pickup")
-	EventBus.equipment_changed.emit()
-	EventBus.stats_changed.emit()
-	return "Đã phân giải %d món Phàm/Linh -> +%d Kim Tệ, +%d Đá Cường Hóa!" % [count_s, total_g, total_st]
+	return GearCoreMgr.salvage_low_rarity_gear(self)
 
 
 func _find_gear_ref(uid: String) -> Dictionary:
-	for sid in equipped_gear.keys():
-		var eq = equipped_gear[sid]
-		if eq is Dictionary and str(eq.get("uid", "")) == uid:
-			return eq
-	for item in gear_bag:
-		if item is Dictionary and str(item.get("uid", "")) == uid:
-			return item
-	return {}
+	return GearCoreMgr.find_gear_ref(self, uid)
 
 
 # --- EXP, ĐỘT PHÁ & HỎA ---
@@ -1371,168 +1279,33 @@ func heal_from_lifesteal(damage_dealt: float) -> void:
 		EventBus.stats_changed.emit()
 
 
-# --- HỆ THỐNG NHIỆM VỤ CHÍNH TUYẾN DATA-DRIVEN (THEO ID, TƯƠNG THÍCH MỌI CHƯƠNG) ---
+# --- HỆ THỐNG NHIỆM VỤ, THÔNG THẠO, TÂM MA, MA HẠCH & THÁP (Ủy quyền mô-đun v1.1.0) ---
 func get_current_quest() -> Dictionary:
-	if all_quests_done or GameDatabase.all_quests.is_empty():
-		return {}
-	if active_quest_id != "":
-		var idx_by_id: int = GameDatabase.get_quest_index(active_quest_id)
-		if idx_by_id >= 0:
-			active_quest_idx = idx_by_id
-	if active_quest_idx < 0 or active_quest_idx >= GameDatabase.all_quests.size():
-		return {}
-	var q = GameDatabase.all_quests[active_quest_idx]
-	if q is Dictionary:
-		active_quest_id = str(q.get("id", ""))
-		return q
-	return {}
+	return MasteryQuestMgr.get_current_quest(self)
 
 
 func _is_current_quest_auto_satisfied(q: Dictionary) -> bool:
-	if q.is_empty():
-		return false
-	var q_type: String = str(q.get("type", ""))
-	if q_type == "story_flag":
-		return has_flag(str(q.get("flag_name", "")))
-	elif q_type == "all_flags":
-		var flist: Array = q.get("flag_names", [])
-		if flist.is_empty():
-			return false
-		for f in flist:
-			if not has_flag(str(f)):
-				return false
-		return true
-	elif q_type == "reach_realm":
-		return realm_index >= int(q.get("target_realm_index", 2))
-	elif q_type == "craft_pill":
-		var allow_inv: bool = bool(q.get("auto_pass_if_owned", false))
-		return allow_inv and get_item_count(str(q.get("target_id", ""))) > 0
-	return false
+	return MasteryQuestMgr.is_current_quest_auto_satisfied(self, q)
 
 
 func _check_quest_flag(flag_name: String) -> void:
-	var q: Dictionary = get_current_quest()
-	if q.is_empty():
-		return
-	var q_type: String = str(q.get("type", ""))
-	if q_type == "story_flag" and str(q.get("flag_name", "")) == flag_name:
-		_advance_quest_progress(1)
-	elif q_type == "all_flags":
-		if _is_current_quest_auto_satisfied(q):
-			_advance_quest_progress(1)
+	MasteryQuestMgr.check_quest_flag(self, flag_name)
 
 
 func _on_enemy_killed(enemy_id: String, is_boss: bool) -> void:
-	enemies_killed_total += 1
-	enemy_kill_counts[enemy_id] = int(enemy_kill_counts.get(enemy_id, 0)) + 1
-	if is_boss and has_ma_doc_ban() and ma_doc_ban_stacks < 20:
-		ma_doc_ban_stacks += 1
-		EventBus.stats_changed.emit()
-		EventBus.banter_triggered.emit("☠ Ma Độc Ban cộng hưởng sát khí Boss -> Tích lũy %d/20 (+%d%% ATK)!" % [ma_doc_ban_stacks, ma_doc_ban_stacks])
-	if enemy_id == "tieu_ninh_boss":
-		set_story_flag("unlocked_bat_cuc_bang")
-	elif enemy_id == "lieu_tich_boss":
-		set_story_flag("killed_lieu_tich")
-	elif enemy_id == "gia_liet_ao_boss":
-		set_story_flag("ch01_completed")
-	elif enemy_id == "tieu_tu_tinh_su_boss":
-		set_story_flag("killed_tieu_su_vuong")
-	elif enemy_id == "muc_luc_boss":
-		set_story_flag("killed_muc_luc")
-	elif enemy_id == "muc_xa_boss":
-		set_story_flag("killed_muc_xa")
-	elif enemy_id == "hai_ba_dong_boss":
-		set_story_flag("beat_hai_ba_dong")
-	elif enemy_id == "hoa_linh_xa_boss":
-		set_story_flag("killed_hoa_linh_xa")
-	elif enemy_id == "mac_ba_tu_boss":
-		set_story_flag("killed_mac_ba_tu")
-		if has_flag("killed_co_ha"):
-			set_story_flag("beat_co_ha_mac_ba_tu")
-	elif enemy_id == "co_ha_boss":
-		set_story_flag("killed_co_ha")
-		if has_flag("killed_mac_ba_tu"):
-			set_story_flag("beat_co_ha_mac_ba_tu")
-
-	# Data-Driven enemy kill rules (Ch04 -> Ch11)!
-	var k_rule: Dictionary = GameDatabase.get_enemy_kill_rule(enemy_id)
-	if not k_rule.is_empty():
-		var sf: String = str(k_rule.get("set_flag", ""))
-		if sf != "":
-			set_story_flag(sf)
-		for f in k_rule.get("set_flags", []):
-			set_story_flag(str(f))
-		for combo in k_rule.get("combo_flags", []):
-			if combo is Dictionary:
-				var all_ok: bool = true
-				for rf in combo.get("require_flags", []):
-					if not has_flag(str(rf)):
-						all_ok = false
-						break
-				if all_ok:
-					var gf: String = str(combo.get("grant_flag", ""))
-					if gf != "":
-						set_story_flag(gf)
-
-	var q: Dictionary = get_current_quest()
-	if q.is_empty():
-		return
-	if str(q.get("type", "")) == "kill_any" and enemy_id == str(q.get("target_id", "")):
-		_advance_quest_progress(1)
+	MasteryQuestMgr.on_enemy_killed(self, enemy_id, is_boss)
 
 
 func notify_pill_crafted(pill_id: String) -> void:
-	if pill_id == "pill_tam_van_thanh_linh" and has_flag("ch04_beat_viem_loi"):
-		set_story_flag("ch04_dan_hoi_champion")
-	var q: Dictionary = get_current_quest()
-	if q.is_empty():
-		return
-	if str(q.get("type", "")) == "craft_pill" and pill_id == str(q.get("target_id", "")):
-		_advance_quest_progress(1)
+	MasteryQuestMgr.notify_pill_crafted(self, pill_id)
 
 
 func _check_quest_realm() -> void:
-	var q: Dictionary = get_current_quest()
-	if q.is_empty():
-		return
-	if str(q.get("type", "")) == "reach_realm":
-		if realm_index >= int(q.get("target_realm_index", 2)):
-			_advance_quest_progress(1)
+	MasteryQuestMgr.check_quest_realm(self)
 
 
 func _advance_quest_progress(delta_cnt: int) -> void:
-	var q: Dictionary = get_current_quest()
-	if q.is_empty():
-		return
-	quest_progress += delta_cnt
-	var goal: int = int(q.get("target_count", 1))
-	if quest_progress >= goal:
-		var done_id: String = str(q.get("id", ""))
-		if done_id != "":
-			completed_quest_ids[done_id] = true
-		var rew_exp: int = int(q.get("reward_exp", 50))
-		add_exp(rew_exp)
-		gold += int(q.get("reward_gold", 0))
-		var rew_items: Dictionary = q.get("reward_items", {})
-		for k in rew_items.keys():
-			add_item(str(k), int(rew_items[k]))
-		var comp_eff = q.get("on_complete_effect", {})
-		if comp_eff is Dictionary and not comp_eff.is_empty():
-			execute_story_effect(comp_eff)
-		active_quest_idx += 1
-		quest_progress = 0
-		if active_quest_idx >= GameDatabase.all_quests.size():
-			all_quests_done = true
-			active_quest_id = ""
-			EventBus.banter_triggered.emit("👑 CHÚC MỪNG ĐẠI KẾT CỤC! Bạn đã chinh phục trọn vẹn %d/96 mốc cốt truyện Quyển I–IV (Chương 01 – 11: Ô Thản Thành -> Cổ Đế Động Phủ -> Song Đế Chi Chiến -> Viêm Đế Đại Hôn & Đại Thiên Thế Giới)!" % GameDatabase.all_quests.size())
-		else:
-			var next_q: Dictionary = GameDatabase.all_quests[active_quest_idx]
-			active_quest_id = str(next_q.get("id", ""))
-			EventBus.banter_triggered.emit(str(next_q.get("intro_log", "")))
-			if _is_current_quest_auto_satisfied(next_q):
-				_advance_quest_progress(1)
-		trigger_auto_save("hoàn thành nhiệm vụ")
-	EventBus.quest_updated.emit()
+	MasteryQuestMgr.advance_quest_progress(self, delta_cnt)
 
 
 # --- HỆ THỐNG LƯU / TẢI 3 Ô (ỦY QUYỀN SANG SaveLoadManager) ---
@@ -1556,53 +1329,13 @@ func load_game(slot_idx: int = -1) -> bool:
 	return SaveLoadMgr.load_game(self, slot_idx)
 
 
-# =========================================================
-# ĐỘ THÔNG THẠO ĐẤU KỸ (MASTERY) · TÂM MA LUYỆN CẢNH · ĐỒ GIÁM VẠN THÚ
-# =========================================================
+# --- THÔNG THẠO ĐẤU KỸ · TÂM MA LUYỆN CẢNH · ĐỒ GIÁM VẠN THÚ ---
 func get_skill_mastery_info(skill_id: String) -> Dictionary:
-	var uses: int = int(skill_mastery_uses.get(skill_id, 0))
-	if uses >= 40:
-		return {
-			"tier": 3, "tier_name": "Đỉnh Phong", "uses": uses, "next_uses": 40,
-			"dmg_mult": 1.40, "cd_mult": 0.80, "radius_mult": 1.22, "color": Color("#FFD166")
-		}
-	elif uses >= 20:
-		return {
-			"tier": 2, "tier_name": "Đại Thành", "uses": uses, "next_uses": 40,
-			"dmg_mult": 1.25, "cd_mult": 0.88, "radius_mult": 1.14, "color": Color("#C77DFF")
-		}
-	elif uses >= 8:
-		return {
-			"tier": 1, "tier_name": "Tiểu Thành", "uses": uses, "next_uses": 20,
-			"dmg_mult": 1.12, "cd_mult": 0.94, "radius_mult": 1.06, "color": Color("#70D6FF")
-		}
-	return {
-		"tier": 0, "tier_name": "Sơ Khuy", "uses": uses, "next_uses": 8,
-		"dmg_mult": 1.00, "cd_mult": 1.00, "radius_mult": 1.00, "color": Color("#ADB5BD")
-	}
+	return MasteryQuestMgr.get_skill_mastery_info(self, skill_id)
 
 
 func record_skill_use(skill_id: String, world_pos: Vector2 = Vector2.ZERO) -> Dictionary:
-	if skill_id == "":
-		return get_skill_mastery_info("")
-	var old_tier: int = int(get_skill_mastery_info(skill_id).get("tier", 0))
-	skill_mastery_uses[skill_id] = int(skill_mastery_uses.get(skill_id, 0)) + 1
-	var info: Dictionary = get_skill_mastery_info(skill_id)
-	var new_tier: int = int(info.get("tier", 0))
-	if new_tier > old_tier:
-		var sdef: Dictionary = GameDatabase.get_skill_def(skill_id)
-		var sname: String = str(sdef.get("name", skill_id))
-		EventBus.audio_sfx_requested.emit("level_up")
-		if world_pos != Vector2.ZERO:
-			EventBus.floating_text_requested.emit(world_pos + Vector2(0, -96), "THÔNG THẠO [%s] -> %s!" % [sname, str(info["tier_name"]).to_upper()], info["color"] as Color)
-		EventBus.banter_triggered.emit("Đấu Kỹ [%s] đột phá Thông Thạo bậc [%s]: +%d%% Sát thương · -%d%% Hồi chiêu · +%d%% Tầm VFX!" % [
-			sname, str(info["tier_name"]),
-			int(round((float(info["dmg_mult"]) - 1.0) * 100.0)),
-			int(round((1.0 - float(info["cd_mult"])) * 100.0)),
-			int(round((float(info["radius_mult"]) - 1.0) * 100.0))
-		])
-		EventBus.skills_updated.emit()
-	return info
+	return MasteryQuestMgr.record_skill_use(self, skill_id, world_pos)
 
 
 func get_enemy_kill_count(enemy_id: String) -> int:
@@ -1610,139 +1343,31 @@ func get_enemy_kill_count(enemy_id: String) -> int:
 
 
 func get_boss_rush_record(boss_id: String, diff_key: String) -> Dictionary:
-	var k: String = "%s|%s" % [boss_id, diff_key]
-	var rec = boss_rush_records.get(k, {})
-	return rec as Dictionary if rec is Dictionary else {}
+	return MasteryQuestMgr.get_boss_rush_record(self, boss_id, diff_key)
 
 
 func record_boss_rush_clear(boss_id: String, diff_key: String, elapsed_sec: float, dmg_taken: float) -> Dictionary:
-	var grade_order: Dictionary = { "C": 1, "B": 2, "A": 3, "S": 4, "SS": 5, "SSS": 6 }
-	var hp_ref: float = maxf(100.0, get_max_hp())
-	var dmg_ratio: float = dmg_taken / hp_ref
-	var grade: String = "B"
-	if elapsed_sec <= 22.0 and dmg_ratio <= 0.15:
-		grade = "SSS"
-	elif elapsed_sec <= 36.0 and dmg_ratio <= 0.35:
-		grade = "SS"
-	elif elapsed_sec <= 52.0 and dmg_ratio <= 0.65:
-		grade = "S"
-	elif elapsed_sec <= 75.0:
-		grade = "A"
-	elif elapsed_sec <= 105.0:
-		grade = "B"
-	else:
-		grade = "C"
-
-	var diff_mult: float = 1.0 if diff_key == "normal" else (1.75 if diff_key == "nightmare" else 2.6)
-	var grade_bonus: float = float(grade_order.get(grade, 1))
-	var stones_rew: int = maxi(1, int(round(grade_bonus * diff_mult)))
-	var gold_rew: int = int(round((28.0 + grade_bonus * 16.0) * diff_mult))
-	enhance_stones += stones_rew
-	gold += gold_rew
-
-	var k: String = "%s|%s" % [boss_id, diff_key]
-	var prev: Dictionary = get_boss_rush_record(boss_id, diff_key)
-	var prev_g: String = str(prev.get("best_grade", ""))
-	var best_g: String = grade if int(grade_order.get(grade, 0)) >= int(grade_order.get(prev_g, 0)) else prev_g
-	var prev_t: float = float(prev.get("best_time", 9999.0))
-	var best_t: float = minf(prev_t, elapsed_sec)
-	boss_rush_records[k] = {
-		"best_grade": best_g,
-		"best_time": snappedf(best_t, 0.1),
-		"clears": int(prev.get("clears", 0)) + 1
-	}
-	EventBus.stats_changed.emit()
-	trigger_auto_save("Tâm Ma Luyện Cảnh", true)
-	return {
-		"grade": grade,
-		"elapsed_sec": elapsed_sec,
-		"stones": stones_rew,
-		"gold": gold_rew
-	}
+	return MasteryQuestMgr.record_boss_rush_clear(self, boss_id, diff_key, elapsed_sec, dmg_taken)
 
 
-# =========================================================
-# KHẢM MA HẠCH LÊN VŨ KHÍ / HUYỀN TRỌNG XÍCH (3 RÃNH)
-# =========================================================
+# --- KHẢM MA HẠCH LÊN VŨ KHÍ (3 RÃNH) ---
 func get_core_socket_def(core_id: String) -> Dictionary:
-	const DEFS: Dictionary = {
-		"core_hoa_1": { "name": "Hỏa Ma Hạch (Cấp 1)", "atk": 14.0, "burn_dps": 6.0, "color": Color("#FF7B00"), "desc": "+14 ATK · +6 Thiêu Đốt/s" },
-		"core_moc_2": { "name": "Mộc Ma Hạch (Cấp 2)", "hp": 120.0, "hp_regen": 3.0, "color": Color("#2EC4B6"), "desc": "+120 HP · Hồi +3 HP/s" },
-		"core_hoa_3": { "name": "Viêm Xà Ma Hạch (Cấp 3)", "atk": 32.0, "crit_pct": 8.0, "burn_dps": 16.0, "color": Color("#FF4D6D"), "desc": "+32 ATK · +8% Crit · +16 Thiêu Đốt/s" },
-		"core_phong_4": { "name": "Phong Ma Hạch (Cấp 4)", "spd": 24.0, "crit_pct": 12.0, "cd_red_pct": 8.0, "color": Color("#70D6FF"), "desc": "+24 SPD · +12% Crit · -8% Hồi Chiêu" },
-		"core_loi_5": { "name": "Lôi Ma Hạch (Cấp 5)", "atk": 58.0, "crit_pct": 10.0, "poise_pct": 22.0, "color": Color("#E0AAFF"), "desc": "+58 ATK · +10% Crit · +22% Phá Thế Boss" },
-		"core_huyet_5": { "name": "Huyết Ma Hạch (Cấp 5)", "atk": 48.0, "hp": 280.0, "lifesteal_pct": 6.0, "color": Color("#EF476F"), "desc": "+48 ATK · +280 HP · +6% Hút Máu" },
-		"core_bang_5": { "name": "Băng Ma Hạch Tuyết Ma (Cấp 5)", "atk": 55.0, "hp": 320.0, "cd_red_pct": 10.0, "color": Color("#72EFDD"), "desc": "+55 ATK · +320 HP · -10% Hồi Chiêu" },
-		"core_doc_6": { "name": "Vạn Hạt Độc Hạch (Cấp 6)", "atk": 75.0, "hp": 420.0, "crit_pct": 10.0, "burn_dps": 28.0, "color": Color("#70E000"), "desc": "+75 ATK · +420 HP · +10% Crit · +28 Độc/Hỏa Thiêu Đốt/s" },
-		"core_loi_7": { "name": "Lôi Hoàng Ma Hạch (Cấp 7)", "atk": 105.0, "hp": 580.0, "crit_pct": 14.0, "cd_red_pct": 14.0, "color": Color("#C77DFF"), "desc": "+105 ATK · +580 HP · +14% Crit · -14% Hồi Chiêu" },
-		"core_tinh_7": { "name": "Tinh Thần Cổ Long Hạch (Cấp 7)", "atk": 120.0, "hp": 720.0, "soul": 80.0, "flame_dmg_pct": 35.0, "color": Color("#9D4EDD"), "desc": "+120 ATK · +720 HP · +80 SOUL · +35% Sát Thương Dị Hỏa" },
-		"core_nang_luong_8": { "name": "Năng Lượng Hạch Cấp 8 (Đấu Tôn Thiên Mộ)", "atk": 165.0, "hp": 960.0, "soul": 120.0, "crit_pct": 16.0, "color": Color("#4CC9F0"), "desc": "+165 ATK · +960 HP · +120 SOUL · +16% Crit (Hoặc ngưng tụ Cửu Chuyển [B])" },
-		"core_nang_luong_9": { "name": "Năng Lượng Hạch Cấp 9 (Bán Thánh Kim Sắc)", "atk": 230.0, "hp": 1400.0, "soul": 180.0, "flame_dmg_pct": 45.0, "poise_pct": 35.0, "color": Color("#FFD166"), "desc": "+230 ATK · +1400 HP · +180 SOUL · +45% Dị Hỏa · +35% Phá Thế" },
-		"core_kim_loi_9": { "name": "Cửu Huyền Kim Lôi Hạch Cấp 9 (Thánh Hạch)", "atk": 420.0, "hp": 3200.0, "soul": 280.0, "flame_dmg_pct": 68.0, "poise_pct": 48.0, "crit_pct": 20.0, "color": Color("#FBBF24"), "desc": "+420 ATK · +3200 HP · +280 SOUL · +68% Dị Hỏa · +20% Crit" },
-		"core_de_viem_10": { "name": "Đế Viêm Thần Hạch Cấp 10 (Đấu Đế Hạch)", "atk": 950.0, "hp": 7200.0, "soul": 520.0, "flame_dmg_pct": 95.0, "poise_pct": 65.0, "crit_pct": 25.0, "color": Color("#00F5D4"), "desc": "+950 ATK · +7200 HP · +520 SOUL · +95% Dị Hỏa · +25% Crit" }
-	}
-	if not DEFS.has(core_id):
-		return {}
-	var d: Dictionary = (DEFS[core_id] as Dictionary).duplicate()
-	d["id"] = core_id
-	return d
+	return GearCoreMgr.get_core_socket_def(core_id)
 
 
 func get_core_socket_totals() -> Dictionary:
-	var totals: Dictionary = {
-		"atk": 0.0, "hp": 0.0, "spd": 0.0, "crit_pct": 0.0,
-		"burn_dps": 0.0, "hp_regen": 0.0, "cd_red_pct": 0.0,
-		"poise_pct": 0.0, "lifesteal_pct": 0.0,
-		"soul": 0.0, "flame_dmg_pct": 0.0
-	}
-	for cid in weapon_core_sockets:
-		var cid_s: String = str(cid)
-		if cid_s == "":
-			continue
-		var cdef: Dictionary = get_core_socket_def(cid_s)
-		for k in totals.keys():
-			totals[k] = float(totals[k]) + float(cdef.get(k, 0.0))
-	return totals
+	return GearCoreMgr.get_core_socket_totals(self)
 
 
 func socket_monster_core(slot_idx: int, core_id: String) -> Dictionary:
-	if slot_idx < 0 or slot_idx >= 3:
-		return { "ok": false, "msg": "Rãnh khảm không hợp lệ!" }
-	var cdef: Dictionary = get_core_socket_def(core_id)
-	if cdef.is_empty():
-		return { "ok": false, "msg": "Vật phẩm này không thể khảm lên vũ khí!" }
-	if get_item_count(core_id) <= 0:
-		return { "ok": false, "msg": "Bạn không có [%s] trong Nạp Giới!" % str(cdef["name"]) }
-	var prev: String = str(weapon_core_sockets[slot_idx])
-	if prev != "":
-		add_item(prev, 1)
-	remove_item(core_id, 1)
-	weapon_core_sockets[slot_idx] = core_id
-	recalculate_and_clamp(false)
-	EventBus.audio_sfx_requested.emit("level_up")
-	EventBus.equipment_changed.emit()
-	EventBus.stats_changed.emit()
-	return { "ok": true, "msg": "Đã khảm [%s] vào Rãnh #%d (%s)!" % [str(cdef["name"]), slot_idx + 1, str(cdef["desc"])] }
+	return GearCoreMgr.socket_monster_core(self, slot_idx, core_id)
 
 
 func unsocket_monster_core(slot_idx: int) -> Dictionary:
-	if slot_idx < 0 or slot_idx >= 3:
-		return { "ok": false, "msg": "Rãnh khảm không hợp lệ!" }
-	var prev: String = str(weapon_core_sockets[slot_idx])
-	if prev == "":
-		return { "ok": false, "msg": "Rãnh #%d đang trống!" % (slot_idx + 1) }
-	weapon_core_sockets[slot_idx] = ""
-	add_item(prev, 1)
-	recalculate_and_clamp(false)
-	EventBus.audio_sfx_requested.emit("ui_click")
-	EventBus.equipment_changed.emit()
-	EventBus.stats_changed.emit()
-	return { "ok": true, "msg": "Đã tháo [%s] khỏi Rãnh #%d về lại Nạp Giới!" % [str(get_core_socket_def(prev).get("name", prev)), slot_idx + 1] }
+	return GearCoreMgr.unsocket_monster_core(self, slot_idx)
 
 
-# =========================================================
-# TINH HỎA NĂNG & CHÚC PHÚC ROGUELITE THIÊN PHẦN LUYỆN KHÍ THÁP
-# =========================================================
+# --- TINH HỎA NĂNG & CHÚC PHÚC ROGUELITE THIÊN PHẦN LUYỆN KHÍ THÁP ---
 func add_fire_energy(amount: int) -> void:
 	fire_energy = maxi(0, fire_energy + amount)
 	EventBus.stats_changed.emit()
@@ -1755,24 +1380,12 @@ func clear_tower_buffs() -> void:
 
 
 func add_tower_buff(stat_key: String, value: float, heal_ratio: float = 0.0) -> void:
-	if stat_key != "":
-		tower_active_buffs[stat_key] = float(tower_active_buffs.get(stat_key, 0.0)) + value
-	recalculate_and_clamp(false)
-	if heal_ratio > 0.0:
-		current_hp = minf(get_max_hp(), current_hp + get_max_hp() * heal_ratio)
-		current_qi = minf(get_max_qi(), current_qi + get_max_qi() * heal_ratio)
-	EventBus.stats_changed.emit()
+	MasteryQuestMgr.add_tower_buff(self, stat_key, value, heal_ratio)
 
 
 func record_tower_floor_clear(floor_num: int) -> Dictionary:
-	if floor_num > tower_best_floor:
-		tower_best_floor = floor_num
-	var fe_gain: int = 12 + floor_num * 5
-	var stones_gain: int = 1 + int(floor_num / 3)
-	var gold_gain: int = 55 + floor_num * 28
-	fire_energy += fe_gain
-	enhance_stones += stones_gain
-	gold += gold_gain
-	EventBus.stats_changed.emit()
-	trigger_auto_save("Thiên Phần Tháp Tầng %d" % floor_num, true)
-	return { "fire_energy": fe_gain, "stones": stones_gain, "gold": gold_gain, "best_floor": tower_best_floor }
+	return MasteryQuestMgr.record_tower_floor_clear(self, floor_num)
+
+
+func get_active_title_display() -> String:
+	return AchievementMgr.get_active_title_display(self)

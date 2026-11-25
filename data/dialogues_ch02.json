@@ -1,0 +1,116 @@
+{
+  "version": "1.1",
+  "chapter": "Chương 02",
+  "dialogues": {
+    "story_muc_luc_intro": {
+      "branches": [
+        {
+          "default": true,
+          "lines": [
+            "Mục Lực (khinh khỉnh dựa thương): 'Hừ, lại một tên lính đánh thuê vác thanh sắt đen rỉ sét muốn tiếp cận Tiểu Y Tiên à?'",
+            "Mục Lực (cười lạnh): 'Thanh Sơn Trấn này là địa bàn của Lang Đầu Đoàn ta — thức thời thì đừng xía mũi vào chuyện của Vạn Dược Trai!'"
+          ],
+          "action": ""
+        }
+      ]
+    },
+    "story_tieu_y_tien": {
+      "marker_when": { "missing_flag": "met_tieu_y_tien" },
+      "branches": [
+        {
+          "when": { "missing_flag": "met_tieu_y_tien" },
+          "lines": [
+            "Tiểu Y Tiên (mỉm cười trong trẻo): 'Chào vị lính đánh thuê trẻ tuổi! Cảm ơn huynh đã không bị lời đe dọa của Mục Lực làm cho chùn bước.'",
+            "Tiểu Y Tiên: 'Ở Vách Đá Đoạn Hồn phía Bắc có một hang đá cổ bị mây mù che khuất — nghe đồn có nhiều linh dược hiếm! Muội sẽ đi cùng hỗ trợ hồi máu cho huynh (bấm phím [G])!'",
+            "Dược Lão (truyền âm trong nhẫn): 'Huyền Trọng Xích đã quen tay rồi! Giờ vi sư truyền cho con Địa Giai Đấu Kỹ [R] — Diễm Phân Phệ Lãng Xích để xông pha Ma Thú Sơn Mạch!'"
+          ],
+          "action": "flag:met_tieu_y_tien"
+        },
+        {
+          "when": { "has_flag": "found_doc_kinh", "missing_flag": "absorbed_tu_hoa" },
+          "lines": [
+            "Tiểu Y Tiên (ôm chặt cuốn Thất Thải Độc Kinh, mắt sáng rỡ): 'Cảm ơn Tiêu Viêm đã chia sẻ linh dược và cuốn sách kỳ lạ này ở Huyền Nhai Sơn Động!'",
+            "Tiểu Y Tiên: 'Nghe nói phía Đông Bắc gần Bờ Suối Trăng Bạc vừa có dị tượng Đấu Hoàng đại chiến — huynh nhớ cẩn thận nhé! Để muội hồi đầy HP & Đấu Khí cho huynh.'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiểu Y Tiên: 'Mục Lực và Lang Đầu Đoàn ngày càng hung hăng ở phía Đông! Huynh bấm [G] để muội luôn đi sát hỗ trợ hồi máu nhé!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "story_van_chi": {
+      "marker_when": { "missing_flag": "absorbed_tu_hoa" },
+      "branches": [
+        {
+          "when": { "missing_flag": "met_van_chi" },
+          "lines": [
+            "Vân Chi (mỹ nhân áo trắng lạnh lùng tựa đá, Đấu Khí bị Tử Tinh Phong Ấn khóa chặt): 'Đa tạ tiểu huynh đệ đã cứu ta bên Bờ Suối Trăng Bạc... Hãy gọi ta là Vân Chi.'",
+            "Bên đống lửa trại Hang Ẩn Tu, Tiêu Viêm nướng hai con cá suối thơm phức để bồi bổ cho mỹ nhân bị thương. Dược Lão trong nhẫn bỗng cười gian chỉ vào một lọ bột màu hồng nhạt..."
+          ],
+          "choices": [
+            {
+              "label": "Nướng cá thảo mộc thanh đạm chăm sóc chu đáo (+30 Hảo Cảm Vân Chi!)",
+              "action": "choice:van_chi_herb_fish"
+            },
+            {
+              "label": "Rắc nhầm lọ 'muối tiêu hồng' của Dược Lão (Kỳ ngộ hài hước Vân Chi nhảy xuống suối lạnh!)",
+              "action": "choice:van_chi_pink_powder"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "killed_tieu_su_vuong" },
+          "lines": [
+            "Vân Chi (khẽ gật đầu): 'Ta đã dụ Tử Tinh Dực Sư Vương rời khỏi ổ rồi! Ngươi hãy nhân cơ hội tiến sâu vào Hang Tím phía Đông hạ Tiểu Sư Vương đoạt [Tử Linh Tinh] nhé!'",
+            "Vân Chi: 'Để ta dùng dược thảo hồi đầy thể lực cho ngươi trước khi xuất phát.'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "lines": [
+            "Vân Chi (kinh ngạc nhận lấy một nửa Bầu Tử Linh Tinh): 'Ngươi thực sự đã đoạt được cả Tử Linh Tinh lẫn Tử Tinh Nguyên sao?! Phong ấn trên người ta đã giải trừ hoàn toàn rồi!'",
+            "Vân Chi (lưu luyến cởi chiếc nội giáp lấp lánh lam quang đặt vào tay bạn): 'Ta phải trở về tông môn rồi... Chiếc [Hải Tâm Giáp] này tặng ngươi phòng thân. Hẹn một ngày hữu duyên tái ngộ!'",
+            "Vân Chi vút bay lên tầng mây! Dược Lão lập tức hộ pháp giúp Tiêu Viêm vận chuyển Phần Quyết nuốt chửng ngọn [TỬ TINH THÚ HỎA] — Đấu Khí lột xác thành sắc TÍM RỰC LỬA!"
+          ],
+          "action": "flag:absorbed_tu_hoa"
+        }
+      ]
+    },
+    "story_tieu_y_tien_farewell": {
+      "marker_when": { "missing_flag": "ch02_farewell_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch02_farewell_done" },
+          "lines": [
+            "Giữa Thung Lũng U Lan, toàn bộ cỏ hoa xung quanh bóng lưng nhỏ bé của Tiểu Y Tiên đều héo đen vì khí độc tím bốc lên từ cơ thể nàng!",
+            "Tiểu Y Tiên (khóc nấc lùi lại): 'Tiêu Viêm đừng bước qua vạch cỏ héo! Ách Nan Độc Thể của muội đã thức tỉnh rồi — chạm vào muội huynh sẽ trúng kịch độc mất... Muội phải rời sang Xuất Vân Đế Quốc thôi!'"
+          ],
+          "choices": [
+            {
+              "label": "Bọc Tử Hỏa bước thẳng qua vòng cỏ độc ôm chặt nàng & hẹn ngày luyện Độc Đan (+40 Hảo Cảm!)",
+              "action": "choice:u_lan_hug"
+            },
+            {
+              "label": "Đứng ngoài vòng độc nắm chặt tay thề trở thành Luyện Đan Tông Sư cứu nàng (+20 Hảo Cảm!)",
+              "action": "choice:u_lan_promise"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "lines": [
+            "Tiểu Y Tiên (mỉm cười qua làn nước mắt): 'Huynh hãy mạnh mẽ tiến về Sa Mạc Tháp Qua Nhĩ ở Chương 03 nhé... Muội sẽ luôn nhớ lời hẹn giữa chúng ta!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    }
+  },
+  "effects": {}
+}

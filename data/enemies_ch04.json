@@ -19,12 +19,26 @@
       "exp_reward": 780,
       "gold_reward": 230,
       "gear_drop_chance": 0.52,
-      "allowed_rarities": ["dia", "thien"],
-      "gear_pool": ["arm_giap_vay_xa_hoang", "glv_thiet_quyen_uyen", "boot_phong_hanh_hai"],
+      "allowed_rarities": [
+        "dia",
+        "thien"
+      ],
+      "gear_pool": [
+        "arm_giap_vay_xa_hoang",
+        "glv_thiet_quyen_uyen",
+        "boot_phong_hanh_hai"
+      ],
       "drops": [
-        { "item_id": "herb_sa_chi_man_da_la", "chance": 0.65 },
-        { "item_id": "core_hoa_3", "chance": 0.65 }
-      ]
+        {
+          "item_id": "herb_sa_chi_man_da_la",
+          "chance": 0.65
+        },
+        {
+          "item_id": "core_hoa_3",
+          "chance": 0.65
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/lang_dau_tinh_anh_anim.png"
     },
     "mac_thua_boss": {
       "id": "mac_thua_boss",
@@ -45,11 +59,23 @@
       "gold_reward": 1650,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["thien"],
-      "gear_pool": ["arm_giap_vay_xa_hoang", "neck_bang_hoang_tam", "glv_thiet_quyen_uyen"],
+      "allowed_rarities": [
+        "thien"
+      ],
+      "gear_pool": [
+        "arm_giap_vay_xa_hoang",
+        "neck_bang_hoang_tam",
+        "glv_thiet_quyen_uyen"
+      ],
       "drops": [
-        { "item_id": "core_phong_4", "chance": 1.0 },
-        { "item_id": "pill_bang_tam_dan", "chance": 1.0 }
+        {
+          "item_id": "core_phong_4",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_bang_tam_dan",
+          "chance": 1.0
+        }
       ]
     },
     "moc_chien_boss": {
@@ -71,11 +97,23 @@
       "gold_reward": 1300,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["thien"],
-      "gear_pool": ["wpn_chien_phu_thanh_moc", "arm_giap_vay_xa_hoang", "leg_bi_giap_kho"],
+      "allowed_rarities": [
+        "thien"
+      ],
+      "gear_pool": [
+        "wpn_chien_phu_thanh_moc",
+        "arm_giap_vay_xa_hoang",
+        "leg_bi_giap_kho"
+      ],
       "drops": [
-        { "item_id": "core_hoa_3", "chance": 1.0 },
-        { "item_id": "pill_thanh_lien_tu", "chance": 0.90 }
+        {
+          "item_id": "core_hoa_3",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_thanh_lien_tu",
+          "chance": 0.9
+        }
       ]
     },
     "truong_lao_me_dac_nhi": {
@@ -95,11 +133,23 @@
       "exp_reward": 950,
       "gold_reward": 320,
       "gear_drop_chance": 0.55,
-      "allowed_rarities": ["dia", "thien"],
-      "gear_pool": ["ring_cot_viem_gioi", "neck_hon_linh_lien"],
+      "allowed_rarities": [
+        "dia",
+        "thien"
+      ],
+      "gear_pool": [
+        "ring_cot_viem_gioi",
+        "neck_hon_linh_lien"
+      ],
       "drops": [
-        { "item_id": "herb_sa_chi_man_da_la", "chance": 0.70 },
-        { "item_id": "core_phong_4", "chance": 0.50 }
+        {
+          "item_id": "herb_sa_chi_man_da_la",
+          "chance": 0.7
+        },
+        {
+          "item_id": "core_phong_4",
+          "chance": 0.5
+        }
       ]
     },
     "lac_doc_huyet_anh": {
@@ -109,7 +159,7 @@
       "realm_index": 4,
       "realm_label": "Ngũ Tinh Đại Đấu Sư · Độc Khí",
       "ai_type": "charger",
-      "sprite": "res://assets/sprites/enemies/sa_doc_hat_vuong.png",
+      "sprite": "res://assets/sprites/enemies/mob_xuat_van_doc_su.png",
       "max_hp": 1680,
       "atk": 96,
       "def": 44,
@@ -118,13 +168,26 @@
       "attack_range": 260,
       "exp_reward": 920,
       "gold_reward": 260,
-      "gear_drop_chance": 0.50,
-      "allowed_rarities": ["dia", "thien"],
-      "gear_pool": ["boot_phong_hanh_hai", "pend_thanh_lien_dai"],
+      "gear_drop_chance": 0.5,
+      "allowed_rarities": [
+        "dia",
+        "thien"
+      ],
+      "gear_pool": [
+        "boot_phong_hanh_hai",
+        "pend_thanh_lien_dai"
+      ],
       "drops": [
-        { "item_id": "herb_that_huyen_tien", "chance": 0.55 },
-        { "item_id": "core_hoa_3", "chance": 0.70 }
-      ]
+        {
+          "item_id": "herb_that_huyen_tien",
+          "chance": 0.55
+        },
+        {
+          "item_id": "core_hoa_3",
+          "chance": 0.7
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_xuat_van_doc_su_anim.png"
     },
     "viem_loi_boss": {
       "id": "viem_loi_boss",
@@ -145,11 +208,23 @@
       "gold_reward": 1850,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["thien"],
-      "gear_pool": ["caul_xich_duong_dinh", "arm_phap_bao_truong_lao", "neck_bang_hoang_tam"],
+      "allowed_rarities": [
+        "thien"
+      ],
+      "gear_pool": [
+        "caul_xich_duong_dinh",
+        "arm_phap_bao_truong_lao",
+        "neck_bang_hoang_tam"
+      ],
       "drops": [
-        { "item_id": "core_phong_4", "chance": 1.0 },
-        { "item_id": "herb_that_huyen_tien", "chance": 1.0 }
+        {
+          "item_id": "core_phong_4",
+          "chance": 1.0
+        },
+        {
+          "item_id": "herb_that_huyen_tien",
+          "chance": 1.0
+        }
       ]
     },
     "chap_su_van_lam": {
@@ -159,7 +234,7 @@
       "realm_index": 4,
       "realm_label": "Lục Tinh Đại Đấu Sư",
       "ai_type": "chaser",
-      "sprite": "res://assets/sprites/enemies/xa_nhan_chien_binh.png",
+      "sprite": "res://assets/sprites/enemies/mob_van_lam_kiem_si.png",
       "max_hp": 1950,
       "atk": 102,
       "def": 48,
@@ -169,12 +244,26 @@
       "exp_reward": 1120,
       "gold_reward": 340,
       "gear_drop_chance": 0.52,
-      "allowed_rarities": ["dia", "thien"],
-      "gear_pool": ["arm_phap_bao_truong_lao", "boot_phong_hanh_hai", "glv_thiet_quyen_uyen"],
+      "allowed_rarities": [
+        "dia",
+        "thien"
+      ],
+      "gear_pool": [
+        "arm_phap_bao_truong_lao",
+        "boot_phong_hanh_hai",
+        "glv_thiet_quyen_uyen"
+      ],
       "drops": [
-        { "item_id": "core_phong_4", "chance": 0.52 },
-        { "item_id": "pill_hoi_khi_dan", "chance": 0.65 }
-      ]
+        {
+          "item_id": "core_phong_4",
+          "chance": 0.52
+        },
+        {
+          "item_id": "pill_hoi_khi_dan",
+          "chance": 0.65
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_van_lam_kiem_si_anim.png"
     },
     "kiem_ve_van_yen": {
       "id": "kiem_ve_van_yen",
@@ -183,7 +272,7 @@
       "realm_index": 4,
       "realm_label": "Thất Tinh Đại Đấu Sư",
       "ai_type": "charger",
-      "sprite": "res://assets/sprites/enemies/tieu_ninh_boss.png",
+      "sprite": "res://assets/sprites/enemies/mob_van_lam_kiem_si.png",
       "max_hp": 2250,
       "atk": 108,
       "def": 52,
@@ -193,12 +282,25 @@
       "exp_reward": 1320,
       "gold_reward": 410,
       "gear_drop_chance": 0.56,
-      "allowed_rarities": ["thien"],
-      "gear_pool": ["neck_hon_linh_lien", "arm_phap_bao_truong_lao", "leg_hac_bao_kho"],
+      "allowed_rarities": [
+        "thien"
+      ],
+      "gear_pool": [
+        "neck_hon_linh_lien",
+        "arm_phap_bao_truong_lao",
+        "leg_hac_bao_kho"
+      ],
       "drops": [
-        { "item_id": "core_phong_4", "chance": 0.68 },
-        { "item_id": "pill_thanh_lien_tu", "chance": 0.50 }
-      ]
+        {
+          "item_id": "core_phong_4",
+          "chance": 0.68
+        },
+        {
+          "item_id": "pill_thanh_lien_tu",
+          "chance": 0.5
+        }
+      ],
+      "anim_sheet": "res://assets/sprites/enemies/mob_van_lam_kiem_si_anim.png"
     },
     "nap_lan_yen_nhien_boss": {
       "id": "nap_lan_yen_nhien_boss",
@@ -219,11 +321,23 @@
       "gold_reward": 2400,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["thien"],
-      "gear_pool": ["arm_phap_bao_truong_lao", "boot_phong_hanh_hai", "pend_thanh_lien_dai"],
+      "allowed_rarities": [
+        "thien"
+      ],
+      "gear_pool": [
+        "arm_phap_bao_truong_lao",
+        "boot_phong_hanh_hai",
+        "pend_thanh_lien_dai"
+      ],
       "drops": [
-        { "item_id": "core_phong_4", "chance": 1.0 },
-        { "item_id": "pill_bang_tam_dan", "chance": 1.0 }
+        {
+          "item_id": "core_phong_4",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_bang_tam_dan",
+          "chance": 1.0
+        }
       ]
     },
     "van_yen_dai_tran_boss": {
@@ -245,11 +359,24 @@
       "gold_reward": 2600,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["thien", "de"],
-      "gear_pool": ["arm_phap_bao_truong_lao", "caul_xich_duong_dinh", "ring_cot_viem_gioi"],
+      "allowed_rarities": [
+        "thien",
+        "de"
+      ],
+      "gear_pool": [
+        "arm_phap_bao_truong_lao",
+        "caul_xich_duong_dinh",
+        "ring_cot_viem_gioi"
+      ],
       "drops": [
-        { "item_id": "core_phong_4", "chance": 1.0 },
-        { "item_id": "pill_thanh_lien_tu", "chance": 1.0 }
+        {
+          "item_id": "core_phong_4",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_thanh_lien_tu",
+          "chance": 1.0
+        }
       ]
     },
     "van_lang_boss": {
@@ -271,11 +398,24 @@
       "gold_reward": 3500,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["thien", "de"],
-      "gear_pool": ["arm_phap_bao_truong_lao", "pend_co_de_ngoc", "caul_xich_duong_dinh"],
+      "allowed_rarities": [
+        "thien",
+        "de"
+      ],
+      "gear_pool": [
+        "arm_phap_bao_truong_lao",
+        "pend_co_de_ngoc",
+        "caul_xich_duong_dinh"
+      ],
       "drops": [
-        { "item_id": "pill_tam_van_thanh_linh", "chance": 1.0 },
-        { "item_id": "core_phong_4", "chance": 1.0 }
+        {
+          "item_id": "pill_tam_van_thanh_linh",
+          "chance": 1.0
+        },
+        {
+          "item_id": "core_phong_4",
+          "chance": 1.0
+        }
       ]
     },
     "truy_binh_van_lam": {
@@ -285,8 +425,8 @@
       "realm_index": 5,
       "realm_label": "Tam Tinh Đấu Linh",
       "ai_type": "charger",
-      "sprite": "res://assets/sprites/npcs/npc_muc_luc.png",
-      "anim_sheet": "res://assets/sprites/enemies/muc_luc_boss_anim.png",
+      "sprite": "res://assets/sprites/enemies/mob_van_lam_kiem_si.png",
+      "anim_sheet": "res://assets/sprites/enemies/mob_van_lam_kiem_si_anim.png",
       "max_hp": 2550,
       "atk": 122,
       "def": 56,
@@ -296,11 +436,24 @@
       "exp_reward": 1680,
       "gold_reward": 520,
       "gear_drop_chance": 0.58,
-      "allowed_rarities": ["thien", "de"],
-      "gear_pool": ["boot_phong_hanh_hai", "glv_thiet_quyen_uyen", "neck_bang_hoang_tam"],
+      "allowed_rarities": [
+        "thien",
+        "de"
+      ],
+      "gear_pool": [
+        "boot_phong_hanh_hai",
+        "glv_thiet_quyen_uyen",
+        "neck_bang_hoang_tam"
+      ],
       "drops": [
-        { "item_id": "core_phong_4", "chance": 0.85 },
-        { "item_id": "pill_bang_tam_dan", "chance": 0.55 }
+        {
+          "item_id": "core_phong_4",
+          "chance": 0.85
+        },
+        {
+          "item_id": "pill_bang_tam_dan",
+          "chance": 0.55
+        }
       ]
     },
     "van_son_phan_than_boss": {
@@ -322,11 +475,23 @@
       "gold_reward": 4800,
       "is_boss": true,
       "gear_drop_chance": 1.0,
-      "allowed_rarities": ["de"],
-      "gear_pool": ["pend_kim_viem_ho_hon_ngoc", "arm_phap_bao_truong_lao", "caul_xich_duong_dinh"],
+      "allowed_rarities": [
+        "de"
+      ],
+      "gear_pool": [
+        "pend_kim_viem_ho_hon_ngoc",
+        "arm_phap_bao_truong_lao",
+        "caul_xich_duong_dinh"
+      ],
       "drops": [
-        { "item_id": "pill_tam_van_thanh_linh", "chance": 1.0 },
-        { "item_id": "pill_bang_tam_dan", "chance": 1.0 }
+        {
+          "item_id": "pill_tam_van_thanh_linh",
+          "chance": 1.0
+        },
+        {
+          "item_id": "pill_bang_tam_dan",
+          "chance": 1.0
+        }
       ]
     }
   }

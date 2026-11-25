@@ -3,6 +3,7 @@ extends RefCounted
 ## Panel [M] Bản Đồ Thế Giới (31 Map), Hồng Nhan Tri Kỷ, Bàn Môn & Cường Bảng, Tâm Ma, Thiên Phần Tháp & Đồ Giám Vạn Thú.
 
 const PanGateMgr = preload("res://scripts/systems/pan_gate_manager.gd")
+const AchMgr = preload("res://scripts/systems/achievement_manager.gd")
 
 var hud: CanvasLayer
 
@@ -108,6 +109,19 @@ func build_content(vbox: VBoxContainer) -> void:
 	)
 	tab_row.add_child(tab_pan_btn)
 
+	var ach_sum: Dictionary = AchMgr.get_summary(PlayerData)
+	var tab_ach_btn := Button.new()
+	tab_ach_btn.text = ("★ " if hud.world_map_tab == "achievements" else "") + "🏆 Thành Tựu (%d/%d)" % [int(ach_sum["unlocked"]), int(ach_sum["total"])]
+	tab_ach_btn.disabled = (hud.world_map_tab == "achievements")
+	tab_ach_btn.add_theme_font_size_override("font_size", 12)
+	tab_ach_btn.add_theme_color_override("font_color", Color("#FFD700"))
+	tab_ach_btn.pressed.connect(func() -> void:
+		AudioManager.play_sfx("ui_click")
+		hud.world_map_tab = "achievements"
+		hud._populate_modal()
+	)
+	tab_row.add_child(tab_ach_btn)
+
 	if hud.world_map_tab == "heroines":
 		build_heroines_tab(vbox)
 		return
@@ -123,24 +137,22 @@ func build_content(vbox: VBoxContainer) -> void:
 	elif hud.world_map_tab == "pan_gate":
 		build_pan_gate_tab(vbox)
 		return
+	elif hud.world_map_tab == "achievements":
+		hud.panel_achievements.build_achievements_tab(vbox)
+		return
 
-	# 1. Tóm tắt Buff Hồng Nhan & Kỳ Vật Cốt Truyện
+	# 1. Tóm tắt Buff 8/8 Hồng Nhan & Kỳ Vật Cốt Truyện
 	var lore_card: PanelContainer = hud._make_styled_panel(Color(0.11, 0.08, 0.16, 0.94), Color("#E0AAFF"), 1, 7)
 	vbox.add_child(lore_card)
 	var lv := VBoxContainer.new()
 	lv.add_theme_constant_override("separation", 3)
 	lore_card.add_child(lv)
-	lv.add_child(hud._make_label(
-		"HỒNG NHAN:  Huân Nhi %d  |  Tiểu Y Tiên %d  |  Vân Chi %d  |  Thanh Lân %d  |  Thải Lân %d" % [
-			PlayerData.get_affection("huan_nhi"),
-			PlayerData.get_affection("tieu_y_tien"),
-			PlayerData.get_affection("van_chi"),
-			PlayerData.get_affection("thanh_lan"),
-			PlayerData.get_affection("my_do_toa")
-		],
-		12,
-		Color("#FFD166")
-	))
+	var aff_parts: Array = []
+	for hp in PlayerData.get_heroine_profiles():
+		aff_parts.append("%s %d" % [str(hp.get("short_name", hp.get("name", ""))), PlayerData.get_affection(str(hp.get("key", "")))])
+	var aff_lbl: Label = hud._make_label("HỒNG NHAN (8/8):  " + "  |  ".join(aff_parts), 12, Color("#FFD166"))
+	aff_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lv.add_child(aff_lbl)
 	var buff_l: Label = hud._make_label("Buff Hảo Cảm Đang Kích Hoạt: " + PlayerData.get_active_affection_summary_text(), 11, Color("#80ED99"))
 	buff_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	lv.add_child(buff_l)

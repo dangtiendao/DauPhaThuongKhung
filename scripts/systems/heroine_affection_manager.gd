@@ -1,9 +1,27 @@
 class_name HeroineAffectionManager
 extends RefCounted
-## Quản Lý Hảo Cảm 5 Hồng Nhan Tri Kỷ (Tách mô-đun từ player_data.gd):
-##   - Hồ sơ 5 Hồng Nhan (Huân Nhi, Tiểu Y Tiên, Vân Chi, Thanh Lân, Mỹ Đỗ Toa)
-##   - Tính bộ chỉ số Buff tích lũy (25/50/75/100)
-##   - Nhận Quà Tri Kỷ theo mốc & Tặng vật phẩm tăng Hảo Cảm x2 sở thích
+## Quản Lý Hảo Cảm Trọn Bộ 8/8 Hồng Nhan Tri Kỷ (v1.1.0):
+##   1. Tiêu Huân Nhi   2. Tiểu Y Tiên   3. Vân Chi (Vân Vận)   4. Thanh Lân
+##   5. Thải Lân (Mỹ Đỗ Toa)   6. Tử Nghiên   7. Nhã Phi   8. Nạp Lan Yên Nhiên
+## - Tính bộ chỉ số Buff tích lũy (25/50/75/100) + Nhận Quà Tri Kỷ + Tặng Quà x2 Sở Thích.
+
+const HEROINE_KEYS: Array[String] = [
+	"huan_nhi", "tieu_y_tien", "van_chi", "thanh_lan", "my_do_toa",
+	"tu_nghien", "nha_phi", "nap_lan_yen_nhien"
+]
+
+
+static func default_affection_dict() -> Dictionary:
+	return {
+		"huan_nhi": 20,
+		"tieu_y_tien": 0,
+		"van_chi": 0,
+		"thanh_lan": 0,
+		"my_do_toa": 0,
+		"tu_nghien": 0,
+		"nha_phi": 0,
+		"nap_lan_yen_nhien": 0
+	}
 
 
 static func get_heroine_profiles() -> Array:
@@ -11,6 +29,7 @@ static func get_heroine_profiles() -> Array:
 		{
 			"key": "huan_nhi",
 			"name": "Tiêu Huân Nhi",
+			"short_name": "Huân Nhi",
 			"title": "Cổ Tộc Thánh Nữ · Kim Đế Phần Thiên",
 			"sprite": "res://assets/sprites/npcs/npc_huan_nhi.png",
 			"color": "#FFD166",
@@ -26,7 +45,8 @@ static func get_heroine_profiles() -> Array:
 		{
 			"key": "tieu_y_tien",
 			"name": "Tiểu Y Tiên",
-			"title": "Vạn Dược Trai · Ách Nan Độc Thể",
+			"short_name": "Tiểu Y Tiên",
+			"title": "Vạn Dược Trai · Thiên Độc Nữ",
 			"sprite": "res://assets/sprites/npcs/npc_tieu_y_tien.png",
 			"color": "#80ED99",
 			"favorite_items": ["herb_ngung_huyet_thao", "herb_tay_cot_hoa", "herb_sa_chi_man_da_la"],
@@ -41,7 +61,8 @@ static func get_heroine_profiles() -> Array:
 		{
 			"key": "van_chi",
 			"name": "Vân Chi (Vân Vận)",
-			"title": "Đấu Hoàng Phong Hệ · Tông Chủ Vân Lam",
+			"short_name": "Vân Chi",
+			"title": "Tông Chủ Hoa Tông · Phong Chi Cực",
 			"sprite": "res://assets/sprites/npcs/npc_van_chi.png",
 			"color": "#70D6FF",
 			"favorite_items": ["herb_hoat_khi_qua", "pill_hoi_khi_dan", "core_moc_2"],
@@ -56,7 +77,8 @@ static func get_heroine_profiles() -> Array:
 		{
 			"key": "thanh_lan",
 			"name": "Thanh Lân",
-			"title": "Bích Xà Tam Hoa Đồng · Muội Muội Tiêu Gia",
+			"short_name": "Thanh Lân",
+			"title": "Bích Xà Tam Hoa Đồng · Thiên Xà Phủ",
 			"sprite": "res://assets/sprites/npcs/npc_thanh_lan.png",
 			"color": "#2EC4B6",
 			"favorite_items": ["core_hoa_1", "core_hoa_3", "pill_thanh_lien_tu"],
@@ -71,6 +93,7 @@ static func get_heroine_profiles() -> Array:
 		{
 			"key": "my_do_toa",
 			"name": "Thải Lân (Mỹ Đỗ Toa)",
+			"short_name": "Thải Lân",
 			"title": "Nữ Vương Xà Nhân · Thất Thải Thôn Thiên Mãng",
 			"sprite": "res://assets/sprites/npcs/npc_my_do_toa.png",
 			"color": "#E0AAFF",
@@ -81,6 +104,54 @@ static func get_heroine_profiles() -> Array:
 				{ "req": 50, "desc": "+12% Xuyên Áp Chế Cảnh Giới + Quà Tri Kỷ (Băng Tâm Đan x2, Đá CH x6)", "gift_items": { "pill_bang_tam_dan": 2 }, "gift_stones": 6, "gift_gold": 280 },
 				{ "req": 75, "desc": "+18% Uy lực Phật Nộ Hỏa Liên" },
 				{ "req": 100, "desc": "Nữ Vương Long Uy: +15% ATK & +15% DEF + Quà (Phá Chướng Đan x1, Đá CH x10)", "gift_items": { "pill_pha_chuong_dan": 1 }, "gift_stones": 10, "gift_gold": 650 }
+			]
+		},
+		{
+			"key": "tu_nghien",
+			"name": "Tử Nghiên (Long Hoàng)",
+			"short_name": "Tử Nghiên",
+			"title": "Thái Hư Cổ Long Hoàng · Radar Tầm Bảo",
+			"sprite": "res://assets/sprites/npcs/npc_tu_nghien.png",
+			"color": "#C77DFF",
+			"favorite_items": ["pill_dan_hoan_ngot", "herb_thanh_moc_tien_dang", "herb_long_huyet_chi"],
+			"fav_hint": "Đan Hoàn Ngọt, Thanh Mộc Tiên Đằng, Long Huyết Chi",
+			"milestones": [
+				{ "req": 25, "desc": "+65px Tầm Hút Đồ & +8% Phá Thế (Poise)" },
+				{ "req": 50, "desc": "+12% Tỷ lệ Rớt Trang Bị + Quà Tri Kỷ (Đan Hoàn Ngọt x3, Đá CH x6)", "gift_items": { "pill_dan_hoan_ngot": 3 }, "gift_stones": 6, "gift_gold": 260 },
+				{ "req": 75, "desc": "Long Hoàng Chi Lực: +12% ATK & +12% DEF" },
+				{ "req": 100, "desc": "Thái Hư Long Uy: +15% ATK, +15% Phá Thế & +15 SOUL + Quà (Băng Hạch 5 x1)", "gift_items": { "core_bang_5": 1 }, "gift_stones": 10, "gift_gold": 620 }
+			]
+		},
+		{
+			"key": "nha_phi",
+			"name": "Nhã Phi",
+			"short_name": "Nhã Phi",
+			"title": "Nữ Hoàng Kinh Tế · Tổng Quản Mễ Đặc Nhĩ",
+			"sprite": "res://assets/sprites/npcs/npc_nha_phi.png",
+			"color": "#FF5D8F",
+			"favorite_items": ["pill_truc_co_linh_dich", "pill_tu_khi_tan", "pill_tam_van_thanh_linh"],
+			"fav_hint": "Trúc Cơ Linh Dịch, Tụ Khí Tán, Tam Văn Thanh Linh Đan",
+			"milestones": [
+				{ "req": 25, "desc": "+18% Kim Tệ rơi từ Quái & Boss" },
+				{ "req": 50, "desc": "+10% Tỷ lệ & Vùng Đan Tâm Luyện Đan + Quà Tri Kỷ (Hồi Khí Đan x3, 450V)", "gift_items": { "pill_hoi_khi_dan": 3 }, "gift_stones": 5, "gift_gold": 450 },
+				{ "req": 75, "desc": "+25% Kim Tệ & +10% Rớt Trang Bị Hiếm" },
+				{ "req": 100, "desc": "Đấu Giá Nữ Hoàng: +30% Kim Tệ, +10% EXP & +10% Crit + Quà (1.200V, Đá CH x10)", "gift_items": { "pill_bang_tam_dan": 1 }, "gift_stones": 10, "gift_gold": 1200 }
+			]
+		},
+		{
+			"key": "nap_lan_yen_nhien",
+			"name": "Nạp Lan Yên Nhiên",
+			"short_name": "Yên Nhiên",
+			"title": "Kiếm Khách Phong Linh · Đồng Minh Bắc Vực",
+			"sprite": "res://assets/sprites/npcs/npc_nap_lan_yen_nhien.png",
+			"color": "#90E0EF",
+			"favorite_items": ["pill_hoi_khi_dan", "core_phong_4", "pill_pha_chuong_dan"],
+			"fav_hint": "Hồi Khí Đan, Phong Ma Hạch (Cấp 4), Phá Chướng Đan",
+			"milestones": [
+				{ "req": 25, "desc": "+6% Tốc Độ (SPD) & +6% Chí Mạng (Crit)" },
+				{ "req": 50, "desc": "-8% Hồi Chiêu Đấu Kỹ + Quà Tri Kỷ (Hồi Khí Đan x3, Đá CH x5)", "gift_items": { "pill_hoi_khi_dan": 3 }, "gift_stones": 5, "gift_gold": 240 },
+				{ "req": 75, "desc": "+12% Xuyên Áp Chế Cảnh Giới & +10% Phá Thế Boss" },
+				{ "req": 100, "desc": "Phong Linh Kiếm Tâm: +14% ATK, +10% Crit & -8% CD + Quà (Phong Hạch 4 x1)", "gift_items": { "core_phong_4": 1 }, "gift_stones": 9, "gift_gold": 550 }
 			]
 		}
 	]
@@ -104,7 +175,8 @@ static func rebuild_affection_cache(pd) -> void:
 		"loot_magnet": 0.0,
 		"gold_pct": 0.0,
 		"gear_drop_pct": 0.0,
-		"realm_pen": 0.0
+		"realm_pen": 0.0,
+		"poise_pct": 0.0
 	}
 	var hn: int = pd.get_affection("huan_nhi")
 	if hn >= 25:
@@ -161,6 +233,47 @@ static func rebuild_affection_cache(pd) -> void:
 	if md >= 100:
 		b["atk_pct"] += 15.0
 		b["def_pct"] += 15.0
+
+	var tn: int = pd.get_affection("tu_nghien")
+	if tn >= 25:
+		b["loot_magnet"] += 65.0
+		b["poise_pct"] += 8.0
+	if tn >= 50:
+		b["gear_drop_pct"] += 12.0
+	if tn >= 75:
+		b["atk_pct"] += 12.0
+		b["def_pct"] += 12.0
+	if tn >= 100:
+		b["atk_pct"] += 15.0
+		b["poise_pct"] += 15.0
+		b["soul"] += 15.0
+
+	var np: int = pd.get_affection("nha_phi")
+	if np >= 25:
+		b["gold_pct"] += 18.0
+	if np >= 50:
+		b["alchemy_bonus"] += 10.0
+	if np >= 75:
+		b["gold_pct"] += 25.0
+		b["gear_drop_pct"] += 10.0
+	if np >= 100:
+		b["gold_pct"] += 30.0
+		b["exp_bonus"] += 10.0
+		b["crit_chance"] += 10.0
+
+	var nl: int = pd.get_affection("nap_lan_yen_nhien")
+	if nl >= 25:
+		b["spd_pct"] += 6.0
+		b["crit_chance"] += 6.0
+	if nl >= 50:
+		b["cooldown_red"] += 8.0
+	if nl >= 75:
+		b["realm_pen"] += 12.0
+		b["poise_pct"] += 10.0
+	if nl >= 100:
+		b["atk_pct"] += 14.0
+		b["crit_chance"] += 10.0
+		b["cooldown_red"] += 8.0
 
 	pd.cached_affection_bonuses = b
 
@@ -245,8 +358,9 @@ static func get_active_affection_summary_text(pd) -> String:
 		["lotus_dmg_pct", "Hỏa Liên +%d%%"], ["crit_chance", "Crit +%d%%"],
 		["cooldown_red", "Giảm CD %d%%"], ["alchemy_bonus", "Đan Đạo +%d%%"],
 		["heal_pct", "Hồi Máu +%d%%"], ["lifesteal", "Hút Máu +%d%%"],
-		["realm_pen", "Xuyên Áp Chế +%d%%"], ["soul", "SOUL +%d"],
-		["loot_magnet", "Hút Đồ +%dpx"], ["gold_pct", "Kim Tệ +%d%%"], ["gear_drop_pct", "Rớt Đồ +%d%%"]
+		["realm_pen", "Xuyên Áp Chế +%d%%"], ["poise_pct", "Phá Thế +%d%%"],
+		["soul", "SOUL +%d"], ["loot_magnet", "Hút Đồ +%dpx"],
+		["gold_pct", "Kim Tệ +%d%%"], ["gear_drop_pct", "Rớt Đồ +%d%%"]
 	]
 	for pair in labels:
 		var v: int = int(round(float(pd.cached_affection_bonuses.get(str(pair[0]), 0.0))))

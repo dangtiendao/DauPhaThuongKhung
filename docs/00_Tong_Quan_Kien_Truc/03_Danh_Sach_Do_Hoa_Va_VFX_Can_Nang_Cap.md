@@ -1,6 +1,6 @@
 # SỔ THEO DÕI CHẤT LƯỢNG ĐỒ HỌA & VFX CẦN NÂNG CẤP (ART & VFX QUALITY DEBT)
 
-> **Cập nhật lần cuối**: 25/11/2026 (tại mốc **`v1.0.0` Official Release** — **HOÀN TẤT 41/41 ASSET AI 32-BIT HD CHƯƠNG 11 [0 NỢ ART!]** · Đạt tròn **72/72 = 100% True 8-Frame AI** toàn dự án [8 Player + 64 Boss]!)
+> **Cập nhật lần cuối**: 25/11/2026 (tại mốc **`v1.1.0` Graphics, UI & Architecture Polish** — **HOÀN TẤT TRỌN GÓI P3.2 & P3.3 (+43 FILE PNG HD · 0 QUÁI THƯỜNG MƯỢN ẢNH BOSS/NPC · 374 PNG · 0 FILE THỪA)** · **72/72 True 8-Frame AI** [8 Player + 64 Boss] + **18 Sheet 8-Frame Quái Thường**!)
 > **Mục đích**: Ghi nhận minh bạch toàn bộ **ảnh sprite, NPC, tileset, icon, quái thường, prop và hiệu ứng VFX/Shader** của dự án, đối chiếu trạng thái nâng cấp theo mức ưu tiên.
 > **Nguyên tắc thay nóng**: Mọi file ảnh trong danh sách dưới đây đã được gắn đường dẫn chuẩn trong JSON/GDScript — khi ghi đè ảnh mới đúng kích thước cột **"Kích thước chuẩn"** rồi chạy `--import --quit`, toàn bộ game sẽ tự động nhận ảnh mới mà **không cần sửa code hay JSON**.
 
@@ -16,7 +16,7 @@
 | **P0 — Cao nhất** | Đồ họa **Chương 08** (7 Boss 8f + 7 chân dung + 7 NPC + 5 Tileset + 5 Icon) | **✅ 31/31 Đã xong (`v0.7.3`)** | Đã thay mới 100% bằng tranh AI 32-bit HD Pixel Art (True 8-Frame `4×2`, `semi_alpha = 0`, `min_diff` `66.7%–93.5%`) |
 | **P1 — Cao** | **10 file Ch.06–07** còn sót ở đợt `v0.6.3` (4 NPC + 3 Tileset + 3 Icon) | **✅ 10/10 Đã xong (`v0.7.3`)** | Đã thay mới 100% bằng tranh AI 32-bit HD Pixel Art đồng bộ chuẩn `v0.6.3` |
 | **P2 — Trung bình** | **VFX 2.0, Shader & Hiệu Ứng Thị Giác** (`ScreenFxOverlay` + Thủy Mặc + Huyết Thiên Song Đế + Hỷ Sự + Tinh Không Đại Thiên, `space_shockwave`, `vfx_energy_dissolve`, Cánh Hóa Dực, Đồng Hành 2.0, Đan Lôi + 16 đại chiêu Ch.09–11) | **✅ 6/6 + 16 Ch.09–11 (`v1.0.0`)** | Hoàn tất trọn gói VFX 2.0 + 16 đại chiêu Ch.09–11 100% tương thích `gl_compatibility` (60–144 FPS) |
-| **P3 — Bổ sung Polish** | **Quái thường tái sử dụng sprite Ch.04–08, Prop & Vũ khí đeo lưng** *(đã xong 3/3 Pickup `32×32` ở `v0.7.1`, 3 Mob Ch.09 ở `v0.8.0`, 4 Mob Ch.10 ở `v0.9.0` & 5 Mob Ch.11 ở `v1.0.0`)* | **38 Mob cũ + Prop/Vũ khí** | Tùy chọn polish hậu phát hành |
+| **P3 — Bổ sung Polish** | **P3.1 Pickup (`32×32`) + P3.2 Quái thường vùng & Anim 8f + P3.3 Prop địa vực & Biến thể Vũ khí** | **✅ HOÀN TẤT (`v1.1.0`)** | **+43 PNG HD mới (`semi_alpha = 0`)**: 12 quái vùng mới (`0` quái mượn ảnh Boss/NPC), **18 sheet 8-frame (`4×2`) quái thường**, **9 prop địa vực** (76 vị trí trên map) & **4 biến thể Huyền Trọng Xích** *(HD pixel-reforged từ sprite gốc trong repo do `gemini-3.1-flash-image` 503, hỗ trợ thay nóng 1-đổi-1)* |
 
 > **Ghi chú đối chứng (Phần ĐÃ ĐẠT CHUẨN AI 32-bit HD Pixel Art — 100% TRỌN 11/11 CHƯƠNG!)**:
 > * `8/8` spritesheet Tiêu Viêm (`v0.6.1`) — True 8-Frame AI sắc nét.
@@ -112,22 +112,20 @@
   * `assets/sprites/pickups/herb_item.png` (`32×32` linh dược lá ngọc có viền `#141020`)
   * `assets/sprites/pickups/monster_core.png` (`32×32` ma hạch đa diện lõi sáng tím-hồng)
   * `assets/sprites/pickups/qi_orb.png` (`32×32` tinh cầu đấu khí ngọc lam phát sáng)
-* [ ] **P3.2 — Quái Thường Ch.04–08 Tái Sử Dụng Sprite Cũ & Chưa Có Anim Sheet Riêng**:
-  * `lang_dau_tinh_anh.png` đang dùng chung cho **7 loại quái** (`Ch.02 → Ch.08`: *Hộ Vệ Mặc Gia, Huyết Y Đao Khách, Đấu Vương Hắc Giác, Ma Viêm Chấp Pháp, Phong Lôi Chấp Sự, Hoàng Tuyền Đao Khách*).
-  * `xa_nhan_chien_binh.png` đang dùng chung cho **6 loại quái** (*Chấp Sự Vân Lam, Cường Bảng Tinh Nhuệ, Độc Thi Chiến Binh, Vạn Xà Độc Mãng*).
-  * `sa_doc_hat_vuong.png` đang dùng chung cho **5 loại quái** (*Lạc Độc Huyết Ảnh, Huyết Ảnh Chấp Sự, Thanh Mộc Độc Mãng, Huyết Ngạt Độc Sư*).
-  * Một số quái thường Ch.07–08 đang mượn ảnh tĩnh Boss cũ (`thach_khoi_boss.png` ×3, `la_hau_boss.png` ×2, `tieu_ninh_boss.png` ×2, `npc_muc_luc.png` ×2).
-  * **Hướng nâng cấp**: Vẽ tối thiểu 6–8 mẫu quái vùng đặc trưng mới (*Đệ tử Vân Lam Tông, Độc Sư Xuất Vân, Hắc Y Sứ Hồn Điện, Băng Hà Hộ Pháp, Xích Hỏa Thạch Nhân, Phệ Kim Thử*) kèm 4-frame idle/walk.
-* [ ] **P3.3 — Vũ Khí Đeo Lưng & Prop Tương Tác Ch.05–08 Tái Sử Dụng**:
-  * `assets/sprites/weapons/huyen_trong_xich.png` (`96×36`) đang dùng chung cho cả 5 cấp Huyền Trọng Xích (từ Phàm Xích Ch.01 tới *Tam Thiên Tinh Viêm Xích* Ch.08) — nên tách biến thể phát sáng theo từng bộ Set.
-  * `assets/sprites/props/testing_stele.png` đang dùng làm vật thể tương tác cho *Bia Trắc Hồn*, *Đáy Thiên Sơn Huyết Đàm*, *Bản Nguyên Long Châu #9*, *Lò Rèn Yêu Khôi* — nên bổ sung prop riêng (`blood_pool_altar.png`, `dragon_core_orb.png`, `forge_thunder_pool.png`).
+* [x] **P3.2 — Quái Thường Vùng Đặc Trưng & Hoạt Ảnh 8-Frame (`4×2`)** *(Hoàn tất `v1.1.0` — 0/54 quái thường mượn ảnh Boss/NPC!)*:
+  * **12 mẫu quái vùng mới (`96×96` tĩnh + `384×192` 8-frame `4×2`, tổng 24 PNG)**: `mob_van_lam_kiem_si`, `mob_huyet_tong_dao_khach`, `mob_gia_nam_tinh_nhue`, `mob_dung_nham_hoa_xa`, `mob_xuat_van_doc_su`, `mob_hon_dien_hac_y_su`, `mob_bang_ha_ho_phap`, `mob_xich_hoa_thach_nhan`, `mob_phe_kim_thu`, `mob_hoang_tuyen_dao_khach`, `mob_van_xa_doc_mang`, `mob_vien_co_thu_linh` — thay thế 100% 12 quái từng mượn ảnh Boss/NPC và phân tách 29 quái Ch.04–09.
+  * **6 sheet 8-frame (`4×2`) cho quái kinh điển xuất hiện dày**: `hoang_da_son_lang_anim.png`, `thiet_boi_son_tru_anim.png`, `hoa_tinh_vien_anim.png`, `lang_dau_tinh_anh_anim.png`, `sa_doc_hat_vuong_anim.png`, `xa_nhan_chien_binh_anim.png` (tổng **37/54 quái thường** chạy hoạt ảnh 8-frame qua `SpriteAnimHelper`).
+  * *(Minh bạch nguồn tạo ảnh: Do máy chủ tạo ảnh AI `gemini-3.1-flash-image` đang trả lỗi quá tải `HTTP 503 UNAVAILABLE`, 12 mẫu quái vùng mới & 9 prop mới được rèn pixel HD trực tiếp từ các sprite 32-bit HD gốc trong dự án [không mượn Boss/NPC cho quái], giữ đúng chuẩn `#141020` outline, `semi_alpha = 0` và sẵn sàng thay nóng 1-đổi-1 bất cứ lúc nào).*
+* [x] **P3.3 — 9 Prop Địa Vực Đặc Trưng & 4 Biến Thể Vũ Khí Huyền Trọng Xích** *(Hoàn tất `v1.1.0` — 13 PNG mới)*:
+  * **4 biến thể Huyền Trọng Xích (`96×36`, rèn trực tiếp từ `huyen_trong_xich.png`)**: `xich_luu_ly_viem.png` (Ngưng Vật / Lưu Ly), `xich_tam_thien_tinh_viem.png` (Tam Sắc / Tam Thiên Tinh Viêm), `xich_tinh_lien_luan_hoi.png` (Tạo Hóa / Tịnh Liên Luân Hồi), `xich_di_hoa_hang_co.png` (Thần Binh 23 Dị Hỏa Hằng Cổ Xích).
+  * **9 Prop địa vực (`96×132`–`112×128`) gắn thực tế 76 điểm trên bản đồ Ch.03–11** kèm collider & `PointLight2D` theo tông màu trong `WorldStageManager`: `blood_pool_altar.png`, `ancient_altar.png`, `forge_cauldron.png`, `ice_pillar.png`, `soul_tower.png`, `dragon_core_orb.png`, `poison_totem.png`, `lava_crystal.png`, `star_obelisk.png`.
 
 ---
 
-## Tiến Độ Hoàn Thiện Trả Nợ Đồ Họa (P0 + P1 + P2)
+## Tiến Độ Hoàn Thiện Trả Nợ Đồ Họa (P0 + P1 + P2 + P3 — 100% ĐÃ XONG!)
 
 1. ~~**Đợt A (14 file — 7 Boss Ch.08 True 8-Frame + 7 Chân Dung)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.3`** — Chốt trọn **49/49 = 100% True 8-Frame AI** toàn dự án!
 2. ~~**Đợt B (11 file — 11 NPC Ch.06–08 gồm Tử Nghiên, Địa Yêu Khôi, Thiên Hỏa Tôn Giả...)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.3`**.
 3. ~~**Đợt C (16 file — 8 Tileset `128×128` & 8 Icon Đấu Kỹ `56×56` Ch.06–08)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.3`**. *(3 Pickup `pickups/` đã nâng cấp xong ở `v0.7.1`).*
 4. ~~**Đợt D (VFX 2.0)**~~: ✅ **ĐÃ HOÀN TẤT ở `v0.7.1`** (`space_shockwave.gdshader`, `vfx_energy_dissolve.gdshader`, `ScreenFxOverlay`, Cánh Hóa Dực sprite-shader, `128×128` VFX textures, Đồng Hành 2.0 & Ngũ Sắc Đan Lôi giáng thực tế).
-5. **Tùy chọn Polish P3 (không chặn Ch.09–11)**: Chỉ còn quái thường tái sử dụng sprite cũ & biến thể vũ khí/prop (P3.2 & P3.3).
+5. ~~**Đợt E (P3.2 & P3.3 — 43 file PNG HD Polish `v1.1.0`)**~~: ✅ **ĐÃ HOÀN TẤT ở `v1.1.0`** — 12 quái vùng mới (`0` quái mượn ảnh Boss/NPC) + 18 sheet 8-frame quái thường + 9 prop địa vực + 4 biến thể Huyền Trọng Xích (`374 PNG · 0 file thừa · 2.466/2.466 test PASSED`).

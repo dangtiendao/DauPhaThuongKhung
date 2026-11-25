@@ -7,27 +7,79 @@
       "name": "Đỉnh Núi Hậu Viện Già Nam (Chia Ly Huân Nhi)",
       "subtitle": "Hồi 7.1 — Hắc Yên Thông Đạo Cổ Tộc · Truyền Thừa Đế Ấn Quyết",
       "is_safe_zone": true,
-      "size": [1920, 1120],
-      "default_spawn": [210, 560],
+      "size": [
+        1920,
+        1120
+      ],
+      "default_spawn": [
+        210,
+        560
+      ],
       "bgm": "bgm_gia_nam",
       "ambient_weather": "sparks",
       "ground_tile": "res://assets/sprites/tiles/noi_vien_jade.png",
       "path_tile": "res://assets/sprites/tiles/stepping_path.png",
       "path_rects": [
-        [100, 510, 1740, 104],
-        [910, 260, 120, 600]
+        [
+          100,
+          510,
+          1740,
+          104
+        ],
+        [
+          910,
+          260,
+          120,
+          600
+        ]
       ],
       "decor_type": "jade_academy",
       "decor_points": [
-        [360, 220], [720, 200], [1240, 200], [1580, 240],
-        [380, 900], [820, 910], [1280, 900], [1600, 880]
+        [
+          360,
+          220
+        ],
+        [
+          720,
+          200
+        ],
+        [
+          1240,
+          200
+        ],
+        [
+          1580,
+          240
+        ],
+        [
+          380,
+          900
+        ],
+        [
+          820,
+          910
+        ],
+        [
+          1280,
+          900
+        ],
+        [
+          1600,
+          880
+        ]
       ],
       "chests": [
         {
           "id": "chest_ch07_co_toc_gift",
-          "pos": [1540, 290],
+          "pos": [
+            1540,
+            290
+          ],
           "gold": 25000,
-          "items": { "herb_long_huyet_chi": 3, "pill_viem_minh_linh_dan": 2 }
+          "items": {
+            "herb_long_huyet_chi": 3,
+            "pill_viem_minh_linh_dan": 2
+          }
         }
       ],
       "npcs": [
@@ -36,7 +88,10 @@
           "name": "Tiêu Huân Nhi (Thiên Chi Kiêu Nữ Cổ Tộc)",
           "title": "Trao Đế Ấn Quyết [Phiên Hải Ấn] · Ước Hẹn Đế Tộc Trung Châu",
           "sprite": "res://assets/sprites/npcs/npc_huan_nhi.png",
-          "pos": [960, 440],
+          "pos": [
+            960,
+            440
+          ],
           "role": "ch07_huan_nhi_farewell",
           "glow_hex": "#FFD166",
           "name_hex": "#FFD166",
@@ -47,7 +102,10 @@
           "name": "Lăng Ảnh (Hắc Ảnh Hộ Vệ Cổ Tộc)",
           "title": "Mở Không Gian Thông Đạo & Truyền Tin Gia Mã Đế Quốc",
           "sprite": "res://assets/sprites/npcs/npc_lang_anh.png",
-          "pos": [1220, 680],
+          "pos": [
+            1220,
+            680
+          ],
           "role": "ch07_lang_anh_portal",
           "glow_hex": "#C77DFF",
           "name_hex": "#E0AAFF",
@@ -59,17 +117,29 @@
         {
           "id": "back_ch06_sky_from_ch07",
           "label": "Quay Lại Tây -> Bầu Trời Nội Viện Già Nam (Ch.06)",
-          "pos": [108, 560],
+          "pos": [
+            108,
+            560
+          ],
           "target_map": "ch06_bau_troi_noi_vien",
-          "target_spawn": [1780, 560],
+          "target_spawn": [
+            1780,
+            560
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch07_de_do_me_dac_nhi",
           "label": "Viễn Chinh Đông -> Gia Mã Đế Đô (Đại Viện Mễ Đặc Nhĩ)",
-          "pos": [1810, 560],
+          "pos": [
+            1810,
+            560
+          ],
           "target_map": "ch07_de_do_me_dac_nhi",
-          "target_spawn": [210, 560],
+          "target_spawn": [
+            210,
+            560
+          ],
           "require_flag": "ch07_huan_nhi_farewell_done",
           "locked_hint": "Hãy gặp Tiêu Huân Nhi [V] giữa Đỉnh Núi Chia Ly để nhận truyền thừa Đế Ấn Quyết trước khi dẫn quân hồi hương Gia Mã Đế Quốc!"
         }
@@ -80,27 +150,80 @@
       "name": "Đại Viện Mễ Đặc Nhĩ & Quảng Trường Viêm Minh",
       "subtitle": "Hồi 7.2 & 7.4 — Giải Vây Gia Mã · Bế Quan Đấu Hoàng · Thành Lập Đế Quốc Viêm Minh",
       "is_safe_zone": true,
-      "size": [2048, 1200],
-      "default_spawn": [220, 600],
+      "size": [
+        2048,
+        1200
+      ],
+      "default_spawn": [
+        220,
+        600
+      ],
       "bgm": "bgm_capital",
       "ambient_weather": "sparks",
       "ground_tile": "res://assets/sprites/tiles/de_do_palace.png",
       "path_tile": "res://assets/sprites/tiles/stepping_path.png",
       "path_rects": [
-        [100, 548, 1850, 108],
-        [960, 110, 128, 980]
+        [
+          100,
+          548,
+          1850,
+          108
+        ],
+        [
+          960,
+          110,
+          128,
+          980
+        ]
       ],
       "decor_type": "palace",
       "decor_points": [
-        [340, 240], [720, 240], [1340, 240], [1720, 240],
-        [340, 960], [720, 960], [1340, 960], [1720, 960]
+        [
+          340,
+          240
+        ],
+        [
+          720,
+          240
+        ],
+        [
+          1340,
+          240
+        ],
+        [
+          1720,
+          240
+        ],
+        [
+          340,
+          960
+        ],
+        [
+          720,
+          960
+        ],
+        [
+          1340,
+          960
+        ],
+        [
+          1720,
+          960
+        ]
       ],
       "chests": [
         {
           "id": "chest_ch07_viem_minh_vault",
-          "pos": [1680, 320],
+          "pos": [
+            1680,
+            320
+          ],
           "gold": 32000,
-          "items": { "herb_long_huyet_chi": 3, "herb_hu_cot_thao": 2, "pill_viem_minh_linh_dan": 2 }
+          "items": {
+            "herb_long_huyet_chi": 3,
+            "herb_hu_cot_thao": 2,
+            "pill_viem_minh_linh_dan": 2
+          }
         }
       ],
       "npcs": [
@@ -109,7 +232,10 @@
           "name": "Băng Hoàng Hải Ba Đông & Đại Ca Tiêu Đỉnh",
           "title": "Giải Vây Gia Mã · Bế Quan Sinh Tử Môn Đột Phá Đấu Hoàng",
           "sprite": "res://assets/sprites/npcs/npc_hai_ba_dong.png",
-          "pos": [620, 440],
+          "pos": [
+            620,
+            440
+          ],
           "role": "ch07_hai_ba_dong_siege",
           "glow_hex": "#72EFDD",
           "name_hex": "#90E0EF",
@@ -120,7 +246,10 @@
           "name": "Gia Hình Thiên & Hội Trưởng Pháp Mã",
           "title": "Đại Hội Sáng Lập Đế Quốc Viêm Minh [M -> Viêm Minh]",
           "sprite": "res://assets/sprites/npcs/npc_gia_hinh_thien.png",
-          "pos": [1024, 770],
+          "pos": [
+            1024,
+            770
+          ],
           "role": "ch07_gia_hinh_thien_alliance",
           "glow_hex": "#FFD166",
           "name_hex": "#FFD166",
@@ -131,7 +260,10 @@
           "name": "Nữ Hoàng Thải Lân (Mỹ Đỗ Toa · Hình Đường Chủ)",
           "title": "Huyết Mạch Tiểu Tiêu Tiêu · Thiên Hồn Dung Huyết Đan",
           "sprite": "res://assets/sprites/npcs/npc_my_do_toa.png",
-          "pos": [1420, 440],
+          "pos": [
+            1420,
+            440
+          ],
           "role": "ch07_thai_lan_pregnancy",
           "glow_hex": "#FF4D6D",
           "name_hex": "#FF9770",
@@ -142,7 +274,10 @@
           "name": "Bia Ký Ức Phế Tích Ô Thản Thành (Tiêu Chiến)",
           "title": "Kỳ Ngộ Ẩn — Lời Thề Báo Thù Hồn Điện (+15% DMG vs Hồn Điện)",
           "sprite": "res://assets/sprites/npcs/npc_tieu_chien.png",
-          "pos": [440, 820],
+          "pos": [
+            440,
+            820
+          ],
           "role": "ch07_o_than_relic",
           "glow_hex": "#FF9F1C",
           "name_hex": "#FFD166",
@@ -154,26 +289,44 @@
         {
           "id": "back_dinh_nui_from_de_do",
           "label": "Quay Lại Tây -> Đỉnh Núi Chia Ly (Già Nam)",
-          "pos": [108, 600],
+          "pos": [
+            108,
+            600
+          ],
           "target_map": "ch07_dinh_nui_chia_ly",
-          "target_spawn": [1680, 560],
+          "target_spawn": [
+            1680,
+            560
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch07_tam_thuong_van_lam",
           "label": "Tiến Bắc -> ĐỈNH VÂN LAM SƠN (Tam Thượng Vân Lam!)",
-          "pos": [1024, 108],
+          "pos": [
+            1024,
+            108
+          ],
           "target_map": "ch07_tam_thuong_van_lam",
-          "target_spawn": [1024, 1010],
+          "target_spawn": [
+            1024,
+            1010
+          ],
           "require_flag": "ch07_broke_dau_hoang",
           "locked_hint": "Hãy hội ngộ Băng Hoàng Hải Ba Đông & Tiêu Đỉnh [V] hoàn tất bế quan Sinh Tử Môn đột phá ĐẤU HOÀNG trước khi Tam Thượng Vân Lam Sơn!"
         },
         {
           "id": "to_ch07_tran_quy_quan_doc_hoa",
           "label": "Xuất Chinh Đông -> Biên Ải Trấn Quỷ Quan (Độc Hỏa Tam Tông)",
-          "pos": [1938, 600],
+          "pos": [
+            1938,
+            600
+          ],
           "target_map": "ch07_tran_quy_quan_doc_hoa",
-          "target_spawn": [210, 560],
+          "target_spawn": [
+            210,
+            560
+          ],
           "require_flag": "ch07_viem_minh_founded",
           "locked_hint": "Hãy giải quyết xong đại chiến Đỉnh Vân Lam Sơn rồi gặp Gia Hình Thiên [V] thành lập Đế Quốc Viêm Minh trước khi ra Biên Ải Trấn Quỷ Quan!"
         }
@@ -184,27 +337,80 @@
       "name": "Đỉnh Vân Lam Sơn — Tam Thượng Vân Lam",
       "subtitle": "Hồi 7.3 — Phá Hôn Lễ Cổ Hà · Trảm Đấu Tông Vân Sơn · Biến Cố Vụ Hộ Pháp Bắt Sư Tôn",
       "is_safe_zone": false,
-      "size": [2048, 1180],
-      "default_spawn": [1024, 1010],
+      "size": [
+        2048,
+        1180
+      ],
+      "default_spawn": [
+        1024,
+        1010
+      ],
       "bgm": "bgm_yunlan",
       "ambient_weather": "embers",
       "ground_tile": "res://assets/sprites/tiles/yunlan_marble.png",
       "path_tile": "res://assets/sprites/tiles/stepping_path.png",
       "path_rects": [
-        [960, 140, 128, 960],
-        [240, 520, 1568, 128]
+        [
+          960,
+          140,
+          128,
+          960
+        ],
+        [
+          240,
+          520,
+          1568,
+          128
+        ]
       ],
       "decor_type": "yunlan_sect",
       "decor_points": [
-        [320, 240], [720, 240], [1340, 240], [1720, 240],
-        [320, 920], [720, 920], [1340, 920], [1720, 920]
+        [
+          320,
+          240
+        ],
+        [
+          720,
+          240
+        ],
+        [
+          1340,
+          240
+        ],
+        [
+          1720,
+          240
+        ],
+        [
+          320,
+          920
+        ],
+        [
+          720,
+          920
+        ],
+        [
+          1340,
+          920
+        ],
+        [
+          1720,
+          920
+        ]
       ],
       "chests": [
         {
           "id": "chest_ch07_van_lam_treasury",
-          "pos": [1760, 250],
+          "pos": [
+            1760,
+            250
+          ],
           "gold": 42000,
-          "items": { "item_hon_tinh_den": 2, "herb_long_huyet_chi": 3, "pill_viem_minh_linh_dan": 3 }
+          "items": {
+            "item_hon_tinh_den": 2,
+            "herb_long_huyet_chi": 3,
+            "pill_viem_minh_linh_dan": 3
+          }
         }
       ],
       "npcs": [
@@ -213,7 +419,10 @@
           "name": "Đan Vương Cổ Hà (Lục Phẩm Đan Sư)",
           "title": "Phá Hôn Lễ Vân Lam — Thuyết Phục Đan Vương Gia Nhập Viêm Minh",
           "sprite": "res://assets/sprites/npcs/npc_phap_ma.png",
-          "pos": [440, 790],
+          "pos": [
+            440,
+            790
+          ],
           "role": "ch07_co_ha_wedding",
           "glow_hex": "#FF9F1C",
           "name_hex": "#FFD166",
@@ -224,7 +433,10 @@
           "name": "Vân Vận & Nạp Lan Yên Nhiên (Tông Chủ Vân Lam)",
           "title": "Giải Tán Vân Lam Tông · Biệt Ly Bến Bờ Cũ",
           "sprite": "res://assets/sprites/npcs/npc_van_chi.png",
-          "pos": [1560, 780],
+          "pos": [
+            1560,
+            780
+          ],
           "role": "ch07_van_van_disband",
           "require_flag": "ch07_duoc_lao_captured",
           "glow_hex": "#90E0EF",
@@ -233,20 +445,68 @@
         }
       ],
       "spawns": [
-        { "enemy_id": "ho_phap_van_lam", "pos": [620, 560], "respawn": 15.0 },
-        { "enemy_id": "ho_phap_van_lam", "pos": [1420, 560], "respawn": 15.0 },
-        { "enemy_id": "am_anh_hon_su", "pos": [760, 340], "respawn": 16.0 },
-        { "enemy_id": "am_anh_hon_su", "pos": [1280, 340], "respawn": 16.0 },
-        { "enemy_id": "van_son_boss", "pos": [1024, 380], "respawn": 38.0 },
-        { "enemy_id": "vu_ho_phap_boss", "pos": [1024, 210], "respawn": 42.0 }
+        {
+          "enemy_id": "ho_phap_van_lam",
+          "pos": [
+            620,
+            560
+          ],
+          "respawn": 15.0
+        },
+        {
+          "enemy_id": "ho_phap_van_lam",
+          "pos": [
+            1420,
+            560
+          ],
+          "respawn": 15.0
+        },
+        {
+          "enemy_id": "am_anh_hon_su",
+          "pos": [
+            760,
+            340
+          ],
+          "respawn": 16.0
+        },
+        {
+          "enemy_id": "am_anh_hon_su",
+          "pos": [
+            1280,
+            340
+          ],
+          "respawn": 16.0
+        },
+        {
+          "enemy_id": "van_son_boss",
+          "pos": [
+            1024,
+            380
+          ],
+          "respawn": 38.0
+        },
+        {
+          "enemy_id": "vu_ho_phap_boss",
+          "pos": [
+            1024,
+            210
+          ],
+          "respawn": 42.0
+        }
       ],
       "portals": [
         {
           "id": "back_de_do_from_van_lam",
           "label": "Hạ Sơn Nam -> Đại Viện Mễ Đặc Nhĩ & Quảng Trường Viêm Minh",
-          "pos": [1024, 1095],
+          "pos": [
+            1024,
+            1095
+          ],
           "target_map": "ch07_de_do_me_dac_nhi",
-          "target_spawn": [1024, 220],
+          "target_spawn": [
+            1024,
+            220
+          ],
           "require_flag": ""
         }
       ]
@@ -256,27 +516,80 @@
       "name": "Biên Ải Trấn Quỷ Quan — Chiến Hỏa Tam Tông",
       "subtitle": "Hồi 7.5 — Tái Ngộ Thiên Độc Nữ Tóc Bạc · Trảm Nhạn Lạc Thiên · Cứu Nhị Ca Tiêu Lệ",
       "is_safe_zone": false,
-      "size": [2048, 1140],
-      "default_spawn": [210, 560],
+      "size": [
+        2048,
+        1140
+      ],
+      "default_spawn": [
+        210,
+        560
+      ],
       "bgm": "bgm_poison",
       "ambient_weather": "embers",
       "ground_tile": "res://assets/sprites/tiles/volcanic_basalt.png",
       "path_tile": "res://assets/sprites/tiles/stepping_path.png",
       "path_rects": [
-        [100, 510, 1850, 108],
-        [960, 220, 120, 700]
+        [
+          100,
+          510,
+          1850,
+          108
+        ],
+        [
+          960,
+          220,
+          120,
+          700
+        ]
       ],
       "decor_type": "volcanic",
       "decor_points": [
-        [360, 210], [760, 210], [1340, 210], [1720, 210],
-        [360, 920], [760, 920], [1340, 920], [1720, 920]
+        [
+          360,
+          210
+        ],
+        [
+          760,
+          210
+        ],
+        [
+          1340,
+          210
+        ],
+        [
+          1720,
+          210
+        ],
+        [
+          360,
+          920
+        ],
+        [
+          760,
+          920
+        ],
+        [
+          1340,
+          920
+        ],
+        [
+          1720,
+          920
+        ]
       ],
       "chests": [
         {
           "id": "chest_ch07_tran_quy_cache",
-          "pos": [1680, 260],
+          "pos": [
+            1680,
+            260
+          ],
           "gold": 46000,
-          "items": { "herb_hu_cot_thao": 3, "item_hon_tinh_den": 2, "core_doc_6": 1 }
+          "items": {
+            "herb_hu_cot_thao": 3,
+            "item_hon_tinh_den": 2,
+            "core_doc_6": 1
+          }
         }
       ],
       "npcs": [
@@ -285,7 +598,10 @@
           "name": "Thiên Độc Nữ (Tiểu Y Tiên — Đấu Tông Tóc Bạc)",
           "title": "Đoàn Tụ Sau 5 Năm · Nâng Cấp Đồng Hành Thiên Độc Nữ [G]",
           "sprite": "res://assets/sprites/npcs/npc_thien_doc_nu.png",
-          "pos": [440, 390],
+          "pos": [
+            440,
+            390
+          ],
           "role": "ch07_thien_doc_nu",
           "glow_hex": "#E0AAFF",
           "name_hex": "#E0AAFF",
@@ -296,7 +612,10 @@
           "name": "Nhị Ca Tiêu Lệ (Thống Lĩnh Trấn Quỷ Quan)",
           "title": "Giải Độc Phệ Sinh Đan · Thanh Hồn Hóa Sinh Đan",
           "sprite": "res://assets/sprites/npcs/npc_tieu_le.png",
-          "pos": [440, 760],
+          "pos": [
+            440,
+            760
+          ],
           "role": "ch07_tieu_le_cure",
           "glow_hex": "#FF6B6B",
           "name_hex": "#FFD166",
@@ -304,28 +623,91 @@
         }
       ],
       "spawns": [
-        { "enemy_id": "doc_thi_chien_binh", "pos": [860, 390], "respawn": 15.0 },
-        { "enemy_id": "doc_thi_chien_binh", "pos": [860, 750], "respawn": 15.0 },
-        { "enemy_id": "doc_thi_chien_binh", "pos": [1200, 560], "respawn": 16.0 },
-        { "enemy_id": "nhan_lac_thien_boss", "pos": [1540, 560], "respawn": 38.0 }
+        {
+          "enemy_id": "doc_thi_chien_binh",
+          "pos": [
+            860,
+            390
+          ],
+          "respawn": 15.0
+        },
+        {
+          "enemy_id": "doc_thi_chien_binh",
+          "pos": [
+            860,
+            750
+          ],
+          "respawn": 15.0
+        },
+        {
+          "enemy_id": "doc_thi_chien_binh",
+          "pos": [
+            1200,
+            560
+          ],
+          "respawn": 16.0
+        },
+        {
+          "enemy_id": "nhan_lac_thien_boss",
+          "pos": [
+            1540,
+            560
+          ],
+          "respawn": 38.0
+        }
       ],
       "portals": [
         {
           "id": "back_de_do_from_tran_quy",
           "label": "Rút Về Tây -> Đại Viện Mễ Đặc Nhĩ (Viêm Minh)",
-          "pos": [108, 560],
+          "pos": [
+            108,
+            560
+          ],
           "target_map": "ch07_de_do_me_dac_nhi",
-          "target_spawn": [1800, 600],
+          "target_spawn": [
+            1800,
+            600
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch07_van_hat_mon_xuat_van",
           "label": "Truy Kích Đông -> Thánh Địa Vạn Hạt Môn (Xuất Vân Đế Quốc)",
-          "pos": [1938, 560],
+          "pos": [
+            1938,
+            560
+          ],
           "target_map": "ch07_van_hat_mon_xuat_van",
-          "target_spawn": [210, 560],
+          "target_spawn": [
+            210,
+            560
+          ],
           "require_flag": "ch07_thien_doc_nu_joined",
           "locked_hint": "Hãy hạ Tông Chủ Kim Nhạn Tông Nhạn Lạc Thiên và đoàn tụ cùng Thiên Độc Nữ Tiểu Y Tiên [V] trước khi truy kích vào Xuất Vân Đế Quốc!"
+        }
+      ],
+      "props": [
+        {
+          "type": "poison_totem",
+          "pos": [
+            360,
+            210
+          ]
+        },
+        {
+          "type": "poison_totem",
+          "pos": [
+            760,
+            210
+          ]
+        },
+        {
+          "type": "poison_totem",
+          "pos": [
+            1340,
+            210
+          ]
         }
       ]
     },
@@ -334,27 +716,80 @@
       "name": "Thánh Địa Vạn Hạt Môn (Xuất Vân Đế Quốc)",
       "subtitle": "Hồi 7.6 — Trảm Hạt Tất Nham · Lời Nguyền Ma Độc Ban · Đoạt Bình Ngọc Nạp Hồn",
       "is_safe_zone": false,
-      "size": [2048, 1140],
-      "default_spawn": [210, 560],
+      "size": [
+        2048,
+        1140
+      ],
+      "default_spawn": [
+        210,
+        560
+      ],
       "bgm": "bgm_poison",
       "ambient_weather": "sparks",
       "ground_tile": "res://assets/sprites/tiles/xuat_van_poison_marsh.png",
       "path_tile": "res://assets/sprites/tiles/stepping_path.png",
       "path_rects": [
-        [100, 510, 1850, 108],
-        [1020, 220, 120, 700]
+        [
+          100,
+          510,
+          1850,
+          108
+        ],
+        [
+          1020,
+          220,
+          120,
+          700
+        ]
       ],
       "decor_type": "obsidian_city",
       "decor_points": [
-        [340, 220], [740, 220], [1340, 220], [1740, 220],
-        [340, 910], [740, 910], [1340, 910], [1740, 910]
+        [
+          340,
+          220
+        ],
+        [
+          740,
+          220
+        ],
+        [
+          1340,
+          220
+        ],
+        [
+          1740,
+          220
+        ],
+        [
+          340,
+          910
+        ],
+        [
+          740,
+          910
+        ],
+        [
+          1340,
+          910
+        ],
+        [
+          1740,
+          910
+        ]
       ],
       "chests": [
         {
           "id": "chest_ch07_van_hat_relics",
-          "pos": [1680, 860],
+          "pos": [
+            1680,
+            860
+          ],
           "gold": 52000,
-          "items": { "herb_hu_cot_thao": 3, "core_doc_6": 1, "item_hon_tinh_den": 2 }
+          "items": {
+            "herb_hu_cot_thao": 3,
+            "core_doc_6": 1,
+            "item_hon_tinh_den": 2
+          }
         }
       ],
       "npcs": [
@@ -363,7 +798,10 @@
           "name": "Độc Trì Vạn Cổ (Kỳ Ngộ Ách Nan Độc Thể)",
           "title": "Cùng Tiểu Y Tiên Tinh Luyện Độc Thảo (+25 SOUL)",
           "sprite": "res://assets/sprites/npcs/npc_thien_doc_nu.png",
-          "pos": [460, 320],
+          "pos": [
+            460,
+            320
+          ],
           "role": "ch07_poison_altar",
           "glow_hex": "#70E000",
           "name_hex": "#80ED99",
@@ -374,7 +812,10 @@
           "name": "Mật Thất Hồn Điện (Vạn Hạt Môn)",
           "title": "Đoạt [Bình Ngọc Nạp Hồn] & Dò Tung Tích Hàn Phong",
           "sprite": "res://assets/sprites/npcs/npc_vu_ho_phap.png",
-          "pos": [1660, 350],
+          "pos": [
+            1660,
+            350
+          ],
           "role": "ch07_hon_dien_prison",
           "require_flag": "ch07_killed_hat_tat_nham",
           "glow_hex": "#C77DFF",
@@ -383,28 +824,91 @@
         }
       ],
       "spawns": [
-        { "enemy_id": "huyet_ngat_doc_su", "pos": [820, 380], "respawn": 15.0 },
-        { "enemy_id": "huyet_ngat_doc_su", "pos": [820, 740], "respawn": 15.0 },
-        { "enemy_id": "huyet_ngat_doc_su", "pos": [1160, 560], "respawn": 16.0 },
-        { "enemy_id": "hat_tat_nham_boss", "pos": [1460, 560], "respawn": 40.0 }
+        {
+          "enemy_id": "huyet_ngat_doc_su",
+          "pos": [
+            820,
+            380
+          ],
+          "respawn": 15.0
+        },
+        {
+          "enemy_id": "huyet_ngat_doc_su",
+          "pos": [
+            820,
+            740
+          ],
+          "respawn": 15.0
+        },
+        {
+          "enemy_id": "huyet_ngat_doc_su",
+          "pos": [
+            1160,
+            560
+          ],
+          "respawn": 16.0
+        },
+        {
+          "enemy_id": "hat_tat_nham_boss",
+          "pos": [
+            1460,
+            560
+          ],
+          "respawn": 40.0
+        }
       ],
       "portals": [
         {
           "id": "back_tran_quy_from_van_hat",
           "label": "Quay Lại Tây -> Biên Ải Trấn Quỷ Quan",
-          "pos": [108, 560],
+          "pos": [
+            108,
+            560
+          ],
           "target_map": "ch07_tran_quy_quan_doc_hoa",
-          "target_spawn": [1780, 560],
+          "target_spawn": [
+            1780,
+            560
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch07_hac_hoang_ma_viem",
           "label": "Trở Lại Hắc Giác Vực -> Hắc Hoàng Thành & Ma Viêm Cốc",
-          "pos": [1938, 560],
+          "pos": [
+            1938,
+            560
+          ],
           "target_map": "ch07_hac_hoang_ma_viem",
-          "target_spawn": [210, 560],
+          "target_spawn": [
+            210,
+            560
+          ],
           "require_flag": "ch07_got_binh_nap_hon",
           "locked_hint": "Hãy trảm Lão Tổ Vạn Hạt Môn Hạt Tất Nham rồi phá Mật Thất Hồn Điện [V] lấy Bình Ngọc Nạp Hồn trước khi trở lại Hắc Giác Vực!"
+        }
+      ],
+      "props": [
+        {
+          "type": "poison_totem",
+          "pos": [
+            340,
+            220
+          ]
+        },
+        {
+          "type": "poison_totem",
+          "pos": [
+            740,
+            220
+          ]
+        },
+        {
+          "type": "poison_totem",
+          "pos": [
+            1340,
+            220
+          ]
         }
       ]
     },
@@ -413,27 +917,80 @@
       "name": "Hắc Hoàng Thành & Tổng Đàn Ma Viêm Cốc",
       "subtitle": "Hồi 7.7 — Đấu Giá Hắc Hoàng Tông · Nhốt Hồn Hàn Phong · Trảm Địa Ma Lão Quỷ · Đúc Địa Yêu Khôi",
       "is_safe_zone": false,
-      "size": [2140, 1200],
-      "default_spawn": [210, 600],
+      "size": [
+        2140,
+        1200
+      ],
+      "default_spawn": [
+        210,
+        600
+      ],
       "bgm": "bgm_hac_giac",
       "ambient_weather": "embers",
       "ground_tile": "res://assets/sprites/tiles/hac_giac_obsidian.png",
       "path_tile": "res://assets/sprites/tiles/stepping_path.png",
       "path_rects": [
-        [100, 548, 1940, 108],
-        [1060, 180, 128, 840]
+        [
+          100,
+          548,
+          1940,
+          108
+        ],
+        [
+          1060,
+          180,
+          128,
+          840
+        ]
       ],
       "decor_type": "obsidian_city",
       "decor_points": [
-        [360, 220], [780, 220], [1380, 220], [1800, 220],
-        [360, 980], [780, 980], [1380, 980], [1800, 980]
+        [
+          360,
+          220
+        ],
+        [
+          780,
+          220
+        ],
+        [
+          1380,
+          220
+        ],
+        [
+          1800,
+          220
+        ],
+        [
+          360,
+          980
+        ],
+        [
+          780,
+          980
+        ],
+        [
+          1380,
+          980
+        ],
+        [
+          1800,
+          980
+        ]
       ],
       "chests": [
         {
           "id": "chest_ch07_ma_viem_vault",
-          "pos": [1820, 280],
+          "pos": [
+            1820,
+            280
+          ],
           "gold": 68000,
-          "items": { "item_thien_thiet_khoang": 2, "pill_pha_tong_dan": 1, "core_doc_6": 1 }
+          "items": {
+            "item_thien_thiet_khoang": 2,
+            "pill_pha_tong_dan": 1,
+            "core_doc_6": 1
+          }
         }
       ],
       "npcs": [
@@ -442,7 +999,10 @@
           "name": "Mạc Thiên Hành (Tông Chủ Hắc Hoàng Tông)",
           "title": "Đại Đấu Giá Hội Hắc Hoàng Tông (Bồ Đề Hóa Thể Tiên · Thiên Yêu Hoàng)",
           "sprite": "res://assets/sprites/npcs/npc_mac_thien_hanh.png",
-          "pos": [420, 410],
+          "pos": [
+            420,
+            410
+          ],
           "role": "ch07_mac_thien_hanh",
           "glow_hex": "#FFD166",
           "name_hex": "#FFD166",
@@ -453,7 +1013,10 @@
           "name": "Đại Trưởng Lão Tô Thiên & Tử Nghiên (Viện Binh Già Nam)",
           "title": "Liên Quân Nội Viện Áp Trận Ma Viêm Cốc (+15% ATK)",
           "sprite": "res://assets/sprites/npcs/npc_to_thien.png",
-          "pos": [420, 810],
+          "pos": [
+            420,
+            810
+          ],
           "role": "ch07_to_thien_reinforce",
           "glow_hex": "#72EFDD",
           "name_hex": "#80ED99",
@@ -464,7 +1027,10 @@
           "name": "Lò Rèn Địa Yêu Khôi (Lôi Trì Thượng Cổ)",
           "title": "Rèn Xác Địa Ma Lão Quỷ Thành Vệ Sĩ Bất Tử [Địa Yêu Khôi]",
           "sprite": "res://assets/sprites/npcs/npc_dia_yeu_khoi.png",
-          "pos": [1740, 820],
+          "pos": [
+            1740,
+            820
+          ],
           "role": "ch07_dia_yeu_khoi_forge",
           "require_flag": "ch07_killed_dia_ma_lao_quy",
           "glow_hex": "#90E0EF",
@@ -473,28 +1039,91 @@
         }
       ],
       "spawns": [
-        { "enemy_id": "ma_viem_chap_phap", "pos": [860, 410], "respawn": 16.0 },
-        { "enemy_id": "ma_viem_chap_phap", "pos": [860, 790], "respawn": 16.0 },
-        { "enemy_id": "han_phong_dau_tong_boss", "pos": [1280, 410], "respawn": 42.0 },
-        { "enemy_id": "dia_ma_lao_quy_boss", "pos": [1620, 600], "respawn": 46.0 }
+        {
+          "enemy_id": "ma_viem_chap_phap",
+          "pos": [
+            860,
+            410
+          ],
+          "respawn": 16.0
+        },
+        {
+          "enemy_id": "ma_viem_chap_phap",
+          "pos": [
+            860,
+            790
+          ],
+          "respawn": 16.0
+        },
+        {
+          "enemy_id": "han_phong_dau_tong_boss",
+          "pos": [
+            1280,
+            410
+          ],
+          "respawn": 42.0
+        },
+        {
+          "enemy_id": "dia_ma_lao_quy_boss",
+          "pos": [
+            1620,
+            600
+          ],
+          "respawn": 46.0
+        }
       ],
       "portals": [
         {
           "id": "back_van_hat_from_ma_viem",
           "label": "Quay Lại Tây -> Thánh Địa Vạn Hạt Môn (Xuất Vân)",
-          "pos": [108, 600],
+          "pos": [
+            108,
+            600
+          ],
           "target_map": "ch07_van_hat_mon_xuat_van",
-          "target_spawn": [1780, 560],
+          "target_spawn": [
+            1780,
+            560
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch07_thien_nhai_trung_dong",
           "label": "Khởi Hành Đông -> Thiên Nhai Thành (Không Gian Trùng Động Trung Châu)",
-          "pos": [2028, 600],
+          "pos": [
+            2028,
+            600
+          ],
           "target_map": "ch07_thien_nhai_trung_dong",
-          "target_spawn": [210, 560],
+          "target_spawn": [
+            210,
+            560
+          ],
           "require_flag": "ch07_dia_yeu_khoi_forged",
           "locked_hint": "Hãy nhốt hồn Hàn Phong, trảm Final Boss Địa Ma Lão Quỷ rồi đúc vệ sĩ [Địa Yêu Khôi] [V] trước khi tiến tới Không Gian Trùng Động Thiên Nhai Thành!"
+        }
+      ],
+      "props": [
+        {
+          "type": "soul_tower",
+          "pos": [
+            360,
+            220
+          ]
+        },
+        {
+          "type": "soul_tower",
+          "pos": [
+            780,
+            220
+          ]
+        },
+        {
+          "type": "blood_pool_altar",
+          "pos": [
+            1380,
+            220
+          ]
         }
       ]
     },
@@ -503,27 +1132,80 @@
       "name": "Thiên Nhai Thành — Không Gian Trùng Động",
       "subtitle": "Hồi Kết Quyển II — Tạm Biệt Thải Lân · Vượt Không Gian Trùng Động Tiến Về Trung Châu!",
       "is_safe_zone": true,
-      "size": [1920, 1120],
-      "default_spawn": [210, 560],
+      "size": [
+        1920,
+        1120
+      ],
+      "default_spawn": [
+        210,
+        560
+      ],
       "bgm": "bgm_zhongzhou",
       "ambient_weather": "sparks",
       "ground_tile": "res://assets/sprites/tiles/thien_nhai_wormhole.png",
       "path_tile": "res://assets/sprites/tiles/stepping_path.png",
       "path_rects": [
-        [100, 510, 1740, 104],
-        [960, 240, 128, 640]
+        [
+          100,
+          510,
+          1740,
+          104
+        ],
+        [
+          960,
+          240,
+          128,
+          640
+        ]
       ],
       "decor_type": "jade_academy",
       "decor_points": [
-        [360, 220], [740, 220], [1260, 220], [1600, 220],
-        [360, 900], [740, 900], [1260, 900], [1600, 900]
+        [
+          360,
+          220
+        ],
+        [
+          740,
+          220
+        ],
+        [
+          1260,
+          220
+        ],
+        [
+          1600,
+          220
+        ],
+        [
+          360,
+          900
+        ],
+        [
+          740,
+          900
+        ],
+        [
+          1260,
+          900
+        ],
+        [
+          1600,
+          900
+        ]
       ],
       "chests": [
         {
           "id": "chest_ch07_trung_chau_supply",
-          "pos": [1460, 290],
+          "pos": [
+            1460,
+            290
+          ],
           "gold": 80000,
-          "items": { "pill_pha_tong_dan": 1, "pill_viem_minh_linh_dan": 4, "pill_thanh_hon_hoa_sinh": 2 }
+          "items": {
+            "pill_pha_tong_dan": 1,
+            "pill_viem_minh_linh_dan": 4,
+            "pill_thanh_hon_hoa_sinh": 2
+          }
         }
       ],
       "npcs": [
@@ -532,7 +1214,10 @@
           "name": "Nữ Hoàng Thải Lân (Mỹ Đỗ Toa · Minh Chủ Phu Nhân)",
           "title": "Ở Lại Viêm Minh Dưỡng Thai Tiểu Tiêu Tiêu · Trao Vảy Hộ Tâm",
           "sprite": "res://assets/sprites/npcs/npc_my_do_toa.png",
-          "pos": [760, 440],
+          "pos": [
+            760,
+            440
+          ],
           "role": "ch07_thai_lan_farewell",
           "glow_hex": "#FF4D6D",
           "name_hex": "#FF9770",
@@ -543,7 +1228,10 @@
           "name": "Thiên Độc Nữ, Tử Nghiên & Địa Yêu Khôi (Đội Hình Trung Châu)",
           "title": "KẾT THÚC QUYỂN II — Khởi Hành Vào Không Gian Trùng Động!",
           "sprite": "res://assets/sprites/npcs/npc_dia_yeu_khoi.png",
-          "pos": [1340, 560],
+          "pos": [
+            1340,
+            560
+          ],
           "role": "ch07_wormhole_departure",
           "glow_hex": "#90E0EF",
           "name_hex": "#FFD166",
@@ -555,17 +1243,29 @@
         {
           "id": "back_ma_viem_from_thien_nhai",
           "label": "Quay Lại Tây -> Hắc Hoàng Thành & Ma Viêm Cốc",
-          "pos": [108, 560],
+          "pos": [
+            108,
+            560
+          ],
           "target_map": "ch07_hac_hoang_ma_viem",
-          "target_spawn": [1880, 600],
+          "target_spawn": [
+            1880,
+            600
+          ],
           "require_flag": ""
         },
         {
           "id": "to_ch08_bac_vuc_trung_chau",
           "label": "Không Gian Trùng Động -> [QUYỂN III · CH.08] Hoang Mạc Bắc Vực & Vạn Phong Giản",
-          "pos": [1810, 560],
+          "pos": [
+            1810,
+            560
+          ],
           "target_map": "ch08_hoang_mac_van_phong",
-          "target_spawn": [190, 560],
+          "target_spawn": [
+            190,
+            560
+          ],
           "require_flag": "ch07_completed",
           "locked_hint": "Hãy đối thoại tạm biệt Thải Lân & cùng Đội Hình Trung Châu [V] khởi động Không Gian Trùng Động hoàn tất Quyển II để tiến vào Đại Lục Trung Châu!"
         }

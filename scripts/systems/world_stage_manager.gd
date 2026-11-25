@@ -469,6 +469,18 @@ func _build_props(m_def: Dictionary) -> void:
 	var gate_tex: Texture2D = load("res://assets/sprites/props/grand_hall_gate.png")
 	var boulder_tex: Texture2D = load("res://assets/sprites/props/mountain_boulder.png")
 	var pine_tex: Texture2D = load("res://assets/sprites/props/ancient_pine.png")
+	var regional_prop_specs: Dictionary = {
+		"blood_pool_altar": { "path": "res://assets/sprites/props/blood_pool_altar.png", "offset": Vector2(0, -52), "col": Vector2(76, 34), "light": Color("#EF233C"), "scale": 3.4, "energy": 1.25 },
+		"ancient_altar": { "path": "res://assets/sprites/props/ancient_altar.png", "offset": Vector2(0, -58), "col": Vector2(72, 32), "light": Color("#FFD166"), "scale": 3.2, "energy": 1.15 },
+		"forge_cauldron": { "path": "res://assets/sprites/props/forge_cauldron.png", "offset": Vector2(0, -56), "col": Vector2(64, 30), "light": Color("#FF9F1C"), "scale": 3.3, "energy": 1.22 },
+		"ice_pillar": { "path": "res://assets/sprites/props/ice_pillar.png", "offset": Vector2(0, -68), "col": Vector2(44, 26), "light": Color("#70D6FF"), "scale": 3.0, "energy": 1.10 },
+		"soul_tower": { "path": "res://assets/sprites/props/soul_tower.png", "offset": Vector2(0, -70), "col": Vector2(48, 28), "light": Color("#9D4EDD"), "scale": 3.4, "energy": 1.25 },
+		"dragon_core_orb": { "path": "res://assets/sprites/props/dragon_core_orb.png", "offset": Vector2(0, -60), "col": Vector2(56, 28), "light": Color("#C77DFF"), "scale": 3.5, "energy": 1.30 },
+		"poison_totem": { "path": "res://assets/sprites/props/poison_totem.png", "offset": Vector2(0, -64), "col": Vector2(46, 26), "light": Color("#70E000"), "scale": 3.1, "energy": 1.18 },
+		"lava_crystal": { "path": "res://assets/sprites/props/lava_crystal.png", "offset": Vector2(0, -54), "col": Vector2(62, 30), "light": Color("#FF6B00"), "scale": 3.2, "energy": 1.25 },
+		"star_obelisk": { "path": "res://assets/sprites/props/star_obelisk.png", "offset": Vector2(0, -70), "col": Vector2(46, 26), "light": Color("#4CC9F0"), "scale": 3.4, "energy": 1.22 }
+	}
+	var regional_tex_cache: Dictionary = {}
 
 	var props_arr: Array = m_def.get("props", [])
 	for pr in props_arr:
@@ -542,6 +554,28 @@ func _build_props(m_def: Dictionary) -> void:
 			bsp.offset = Vector2(0, -64)
 			entities_root.add_child(bsp)
 			bamboo_sprites.append(bsp)
+
+		elif regional_prop_specs.has(ptype):
+			var spec: Dictionary = regional_prop_specs[ptype]
+			var r_path: String = str(spec["path"])
+			if not regional_tex_cache.has(ptype) and ResourceLoader.exists(r_path):
+				regional_tex_cache[ptype] = load(r_path)
+			var r_tex: Texture2D = regional_tex_cache.get(ptype, null)
+			if r_tex != null:
+				var rsp := Sprite2D.new()
+				rsp.texture = r_tex
+				rsp.position = pos_v
+				rsp.offset = spec["offset"] as Vector2
+				entities_root.add_child(rsp)
+				_add_solid_collider(rsp, spec["col"] as Vector2, Vector2(0, -12))
+				var rpl := PointLight2D.new()
+				rpl.texture = light_tex
+				rpl.texture_scale = float(spec["scale"])
+				rpl.energy = float(spec["energy"])
+				rpl.color = spec["light"] as Color
+				rpl.position = (spec["offset"] as Vector2) * 0.85
+				rsp.add_child(rpl)
+				lantern_lights.append(rpl)
 
 
 func _build_chests(m_def: Dictionary) -> void:
