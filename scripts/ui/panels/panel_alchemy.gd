@@ -44,7 +44,7 @@ func build_content(vbox: VBoxContainer) -> void:
 	p_flow.add_theme_constant_override("h_separation", 6)
 	p_flow.add_theme_constant_override("v_separation", 5)
 	pv.add_child(p_flow)
-	for c_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich"]:
+	for c_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich", "pill_duong_dau_dan", "pill_cuu_duong_hoan_cot", "pill_thanh_linh_phuc_nguyen"]:
 		var cid_s: String = str(c_id)
 		var owned_p: int = PlayerData.get_item_count(cid_s)
 		var cdef: Dictionary = GameDatabase.get_item_def(cid_s)
@@ -145,7 +145,18 @@ func build_content(vbox: VBoxContainer) -> void:
 		)
 		row.add_child(mini_btn)
 
-		if tier_v <= 1:
+		if SaintRealmManager.has_tieu_y_spirit(PlayerData) and tier_v <= 8:
+			var ty_btn := Button.new()
+			ty_btn.text = "✿ Tiểu Y (100%)"
+			ty_btn.add_theme_font_size_override("font_size", 11)
+			ty_btn.add_theme_color_override("font_color", Color("#FFAFCC"))
+			ty_btn.pressed.connect(func() -> void:
+				var res_ty: Dictionary = SaintRealmManager.run_tieu_y_auto_refine(PlayerData, r_dict)
+				hud.modal_status_lbl.text = str(res_ty.get("msg", res_ty.get("reason", "")))
+				hud._populate_modal()
+			)
+			row.add_child(ty_btn)
+		elif tier_v <= 1:
 			var fast_btn := Button.new()
 			fast_btn.text = "Luyện Nhanh (%d%%)" % rate_pct
 			fast_btn.add_theme_font_size_override("font_size", 11)

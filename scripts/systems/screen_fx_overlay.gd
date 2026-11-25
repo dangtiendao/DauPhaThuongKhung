@@ -180,3 +180,27 @@ func _draw_vignette() -> void:
 		var c_star := Color(0.55, 0.22, 0.88, 0.11 * sp_p)
 		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 22.0), c_star)
 		vignette_ctrl.draw_rect(Rect2(0, sz.y - 22.0, sz.x, 22.0), c_star)
+
+	# 3. Ảo Cảnh Bách Thế Luân Hồi (Ch.10): Màng phủ Thủy Mặc Đen–Trắng + Điểm Sắc Ngọc Bích Bồ Đề!
+	if SaintRealmManager.is_ink_wash_illusion_active(PlayerData):
+		var ink_p: float = 0.82 + 0.18 * sin(_t_sec * 1.9)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, sz.y), Color(0.08, 0.10, 0.11, 0.56))
+		var ink_edge := Color(0.03, 0.04, 0.05, 0.44 * ink_p)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 42.0), ink_edge)
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 42.0, sz.x, 42.0), ink_edge)
+		vignette_ctrl.draw_rect(Rect2(0, 42.0, 42.0, sz.y - 84.0), ink_edge)
+		vignette_ctrl.draw_rect(Rect2(sz.x - 42.0, 42.0, 42.0, sz.y - 84.0), ink_edge)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 6.0), Color(0.20, 0.83, 0.60, 0.42 * ink_p))
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 6.0, sz.x, 6.0), Color(0.20, 0.83, 0.60, 0.42 * ink_p))
+	elif PlayerData.current_map_id == "ch10_yeu_hoa_khong_gian":
+		# 4. Viền Trắng Hồng Yêu Dị của Yêu Hỏa Không Gian (Song Nguyệt Đồng Hiện)
+		var yh_p: float = 0.75 + 0.25 * sin(_t_sec * 3.1)
+		var c_yh := Color(0.99, 0.64, 0.69, 0.13 * yh_p)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 24.0), c_yh)
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 24.0, sz.x, 24.0), c_yh)
+	elif SaintRealmManager.has_dau_thanh_domain(PlayerData):
+		# 5. Viền Hoàng Kim Thánh Uy nhẹ khi đã bước vào Đấu Thánh Không Gian
+		var st_p: float = 0.70 + 0.30 * sin(_t_sec * 2.2)
+		var c_st := Color(1.0, 0.78, 0.22, 0.08 * st_p)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 14.0), c_st)
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 14.0, sz.x, 14.0), c_st)

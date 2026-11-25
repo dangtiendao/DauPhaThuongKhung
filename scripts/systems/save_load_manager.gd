@@ -253,6 +253,10 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 		pd.is_toc_van_active = false
 	if "is_kim_khoi_tran_active" in pd:
 		pd.is_kim_khoi_tran_active = false
+	if "is_tinh_lien_tran_active" in pd:
+		pd.is_tinh_lien_tran_active = false
+	if "huan_nhi_revive_used" in pd:
+		pd.huan_nhi_revive_used = false
 	if "immortal_revive_cd" in pd:
 		pd.immortal_revive_cd = 0.0
 	pd.equipped_flame_id = str(d.get("equipped_flame_id", ""))

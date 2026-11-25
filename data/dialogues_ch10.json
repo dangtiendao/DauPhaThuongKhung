@@ -1,0 +1,623 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 10",
+  "dialogues": {
+    "ch10_hai_ba_dong_siege": {
+      "marker_when": { "missing_flag": "ch10_beat_su_thien" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_beat_su_thien" },
+          "speaker": "Băng Hoàng Hải Ba Đông & Tiêu Đỉnh (Tường Thành Đế Đô Gia Mã)",
+          "sfx": "radar_ping",
+          "lines": [
+            "Hải Ba Đông (gồng Băng Hoàng Giáp đầy thương tích, kinh hãi nhìn vết nứt không gian): 'Tiêu... Tiêu Viêm?! Ngươi thực sự xé không gian kịp trở về rồi! Tông chủ Sư Minh Tông — Sư Thiên Đấu Tôn câu kết Cửu Thiên Tôn Hồn Điện đang phá tan tường thành Viêm Minh!'",
+            "Tiêu Đỉnh (ngồi xe lăn ánh mắt rực lửa kiêu hãnh): 'Tam đệ, Thải Lân đang liều chết chắn trước hậu điện để bảo vệ... một người vô cùng đặc biệt! Đệ hãy tiến lên phía Đông xóa sổ tên Sư Thiên và Cửu Thiên Tôn kia đi!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "speaker": "Hải Ba Đông & Đại Ca Tiêu Đỉnh (Tường Thành Viêm Minh)",
+          "lines": [
+            "Tiêu Đỉnh (bước đi vững chãi trên đôi chân vừa được Cửu Dương Hoàn Cốt Đan chữa lành, vỗ vai em trai): 'Đa tạ tam đệ! Không ngờ chỉ một ngón tay đệ đã bóp nát Đấu Tôn, khiến cả Tây Bắc Đại Lục chấn động! Cả Viêm Minh nay đã bình an, đệ cứ yên tâm tiến vào Mãng Hoang Cổ Vực tầm bảo Bồ Đề Cổ Thụ!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_thai_lan_tieu_tieu": {
+      "marker_when": { "has_flag": "ch10_beat_su_thien", "missing_flag": "ch10_viem_minh_saved" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_beat_su_thien" },
+          "speaker": "Hậu Điện Đế Đô Gia Mã",
+          "lines": [
+            "Sư Thiên & Cửu Thiên Tôn đang điên cuồng công phá tường thành phía trước! Hãy dùng Đại Thiên Tạo Hóa Chưởng & Tộc Văn Tiêu Tộc nghiền nát chúng trước khi đoàn tụ cùng Thải Lân!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch10_viem_minh_saved" },
+          "speaker": "Mỹ Đỗ Toa Thải Lân & Con Gái TIÊU TIÊU",
+          "sfx": "breakthrough",
+          "shake": [16.0, 0.70],
+          "lines": [
+            "Giữa tiếng hò reo vang dậy trời đất 'MINH CHỦ VẠN TUẾ!' của mười vạn quân dân Gia Mã, Thải Lân đỏ hoe đôi mắt phượng, vừa giận dỗi vừa xúc động dắt từ hậu điện ra một bé gái xinh đẹp như thiên thần trạc 4 tuổi đang ôm chú Thất Thải Thôn Thiên Mãng nhỏ bé...",
+            "Tiêu Tiêu (chớp đôi mắt to tròn long lanh nhìn người đàn ông mặc hắc bào vừa cứu cả tòa thành, rụt rè níu vạt áo Thải Lân): 'Mẫu thân ơi... Thúc thúc lợi hại trên trời kia là cha của Tiêu Tiêu thật sao?'",
+            "Tiêu Viêm (vị cường giả vừa lạnh lùng bóp nát Đấu Tôn bỗng chốc luống cuống làm rơi cả vẻ uy nghiêm, quỳ sụp xuống đất dang rộng vòng tay run rẩy ôm trọn bé con và Thải Lân vào ngực, nước mắt lăn dài): 'Là cha đây... Tiêu Tiêu ngoan, Thải Lân... Xin lỗi hai mẹ con, bao năm qua để nàng một mình gánh vác cực khổ rồi. Từ hôm nay trở đi, dù trời có sập xuống cũng có vi phu chống đỡ cho hai mẹ con!'",
+            "(Tiêu Viêm tự tay luyện Cửu Dương Hoàn Cốt Đan chữa lành đôi chân cho đại ca Tiêu Đỉnh, đón Thải Lân & con gái Tiêu Tiêu cùng đồng hành, cảm ngộ SƠ CẤP BÁN THÁNH!)"
+          ],
+          "choices": [
+            {
+              "label": "Ôm Chặt Mẹ Con Thải Lân – Tiêu Tiêu (Đạt Bán Thánh · Mở Đồng Hành #11 & Đường Vào Mãng Hoang!)",
+              "action": "effect:eff_ch10_save_viem_minh"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Nữ Vương Thải Lân & Công Chúa Nhỏ Tiêu Tiêu",
+          "lines": [
+            "Tiêu Tiêu (cười khúc khích vỗ đầu Tiểu Thất Thải): 'Cha ơi, khi nào đánh xong mấy tên xấu xa ở Mãng Hoang Cổ Vực, cha nhớ luyện kẹo Đường Đậu Đan cho Tiêu Tiêu nha!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_huan_nhi_mang_hoang": {
+      "marker_when": { "missing_flag": "ch10_mang_hoang_entered" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_mang_hoang_entered" },
+          "speaker": "Cổ Huân Nhi (Cửa Ngõ Mãng Hoang Cổ Vực)",
+          "sfx": "radar_ping",
+          "lines": [
+            "Cổ Huân Nhi (ánh mắt dịu dàng tỏa hào quang vàng kim Kim Đế Phần Thiên Viêm): 'Tiêu Viêm ca ca! Đàn Viễn Cổ Thiên Ngô Độc Trùng trong Mãng Hoang Cổ Vực rất sợ Dị Hỏa của hai chúng ta. Muội đã dò thấy khí tức của Thần Tử Hồn Tộc — Hồn Ngọc (Trung Cấp Bán Thánh) đang dẫn quân bao vây Bồ Đề Cổ Thụ ở phía Đông!'",
+            "Tiêu Viêm (nắm chặt Huyền Trọng Xích): 'Khéo lắm! Để huynh đích thân phá vỡ phòng tuyến Hồn Ngọc, đoạt lấy Bồ Đề Tâm bước lên cảnh giới Đấu Thánh!'"
+          ],
+          "choices": [
+            {
+              "label": "Cùng Cổ Huân Nhi Khai Hỏa Xuyên Rừng Độc Trùng — Đối Đầu Hồn Ngọc!",
+              "action": "effect:eff_ch10_enter_mang_hoang"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Cổ Huân Nhi (Mãng Hoang Cổ Vực)",
+          "lines": [
+            "Cổ Huân Nhi: 'Hồn Ngọc cùng Ngũ Tinh Bán Thánh Khôi Lỗi đang chặn lối vào thung lũng phía Đông! Huynh nhớ vận Tộc Văn Tiêu Tộc [X] kết hợp Đại Thiên Tạo Hóa Chưởng áp đảo hắn nhé!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_bo_de_co_thu": {
+      "marker_when": { "has_flag": "ch10_beat_ac_niem", "missing_flag": "ch10_broke_dau_thanh" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_beat_ac_niem" },
+          "speaker": "Linh Trí BỒ ĐỀ CỔ THỤ (Bồn Địa Thần Thụ)",
+          "lines": [
+            "Giọng nói cổ xưa vang vọng trong tâm trí: 'Người mang Dị Hỏa... Vạn năm trước một vị Đấu Đế tà ác để lại luồng [Ác Niệm Đấu Đế] đang gặm nhấm lõi sinh mệnh của ta ở phía Đông Bắc! Hãy dùng Ngũ Sắc Hỏa Liên thanh tẩy khối Ác Niệm ấy, ta sẽ tặng ngươi Bồ Đề Tâm & 10 hạt Bồ Đề Tử!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch10_got_bo_de_heart" },
+          "speaker": "Linh Trí BỒ ĐỀ CỔ THỤ (Thanh Lọc Hoàn Mỹ)",
+          "sfx": "breakthrough",
+          "shake": [18.0, 0.80],
+          "lines": [
+            "Khối Ác Niệm Đấu Đế gào thét tan biến trong biển lửa Ngũ Sắc! Cả tán lá ngọc bích vạn trượng của Bồ Đề Cổ Thụ đồng loạt rung lên tiếng chuông thiền trong trẻo...",
+            "Bồ Đề Cổ Thụ (khẽ hạ một giọt nhựa tim ngọc bích rực rỡ cùng 10 hạt Bồ Đề Tử lơ lửng xuống lòng bàn tay bạn): 'Đa tạ tiểu hữu đã giải thoát ta khỏi kiếp nạn vạn năm! Đây là [Bồ Đề Tâm], [10 hạt Bồ Đề Tử] và [Bồ Đề Thánh Tâm Giới]. Ngươi đã đạt Cao Cấp Bán Thánh Đỉnh Phong — hãy nuốt Bồ Đề Tâm để bước vào Ảo Cảnh Bách Thế Luân Hồi chứng đạo ĐẤU THÁNH!'"
+          ],
+          "choices": [
+            {
+              "label": "Tiếp Nhận Bồ Đề Tâm & 10 Bồ Đề Tử (Cao Cấp Bán Thánh Đỉnh Phong!)",
+              "action": "effect:eff_ch10_get_bo_de_heart"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch10_bt_illusion_started" },
+          "speaker": "Hóa Kén Đá — Khai Mở Ảo Cảnh BÁCH THẾ LUÂN HỒI",
+          "sfx": "radar_ping",
+          "lines": [
+            "Ngươi nuốt trọn giọt [Bồ Đề Tâm] mát lạnh! Vỏ kén đá ngọc bích dần bao phủ thân thể suốt 2 năm... Toàn bộ không gian xung quanh hóa thành bức tranh THỦY MẶC ĐEN TRẮNG cổ kính!",
+            "Giọng thiền vang lên: 'Muốn thành Thánh, trước phải hiểu trọn chữ Phàm. Giờ đây Đấu Khí và ký ức tu tiên tạm thời tan biến — ngươi sẽ sống qua 3 kiếp phàm nhân đại diện cho 100 kiếp luân hồi!'"
+          ],
+          "choices": [
+            {
+              "label": "Nhắm Mắt Nhập Định — Bước Vào Ảo Cảnh Bách Thế Luân Hồi (Chế Độ Thủy Mặc!)",
+              "action": "effect:eff_ch10_bt_start"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch10_bt_life1_done" },
+          "speaker": "☯ Bách Thế Luân Hồi — Kiếp Thứ 1: 'Y Giả Nhân Tâm' (Thị Trấn Dịch Bệnh)",
+          "lines": [
+            "[Ảo Cảnh Thủy Mặc 1/3] Bạn trở thành một lang y nghèo tay trói gà không chặt giữa nạn ôn dịch kinh hoàng. Trong tay chỉ còn đúng 1 thang thuốc cứu mạng cuối cùng...",
+            "Tên quan huyện hống hách ném ngàn lượng vàng ra lệnh cứu hắn trước, trong khi bên cạnh một đứa bé mồ côi đang thoi thóp gọi mẹ..."
+          ],
+          "choices": [
+            {
+              "label": "[Đạo Tâm: NHÂN] Khước từ ngàn lượng vàng, đút thang thuốc cứu đứa bé mồ côi dù bị đánh gãy tay!",
+              "action": "effect:eff_ch10_bt_life1_nhan"
+            },
+            {
+              "label": "Chia đôi thang thuốc cầu may cho cả hai bên",
+              "action": "effect:eff_ch10_bt_life1_plain"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch10_bt_life50_done" },
+          "speaker": "☯ Bách Thế Luân Hồi — Kiếp Thứ 50: 'Thiết Chùy Vô Hối' (Xưởng Rèn Tuyết Trắng)",
+          "lines": [
+            "[Ảo Cảnh Thủy Mặc 2/3] Năm mươi kiếp trôi qua... Bạn là một lão thợ rèn mù lòa giữa trời tuyết trắng xóa, từng hứa rèn thanh kiếm sắt tốt nhất tặng người bạn tri kỷ ra trận chưa từng quay về.",
+            "Ba mươi năm đã qua, gió tuyết cắt da thịt, tóc đã bạc trắng — người làng khuyên bạn bỏ cuộc..."
+          ],
+          "choices": [
+            {
+              "label": "[Đạo Tâm: TÍN & KIÊN] Vẫn đều đặn vung búa đến nhát cuối cùng giữ trọn lời hứa với cố nhân!",
+              "action": "effect:eff_ch10_bt_life50_tin"
+            },
+            {
+              "label": "Đặt búa xuống nghỉ ngơi tránh gió tuyết",
+              "action": "effect:eff_ch10_bt_life50_plain"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch10_bach_the_enlightened" },
+          "speaker": "☯ Bách Thế Luân Hồi — Kiếp Thứ 100: 'Phù Vân Quy Chân' (Đỉnh Núi Hoàng Hôn)",
+          "sfx": "breakthrough",
+          "shake": [24.0, 1.0],
+          "lines": [
+            "[Ảo Cảnh Thủy Mặc 3/3] Kiếp thứ một trăm — bạn hóa thành ông lão tiều phu tóc bạc ngồi bên hiên nhà tranh ngắm mây chiều trôi qua đỉnh núi, nhìn con cháu sum vầy rồi thanh thản ngộ ra sinh tử tự nhiên...",
+            "Khoảnh khắc giọt nước mắt kiếp thứ 100 rơi xuống: Trăm kiếp nhân sinh vỡ òa hợp nhất về lại cái tên TIÊU VIÊM!!",
+            "RẮC!! Vỏ kén đá nứt toạc — sắc trắng đen thủy mặc nổ tung thành 16 TRIỆU MÀU RỰC RỠ!! Bầu trời hóa biển hoa sen lửa năm màu hồi phục toàn quân — Bạn chính thức chứng đạo [NHẤT TINH ĐẤU THÁNH (ĐẤU THÁNH KHÔNG GIAN)]!!"
+          ],
+          "choices": [
+            {
+              "label": "[Đạo Tâm: CHÂN] Phá Kén Xuất Quan — Chứng Đạo NHẤT TINH ĐẤU THÁNH & Mở Đấu Thánh Không Gian!",
+              "action": "effect:eff_ch10_bt_life100_chan"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch10_beat_thien_minh" },
+          "speaker": "ĐẤU THÁNH XUẤT QUAN — Tam Đại Tà Phái Đang Tập Kích!",
+          "lines": [
+            "Bên ngoài mật thất, Thiên Minh Lão Yêu dẫn Liên Quân Tam Đại Tà Phái (Hồn Điện · Thiên Minh Tông · Băng Hà Cốc) đang bao vây Tinh Vẫn Các! Mau tiến sang phía Đông Nam mở Đấu Thánh Không Gian nghiền nát Thiên Minh Lão Yêu!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch10_broke_dau_thanh" },
+          "speaker": "Bồ Đề Cổ Thụ (Uy Chấn Trung Châu)",
+          "sfx": "breakthrough",
+          "lines": [
+            "Đấu Thánh Tiêu Viêm (chân đạp sen lửa lơ lửng giữa tầng mây vàng rực): 'Vong Hồn Sơn Mạch năm đó Thiết Kiếm tiền bối vì các ngươi mà tan xác... Hôm nay bản tọa bước vào Đấu Thánh, món quà đầu tiên chính là xóa sổ hoàn toàn Tam Đại Tà Phái!'",
+            "Liên quân tà phái đã bị tiêu diệt sạch sẽ! Sư Tôn Dược Trần truyền tin: Đại lễ hợp nhất Tứ Phương thành lập [THIÊN PHỦ LIÊN MINH] đang chờ Thống Soái tại Thiên Phủ Thành phía Đông!"
+          ],
+          "choices": [
+            {
+              "label": "Tiếp Nhận Chiến Bào Thiên Phủ Thống Soái — Mở Cổng Đông Tiến Về Thiên Phủ Thành!",
+              "action": "effect:eff_ch10_finish_dau_thanh"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Bồ Đề Cổ Thụ (Bồn Địa Thần Thụ)",
+          "lines": [
+            "Ánh ngọc bích của Bồ Đề Cổ Thụ ôn hòa tưới mát Đạo Tâm của bạn. Bạn đã chứng đạo ĐẤU THÁNH với Thánh Giả Đạo Tâm bất diệt!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_dan_thap_lao_to": {
+      "marker_when": { "missing_flag": "sq_10_02_bo_de_dan_gifted" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_thien_phu_founded" },
+          "speaker": "ĐAN THÁP LÃO TỔ (Lục Tinh Đấu Thánh — Đại Lễ Thiên Phủ Liên Minh)",
+          "sfx": "breakthrough",
+          "shake": [18.0, 0.80],
+          "lines": [
+            "Đan Tháp Lão Tổ (cười vang hào sảng, vung tay áo vàng kim): 'Ha ha ha! Một vị Nhất Tinh Đấu Thánh trẻ tuổi chưa đầy ba mươi tuổi đời, lại còn là Quán Quân Đan Hội Trung Châu! Lão phu thay mặt Đan Tháp chính thức tuyên bố: Tinh Vẫn Các — Đan Tháp — Hoa Tông — Phần Viêm Cốc kể từ hôm nay hợp nhất thành siêu thế lực bá chủ [THIÊN PHỦ LIÊN MINH]!'",
+            "Đan Tháp Lão Tổ: 'Dược Trần làm Minh Chủ điều hành, lão phu làm Khách Khanh Tối Cao, còn Tiêu Viêm tiểu hữu chính là THỐNG SOÁI CHIẾN TRẬN của Liên Minh! Cầm lấy chiếc [Thiên Phủ Thánh Đỉnh] này — cánh cửa tới Cửu U Hoàng Tuyền phía Bắc đã mở!'"
+          ],
+          "choices": [
+            {
+              "label": "Nhận Ấn Thống Soái — Khai Lập Thế Lực Cấp 4 [👑 THIÊN PHỦ LIÊN MINH]!",
+              "action": "effect:eff_ch10_found_thien_phu"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "sq_10_02_bo_de_dan_gifted", "has_item": "pill_bo_de_dai_hoan" },
+          "speaker": "Kỳ Ngộ SQ_10_02 — Ban Phát Bồ Đề Đại Hoàn Đan Cho Cố Nhân",
+          "sfx": "breakthrough",
+          "lines": [
+            "Đan Tháp Lão Tổ (trầm trồ nhìn viên Bát Phẩm Đỉnh Bồ Đề Đại Hoàn Đan tỏa Cửu Sắc Đan Lôi trong tay bạn): 'Tuyệt diệu! Nếu ban phát thần đan này cho Dược Trần, Thải Lân, Tiểu Y Tiên và Thanh Lân, toàn bộ trụ cột Liên Minh sẽ đồng loạt đột phá Bán Thánh & Nhất–Nhị Tinh Đấu Thánh!'"
+          ],
+          "choices": [
+            {
+              "label": "Ban Phát 1x [Bồ Đề Đại Hoàn Đan] (Nâng Toàn Bộ Đồng Hành Lên Bán Thánh/Đấu Thánh & +6% ATK!)",
+              "action": "effect:eff_ch10_sq02_bo_de_dan"
+            },
+            {
+              "label": "Để dành thêm rồi quay lại sau",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "sq_10_02_bo_de_dan_gifted" },
+          "speaker": "Đan Tháp Lão Tổ (Kỳ Ngộ SQ_10_02)",
+          "lines": [
+            "Đan Tháp Lão Tổ: 'Tiểu hữu nhớ mở Lò Luyện Đan [L] dùng Bồ Đề Tử & Thánh Hồn Tinh Phách luyện một viên [Bồ Đề Đại Hoàn Đan] rồi mang tới đây ban phát cho Sư Tôn & các Hồng Nhan đột phá Bán Thánh/Đấu Thánh nhé!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "speaker": "Đan Tháp Lão Tổ (Thiên Phủ Liên Minh)",
+          "lines": [
+            "Đan Tháp Lão Tổ: 'Thiên Phủ Liên Minh nay đã hùng mạnh ngang ngửa Hồn Điện! Bấm [M] -> tab [Thế Lực] để nâng cấp Đan Tháp Viện & Vệ Đội Cổ Long và khiêu chiến 20 Boss Cường Bảng!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_tieu_tieu_hub": {
+      "marker_when": { "missing_flag": "sq_10_01_tieu_tieu_candy" },
+      "branches": [
+        {
+          "when": { "missing_flag": "sq_10_01_tieu_tieu_candy", "has_item": "pill_duong_dau_dan" },
+          "speaker": "Kỳ Ngộ SQ_10_01 — Món Quà Đầu Đời Cho Con Gái TIÊU TIÊU",
+          "sfx": "loot_rare",
+          "lines": [
+            "Tiêu Tiêu (mắt sáng long lanh ngửi thấy mùi ngọt lịm từ viên Ngũ Phẩm Đường Đậu Đan): 'Oa!! Kẹo Đan Dược của cha thơm quá đi mất! Chú Tiểu Thất Thải cũng thích ăn nè!'",
+            "Thải Lân (mỉm cười dịu dàng nhìn hai cha con chơi đùa với thanh Huyền Trọng Xích thu nhỏ): 'Tiêu Tiêu tự tay tết chiếc [Phụ Nữ Đồng Tâm Kết] này làm bùa hộ mệnh cho chàng — mỗi khi chàng lâm nguy máu dưới 50%, tình thân gia đình sẽ nâng toàn bộ sức mạnh chàng lên +10%!'"
+          ],
+          "choices": [
+            {
+              "label": "Đút 1x [Ngũ Phẩm Đường Đậu Đan] Cho Bé Tiêu Tiêu -> Nhận [Phụ Nữ Đồng Tâm Kết]!",
+              "action": "effect:eff_ch10_sq01_tieu_tieu"
+            },
+            {
+              "label": "Lát nữa quay lại chơi cùng con",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "sq_10_01_tieu_tieu_candy" },
+          "speaker": "Bé Tiêu Tiêu & Thải Lân (Kỳ Ngộ SQ_10_01)",
+          "lines": [
+            "Tiêu Tiêu (kéo vạt áo Tiêu Viêm nũng nịu): 'Cha ơi~ Mở Lò Luyện Đan [L] dùng Thất Thải Bảo Ngọc luyện cho Tiêu Tiêu 1 viên [Ngũ Phẩm Đường Đậu Đan] ngọt lịm đi, Tiêu Tiêu có bí mật tặng cha nè!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "speaker": "Công Chúa Nhỏ Tiêu Tiêu & Nữ Vương Thải Lân",
+          "lines": [
+            "Tiêu Tiêu: 'Cha nhớ gọi hai mẹ con bằng phím [G] (Đồng Hành #11) đi đánh mấy tên Hồn Điện xấu xa nhé! Tiểu Thất Thải cắn đau lắm đó!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_thien_phu_steward": {
+      "branches": [
+        {
+          "default": true,
+          "speaker": "Minh Chủ Điều Hành Dược Trần (Thống Soái Phủ Thiên Phủ)",
+          "lines": [
+            "Dược Trần (tự hào vuốt chòm râu bạc): 'Vi sư đã điều tức lại toàn bộ HP & Đấu Khí cho con! Thế lực của chúng ta giờ đã tiến hóa lên đỉnh cao Cấp 4 [👑 THIÊN PHỦ LIÊN MINH] với 6 Công Trình & 20 Boss Cường Bảng trong [M]!'",
+            "Dược Trần: 'Từ Thiên Phủ Thành, cổng Bắc dẫn tới Cửu U Hoàng Tuyền, cổng Đông Bắc công phá Pháo Đài Nhân Điện, và cổng Đông mở ra Yêu Hỏa Không Gian khi Song Nguyệt Đồng Hiện!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_yeu_minh": {
+      "marker_when": { "missing_flag": "ch10_yeu_minh_allied" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_yeu_minh_allied" },
+          "speaker": "Tộc Trưởng YÊU MINH (Cửu U Địa Minh Mãng Tộc)",
+          "sfx": "level_up",
+          "lines": [
+            "Yêu Minh (phá tan xiềng xích đáy đầm, chắp tay hào sảng): 'Đa tạ Tiêu Viêm Thống Soái ra tay dẹp loạn phản tộc! Tộc Cửu U Địa Minh Mãng xin thề xuất toàn bộ cường giả kết minh cùng Thiên Phủ Liên Minh đánh sập Hồn Điện!'",
+            "Yêu Minh: 'Phía Bắc sâu dưới Hoàng Tuyền Huyết Đàm là [Hoàng Tuyền Thạch Bia] do Cửu Tinh Đấu Thánh Hoàng Tuyền Yêu Thánh để lại. Chỉ cần đánh tan tàn ảnh Yêu Thánh canh giữ, toàn bộ Hoàng Tuyền Tam Tuyệt và Yêu Thánh Tinh Huyết đều thuộc về huynh!'"
+          ],
+          "choices": [
+            {
+              "label": "Ký Minh Ước Cửu U Địa Minh Mãng — Tiến Lên Khiêu Chiến Tàn Ảnh Hoàng Tuyền Yêu Thánh!",
+              "action": "effect:eff_ch10_ally_yeu_minh"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Tộc Trưởng Yêu Minh",
+          "lines": [
+            "Yêu Minh: 'Đại quân Cửu U đã sẵn sàng! Mau đánh bại Tàn Ảnh Hoàng Tuyền Yêu Thánh rồi cảm ngộ Hoàng Tuyền Thạch Bia [V] phía Bắc!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_hoang_tuyen_stele": {
+      "marker_when": { "has_flag": "ch10_beat_hoang_tuyen", "missing_flag": "ch10_hoang_tuyen_mastered" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_beat_hoang_tuyen" },
+          "speaker": "Hoàng Tuyền Thạch Bia",
+          "lines": [
+            "Tàn ảnh uy nghiêm của Hoàng Tuyền Yêu Thánh đang trấn giữ trước thạch bia! Hãy đánh tan tàn ảnh của ngài trước khi tiếp nhận truyền thừa!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch10_hoang_tuyen_mastered" },
+          "speaker": "HOÀNG TUYỀN THẠCH BIA — Truyền Thừa Tam Tuyệt & Yêu Thánh Tinh Huyết",
+          "sfx": "breakthrough",
+          "shake": [20.0, 0.85],
+          "lines": [
+            "Tàn ảnh Hoàng Tuyền Yêu Thánh mỉm cười tán thưởng rồi hóa thành giọt [Yêu Thánh Tinh Huyết] vàng sẫm dung nhập vào tim bạn! Tu vi bứt phá thẳng lên [NHỊ TINH ĐẤU THÁNH]!",
+            "Ba luồng kim quang cổ xưa khắc thẳng vào thức hải: Thiên Giai Trung Cấp [HOÀNG TUYỀN CHỈ & CHƯỞNG] cùng Thiên Giai Cao Cấp Hồn Kỹ [HOÀNG TUYỀN THIÊN NỘ (2.200% SOUL · Choáng 4s)]!!"
+          ],
+          "choices": [
+            {
+              "label": "Tiếp Nhận Yêu Thánh Tinh Huyết & Lĩnh Ngộ Trọn Bộ HOÀNG TUYỀN TAM TUYỆT!",
+              "action": "effect:eff_ch10_master_hoang_tuyen"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Hoàng Tuyền Thạch Bia",
+          "lines": [
+            "Bạn đã lĩnh ngộ trọn vẹn Hoàng Tuyền Chỉ – Chưởng – Thiên Nộ! Mau trở về Thiên Phủ Thành bước qua cổng Đông Bắc công phá Pháo Đài Nhân Điện!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_nhan_dien_souls": {
+      "marker_when": { "has_flag": "ch10_beat_pho_dien_chu", "missing_flag": "sq_10_03_sieu_do_van_hon" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_beat_pho_dien_chu" },
+          "speaker": "Đại Lồng Giam Vạn Hồn — Pháo Đài Nhân Điện",
+          "lines": [
+            "Phó Điện Chủ Nhân Điện (Tam Tinh Đấu Thánh) đang trấn thủ giữa Vạn Hồn Thực Thiên Màn! Hãy gầm vang [Hoàng Tuyền Thiên Nộ] phá sương đen và đánh gục hắn trước!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch10_nhan_dien_destroyed" },
+          "speaker": "Phế Tích Pháo Đài Nhân Điện — Sáng Tạo PHẬT NỘ LUÂN HỒI!",
+          "sfx": "breakthrough",
+          "shake": [22.0, 0.95],
+          "lines": [
+            "Giữa lúc Hắc Ám Ma Pháp Tướng khổng lồ giáng xuống, bạn nghịch chuyển 4 ngọn Dị Hỏa xoay ngược chiều nhau tạo nên đĩa lửa Đen–Trắng sắc lẹm [PHẬT NỘ LUÂN HỒI] chém đứt đôi Pháp Tướng và đập sập toàn bộ tòa Nhân Điện!",
+            "Hàng vạn xiềng xích sắt đen vỡ vụn, hàng chục ngàn linh hồn Luyện Dược Sư vô tội được giải thoát! Tu vi bứt phá lên [TAM TINH ĐẤU THÁNH] & mở thành tựu [Thiên Phủ Thống Soái -20% CD Hoàng Tuyền]!",
+            "Bỗng trên bầu trời Trung Châu xuất hiện Dị Tượng ngàn năm: HAI VẦNG TRĂNG ĐỎ ĐỒNG HIỆN — Cổng vào [YÊU HỎA KHÔNG GIAN (#3 Tịnh Liên Yêu Hỏa)] phía Đông Thiên Phủ Thành đã mở toang!"
+          ],
+          "choices": [
+            {
+              "label": "Đập Tan Lồng Giam Nhân Điện — Khắc Ghi [PHẬT NỘ LUÂN HỒI] & Mở Yêu Hỏa Không Gian!",
+              "action": "effect:eff_ch10_destroy_nhan_dien"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "sq_10_03_sieu_do_van_hon" },
+          "speaker": "Kỳ Ngộ SQ_10_03 — Siêu Độ Vạn Hồn Luyện Dược Sư",
+          "sfx": "breakthrough",
+          "lines": [
+            "Trên đống đổ nát Nhân Điện vẫn còn 10.000 linh hồn Luyện Dược Sư bị oán khí Hồn Điện ăn mòn chưa thể siêu thoát...",
+            "Bạn khẽ vung tay trải ngọn Lưu Ly / Tịnh Liên thanh hỏa ấm áp gột rửa từng sợi oán khí. Muôn ngàn đốm sáng trắng mỉm cười cúi chào rồi bay lên thương khung — luồng công đức mênh mông đẩy Linh Hồn bạn chạm [THIÊN CẢNH ĐỈNH PHONG ĐẠI VIÊN MÃN (+350 SOUL)]!"
+          ],
+          "choices": [
+            {
+              "label": "Khai Hỏa Thanh Tịnh Siêu Độ 10.000 Linh Hồn (+350 SOUL Vĩnh Viễn!)",
+              "action": "effect:eff_ch10_sq03_sieu_do"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Phế Tích Nhân Điện Thanh Tịnh",
+          "lines": [
+            "Vạn hồn Luyện Dược Sư đã bình an siêu thoát, Nhân Điện Hồn Điện vĩnh viễn trở thành tro tàn!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_bac_vuong_forge": {
+      "marker_when": { "missing_flag": "sq_10_04_bac_vuong_7star" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_bac_vuong_forged" },
+          "speaker": "Lò Rèn Thi Hài Thượng Cổ — Khôi Lỗi Đấu Thánh BẮC VƯƠNG",
+          "sfx": "breakthrough",
+          "shake": [20.0, 0.85],
+          "lines": [
+            "Giữa biển lửa trắng Yêu Hỏa Không Gian, bạn phát hiện thi hài bất hoại của một cường giả Lục Tinh Đấu Thánh thượng cổ vẫn đứng sừng sững không hề bị lửa thiêu hủy!",
+            "Kết hợp bí pháp Yêu Khôi, 4 loại Dị Hỏa và lôi lực, bạn đúc nên siêu khôi lỗi mạnh nhất lịch sử đại lục: [BẮC VƯƠNG (Lục Tinh Đấu Thánh Khôi Lỗi)] — mở [Đồng Hành #10 [G]] & [Trợ Chiến [T] Kim Cương Phá Thiên]!"
+          ],
+          "choices": [
+            {
+              "label": "Khai Hỏa Luyện Đúc Siêu Khôi Lỗi Lục Tinh [BẮC VƯƠNG]!",
+              "action": "effect:eff_ch10_forge_bac_vuong"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "sq_10_04_bac_vuong_7star", "has_item": "core_kim_loi_9" },
+          "speaker": "Kỳ Ngộ SQ_10_04 — Tắm Sét Cửu Huyền Kim Lôi Nâng Cấp BẮC VƯƠNG",
+          "sfx": "breakthrough",
+          "shake": [22.0, 0.90],
+          "lines": [
+            "Trong tay bạn đang có [Cửu Huyền Kim Lôi Hạch Cấp 9] chứa dòng thần lôi hủy diệt hiếm có! Nếu dẫn dòng Cửu Huyền Kim Lôi tôi luyện nhục thân Bắc Vương, nó sẽ hóa kim cương vàng sẫm và vọt thẳng lên chiến lực [THẤT TINH ĐẤU THÁNH]!"
+          ],
+          "choices": [
+            {
+              "label": "Dùng 1x [Cửu Huyền Kim Lôi Hạch] Nâng Bắc Vương Lên THẤT TINH ĐẤU THÁNH!",
+              "action": "effect:eff_ch10_sq04_bac_vuong_7star"
+            },
+            {
+              "label": "Để sau hãy tôi luyện",
+              "action": "heal_full"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "sq_10_04_bac_vuong_7star" },
+          "speaker": "Siêu Khôi Lỗi Bắc Vương (Kỳ Ngộ SQ_10_04)",
+          "lines": [
+            "Bắc Vương (Lục Tinh Đấu Thánh) đứng sừng sững như chiến thần! Nếu thu được [Cửu Huyền Kim Lôi Hạch Cấp 9] từ Yêu Hỏa Thánh Nô hoặc Boss trong Yêu Hỏa Không Gian, hãy mang về đây nâng cấp Bắc Vương lên THẤT TINH ĐẤU THÁNH!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "default": true,
+          "speaker": "Chiến Thần Khôi Lỗi BẮC VƯƠNG (Thất Tinh Đấu Thánh Kim Lôi)",
+          "lines": [
+            "Chiến giáp vàng sẫm của Bắc Vương lóe lên những tia Cửu Huyền Kim Lôi bất hoại — chiến lực Thất Tinh Đấu Thánh sẵn sàng đấm vỡ mọi kẻ địch ngăn cản chủ nhân!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_tinh_lien_yeu_thanh": {
+      "marker_when": { "has_flag": "ch10_bac_vuong_forged", "missing_flag": "ch10_yeu_thanh_legacy" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_yeu_thanh_legacy" },
+          "speaker": "Tàn Hồn TỊNH LIÊN YÊU THÁNH (Cửu Tinh Đấu Thánh Đỉnh Phong)",
+          "sfx": "breakthrough",
+          "shake": [20.0, 0.85],
+          "lines": [
+            "Từ chiếc Yêu Liên Cổ Ngọc (4/4 Tàn Đồ hợp nhất), một bóng hình bạch y thanh thoát hiện thân — chính là chủ nhân đời trước của Yêu Hỏa: TỊNH LIÊN YÊU THÁNH (Cửu Tinh Đấu Thánh Đỉnh Phong sát nút Đấu Đế)!",
+            "Tịnh Liên Yêu Thánh (mỉm cười ôn hòa): 'Hữu duyên thay! Ngươi là kẻ duy nhất gom đủ 4 mảnh tàn đồ của ta. Ta dùng tia tàn hồn cuối cùng thi triển [Mộng Yểm Thiên Vụ] suy yếu Vạn Nhân Yêu Hỏa Đại Trận, và trao trọn [TỊNH LIÊN YÊU TRẬN] cho ngươi! Hãy tiến lên hàng phục #3 Tịnh Liên Yêu Hỏa!'"
+          ],
+          "choices": [
+            {
+              "label": "Bái Tạ Tịnh Liên Yêu Thánh — Lĩnh Ngộ [TỊNH LIÊN YÊU TRẬN] & Đạt Tứ Tinh Đấu Thánh!",
+              "action": "effect:eff_ch10_yeu_thanh_legacy"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Di Tích Tịnh Liên Yêu Thánh",
+          "lines": [
+            "Truyền thừa Yêu Thánh Chân Giải đã dung nhập vào thức hải! Mau hợp lực cùng Bắc Vương tiến lên Đông Bắc đánh bại Bản Thể #3 Tịnh Liên Yêu Hỏa!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch10_huan_nhi_dai_sen": {
+      "marker_when": { "has_flag": "ch10_beat_tinh_lien_yeu_hoa", "missing_flag": "ch10_completed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch10_beat_tinh_lien_yeu_hoa" },
+          "speaker": "Đài Sen Bản Nguyên Yêu Hỏa (#3)",
+          "lines": [
+            "Bản Thể #3 Tịnh Liên Yêu Hỏa đang bày Vạn Nhân Yêu Hỏa Đại Trận ở phía Đông Bắc! Hãy cùng Bắc Vương đánh bại hắn trước khi bước vào Đài Sen Song Luyện!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch10_tinh_lien_tamed" },
+          "speaker": "Đài Sen Yêu Hỏa — Cổ Huân Nhi (#4 Kim Đế) & Khí Linh TIỂU Y (#3)",
+          "sfx": "breakthrough",
+          "shake": [26.0, 1.1],
+          "lines": [
+            "Bên trong Đài Sen khổng lồ, năng lượng cuồng bạo của vị Vua Lửa thứ ba thiên địa khiến da thịt Tiêu Viêm rạn nứt đẫm máu! Không một giây do dự, bóng váy xanh ngọc của CỔ HUÂN NHI xé rách màn lửa lao thẳng vào ôm chặt lấy tấm lưng chàng!",
+            "Cổ Huân Nhi (để ngọn #4 Kim Đế Phần Thiên Viêm hòa quyện vào lồng ngực Tiêu Viêm): 'Đồ ngốc... Từ ngày ở Ô Thản Thành năm bốn tuổi, mạng của Huân Nhi đã gắn liền với Tiêu Viêm ca ca rồi. Sống thì cùng nhau ngắm vạn dặm non sông, nếu phải hóa thành tro bụi... Huân Nhi cũng nguyện tan làm một ngọn lửa bên cạnh huynh!'",
+            "Suốt 2 năm tâm ý tương thông trong biển lửa tinh khiết, hai người xóa sạch lệ khí của Yêu Hỏa, ấp nở thành tiểu tinh linh mặc yếm hồng trắng ngây thơ gọi bập bẹ: 'Y Y nha~ Lửa xấu xí, Tiểu Y ăn sạch hết nè!' — KHÍ LINH TIỂU Y (#3 TỊNH LIÊN YÊU HỎA)!!",
+            "Phần Quyết lột xác đạt đỉnh cao [THIÊN GIAI CAO CẤP]! Tu vi vọt thẳng lên [NGŨ TINH ĐẤU THÁNH], mở [Lục Sắc Hỏa Liên], [Tiểu Y Luyện Nhanh [L]] & [Tâm Ý Tương Thông]!"
+          ],
+          "choices": [
+            {
+              "label": "Song Luyện Viên Mãn — Thu Phục [#3 Tịnh Liên (Tiểu Y)] & [#4 Kim Đế] · Xuất Quan Trảm Hồn Diệt Sinh!",
+              "action": "effect:eff_ch10_tame_tinh_lien"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch10_beat_hon_diet_sinh" },
+          "speaker": "Cổ Huân Nhi & Khí Linh Tiểu Y (Ngoại Vi Đài Sen)",
+          "lines": [
+            "Cổ Huân Nhi (tỏa ánh Kim Đế Tứ Tinh Đấu Thánh): 'Tiêu Viêm ca ca! Điện Chủ Hồn Điện HỒN DIỆT SINH (Ngũ Tinh Đấu Thánh) cùng Hồn Ma Lão Tiên đang chặn cổng Đông Nam định cướp Yêu Hỏa! Hãy bật Tịnh Liên Yêu Trận & gọi Bắc Vương xóa sổ Hồn Điện vĩnh viễn!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch10_completed" },
+          "speaker": "HOÀN TẤT CHƯƠNG 10 — Cổ Huân Nhi, Khí Linh Tiểu Y & Bắc Vương",
+          "sfx": "breakthrough",
+          "shake": [26.0, 1.1],
+          "lines": [
+            "Thiên Hồn Dung Huyết Đỉnh vỡ tan tành! Điện Chủ Hồn Điện Hồn Diệt Sinh quỳ rạp trong biển lửa trắng-vàng của Tịnh Liên Yêu Trận — bóng ma Hồn Điện từng đè nặng lên đầu thầy trò Tiêu Viêm từ Chương 01 chính thức bị xóa sổ hoàn toàn!",
+            "Khí Linh Tiểu Y (bay vòng quanh vai phải Tiêu Viêm vỗ tay khúc khích): 'Y Y nha~ Chủ nhân với tỷ tỷ Huân Nhi lợi hại nhất thiên hạ!'",
+            "Cổ Huân Nhi (nắm chặt tay Tiêu Viêm nhìn về phía khe nứt cổ xưa ở tận cùng phương Đông): 'Tu vi huynh đã đạt Lục Tinh Đấu Thánh, cộng thêm Bắc Vương Thất Tinh và Phần Quyết Thiên Giai Cao Cấp... Cơn bão cuối cùng của Hồn Thiên Đế & Đà Xá Cổ Đế Động Phủ ở Chương 11 đang tới rất gần rồi!'"
+          ],
+          "choices": [
+            {
+              "label": "Hoàn Tất CHƯƠNG 10 (Lục Tinh Đấu Thánh · Chiến Lực Thất Tinh · Chuẩn Bị Đại Kết Cục Ch.11!)",
+              "action": "effect:eff_ch10_complete_chapter"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Đài Sen Tịnh Liên (Hoàn Tất Chương 10)",
+          "lines": [
+            "CHÚC MỪNG HOÀN TẤT CHƯƠNG 10: BỒ ĐỀ HÓA THÁNH & TỊNH LIÊN YÊU HỎA (#3)!! Bạn có thể dùng Tiểu Y Luyện Nhanh trong [L], nâng cấp 6 công trình Thiên Phủ Liên Minh & khiêu chiến 20 Boss Cường Bảng / 56 Boss Tâm Ma trong [M] trước khi bước vào Đại Kết Cục Chương 11!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    }
+  },
+  "effects": {
+    "eff_ch10_save_viem_minh": { "set_flag": "ch10_viem_minh_saved", "heal_full": true },
+    "eff_ch10_enter_mang_hoang": { "set_flag": "ch10_mang_hoang_entered", "heal_full": true },
+    "eff_ch10_get_bo_de_heart": { "set_flag": "ch10_got_bo_de_heart", "heal_full": true },
+    "eff_ch10_bt_start": { "set_flag": "ch10_bt_illusion_started", "banter": "☯ Ảo Cảnh Bách Thế Luân Hồi khai mở! Không gian hóa Thủy Mặc Đen–Trắng — hãy đối thoại tiếp cùng Bồ Đề Cổ Thụ [V] trải qua 3 kiếp nhân sinh!" },
+    "eff_ch10_bt_life1_nhan": { "set_flags": ["ch10_bt_life1_done", "ch10_bt_life1_nhan"], "banter": "☯ Kiếp 1 viên mãn — Tâm cảnh ngộ chữ [NHÂN]! Đối thoại Bồ Đề Cổ Thụ [V] bước sang Kiếp thứ 50!" },
+    "eff_ch10_bt_life1_plain": { "set_flag": "ch10_bt_life1_done", "banter": "☯ Kiếp 1 khép lại... Đối thoại Bồ Đề Cổ Thụ [V] bước sang Kiếp thứ 50!" },
+    "eff_ch10_bt_life50_tin": { "set_flags": ["ch10_bt_life50_done", "ch10_bt_life50_tin"], "banter": "☯ Kiếp 50 viên mãn — Tâm cảnh ngộ chữ [TÍN & KIÊN]! Đối thoại Bồ Đề Cổ Thụ [V] bước sang Kiếp thứ 100!" },
+    "eff_ch10_bt_life50_plain": { "set_flag": "ch10_bt_life50_done", "banter": "☯ Kiếp 50 khép lại... Đối thoại Bồ Đề Cổ Thụ [V] bước sang Kiếp thứ 100!" },
+    "eff_ch10_bt_life100_chan": { "set_flags": ["ch10_bt_life100_chan", "ch10_bach_the_enlightened"], "heal_full": true },
+    "eff_ch10_finish_dau_thanh": { "set_flag": "ch10_broke_dau_thanh", "heal_full": true },
+    "eff_ch10_found_thien_phu": { "set_flag": "ch10_thien_phu_founded", "heal_full": true },
+    "eff_ch10_sq01_tieu_tieu": { "consume_items": { "pill_duong_dau_dan": 1 }, "set_flag": "sq_10_01_tieu_tieu_candy", "heal_full": true },
+    "eff_ch10_sq02_bo_de_dan": { "consume_items": { "pill_bo_de_dai_hoan": 1 }, "set_flag": "sq_10_02_bo_de_dan_gifted", "heal_full": true },
+    "eff_ch10_ally_yeu_minh": { "set_flag": "ch10_yeu_minh_allied", "heal_full": true },
+    "eff_ch10_master_hoang_tuyen": { "set_flag": "ch10_hoang_tuyen_mastered", "heal_full": true },
+    "eff_ch10_destroy_nhan_dien": { "set_flag": "ch10_nhan_dien_destroyed", "heal_full": true },
+    "eff_ch10_sq03_sieu_do": { "set_flag": "sq_10_03_sieu_do_van_hon", "heal_full": true },
+    "eff_ch10_forge_bac_vuong": { "set_flag": "ch10_bac_vuong_forged", "heal_full": true },
+    "eff_ch10_sq04_bac_vuong_7star": { "consume_items": { "core_kim_loi_9": 1 }, "set_flag": "sq_10_04_bac_vuong_7star", "heal_full": true },
+    "eff_ch10_yeu_thanh_legacy": { "set_flag": "ch10_yeu_thanh_legacy", "heal_full": true },
+    "eff_ch10_tame_tinh_lien": { "set_flag": "ch10_tinh_lien_tamed", "heal_full": true },
+    "eff_ch10_complete_chapter": { "set_flag": "ch10_completed", "heal_full": true }
+  }
+}

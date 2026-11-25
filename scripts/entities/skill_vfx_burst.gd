@@ -223,6 +223,16 @@ func _draw() -> void:
 			_draw_xiao_clan_crest(t)
 		"ban_thanh_duoc_tran_assist":
 			_draw_ban_thanh_duoc_tran_assist(t)
+		"yellow_springs_palm":
+			_draw_yellow_springs_palm(t)
+		"yellow_springs_wrath":
+			_draw_yellow_springs_wrath(t)
+		"reincarnation_fire_disc":
+			_draw_reincarnation_fire_disc(t)
+		"purifying_lotus_array":
+			_draw_purifying_lotus_array(t)
+		"bac_vuong_tinh_lien_assist":
+			_draw_bac_vuong_tinh_lien_assist(t)
 		"ground_crater":
 			_draw_ground_crater(t)
 		"dan_lei_pillar":
@@ -1464,6 +1474,96 @@ func _draw_ban_thanh_duoc_tran_assist(t: float) -> void:
 		var p_end := Vector2(cos(a), sin(a)) * (r * 1.08)
 		_draw_fractal_bolt(Vector2.ZERO, p_end, Color(0.66, 0.90, 0.96, 0.92 * fade), Color(1.0, 1.0, 1.0, 0.98 * fade), 3.6 * fade, i + 271, 14.0)
 	draw_arc(Vector2.ZERO, r, 0.0, TAU, 58, Color(0.92, 0.99, 1.0, 0.96 * fade), 6.8 * fade)
+
+
+func _draw_yellow_springs_palm(t: float) -> void:
+	# HOÀNG TUYỀN CHỈ & CHƯỞNG (Ch.10): Cột chỉ lực vàng sẫm xuyên giáp + Chưởng Ấn Cửu U hút sinh cơ!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.6), 0.0, 1.0)
+	var r: float = radius_px * (0.26 + 0.90 * ease_t)
+	var f_dir := Vector2(cos(aim_angle), sin(aim_angle))
+	draw_line(-f_dir * (radius_px * 0.65), f_dir * (radius_px * 1.05), Color(0.79, 0.54, 0.02, 0.62 * fade), 44.0 * fade)
+	draw_line(-f_dir * (radius_px * 0.65), f_dir * (radius_px * 1.05), Color(0.99, 0.88, 0.28, 0.95 * fade), 16.0 * fade)
+	draw_circle(Vector2.ZERO, r * 0.88, Color(0.79, 0.54, 0.02, 0.20 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.94, elapsed * 2.8, Color("#CA8A04"), Color("#FEF08A"), fade, 8)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 54, Color(0.99, 0.88, 0.28, 0.94 * fade), 6.2 * fade)
+
+
+func _draw_yellow_springs_wrath(t: float) -> void:
+	# HOÀNG TUYỀN THIÊN NỘ (Ch.10 Hồn Kỹ Toàn Màn Hình): 4 tầng sóng âm gợn rồng vàng sẫm chấn toái linh hồn!
+	for w in range(4):
+		var wt: float = clampf((t - float(w) * 0.11) / (1.0 - float(w) * 0.11), 0.0, 1.0)
+		if wt <= 0.0 or wt >= 1.0:
+			continue
+		var we: float = _ease_out_cubic(wt)
+		var wf: float = 1.0 - wt * wt
+		var br: float = radius_px * (0.16 + 1.04 * we)
+		var pts := PackedVector2Array()
+		for s in range(57):
+			var ang: float = float(s) * TAU / 56.0
+			var rip: float = sin(ang * 14.0 + elapsed * 28.0 + float(w) * 1.8) * (9.0 * wf)
+			pts.append(Vector2(cos(ang), sin(ang)) * (br + rip))
+		draw_polyline(pts, Color(0.95, 0.72, 0.08, 0.92 * wf), (7.5 - float(w) * 1.2) * wf)
+		draw_arc(Vector2.ZERO, br * 0.95, 0.0, TAU, 48, Color(1.0, 0.97, 0.76, 0.80 * wf), 2.8 * wf)
+	var fade: float = clampf(1.0 - pow(t, 1.5), 0.0, 1.0)
+	_draw_ancient_rune_seal(Vector2.ZERO, radius_px * (0.28 + 0.55 * _ease_out_expo(t)), -elapsed * 3.2, Color("#F59E0B"), Color("#FFFFFF"), fade, 10)
+
+
+func _draw_reincarnation_fire_disc(t: float) -> void:
+	# PHẬT NỘ LUÂN HỒI (Ch.10 Tự Sáng Tạo): Đĩa xoáy Thái Cực Đen–Trắng 4 Dị Hỏa cắt đôi không gian!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.7), 0.0, 1.0)
+	var r: float = radius_px * (0.34 + 0.78 * ease_t)
+	var spin: float = elapsed * 14.0
+	draw_circle(Vector2.ZERO, r * 0.92, Color(0.06, 0.05, 0.09, 0.42 * fade))
+	draw_arc(Vector2.ZERO, r * 0.92, spin, spin + PI, 32, Color(1.0, 0.98, 0.94, 0.96 * fade), 18.0 * fade)
+	draw_arc(Vector2.ZERO, r * 0.92, spin + PI, spin + TAU, 32, Color(0.14, 0.08, 0.24, 0.94 * fade), 18.0 * fade)
+	draw_arc(Vector2.ZERO, r * 1.08, spin * 1.3, spin * 1.3 + TAU * 0.85, 48, Color(0.0, 0.96, 0.83, 0.88 * fade), 5.5 * fade)
+	draw_arc(Vector2.ZERO, r * 0.62, -spin * 1.6, -spin * 1.6 + TAU * 0.85, 40, Color(1.0, 0.69, 0.80, 0.90 * fade), 4.5 * fade)
+	for i in range(6):
+		var a: float = spin + float(i) * (TAU / 6.0)
+		var d := Vector2(cos(a), sin(a))
+		draw_line(d * (r * 0.24), d * (r * 1.18), Color(1.0, 1.0, 1.0, 0.90 * fade) if (i % 2 == 0) else Color(0.62, 0.30, 0.87, 0.86 * fade), 4.0 * fade)
+
+
+func _draw_purifying_lotus_array(t: float) -> void:
+	# TỊNH LIÊN YÊU TRẬN (Ch.10 Yêu Thánh): 12 Cánh Sen Lửa Trắng-Hồng khóa chết toàn chiến trường!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var r: float = radius_px * (0.28 + 0.84 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.92, Color(1.0, 0.94, 0.96, 0.16 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.94, elapsed * 1.8, Color("#FDA4AF"), Color("#FFFFFF"), fade, 12)
+	for i in range(12):
+		var a: float = float(i) * (TAU / 12.0) + elapsed * 0.85
+		var d := Vector2(cos(a), sin(a))
+		var p := Vector2(-d.y, d.x)
+		var petal := PackedVector2Array([
+			d * (r * 0.22),
+			d * (r * 0.68) + p * (r * 0.13),
+			d * (r * 1.06),
+			d * (r * 0.68) - p * (r * 0.13)
+		])
+		draw_colored_polygon(petal, Color(1.0, 0.80, 0.88, 0.34 * fade) if (i % 2 == 0) else Color(1.0, 0.97, 0.99, 0.36 * fade))
+		draw_polyline(PackedVector2Array([petal[0], petal[1], petal[2], petal[3], petal[0]]), Color(1.0, 0.95, 0.97, 0.90 * fade), 2.4 * fade)
+	draw_arc(Vector2.ZERO, r * 1.06, 0.0, TAU, 60, Color(1.0, 0.69, 0.80, 0.94 * fade), 6.2 * fade)
+
+
+func _draw_bac_vuong_tinh_lien_assist(t: float) -> void:
+	# [T] BẮC VƯƠNG KIM CƯƠNG PHÁ THIÊN & KIM ĐẾ TỊNH LIÊN HỢP BÍCH: Trụ Kim Lôi + Biển Lửa Vàng-Trắng-Hồng!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var r: float = radius_px * (0.25 + 0.96 * ease_t)
+	draw_line(Vector2(0, -radius_px * 1.95), Vector2(0, 18.0), Color(1.0, 0.84, 0.0, 0.66 * fade), 72.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.95), Vector2(0, 18.0), Color(1.0, 0.72, 0.82, 0.88 * fade), 36.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.95), Vector2(0, 18.0), Color(1.0, 1.0, 1.0, 0.98 * fade), 15.0 * fade)
+	draw_circle(Vector2.ZERO, r * 0.94, Color(1.0, 0.92, 0.78, 0.22 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.96, elapsed * 2.5, Color("#FFD700"), Color("#FFAFCC"), fade, 12)
+	for i in range(12):
+		var a: float = float(i) * (TAU / 12.0) - elapsed * 1.8
+		var p_end := Vector2(cos(a), sin(a)) * (r * 1.12)
+		var bc: Color = Color(1.0, 0.84, 0.0, 0.94 * fade) if (i % 2 == 0) else Color(1.0, 0.69, 0.80, 0.94 * fade)
+		_draw_fractal_bolt(Vector2.ZERO, p_end, bc, Color(1.0, 1.0, 1.0, 0.98 * fade), 4.0 * fade, i + 307, 18.0)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 60, Color(1.0, 0.95, 0.86, 0.96 * fade), 7.2 * fade)
 
 
 func _draw_generic_ring(t: float) -> void:

@@ -147,6 +147,89 @@ static func build_regional_weather(stage, m_def: Dictionary) -> void:
 		VfxAssets.configure_glow_particles(tmotes, Color("#FFF3B0"), Color("#ADB5BD"), false)
 		map_overlay_root.add_child(tmotes)
 		return
+	elif amb_weather == "emerald_bodhi":
+		# Mãng Hoang & Bồ Đề Cổ Thụ: Lá Bồ Đề ngọc bích phát sáng (#34D399) bay bồng bềnh thiền định!
+		var bleaves := CPUParticles2D.new()
+		bleaves.position = map_size * 0.5
+		bleaves.emitting = true
+		bleaves.preprocess = 2.4
+		bleaves.amount = 56
+		bleaves.lifetime = 6.2
+		bleaves.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		bleaves.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		bleaves.direction = Vector2(0.35, 0.90).normalized()
+		bleaves.spread = 32.0
+		bleaves.gravity = Vector2(4.0, 8.0)
+		bleaves.initial_velocity_min = 20.0
+		bleaves.initial_velocity_max = 46.0
+		bleaves.scale_amount_min = 0.26
+		bleaves.scale_amount_max = 0.54
+		VfxAssets.configure_glow_particles(bleaves, Color("#A7F3D0"), Color("#34D399"), false)
+		map_overlay_root.add_child(bleaves)
+		return
+	elif amb_weather == "siege_embers":
+		# Chiến Trường Viêm Minh & Pháo Đài Nhân Điện: Tro tàn & tàn lửa công thành bay xiên rực rỡ!
+		var embers := CPUParticles2D.new()
+		embers.position = map_size * 0.5
+		embers.emitting = true
+		embers.preprocess = 1.8
+		embers.amount = 72
+		embers.lifetime = 3.2
+		embers.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		embers.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		embers.direction = Vector2(-0.52, -0.85).normalized()
+		embers.spread = 28.0
+		embers.gravity = Vector2(-12.0, -24.0)
+		embers.initial_velocity_min = 42.0
+		embers.initial_velocity_max = 108.0
+		embers.scale_amount_min = 0.24
+		embers.scale_amount_max = 0.54
+		VfxAssets.configure_glow_particles(embers, Color("#FDE047"), Color("#EF4444"), true)
+		map_overlay_root.add_child(embers)
+		return
+	elif amb_weather == "abyss_mist":
+		# Cửu U Hoàng Tuyền Huyết Đàm: Âm khí vàng đất & hàn vụ u minh cuộn chậm dưới đáy vực!
+		var amist := CPUParticles2D.new()
+		amist.position = map_size * 0.5
+		amist.emitting = true
+		amist.preprocess = 2.4
+		amist.amount = 30
+		amist.lifetime = 6.8
+		amist.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		amist.emission_rect_extents = Vector2(map_size.x * 0.52, map_size.y * 0.48)
+		amist.direction = Vector2(0.85, -0.25).normalized()
+		amist.spread = 22.0
+		amist.gravity = Vector2(4.0, -4.0)
+		amist.initial_velocity_min = 18.0
+		amist.initial_velocity_max = 42.0
+		amist.scale_amount_min = 3.2
+		amist.scale_amount_max = 5.8
+		amist.texture = VfxAssets.get_smoke_puff_texture()
+		amist.scale_amount_curve = VfxAssets.get_scale_smoke_curve()
+		amist.color_ramp = make_soft_ambient_gradient(Color(0.79, 0.54, 0.04, 0.16))
+		amist.color = Color.WHITE
+		map_overlay_root.add_child(amist)
+		return
+	elif amb_weather == "lotus_flames":
+		# Yêu Hỏa Không Gian: Cánh sen lửa trắng sữa & hồng ngọc (#FFF1F2 / #FDA4AF) bay cuộn đẹp mê hồn!
+		var lflames := CPUParticles2D.new()
+		lflames.position = map_size * 0.5
+		lflames.emitting = true
+		lflames.preprocess = 2.0
+		lflames.amount = 74
+		lflames.lifetime = 3.8
+		lflames.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		lflames.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		lflames.direction = Vector2(0.18, -0.98).normalized()
+		lflames.spread = 36.0
+		lflames.gravity = Vector2(0.0, -26.0)
+		lflames.initial_velocity_min = 32.0
+		lflames.initial_velocity_max = 86.0
+		lflames.scale_amount_min = 0.28
+		lflames.scale_amount_max = 0.60
+		VfxAssets.configure_glow_particles(lflames, Color("#FFF1F2"), Color("#FDA4AF"), true)
+		map_overlay_root.add_child(lflames)
+		return
 
 	if is_tower_arena:
 		# Thiên Phần Luyện Khí Tháp: Tàn lửa Vẫn Lạc Tâm Viêm (#FF4D6D / #FFD166) bốc cuộn dày đặc khắp đấu trường!

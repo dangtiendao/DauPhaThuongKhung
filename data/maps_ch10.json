@@ -1,0 +1,557 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 10 — Bồ Đề Hóa Thánh & Tịnh Liên Yêu Hỏa Hàng Thế (Mở Màn Quyển IV)",
+  "map_order": [
+    "ch10_viem_minh_chien_truong",
+    "ch10_mang_hoang_co_vuc",
+    "ch10_bo_de_co_thu",
+    "ch10_thien_phu_lien_minh",
+    "ch10_cuu_u_hoang_tuyen",
+    "ch10_nhan_dien_hon_dien",
+    "ch10_yeu_hoa_khong_gian"
+  ],
+  "maps": {
+    "ch10_viem_minh_chien_truong": {
+      "id": "ch10_viem_minh_chien_truong",
+      "name": "Đế Đô Gia Mã — Chiến Trường Viêm Minh (Giải Cứu Quê Hương)",
+      "subtitle": "Hồi 10.1 — Một Ngón Tay Trảm Sư Thiên & Cửu Thiên Tôn · Đoàn Tụ Thải Lân & Con Gái Tiêu Tiêu!",
+      "is_safe_zone": false,
+      "size": [2160, 1200],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_thien_phu",
+      "ambient_weather": "siege_embers",
+      "ground_tile": "res://assets/sprites/tiles/viem_minh_siege_wall.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 535, 1960, 112],
+        [1040, 180, 130, 820]
+      ],
+      "decor_type": "ruins",
+      "decor_points": [
+        [340, 220], [760, 220], [1360, 220], [1820, 220],
+        [340, 960], [760, 960], [1360, 960], [1820, 960]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch10_viem_minh_war",
+          "pos": [1720, 230],
+          "gold": 360000,
+          "items": { "item_that_thai_bao_ngoc": 2, "pill_cuu_duong_hoan_cot": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch10_hai_ba_dong_siege",
+          "name": "Băng Hoàng Hải Ba Đông & Tiêu Đỉnh (Tường Thành Viêm Minh)",
+          "title": "Hồi 10.1 — Sư Minh Tông & Cửu Thiên Tôn Tổng Tấn Công Đế Đô!",
+          "sprite": "res://assets/sprites/npcs/npc_hai_ba_dong.png",
+          "pos": [440, 420],
+          "role": "ch10_hai_ba_dong_siege",
+          "glow_hex": "#38BDF8",
+          "name_hex": "#BAE6FD",
+          "prompt_text": "[V] Nghe Khẩn Báo Chiến Trường Tường Thành Viêm Minh!"
+        },
+        {
+          "id": "npc_ch10_thai_lan_tieu_tieu",
+          "name": "Mỹ Đỗ Toa Thải Lân & Con Gái TIÊU TIÊU (Thất Thải Thôn Thiên Mãng)",
+          "title": "Đoàn Tụ Gia Đình · Chữa Đôi Chân Đại Ca Tiêu Đỉnh · Mở Đồng Hành #11!",
+          "sprite": "res://assets/sprites/npcs/npc_tieu_tieu.png",
+          "pos": [1680, 840],
+          "role": "ch10_thai_lan_tieu_tieu",
+          "require_flag": "ch10_beat_su_thien",
+          "glow_hex": "#FF4D6D",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Ôm Con Gái TIÊU TIÊU & Thải Lân Vào Lòng — Hoàn Tất Giải Cứu Viêm Minh!"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "vong_hon_thuc_cot_ve", "pos": [820, 410], "respawn": 18.0 },
+        { "enemy_id": "vong_hon_thuc_cot_ve", "pos": [820, 770], "respawn": 18.0 },
+        { "enemy_id": "su_thien_cuu_thien_ton_boss", "pos": [1460, 580], "respawn": 46.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_thien_mo_from_viem_minh",
+          "label": "Không Gian Trùng Động Tây -> Quay Về Thiên Mộ Tam Tầng (Ch.09)",
+          "pos": [108, 580],
+          "target_map": "ch09_thien_mo_tam_tang",
+          "target_spawn": [1960, 580],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch10_mang_hoang_co_vuc",
+          "label": "Vùng Cấm Cổ Vực Đông -> MÃNG HOANG CỔ VỰC (Tầm Bảo Bồ Đề Cổ Thụ!)",
+          "pos": [2052, 580],
+          "target_map": "ch10_mang_hoang_co_vuc",
+          "target_spawn": [200, 580],
+          "require_flag": "ch10_viem_minh_saved",
+          "locked_hint": "Hãy xóa sổ Sư Thiên & Cửu Thiên Tôn rồi ôm con gái Tiêu Tiêu & Thải Lân [V] hoàn tất giải cứu Viêm Minh trước!"
+        }
+      ]
+    },
+    "ch10_mang_hoang_co_vuc": {
+      "id": "ch10_mang_hoang_co_vuc",
+      "name": "Mãng Hoang Cổ Vực — Rừng Độc Trùng Viễn Cổ",
+      "subtitle": "Hồi 10.2 (Thượng) — Xuyên Đàn Viễn Cổ Thiên Ngô Độc Trùng · Trảm Hồn Tộc Thần Tử Hồn Ngọc!",
+      "is_safe_zone": false,
+      "size": [2160, 1200],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_bo_de",
+      "ambient_weather": "emerald_bodhi",
+      "ground_tile": "res://assets/sprites/tiles/mang_hoang_ancient_jungle.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 535, 1960, 110],
+        [980, 200, 130, 800]
+      ],
+      "decor_type": "bamboo",
+      "decor_points": [
+        [320, 210], [720, 210], [1340, 210], [1820, 210],
+        [320, 960], [720, 960], [1340, 960], [1820, 960]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch10_mang_hoang",
+          "pos": [1680, 230],
+          "gold": 420000,
+          "items": { "herb_mang_hoang_thu_huyet": 4, "item_bo_de_tu": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch10_huan_nhi_mang_hoang",
+          "name": "Cổ Huân Nhi (Kim Đế Phần Thiên Viêm — Cổ Tộc)",
+          "title": "Dẫn Đường Xuyên Mãng Hoang Cổ Vực · Cảnh Báo Thần Tử Hồn Ngọc!",
+          "sprite": "res://assets/sprites/npcs/npc_huan_nhi_dau_thanh.png",
+          "pos": [440, 420],
+          "role": "ch10_huan_nhi_mang_hoang",
+          "glow_hex": "#FFD700",
+          "name_hex": "#FEF08A",
+          "prompt_text": "[V] Hội Quân Cùng Cổ Huân Nhi Tiến Sâu Mãng Hoang Cổ Vực"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "thien_ngo_doc_trung", "pos": [760, 390], "respawn": 16.0 },
+        { "enemy_id": "thien_ngo_doc_trung", "pos": [760, 770], "respawn": 16.0 },
+        { "enemy_id": "thien_ngo_doc_trung", "pos": [1140, 580], "respawn": 16.0 },
+        { "enemy_id": "hon_ngoc_ban_thanh_boss", "pos": [1560, 580], "respawn": 46.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_viem_minh_from_mang_hoang",
+          "label": "Rời Cổ Vực Tây -> Quay Về Chiến Trường Viêm Minh",
+          "pos": [108, 580],
+          "target_map": "ch10_viem_minh_chien_truong",
+          "target_spawn": [1880, 580],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch10_bo_de_co_thu",
+          "label": "Thung Lũng Thần Thụ Đông -> BỒN ĐỊA BỒ ĐỀ CỔ THỤ (Thanh Lọc Ác Niệm Đấu Đế!)",
+          "pos": [2052, 580],
+          "target_map": "ch10_bo_de_co_thu",
+          "target_spawn": [200, 580],
+          "require_flag": "ch10_beat_hon_ngoc",
+          "locked_hint": "Hãy đánh bại Hồn Tộc Thần Tử Hồn Ngọc & Khôi Lỗi Hộ Thụ tại Mãng Hoang Cổ Vực để tiến vào Bồn Địa Bồ Đề Cổ Thụ!"
+        }
+      ]
+    },
+    "ch10_bo_de_co_thu": {
+      "id": "ch10_bo_de_co_thu",
+      "name": "Bồn Địa Bồ Đề Cổ Thụ & Tâm Thức Bách Thế Luân Hồi",
+      "subtitle": "Hồi 10.2–10.3 — Thanh Lọc Ác Niệm Đấu Đế · Trăm Kiếp Chứng Đạo NHẤT TINH ĐẤU THÁNH · Diệt Tam Tà Phái!",
+      "is_safe_zone": false,
+      "size": [2240, 1240],
+      "default_spawn": [200, 600],
+      "bgm": "bgm_bo_de",
+      "ambient_weather": "emerald_bodhi",
+      "ground_tile": "res://assets/sprites/tiles/bo_de_emerald_sanctum.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 555, 2040, 114],
+        [1100, 190, 134, 860]
+      ],
+      "decor_type": "bamboo",
+      "decor_points": [
+        [340, 220], [780, 220], [1420, 220], [1860, 220],
+        [340, 1000], [780, 1000], [1420, 1000], [1860, 1000]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch10_bo_de_heart",
+          "pos": [1160, 220],
+          "gold": 520000,
+          "items": { "item_bo_de_tu": 5, "pill_bo_de_dai_hoan": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch10_bo_de_co_thu",
+          "name": "BỒ ĐỀ CỔ THỤ (Linh Trí Thần Thụ Vạn Năm)",
+          "title": "Trao Bồ Đề Tâm · Khai Mở Ảo Cảnh Bách Thế Luân Hồi Chứng Đạo ĐẤU THÁNH!",
+          "sprite": "res://assets/sprites/npcs/npc_bo_de_co_thu.png",
+          "pos": [620, 600],
+          "role": "ch10_bo_de_co_thu",
+          "glow_hex": "#34D399",
+          "name_hex": "#A7F3D0",
+          "prompt_text": "[V] Giao Cảm Với Bồ Đề Cổ Thụ (Nhận Bồ Đề Tâm / Mở Bách Thế Luân Hồi Đột Phá Đấu Thánh!)"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "thien_ngo_doc_trung", "pos": [940, 380], "respawn": 18.0 },
+        { "enemy_id": "ac_niem_dau_de_boss", "pos": [1520, 360], "respawn": 50.0 },
+        { "enemy_id": "thien_minh_lao_yeu_boss", "pos": [1680, 880], "respawn": 50.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_mang_hoang_from_bo_de",
+          "label": "Rời Thần Thụ Tây -> Quay Về Mãng Hoang Cổ Vực",
+          "pos": [108, 600],
+          "target_map": "ch10_mang_hoang_co_vuc",
+          "target_spawn": [1880, 580],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch10_thien_phu_lien_minh",
+          "label": "Không Gian Môn Đông -> TỔNG ĐÀN THIÊN PHỦ LIÊN MINH (Hội Minh Tứ Phương Trung Châu!)",
+          "pos": [2132, 600],
+          "target_map": "ch10_thien_phu_lien_minh",
+          "target_spawn": [200, 600],
+          "require_flag": "ch10_broke_dau_thanh",
+          "locked_hint": "Hãy thanh tẩy Ác Niệm Đấu Đế, trải qua Ảo Cảnh Bách Thế Luân Hồi [V] tại Bồ Đề Cổ Thụ và nghiền nát Thiên Minh Lão Yêu để mở Thiên Phủ Thành!"
+        }
+      ]
+    },
+    "ch10_thien_phu_lien_minh": {
+      "id": "ch10_thien_phu_lien_minh",
+      "name": "Thiên Phủ Thành — Tổng Đàn THIÊN PHỦ LIÊN MINH (Bá Chủ Trung Châu)",
+      "subtitle": "Hồi 10.4 (Thượng) — Hợp Nhất Tinh Vẫn Các · Đan Tháp · Hoa Tông · Phần Viêm Cốc!",
+      "is_safe_zone": true,
+      "size": [2240, 1280],
+      "default_spawn": [200, 600],
+      "bgm": "bgm_thien_phu",
+      "ambient_weather": "sakura_petals",
+      "ground_tile": "res://assets/sprites/tiles/thien_phu_grand_citadel.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 555, 2040, 118],
+        [1060, 140, 138, 1000]
+      ],
+      "decor_type": "pillars",
+      "decor_points": [
+        [360, 240], [780, 240], [1440, 240], [1860, 240],
+        [360, 1020], [780, 1020], [1440, 1020], [1860, 1020]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch10_thien_phu_treasury",
+          "pos": [1820, 960],
+          "gold": 680000,
+          "items": { "item_that_thai_bao_ngoc": 3, "item_thanh_hon_tinh_phach": 4, "pill_bo_de_dai_hoan": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch10_dan_thap_lao_to",
+          "name": "ĐAN THÁP LÃO TỔ (Lục Tinh Đấu Thánh · Khách Khanh Tối Cao)",
+          "title": "Hồi 10.4 — Chủ Trì Đại Lễ Thiên Phủ Liên Minh & Kỳ Ngộ SQ_10_02 (Ban Bồ Đề Đan)",
+          "sprite": "res://assets/sprites/npcs/npc_dan_thap_lao_to.png",
+          "pos": [1120, 420],
+          "role": "ch10_dan_thap_lao_to",
+          "glow_hex": "#FBBF24",
+          "name_hex": "#FEF08A",
+          "prompt_text": "[V] Bái Kiến Đan Tháp Lão Tổ — Khai Lập THIÊN PHỦ LIÊN MINH / Ban Phát Bồ Đề Đan"
+        },
+        {
+          "id": "npc_ch10_tieu_tieu_hub",
+          "name": "Công Chúa Nhỏ TIÊU TIÊU & Thải Lân (Hậu Hoa Viên Thiên Phủ)",
+          "title": "Kỳ Ngộ SQ_10_01 — Luyện Ngũ Phẩm Đường Đậu Đan Tặng Con Gái -> Phụ Nữ Đồng Tâm Kết!",
+          "sprite": "res://assets/sprites/npcs/npc_tieu_tieu.png",
+          "pos": [680, 860],
+          "role": "ch10_tieu_tieu_hub",
+          "glow_hex": "#F472B6",
+          "name_hex": "#FBCFE8",
+          "prompt_text": "[V] [Kỳ Ngộ SQ_10_01] Trò Chuyện & Đút Đường Đậu Đan Cho Bé Tiêu Tiêu!"
+        },
+        {
+          "id": "npc_ch10_thien_phu_steward",
+          "name": "Minh Chủ Điều Hành DƯỢC TRẦN (Thống Soái Phủ Thiên Phủ)",
+          "title": "Khôi Phục 100% Sinh Lực & Đấu Khí · Điều Phối Đại Quân Tứ Phương!",
+          "sprite": "res://assets/sprites/npcs/npc_duoc_tran_ban_thanh.png",
+          "pos": [1560, 820],
+          "role": "ch10_thien_phu_steward",
+          "glow_hex": "#72EFDD",
+          "name_hex": "#CCFBF1",
+          "prompt_text": "[V] Diện Kiến Sư Tôn Dược Trần (Hồi Phục 100% & Báo Cáo Thiên Phủ Liên Minh)"
+        }
+      ],
+      "spawns": [],
+      "portals": [
+        {
+          "id": "back_bo_de_from_thien_phu",
+          "label": "Không Gian Môn Tây -> Quay Về Bồn Địa Bồ Đề Cổ Thụ",
+          "pos": [108, 600],
+          "target_map": "ch10_bo_de_co_thu",
+          "target_spawn": [1960, 600],
+          "require_flag": ""
+        },
+        {
+          "id": "shortcut_tinh_van_from_thien_phu",
+          "label": "Trùng Động Nam -> Quay Về Tinh Vẫn Các (Ch.09)",
+          "pos": [1120, 1170],
+          "target_map": "ch09_tinh_van_cac",
+          "target_spawn": [1120, 640],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch10_cuu_u_hoang_tuyen",
+          "label": "Trùng Động Bắc -> CỬU U HOÀNG TUYỀN HUYẾT ĐÀM (Hoàng Tuyền Tam Tuyệt!)",
+          "pos": [1120, 112],
+          "target_map": "ch10_cuu_u_hoang_tuyen",
+          "target_spawn": [1060, 1020],
+          "require_flag": "ch10_thien_phu_founded",
+          "locked_hint": "Hãy diện kiến Đan Tháp Lão Tổ [V] tại trung tâm Thiên Phủ Thành hoàn tất Đại Lễ Thành Lập Thiên Phủ Liên Minh trước!"
+        },
+        {
+          "id": "to_ch10_nhan_dien_hon_dien",
+          "label": "Chiến Kỳ Đông Bắc -> PHÁO ĐÀI NHÂN ĐIỆN (Đại Quân Công Thành Hồn Điện!)",
+          "pos": [1980, 260],
+          "target_map": "ch10_nhan_dien_hon_dien",
+          "target_spawn": [200, 600],
+          "require_flag": "ch10_hoang_tuyen_mastered",
+          "locked_hint": "Hãy tới Cửu U Hoàng Tuyền Huyết Đàm cứu Yêu Minh & lĩnh ngộ Hoàng Tuyền Thiên Nộ trước khi tổng công kích Nhân Điện!"
+        },
+        {
+          "id": "to_ch10_yeu_hoa_khong_gian",
+          "label": "Song Nguyệt Đồng Hiện Đông -> YÊU HỎA KHÔNG GIAN (#3 Tịnh Liên Yêu Hỏa & Bắc Vương!)",
+          "pos": [2132, 600],
+          "target_map": "ch10_yeu_hoa_khong_gian",
+          "target_spawn": [200, 600],
+          "require_flag": "ch10_nhan_dien_destroyed",
+          "locked_hint": "Hãy san bằng Pháo Đài Nhân Điện và sáng tạo Phật Nộ Luân Hồi để đón dị tượng Song Nguyệt Đồng Hiện khai mở Yêu Hỏa Không Gian!"
+        }
+      ]
+    },
+    "ch10_cuu_u_hoang_tuyen": {
+      "id": "ch10_cuu_u_hoang_tuyen",
+      "name": "Cửu U Địa Minh Mãng & Hoàng Tuyền Huyết Đàm",
+      "subtitle": "Hồi 10.4 (Trung) — Cứu Tộc Trưởng Yêu Minh · Phá Tàn Ảnh Hoàng Tuyền Yêu Thánh · Lĩnh Ngộ Tam Tuyệt!",
+      "is_safe_zone": false,
+      "size": [2160, 1200],
+      "default_spawn": [1060, 1020],
+      "bgm": "bgm_vong_hon",
+      "ambient_weather": "abyss_mist",
+      "ground_tile": "res://assets/sprites/tiles/hoang_tuyen_abyss_stone.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [990, 160, 140, 940],
+        [240, 520, 1680, 114]
+      ],
+      "decor_type": "ruins",
+      "decor_points": [
+        [340, 220], [740, 220], [1420, 220], [1820, 220],
+        [340, 960], [740, 960], [1420, 960], [1820, 960]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch10_hoang_tuyen",
+          "pos": [1800, 240],
+          "gold": 580000,
+          "items": { "item_thanh_hon_tinh_phach": 4, "core_nang_luong_9": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch10_yeu_minh",
+          "name": "Tộc Trưởng YÊU MINH (Cửu U Địa Minh Mãng Tộc)",
+          "title": "Kết Minh Thiên Phủ · Khai Mở Đường Xuống Hoàng Tuyền Thạch Bia!",
+          "sprite": "res://assets/sprites/npcs/npc_yeu_minh.png",
+          "pos": [680, 820],
+          "role": "ch10_yeu_minh",
+          "glow_hex": "#CA8A04",
+          "name_hex": "#FDE047",
+          "prompt_text": "[V] Giải Cứu & Kết Minh Cùng Tộc Trưởng Yêu Minh!"
+        },
+        {
+          "id": "npc_ch10_hoang_tuyen_stele",
+          "name": "HOÀNG TUYỀN THẠCH BIA (Truyền Thừa Hoàng Tuyền Yêu Thánh)",
+          "title": "Hấp Thu Yêu Thánh Tinh Huyết -> Đột Phá Nhị Tinh Đấu Thánh & Học Hoàng Tuyền Tam Tuyệt!",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [1060, 230],
+          "role": "ch10_hoang_tuyen_stele",
+          "require_flag": "ch10_beat_hoang_tuyen",
+          "glow_hex": "#F59E0B",
+          "name_hex": "#FEF08A",
+          "prompt_text": "[V] Cảm Ngộ Hoàng Tuyền Thạch Bia — Lĩnh Ngộ Hoàng Tuyền Chưởng & Thiên Nộ!"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "cuu_u_xa_truong_lao", "pos": [640, 560], "respawn": 16.0 },
+        { "enemy_id": "cuu_u_xa_truong_lao", "pos": [1480, 560], "respawn": 16.0 },
+        { "enemy_id": "cuu_u_xa_truong_lao", "pos": [1060, 740], "respawn": 18.0 },
+        { "enemy_id": "hoang_tuyen_yeu_thanh_boss", "pos": [1060, 420], "respawn": 48.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_thien_phu_from_hoang_tuyen",
+          "label": "Trùng Động Nam -> Quay Về Tổng Đàn Thiên Phủ Liên Minh",
+          "pos": [1060, 1110],
+          "target_map": "ch10_thien_phu_lien_minh",
+          "target_spawn": [1120, 260],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch10_nhan_dien_hon_dien": {
+      "id": "ch10_nhan_dien_hon_dien",
+      "name": "Pháo Đài Nhân Điện — Hồn Điện Trung Châu (Công Thành Chiến)",
+      "subtitle": "Hồi 10.4 (Hạ) — Hoàng Tuyền Thiên Nộ Phá Sương Đen · Sáng Tạo Phật Nộ Luân Hồi Trảm Phó Điện Chủ!",
+      "is_safe_zone": false,
+      "size": [2240, 1220],
+      "default_spawn": [200, 600],
+      "bgm": "bgm_nhan_dien",
+      "ambient_weather": "siege_embers",
+      "ground_tile": "res://assets/sprites/tiles/nhan_dien_bone_fortress.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 555, 2040, 114],
+        [1100, 190, 130, 840]
+      ],
+      "decor_type": "ruins",
+      "decor_points": [
+        [340, 220], [780, 220], [1420, 220], [1860, 220],
+        [340, 980], [780, 980], [1420, 980], [1860, 980]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch10_nhan_dien",
+          "pos": [1820, 240],
+          "gold": 760000,
+          "items": { "item_thanh_hon_tinh_phach": 5, "pill_thanh_linh_phuc_nguyen": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch10_nhan_dien_souls",
+          "name": "Đại Lồng Giam Vạn Hồn Luyện Dược Sư (Phế Tích Nhân Điện)",
+          "title": "Phá Hủy Nhân Điện · Sáng Tạo Phật Nộ Luân Hồi & Kỳ Ngộ SQ_10_03 (Siêu Độ Vạn Hồn!)",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [1840, 860],
+          "role": "ch10_nhan_dien_souls",
+          "require_flag": "ch10_beat_pho_dien_chu",
+          "glow_hex": "#A78BFA",
+          "name_hex": "#EDE9FE",
+          "prompt_text": "[V] Đập Tan Lồng Giam Nhân Điện — Giải Phóng & Siêu Độ Vạn Hồn (SQ_10_03)!"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "nhan_dien_hac_thanh_ve", "pos": [780, 390], "respawn": 16.0 },
+        { "enemy_id": "nhan_dien_hac_thanh_ve", "pos": [780, 810], "respawn": 16.0 },
+        { "enemy_id": "nhan_dien_hac_thanh_ve", "pos": [1220, 600], "respawn": 16.0 },
+        { "enemy_id": "pho_dien_chu_nhan_dien_boss", "pos": [1620, 600], "respawn": 50.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_thien_phu_from_nhan_dien",
+          "label": "Rút Quân Tây -> Quay Về Tổng Đàn Thiên Phủ Liên Minh",
+          "pos": [108, 600],
+          "target_map": "ch10_thien_phu_lien_minh",
+          "target_spawn": [1820, 360],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch10_yeu_hoa_khong_gian": {
+      "id": "ch10_yeu_hoa_khong_gian",
+      "name": "Yêu Hỏa Không Gian — Biển Lửa Trắng & Đài Sen Tịnh Liên (#3)",
+      "subtitle": "Hồi 10.5–10.6 — Rèn Bắc Vương · Song Luyện #3 Tịnh Liên Yêu Hỏa (Tiểu Y) · Hủy Diệt Điện Chủ Hồn Diệt Sinh!",
+      "is_safe_zone": false,
+      "size": [2320, 1280],
+      "default_spawn": [200, 620],
+      "bgm": "bgm_yeu_hoa",
+      "ambient_weather": "lotus_flames",
+      "ground_tile": "res://assets/sprites/tiles/yeu_hoa_lotus_sea.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 575, 2120, 118],
+        [1140, 180, 134, 900]
+      ],
+      "decor_type": "pillars",
+      "decor_points": [
+        [360, 220], [800, 220], [1480, 220], [1940, 220],
+        [360, 1040], [800, 1040], [1480, 1040], [1940, 1040]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch10_yeu_hoa_core",
+          "pos": [1200, 210],
+          "gold": 980000,
+          "items": { "item_yeu_hoa_tinh_chung": 4, "core_kim_loi_9": 2, "pill_thanh_linh_phuc_nguyen": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch10_bac_vuong_forge",
+          "name": "Siêu Khôi Lỗi Lục Tinh — BẮC VƯƠNG (Lò Rèn Thi Hài Thượng Cổ)",
+          "title": "Hồi 10.5 — Rèn Bắc Vương [G/#10 & T] · Kỳ Ngộ SQ_10_04 Tắm Cửu Huyền Kim Lôi (Thất Tinh!)",
+          "sprite": "res://assets/sprites/npcs/npc_bac_vuong.png",
+          "pos": [520, 380],
+          "role": "ch10_bac_vuong_forge",
+          "glow_hex": "#FBBF24",
+          "name_hex": "#FEF08A",
+          "prompt_text": "[V] Luyện Đúc Khôi Lỗi Đấu Thánh BẮC VƯƠNG / Tắm Sét Cửu Huyền Kim Lôi (SQ_10_04)"
+        },
+        {
+          "id": "npc_ch10_tinh_lien_yeu_thanh",
+          "name": "Tàn Hồn TỊNH LIÊN YÊU THÁNH (Cửu Tinh Đấu Thánh Đỉnh Phong)",
+          "title": "Hồi 10.5 — Khai Mộng Yểm Thiên Vụ & Truyền Thụ Tịnh Liên Yêu Trận!",
+          "sprite": "res://assets/sprites/npcs/npc_tinh_lien_yeu_thanh.png",
+          "pos": [520, 880],
+          "role": "ch10_tinh_lien_yeu_thanh",
+          "require_flag": "ch10_bac_vuong_forged",
+          "glow_hex": "#FDA4AF",
+          "name_hex": "#FFE4E6",
+          "prompt_text": "[V] Lĩnh Ngộ Truyền Thừa Tịnh Liên Yêu Thánh -> Mở Tịnh Liên Yêu Trận!"
+        },
+        {
+          "id": "npc_ch10_huan_nhi_dai_sen",
+          "name": "ĐÀI SEN YÊU HỎA — Cổ Huân Nhi (#4) & Khí Linh TIỂU Y (#3)",
+          "title": "Hồi 10.6 — Song Luyện Tịnh Liên Yêu Hỏa · Sinh Tiểu Y · Chốt Chương 10 Sau Khi Diệt Hồn Diệt Sinh!",
+          "sprite": "res://assets/sprites/npcs/npc_tieu_y.png",
+          "pos": [1940, 620],
+          "role": "ch10_huan_nhi_dai_sen",
+          "require_flag": "ch10_beat_tinh_lien_yeu_hoa",
+          "glow_hex": "#FFAFCC",
+          "name_hex": "#FFF1F2",
+          "prompt_text": "[V] Bước Vào Đài Sen Song Luyện #3 Tịnh Liên Yêu Hỏa Cùng Huân Nhi (Ấp Nở Tiểu Y!)"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "yeu_hoa_thanh_no", "pos": [860, 410], "respawn": 16.0 },
+        { "enemy_id": "yeu_hoa_thanh_no", "pos": [860, 830], "respawn": 16.0 },
+        { "enemy_id": "yeu_hoa_thanh_no", "pos": [1260, 620], "respawn": 18.0 },
+        { "enemy_id": "tinh_lien_yeu_hoa_boss", "pos": [1620, 360], "respawn": 52.0 },
+        { "enemy_id": "hon_diet_sinh_boss", "pos": [1740, 920], "respawn": 55.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_thien_phu_from_yeu_hoa",
+          "label": "Rời Yêu Hỏa Không Gian Tây -> Quay Về Tổng Đàn Thiên Phủ Liên Minh",
+          "pos": [108, 620],
+          "target_map": "ch10_thien_phu_lien_minh",
+          "target_spawn": [1960, 600],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch11_co_de_dong_phu_future",
+          "label": "Khe Nứt Cổ Đế Đông -> [CHƯƠNG 11 · ĐẠI KẾT CỤC] Cổ Đế Động Phủ & Song Đế Chi Chiến!",
+          "pos": [2212, 620],
+          "target_map": "ch10_yeu_hoa_khong_gian",
+          "target_spawn": [2040, 620],
+          "require_flag": "ch11_unlocked_future",
+          "locked_hint": "CHÚC MỪNG HOÀN TẤT CHƯƠNG 10 (BỒ ĐỀ HÓA THÁNH & TỊNH LIÊN YÊU HỎA #3)!! Chương 11 Đại Kết Cục — Cổ Đế Động Phủ, #1 Đế Viêm & Song Đế Chi Chiến Hồn Thiên Đế sẽ mở ở bản phát hành v1.0.0!"
+        }
+      ]
+    }
+  }
+}

@@ -97,7 +97,7 @@ func build_skills_codex_content(vbox: VBoxContainer) -> void:
 
 	var bonus_pct: int = max(0, PlayerData.lotus_fusion_flames.size() - 1) * 28
 	var max_lotus_f: int = PlayerData.get_lotus_max_flames()
-	var five_tag: String = " · ★ Đã Mở NGŨ SẮC BĂNG PHONG 3s!" if max_lotus_f >= 5 else ""
+	var five_tag: String = " · ★ Đã Mở LỤC SẮC THÁNH LIÊN (100%% Xuyên Giáp)!" if max_lotus_f >= 6 else (" · ★ Đã Mở NGŨ SẮC BĂNG PHONG 3s!" if max_lotus_f >= 5 else "")
 	lv.add_child(hud._make_label("XƯỞNG DUNG HỢP PHẬT NỘ HỎA LIÊN (%d/%d Hỏa đã ghép — Uy lực +%d%%%s)" % [PlayerData.lotus_fusion_flames.size(), max_lotus_f, bonus_pct, five_tag], 14, Color("#E0AAFF")))
 	if PlayerData.unlocked_flames.is_empty():
 		lv.add_child(hud._make_label("Chưa thu phục ngọn Hỏa nào! Hãy bái sư Dược Lão (Phàm Hỏa) -> Hạ Mục Xà (Tử Hỏa) -> Sa Mạc Chương 03 (Thanh Liên Địa Tâm Hỏa).", 12, Color("#ADB5BD")))
@@ -208,6 +208,28 @@ func build_breakthrough_content(vbox: VBoxContainer) -> void:
 			hud._populate_modal()
 		)
 		nt_v.add_child(nt_btn)
+
+	# Hệ thống Đấu Thánh Không Gian · Bách Thế Luân Hồi · Khí Linh Tiểu Y (Chương 10)
+	var st_card: PanelContainer = hud._make_styled_panel(Color(0.08, 0.06, 0.14, 0.95), Color("#F8A5C2"), 2, 10)
+	vbox.add_child(st_card)
+	var st_v := VBoxContainer.new()
+	st_v.add_theme_constant_override("separation", 5)
+	st_card.add_child(st_v)
+	var domain_on: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
+	var tieu_y_on: bool = SaintRealmManager.has_tieu_y_spirit(PlayerData)
+	var bt_stage: int = SaintRealmManager.get_bach_the_stage(PlayerData)
+	var bt_ben: int = SaintRealmManager.get_bach_the_benevolent_count(PlayerData)
+	var bv_7: bool = SaintRealmManager.has_bac_vuong_seven_star(PlayerData)
+	st_v.add_child(hud._make_label("✿ ĐẤU THÁNH KHÔNG GIAN & KHÍ LINH TIỂU Y (#3 TỊNH LIÊN YÊU HỎA)", 14, Color("#F8A5C2")))
+	var st_lines: Array[String] = [
+		"• Đấu Thánh Không Gian: %s" % ("★ ĐÃ KHAI MỞ (Xé Không 1.5s · 3 Đạo Kiếm Khí LMB · +25% Thánh Uy)" if domain_on else "Chưa khai mở (Vượt Ảo Cảnh Bách Thế Luân Hồi dưới Bồ Đề Cổ Thụ — Ch.10)"),
+		"• Bách Thế Luân Hồi: %d/3 Kiếp (Đạo Tâm Thiện: %d/3%s)" % [bt_stage, bt_ben, " · ★ Trăm Kiếp Sơ Tâm (+250 SOUL)" if PlayerData.has_flag("ach_10_02_tram_kiep_so_tam") else ""],
+		"• Khí Linh Yêu Hỏa Tiểu Y (#3): %s" % ("★ ĐỒNG HÀNH VĨNH VIỄN (30% Tịnh Hóa Đạn Tà +8% QI · Tự Luyện Đan Phẩm 1–8 [L])" if tieu_y_on else "Chưa thu phục (Song luyện Đài Sen cùng Cổ Huân Nhi — Hồi 10.5)"),
+		"• Khôi Lỗi Bắc Vương: %s" % ("★ THẤT TINH ĐẤU THÁNH (Cửu Huyền Kim Lôi)" if bv_7 else ("Lục Tinh Đấu Thánh (Chờ Cửu Huyền Kim Lôi Hạch — SQ_10_04)" if PlayerData.unlocked_companions.has("bac_vuong") else "Chưa rèn đúc (Yêu Hỏa Không Gian — Hồi 10.5)"))
+	]
+	var st_lbl: Label = hud._make_label("\n".join(st_lines), 12, Color("#FFE5EC") if domain_on else Color("#CED4DA"))
+	st_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	st_v.add_child(st_lbl)
 
 
 func build_flames_content(vbox: VBoxContainer) -> void:

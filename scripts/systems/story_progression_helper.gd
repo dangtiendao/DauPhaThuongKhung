@@ -17,11 +17,11 @@ static func activate_demo_unlock_all(pd, slot_idx: int = 3) -> void:
 	pd.auto_save_timer = 0.0
 	pd.current_map_id = "ch01_tieu_gia"
 
-	pd.realm_index = 9 # Cửu Chuyển Đấu Tôn Đỉnh Phong (Xé Rách Không Gian · Trọn 100% Quyển I–III Ch.01–Ch.09!)
-	pd.stage = 9
+	pd.realm_index = 11 # Ngũ–Lục Tinh Đấu Thánh (Đấu Thánh Không Gian · Trọn Ch.01–Ch.10!)
+	pd.stage = 6
 	pd.nine_turn_level = 9
-	pd.bonus_soul = 1650 # Thiên Cảnh Trung Kỳ Đỉnh Phong (Luyện Bát Phẩm Đan & Khống 10 Kim Khôi!)
-	pd.gold = 950000
+	pd.bonus_soul = 2600 # Thiên Cảnh Đỉnh Phong Đại Viên Mãn (Luyện Bát–Chuẩn Cửu Phẩm & Tiểu Y Luyện Nhanh!)
+	pd.gold = 2850000
 	pd.enhance_stones = 999
 
 	# Mở toàn bộ cờ cốt truyện để đi tất cả 46 bản đồ Ch01–Ch08 & Viêm Minh / Thiên Bảo Phường / Lò Đan Bát Phẩm / 28 Hỏa!
@@ -189,10 +189,53 @@ static func activate_demo_unlock_all(pd, slot_idx: int = 3) -> void:
 		"FLAG_TIEU_HUYEN_OATH": true,
 		"FLAG_CH09_COMPLETED": true,
 		"FLAG_BOOK_03_COMPLETED": true,
+		"ch10_beat_su_thien": true,
+		"ch10_viem_minh_saved": true,
+		"ch10_mang_hoang_entered": true,
+		"ch10_beat_hon_ngoc": true,
+		"ch10_beat_ac_niem": true,
+		"ch10_got_bo_de_heart": true,
+		"ch10_bt_illusion_started": true,
+		"ch10_bt_life1_done": true,
+		"ch10_bt_life1_nhan": true,
+		"ch10_bt_life50_done": true,
+		"ch10_bt_life50_tin": true,
+		"ch10_bt_life100_chan": true,
+		"ch10_bach_the_enlightened": true,
+		"ch10_beat_thien_minh": true,
+		"ch10_broke_dau_thanh": true,
+		"ch10_thien_phu_founded": true,
+		"sq_10_01_tieu_tieu_candy": true,
+		"sq_10_02_bo_de_dan_gifted": true,
+		"ch10_yeu_minh_allied": true,
+		"ch10_beat_hoang_tuyen": true,
+		"ch10_hoang_tuyen_mastered": true,
+		"ch10_beat_pho_dien_chu": true,
+		"ch10_nhan_dien_destroyed": true,
+		"sq_10_03_sieu_do_van_hon": true,
+		"ch10_bac_vuong_forged": true,
+		"sq_10_04_bac_vuong_7star": true,
+		"ch10_yeu_thanh_legacy": true,
+		"ch10_beat_tinh_lien_yeu_hoa": true,
+		"ch10_tinh_lien_tamed": true,
+		"ch10_beat_hon_diet_sinh": true,
+		"ch10_completed": true,
+		"ach_10_01_viem_minh_chi_ton": true,
+		"ach_10_02_tram_kiep_so_tam": true,
+		"ach_10_03_thien_phu_thong_soai": true,
+		"ach_10_04_song_phung_yeu_lien": true,
+		"FLAG_TIEU_TIEU_REUNITED": true,
+		"FLAG_DAU_THANH_AWAKENED": true,
+		"FLAG_THANH_GIA_DAO_TAM": true,
+		"FLAG_THIEN_PHU_FOUNDED": true,
+		"FLAG_BAC_VUONG_FORGED": true,
+		"FLAG_TINH_LIEN_TAMED": true,
+		"FLAG_TIEU_Y_ACTIVE": true,
+		"FLAG_CH10_COMPLETED": true
 	}
 	pd.affection = { "huan_nhi": 100, "tieu_y_tien": 100, "van_chi": 100, "thanh_lan": 100, "my_do_toa": 100 }
 	pd.story_relics = [
-		"Chế Độ DEMO — Mở Khóa 100%% Quyển I–III (%d Map · Ch01–Ch09 · 28 Hỏa · Cửu Chuyển 9/9)" % GameDatabase.maps_ordered.size(),
+		"Chế Độ DEMO — Mở Khóa Trọn Ch.01–Ch.10 (%d Map · 28 Hỏa Lục Sắc · Lục Tinh Đấu Thánh · Khí Linh Tiểu Y)" % GameDatabase.maps_ordered.size(),
 		"Ấn Ký Tôn Nghiêm (+5% Công Kích)",
 		"Hắc Ảnh Phù (+8% Tốc Chạy)",
 		"Thanh Liên Đài (+15% EXP & +40% Hồi QI)",
@@ -219,29 +262,31 @@ static func activate_demo_unlock_all(pd, slot_idx: int = 3) -> void:
 			var fid: String = str(fl.get("id", ""))
 			if fid != "":
 				pd.unlocked_flames.append(fid)
-	pd.equipped_flame_id = "di_hoa_09_tam_thien"
-	pd.lotus_fusion_flames = ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_09_tam_thien", "hoa_sinh_hoa"]
+	pd.equipped_flame_id = "di_hoa_03_tinh_lien"
+	pd.lotus_fusion_flames = ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_09_tam_thien", "di_hoa_04_kim_de", "di_hoa_03_tinh_lien"]
 
-	# Mở toàn bộ 28/28 Đấu Kỹ + [F] Ngũ Sắc Hỏa Liên + [T] Bán Thánh Dược Trần + [X] Tộc Văn Tiêu Tộc!
+	# Mở toàn bộ 32/32 Đấu Kỹ + [F] Lục Sắc Tịnh Liên Hỏa Liên + [T] Kim Đế Tịnh Liên & Bắc Vương + [X] Tộc Văn!
 	pd.unlocked_skills = []
 	for sid in GameDatabase.skills_by_id.keys():
 		pd.unlocked_skills.append(str(sid))
-	pd.slot_q_skill = "khong_gian_dai_thu_an"
-	pd.slot_e_skill = "dai_thien_tao_hoa_chuong"
-	pd.slot_r_skill = "thap_tuyet_kim_khoi_tran"
+	pd.slot_q_skill = "hoang_tuyen_chuong"
+	pd.slot_e_skill = "hoang_tuyen_thien_no"
+	pd.slot_r_skill = "phat_no_luan_hoi"
 	pd.slot_f_skill = "phat_no_hoa_lien"
 	pd.duoc_lao_assist_unlocked = true
 
-	# Mở toàn bộ 9 Đồng Hành AI [G] (gồm Thanh Lân #8, Vân Vận Hoa Tông #9, Long Hoàng Tử Nghiên & Bán Thánh Dược Trần!)
-	pd.unlocked_companions = ["duoc_lao_phantom", "tieu_y_tien", "thai_lan", "huan_nhi", "tu_nghien", "dia_yeu_khoi", "thien_hoa_ton_gia", "thanh_lan", "van_van_hoa_tong"]
-	pd.active_companion_id = "van_van_hoa_tong"
-	pd.weapon_core_sockets = ["core_nang_luong_9", "core_nang_luong_8", "core_tinh_7"]
-	pd.fire_energy = 3200
+	# Mở toàn bộ 11 Đồng Hành AI [G] (gồm Bắc Vương #10, Thải Lân & Tiêu Tiêu #11 + Khí Linh Tiểu Y thường trực!)
+	pd.unlocked_companions = ["duoc_lao_phantom", "tieu_y_tien", "thai_lan", "huan_nhi", "tu_nghien", "dia_yeu_khoi", "thien_hoa_ton_gia", "thanh_lan", "van_van_hoa_tong", "bac_vuong", "thai_lan_tieu_tieu"]
+	pd.active_companion_id = "bac_vuong"
+	pd.weapon_core_sockets = ["core_kim_loi_9", "core_nang_luong_9", "core_nang_luong_8"]
+	pd.fire_energy = 6800
 	pd.ma_doc_ban_stacks = 0
 	pd.is_nhi_bien_active = false
 	pd.is_tam_bien_active = false
 	pd.is_toc_van_active = false
 	pd.is_kim_khoi_tran_active = false
+	pd.is_tinh_lien_tran_active = false
+	pd.huan_nhi_revive_used = false
 	pd.immortal_revive_cd = 0.0
 	pd.tam_thien_regen_tick = 0.0
 	pd.tower_active_buffs.clear()
@@ -250,43 +295,45 @@ static func activate_demo_unlock_all(pd, slot_idx: int = 3) -> void:
 		"vo_duong": 3,
 		"am_duong": 3,
 		"am_vong": 3,
-		"tinh_than_tran": 2,
+		"tinh_than_tran": 3,
+		"thien_phu_lien_quan": 2,
 		"last_harvest_playtime": -100.0,
 		"total_harvests": 0,
-		"ziyan_expeditions": 2,
+		"ziyan_expeditions": 3,
 		"strong_rank_cleared": {}
 	}
 	pd.van_lac_cultivation_tick = 0.0
 	pd.am_duong_buff_timer = 0.0
 
-	# Trang bị 10 Ô Full Bộ #9 Tinh Vẫn Thiên Mộ (Đế Phẩm) + Bảo Vật trong Nạp Giới!
+	# Trang bị 10 Ô Full Bộ #10 Tịnh Liên Đấu Thánh (Đế Phẩm) + Bộ #9 trong Nạp Giới!
 	pd.equipped_gear = {
-		"weapon": EquipmentSystem.roll_equipment_instance("wpn_xich_tao_hoa_thien_mo", "de"),
-		"armor": EquipmentSystem.roll_equipment_instance("arm_tinh_van_thieu_cac_bao", "de"),
+		"weapon": EquipmentSystem.roll_equipment_instance("wpn_xich_tinh_lien_luan_hoi", "de"),
+		"armor": EquipmentSystem.roll_equipment_instance("arm_thien_phu_thong_soai_bao", "de"),
 		"legs": EquipmentSystem.roll_equipment_instance("leg_bi_giap_kho", "de"),
 		"boots": EquipmentSystem.roll_equipment_instance("boot_phong_hanh_hai", "de"),
 		"gloves": EquipmentSystem.roll_equipment_instance("glv_ho_thu_am_thiet", "de"),
 		"necklace": EquipmentSystem.roll_equipment_instance("neck_bang_hoang_tam", "de"),
-		"pendant": EquipmentSystem.roll_equipment_instance("pend_thiet_kiem_trung_nghia", "de"),
-		"ring": EquipmentSystem.roll_equipment_instance("ring_yeu_lien_co_ngoc", "de"),
-		"wings": EquipmentSystem.roll_equipment_instance("wing_xe_rach_hu_khong", "de"),
-		"cauldron": EquipmentSystem.roll_equipment_instance("caul_ban_thanh_tinh_than_dinh", "de")
+		"pendant": EquipmentSystem.roll_equipment_instance("pend_phu_nu_dong_tam_ket", "de"),
+		"ring": EquipmentSystem.roll_equipment_instance("ring_bo_de_thanh_tam_gioi", "de"),
+		"wings": EquipmentSystem.roll_equipment_instance("wing_tinh_lien_song_phung_duc", "de"),
+		"cauldron": EquipmentSystem.roll_equipment_instance("caul_thien_phu_thanh_dinh", "de")
 	}
 	pd.gear_bag = [
-		EquipmentSystem.roll_equipment_instance("wpn_xich_tam_thien_tinh_viem", "de"),
-		EquipmentSystem.roll_equipment_instance("arm_dan_hoi_quan_quan_bao", "de"),
-		EquipmentSystem.roll_equipment_instance("wing_dap_hu_khong_anh", "de"),
-		EquipmentSystem.roll_equipment_instance("pend_huyen_tam_ho_hon", "de"),
-		EquipmentSystem.roll_equipment_instance("caul_thien_dinh_dan_thap", "de")
+		EquipmentSystem.roll_equipment_instance("wpn_xich_tao_hoa_thien_mo", "de"),
+		EquipmentSystem.roll_equipment_instance("arm_tinh_van_thieu_cac_bao", "de"),
+		EquipmentSystem.roll_equipment_instance("wing_xe_rach_hu_khong", "de"),
+		EquipmentSystem.roll_equipment_instance("pend_thiet_kiem_trung_nghia", "de"),
+		EquipmentSystem.roll_equipment_instance("ring_yeu_lien_co_ngoc", "de"),
+		EquipmentSystem.roll_equipment_instance("caul_ban_thanh_tinh_than_dinh", "de")
 	]
 	pd.is_ruler_sealed = false
 
-	# Nguyên liệu luyện đan, Năng Lượng Hạch 8–9 & Đan Dược Bát Phẩm x20 mỗi loại!
+	# Nguyên liệu luyện đan, Cửu Huyền Kim Lôi Hạch & Đan Dược Chuẩn Cửu Phẩm x20 mỗi loại!
 	pd.inventory = {}
 	for iid in GameDatabase.items_by_id.keys():
 		pd.inventory[str(iid)] = 20
-	pd.quick_hp_pill_id = "pill_phuc_hon_thanh_dan"
-	pd.quick_qi_pill_id = "pill_cuu_chuyen_ton_nguyen"
+	pd.quick_hp_pill_id = "pill_cuu_duong_hoan_cot"
+	pd.quick_qi_pill_id = "pill_thanh_linh_phuc_nguyen"
 	pd.enemies_killed_total = 40
 	pd.claimed_affection_milestones = {}
 
@@ -316,6 +363,8 @@ static func init_canon_starter_state(pd) -> void:
 	pd.nine_turn_level = 0
 	pd.is_toc_van_active = false
 	pd.is_kim_khoi_tran_active = false
+	pd.is_tinh_lien_tran_active = false
+	pd.huan_nhi_revive_used = false
 	pd.equipped_gear = {
 		"weapon": {},
 		"armor": EquipmentSystem.roll_equipment_instance("arm_ao_vai_tu_luyen", "pham"),
@@ -525,6 +574,18 @@ static func set_story_flag(pd, flag_name: String) -> void:
 		for fid_quad in ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_09_tam_thien"]:
 			if fid_quad == "di_hoa_09_tam_thien" or pd.unlocked_flames.has(fid_quad):
 				pd.lotus_fusion_flames.append(fid_quad)
+	elif flag_name == "ch10_bach_the_enlightened":
+		if SaintRealmManager.get_bach_the_benevolent_count(pd) >= 3:
+			pd.story_flags["ach_10_02_tram_kiep_so_tam"] = true
+			pd.add_story_relic("Thành Tựu [Trăm Kiếp Không Quên Sơ Tâm]: Đủ 3 Lựa Chọn Vị Tha (+250 SOUL!)")
+	elif flag_name == "ch10_hoang_tuyen_mastered":
+		pd.unlock_skill("hoang_tuyen_thien_no", "E")
+	elif flag_name == "ch10_tinh_lien_tamed":
+		pd.unlock_flame("di_hoa_04_kim_de", false)
+		pd.lotus_fusion_flames = []
+		for fid_hex in ["di_hoa_19_thanh_lien", "di_hoa_14_van_lac", "di_hoa_11_cot_linh", "di_hoa_09_tam_thien", "di_hoa_04_kim_de", "di_hoa_03_tinh_lien"]:
+			if fid_hex in ["di_hoa_04_kim_de", "di_hoa_03_tinh_lien"] or pd.unlocked_flames.has(fid_hex):
+				pd.lotus_fusion_flames.append(fid_hex)
 
 	var fe: Dictionary = GameDatabase.get_flag_effect(flag_name)
 	if not fe.is_empty():

@@ -187,7 +187,9 @@ func _spawn_dan_lei_bolt(strike_pos: Vector2, bolt_col: Color, is_finale: bool) 
 
 func _announce_initial_quest() -> void:
 	if PlayerData.is_demo_mode:
-		EventBus.banter_triggered.emit("CHẾ ĐỘ DEMO FULL: Mở toàn bộ %d Map (bấm [M] Dịch Chuyển Nhanh), 15 Đấu Kỹ, [F] Phật Nộ Hỏa Liên 4 Hỏa, 28 Dị Hỏa [H] & 4 Đồng Hành [G]!" % GameDatabase.maps_ordered.size())
+		EventBus.banter_triggered.emit("CHẾ ĐỘ DEMO FULL: Mở toàn bộ %d Map (bấm [M]), %d Đấu Kỹ, [F] Lục Sắc Hỏa Liên, 28 Dị Hỏa [H] & %d Đồng Hành [G] + Khí Linh Tiểu Y!" % [
+			GameDatabase.maps_ordered.size(), GameDatabase.skills_by_id.size(), PlayerData.unlocked_companions.size()
+		])
 		EventBus.quest_updated.emit()
 	else:
 		PlayerData.trigger_initial_quest_banter()
@@ -199,6 +201,7 @@ func restore_map_bgm() -> void:
 
 func setup_arena_stage(arena_def: Dictionary, spawn_pt: Vector2) -> void:
 	current_map_id = str(arena_def.get("id", "tam_ma_luyen_canh"))
+	PlayerData.huan_nhi_revive_used = false
 	current_map_bgm = str(arena_def.get("bgm", "bgm_boss"))
 	current_is_forest = false
 	interact_cooldown = 0.25
@@ -247,6 +250,7 @@ func load_map(map_id: String, custom_spawn: Vector2 = Vector2.ZERO, should_autos
 
 	current_map_id = map_id
 	PlayerData.current_map_id = map_id
+	PlayerData.huan_nhi_revive_used = false
 	current_map_bgm = str(m_def.get("bgm", m_def.get("bgm_track", "bgm_peaceful")))
 	current_is_forest = str(m_def.get("base_tile", "")).find("bamboo_grass") != -1
 	interact_cooldown = 0.25

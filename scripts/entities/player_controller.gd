@@ -71,6 +71,11 @@ var kim_khoi_tran_timer: float = 0.0
 var kim_khoi_tran_tick: float = 0.0
 var kim_khoi_tran_dmg: float = 0.0
 var kim_khoi_tran_rad: float = 285.0
+var tinh_lien_tran_timer: float = 0.0
+var tinh_lien_tran_tick: float = 0.0
+var tinh_lien_tran_dmg: float = 0.0
+var tinh_lien_tran_rad: float = 390.0
+var tieu_y_sprite: Sprite2D = null
 
 # Hỏa Liên Phân Thân (3 quả cầu Dị Hỏa xoay quanh thân)
 var flame_clone_timer: float = 0.0
@@ -488,10 +493,40 @@ func _physics_process(delta: float) -> void:
 			EventBus.stats_changed.emit()
 			EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Thu Hồi Thập Tuyệt Kim Khôi Trận", Color("#ADB5BD"))
 
+	# Tịnh Liên Yêu Trận (Ch.10): 12 Cánh Sen Lửa Trắng-Hồng thiêu đốt 5% HP/s mỗi 1.0s!
+	if tinh_lien_tran_timer > 0.0:
+		tinh_lien_tran_timer = maxf(0.0, tinh_lien_tran_timer - delta)
+		tinh_lien_tran_tick -= delta
+		if tinh_lien_tran_tick <= 0.0:
+			tinh_lien_tran_tick = 1.0
+			PlayerSkillExec.pulse_tinh_lien_tran(self)
+		if tinh_lien_tran_timer <= 0.0:
+			PlayerData.is_tinh_lien_tran_active = false
+			_refresh_flame_shader()
+			EventBus.stats_changed.emit()
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Thu Hồi Tịnh Liên Yêu Trận", Color("#FDA4AF"))
+
+	# Khí Linh Yêu Hỏa "Tiểu Y" (#3 Tịnh Liên) bay hộ vệ thường trực bên vai phải Tiêu Viêm!
+	var want_tieu_y: bool = SaintRealmManager.has_tieu_y_spirit(PlayerData)
+	if want_tieu_y:
+		if tieu_y_sprite == null:
+			tieu_y_sprite = Sprite2D.new()
+			tieu_y_sprite.texture = load("res://assets/sprites/npcs/npc_tieu_y.png")
+			tieu_y_sprite.scale = Vector2(0.46, 0.46)
+			tieu_y_sprite.z_index = 4
+			add_child(tieu_y_sprite)
+		tieu_y_sprite.visible = true
+		var ty_t: float = float(Time.get_ticks_msec()) * 0.004
+		var side_x: float = -34.0 if body_sprite.flip_h else 34.0
+		tieu_y_sprite.position = Vector2(side_x + cos(ty_t * 0.8) * 5.0, -56.0 + sin(ty_t * 1.4) * 6.0)
+	elif tieu_y_sprite != null:
+		tieu_y_sprite.visible = false
+
 	var move_input: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var desired_vel: Vector2 = Vector2.ZERO
 	if dash_timer > 0.0:
-		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (980.0 if PlayerData.has_dau_ton_spatial_blink() else (860.0 if PlayerData.has_dau_tong_void_step() else (780.0 if PlayerData.has_dau_vuong_wings() else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0))))
+		var has_dt_dom: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
+		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (SaintRealmManager.SAINT_DASH_SPEED if has_dt_dom else (980.0 if PlayerData.has_dau_ton_spatial_blink() else (860.0 if PlayerData.has_dau_tong_void_step() else (780.0 if PlayerData.has_dau_vuong_wings() else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0)))))
 		desired_vel = dash_dir * d_spd
 		velocity = desired_vel
 		if int(floor(dash_timer * 46.0)) != int(floor((dash_timer - delta) * 46.0)):
@@ -1018,17 +1053,18 @@ func _perform_dash() -> void:
 		body_sprite.flip_h = dash_dir.x < 0.0
 
 	var start_p: Vector2 = global_position
-	var has_spatial: bool = PlayerData.has_dau_ton_spatial_blink()
+	var has_saint_dom: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
+	var has_spatial: bool = PlayerData.has_dau_ton_spatial_blink() or has_saint_dom
 	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
 	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
 	var van_van_dash_mult: float = 0.75 if PlayerData.active_companion_id == "van_van_hoa_tong" else 1.0
-	dash_duration_cur = 0.29 if has_spatial else (0.27 if has_dw_wings else (0.24 if has_wings else 0.18))
+	dash_duration_cur = 0.30 if has_saint_dom else (0.29 if has_spatial else (0.27 if has_dw_wings else (0.24 if has_wings else 0.18)))
 	dash_timer = dash_duration_cur
 	dash_speed_override = 0.0
-	dash_cooldown_total = (0.48 if has_spatial else (0.56 if has_dw_wings else (0.64 if has_wings else 0.72))) * PlayerData.get_cooldown_multiplier() * van_van_dash_mult
+	dash_cooldown_total = (0.38 if has_saint_dom else (0.48 if has_spatial else (0.56 if has_dw_wings else (0.64 if has_wings else 0.72)))) * PlayerData.get_cooldown_multiplier() * van_van_dash_mult
 	dash_cooldown = dash_cooldown_total
-	invuln_timer = maxf(invuln_timer, 0.60 if has_spatial else (0.48 if has_dw_wings else (0.42 if has_thunder else (0.34 if has_wings else 0.28))))
+	invuln_timer = maxf(invuln_timer, SaintRealmManager.SAINT_DASH_IFRAME if has_saint_dom else (0.60 if has_spatial else (0.48 if has_dw_wings else (0.42 if has_thunder else (0.34 if has_wings else 0.28)))))
 	EventBus.skill_cooldown_updated.emit("SPACE", dash_cooldown, dash_cooldown_total)
 	EventBus.audio_sfx_requested.emit("portal_warp" if has_spatial else ("thunder_blink" if has_thunder else "dash_whoosh"))
 	_spawn_dash_afterimage()
@@ -1107,6 +1143,8 @@ func _start_integrated_combo_attack() -> void:
 
 	var seal_slow: float = 1.15 if (PlayerData.is_ruler_sealed and PlayerData.has_huyen_trong_xich_equipped()) else 0.94
 	var wpn_spd: float = maxf(0.55, PlayerData.get_weapon_attack_speed_mult())
+	if PlayerData.active_companion_id == "thai_lan_tieu_tieu" and PlayerData.has_huyen_trong_xich_equipped():
+		wpn_spd *= 1.20 # Thải Lân & Tiêu Tiêu cộng hưởng (+20% tốc độ vung Huyền Trọng Xích!)
 	var dur: float = (0.23 * seal_slow) / wpn_spd
 	if combo_step == 3:
 		dur *= 1.14
@@ -1235,7 +1273,9 @@ func _execute_melee_strike_impact() -> void:
 			var dot_val: float = attack_aim_dir.dot(to_en.normalized()) if dist > 8.0 else 1.0
 			if combo_step == 3 or dot_val >= 0.12:
 				if enemy_node.has_method("receive_hit"):
-					enemy_node.receive_hit(dmg, attack_aim_dir * kb, 0.0, burn_val, 0.0, 1.0, poise_val)
+					var er_melee: int = int(enemy_node.get("realm_index")) if ("realm_index" in enemy_node) else 1
+					var saint_m: float = SaintRealmManager.get_saint_supremacy_mult(PlayerData, er_melee)
+					enemy_node.receive_hit(dmg * saint_m, attack_aim_dir * kb, 0.0, burn_val, 0.0, 1.0, poise_val)
 					_try_trigger_inner_heart_ignition(enemy_node)
 					_spawn_hit_sparks(enemy_node.global_position + Vector2(0, -24), spark_col, attack_aim_dir, 14 if combo_step == 3 else 10)
 					hit_any = true
@@ -1243,11 +1283,12 @@ func _execute_melee_strike_impact() -> void:
 	if hit_any:
 		EventBus.trigger_hitstop(0.032 if combo_step == 3 else 0.018, 0.10)
 
-	# ĐẠI ĐẤU SƯ (Cảnh giới >= 4) hoặc THIÊN HỎA NHỊ BIẾN: phóng kiếm khí/xích khí Lưu Ly Hỏa xuyên địch!
-	if ((PlayerData.realm_index >= 4 and has_wpn and PlayerData.current_qi > PlayerData.get_max_qi() * 0.40) or PlayerData.is_nhi_bien_active) and get_parent() != null:
-		var use_fl: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("di_hoa_14_van_lac")
-		var wave_angles: Array = [-0.22, 0.0, 0.22] if PlayerData.is_tam_bien_active else ([-0.14, 0.14] if PlayerData.is_nhi_bien_active else [0.0])
-		var wave_dmg_m: float = 0.78 if PlayerData.is_tam_bien_active else (0.68 if PlayerData.is_nhi_bien_active else 0.58)
+	# ĐẤU THÁNH KHÔNG GIAN (realm >= 11) hoặc ĐẠI ĐẤU SƯ / THIÊN HỎA NHỊ BIẾN: tự động phóng sóng kiếm khí xé không gian!
+	var has_dt_wave: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
+	if (has_dt_wave or (PlayerData.realm_index >= 4 and has_wpn and PlayerData.current_qi > PlayerData.get_max_qi() * 0.40) or PlayerData.is_nhi_bien_active) and get_parent() != null:
+		var use_fl: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("di_hoa_03_tinh_lien" if has_dt_wave else "di_hoa_14_van_lac")
+		var wave_angles: Array = [-0.24, 0.0, 0.24] if (has_dt_wave or PlayerData.is_tam_bien_active) else ([-0.14, 0.14] if PlayerData.is_nhi_bien_active else [0.0])
+		var wave_dmg_m: float = 0.96 if has_dt_wave else (0.78 if PlayerData.is_tam_bien_active else (0.68 if PlayerData.is_nhi_bien_active else 0.58))
 		for w_ang in wave_angles:
 			var w_dir: Vector2 = attack_aim_dir.rotated(float(w_ang))
 			var wave_proj: Area2D = SKILL_SCENE.instantiate() as Area2D
@@ -1256,12 +1297,12 @@ func _execute_melee_strike_impact() -> void:
 				wave_proj.configure_skill(
 					"flame_wave",
 					global_position + w_dir * 34.0 + Vector2(0, -24),
-					global_position + w_dir * 340.0,
+					global_position + w_dir * (480.0 if has_dt_wave else 340.0),
 					dmg * wave_dmg_m,
-					160.0,
-					0.34 if PlayerData.is_tam_bien_active else (0.24 if PlayerData.is_nhi_bien_active else 0.16),
-					54.0,
-					560.0,
+					180.0 if has_dt_wave else 160.0,
+					0.65 if has_dt_wave else (0.34 if PlayerData.is_tam_bien_active else (0.24 if PlayerData.is_nhi_bien_active else 0.16)),
+					64.0 if has_dt_wave else 54.0,
+					660.0 if has_dt_wave else 560.0,
 					use_fl,
 					[]
 				)
@@ -1328,6 +1369,13 @@ func _activate_duoc_lao_assist() -> void:
 func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector2, attacker_id: String = "", attacker_name: String = "") -> void:
 	if invuln_timer > 0.0:
 		return
+	# Khí Linh Yêu Hỏa Tiểu Y (#3 Tịnh Liên): 30% Tịnh Liên Thanh Hóa Hỏa chặn đòn tà & chuyển thành +8% QI!
+	if SaintRealmManager.try_tieu_y_purify_hit(PlayerData):
+		invuln_timer = 0.28
+		VfxAssets.spawn_spark_burst(get_parent(), global_position + Vector2(0, -32), Color("#FFFFFF"), Color("#FDA4AF"), 14, 70.0, 180.0, 0.30, Vector2.UP, 180.0, 0.24, 0.54, true)
+		EventBus.audio_sfx_requested.emit("skill_fire")
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -76), "✿ Tiểu Y Tịnh Hóa! (+8% QI)", Color("#FFAFCC"))
+		return
 	var realm_diff: int = max(0, attacker_realm_idx - PlayerData.realm_index)
 	var taken_per_realm: float = float(GameDatabase.suppression_rules.get("damage_taken_bonus_per_major_realm", 0.30))
 	var suppression_bonus: float = 1.0 + float(realm_diff) * taken_per_realm
@@ -1371,6 +1419,20 @@ func take_enemy_damage(raw_dmg: float, attacker_realm_idx: int, push_vec: Vector
 		if not ws_list.is_empty() and ws_list[0].has_method("on_player_died_in_tower"):
 			if bool(ws_list[0].on_player_died_in_tower()):
 				return
+		if SaintRealmManager.has_huan_nhi_soul_revive(PlayerData) and not PlayerData.huan_nhi_revive_used:
+			PlayerData.huan_nhi_revive_used = true
+			PlayerData.current_hp = PlayerData.get_max_hp() * 0.65
+			PlayerData.current_qi = maxf(PlayerData.current_qi, PlayerData.get_max_qi() * 0.65)
+			invuln_timer = 3.2
+			_spawn_skill_vfx("bac_vuong_tinh_lien_assist", global_position + Vector2(0, -22), Vector2.UP, 340.0, 0.90, Color("#FFFFFF"), Color("#FFD700"), Color("#FFAFCC"))
+			EventBus.audio_sfx_requested.emit("breakthrough")
+			EventBus.screen_shake_requested.emit(16.0, 0.45)
+			EventBus.shockwave_requested.emit(global_position, 420.0, 0.072, Color("#FFAFCC"), 0.50)
+			EventBus.screen_flash_requested.emit(Color("#FFF1F2"), 0.38, 0.28)
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -96), "✿ TÂM Ý TƯƠNG THÔNG (HUÂN NHI) — HỒI SINH 65% HP/QI!", Color("#FFD700"))
+			EventBus.banter_triggered.emit("Cổ Huân Nhi (Kim Đế Tịnh Liên Đồng Tâm): 'Mạng của Huân Nhi đã gắn liền với Tiêu Viêm ca ca — hồi sinh tức thì 65% HP & QI!'")
+			EventBus.stats_changed.emit()
+			return
 		if PlayerData.has_tam_thien_immortal_body() and PlayerData.immortal_revive_cd <= 0.0:
 			PlayerData.immortal_revive_cd = 180.0
 			PlayerData.current_hp = PlayerData.get_max_hp() * 0.45
@@ -1522,6 +1584,10 @@ func _draw() -> void:
 		draw_arc(Vector2(0, -24), 40.0, 0.0, TAU, 40, Color(0.85, 0.65, 0.42, 0.78), 3.2)
 	if PlayerData.lotus_dmg_red_timer > 0.0:
 		draw_arc(Vector2(0, -24), 44.0, 0.0, TAU, 40, Color(0.74, 0.42, 0.15, 0.58), 2.4)
+	if PlayerData.is_tinh_lien_tran_active:
+		var tl_p: float = 0.78 + 0.22 * sin(t_sec * 5.0)
+		draw_arc(Vector2(0, -20), 64.0, t_sec * 1.4, t_sec * 1.4 + TAU * 0.94, 48, Color(1.0, 0.69, 0.80, 0.72 * tl_p), 3.4)
+		draw_arc(Vector2(0, -20), 54.0, -t_sec * 2.0, -t_sec * 2.0 + TAU * 0.86, 40, Color(1.0, 0.96, 0.98, 0.64 * tl_p), 2.2)
 	if PlayerData.player_slow_timer > 0.0:
 		draw_arc(Vector2(0, 10), 30.0, 0.0, TAU, 28, Color(0.44, 0.84, 1.0, 0.80), 3.0)
 

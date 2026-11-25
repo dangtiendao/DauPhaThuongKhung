@@ -1,6 +1,6 @@
 # SỔ THEO DÕI CHẤT LƯỢNG ĐỒ HỌA & VFX CẦN NÂNG CẤP (ART & VFX QUALITY DEBT)
 
-> **Cập nhật lần cuối**: 25/11/2026 (tại mốc `v0.8.0` — **HOÀN TẤT 36/36 ASSET AI 32-BIT HD CHƯƠNG 09 [0 NỢ ART!]** · Đạt tròn **56/56 = 100% True 8-Frame AI** toàn dự án [8 Player + 48 Boss]!)
+> **Cập nhật lần cuối**: 25/11/2026 (tại mốc `v0.9.0` — **HOÀN TẤT 39/39 ASSET AI 32-BIT HD CHƯƠNG 10 [0 NỢ ART!]** · Đạt tròn **64/64 = 100% True 8-Frame AI** toàn dự án [8 Player + 56 Boss]!)
 > **Mục đích**: Ghi nhận minh bạch toàn bộ **ảnh sprite, NPC, tileset, icon, quái thường, prop và hiệu ứng VFX/Shader** của dự án, đối chiếu trạng thái nâng cấp theo mức ưu tiên.
 > **Nguyên tắc thay nóng**: Mọi file ảnh trong danh sách dưới đây đã được gắn đường dẫn chuẩn trong JSON/GDScript — khi ghi đè ảnh mới đúng kích thước cột **"Kích thước chuẩn"** rồi chạy `--import --quit`, toàn bộ game sẽ tự động nhận ảnh mới mà **không cần sửa code hay JSON**.
 
@@ -10,16 +10,17 @@
 
 | Mức ưu tiên | Nhóm tài nguyên | Số lượng | Trạng thái |
 | :---: | :--- | :---: | :--- |
+| **Ch.10 (`v0.9.0`)** | Đồ họa **Chương 10** (8 Boss 8f + 8 chân dung + 8 NPC + 4 Mob mới + 7 Tileset + 4 Icon) | **✅ 39/39 Đã xong (`v0.9.0`)** | Vẽ mới 100% AI 32-bit HD Pixel Art (0 nợ Art!, `semi_alpha = 0`, 64/64 True 8-Frame AI, despill viền sạch 100%) |
 | **Ch.09 (`v0.8.0`)** | Đồ họa **Chương 09** (7 Boss 8f + 7 chân dung + 8 NPC + 3 Mob mới + 7 Tileset + 4 Icon) | **✅ 36/36 Đã xong (`v0.8.0`)** | Vẽ mới 100% AI 32-bit HD Pixel Art (0 nợ Art!, `semi_alpha = 0`, 56/56 True 8-Frame AI) |
 | **P0 — Cao nhất** | Đồ họa **Chương 08** (7 Boss 8f + 7 chân dung + 7 NPC + 5 Tileset + 5 Icon) | **✅ 31/31 Đã xong (`v0.7.3`)** | Đã thay mới 100% bằng tranh AI 32-bit HD Pixel Art (True 8-Frame `4×2`, `semi_alpha = 0`, `min_diff` `66.7%–93.5%`) |
 | **P1 — Cao** | **10 file Ch.06–07** còn sót ở đợt `v0.6.3` (4 NPC + 3 Tileset + 3 Icon) | **✅ 10/10 Đã xong (`v0.7.3`)** | Đã thay mới 100% bằng tranh AI 32-bit HD Pixel Art đồng bộ chuẩn `v0.6.3` |
-| **P2 — Trung bình** | **VFX 2.0, Shader & Hiệu Ứng Thị Giác** (`ScreenFxOverlay`, `space_shockwave`, `vfx_energy_dissolve`, Cánh Hóa Dực, Đồng Hành 2.0, Đan Lôi + 5 VFX Ch.09) | **✅ 6/6 + 5 Ch.09 (`v0.8.0`)** | Hoàn tất trọn gói VFX 2.0 + 5 đại chiêu Ch.09 100% tương thích `gl_compatibility` (60–144 FPS) |
-| **P3 — Bổ sung Polish** | **Quái thường tái sử dụng sprite Ch.04–08, Prop & Vũ khí đeo lưng** *(đã xong 3/3 Pickup `32×32` ở `v0.7.1` & 3 Mob Ch.09 mới ở `v0.8.0`)* | **38 Mob cũ + Prop/Vũ khí** | Tùy chọn polish nâng cao (không chặn phát hành Ch.10–11) |
+| **P2 — Trung bình** | **VFX 2.0, Shader & Hiệu Ứng Thị Giác** (`ScreenFxOverlay` + Thủy Mặc Bách Thế + Yêu Hỏa Vignette, `space_shockwave`, `vfx_energy_dissolve`, Cánh Hóa Dực, Đồng Hành 2.0, Đan Lôi + 5 VFX Ch.09 + 5 VFX Ch.10) | **✅ 6/6 + 10 Ch.09–10 (`v0.9.0`)** | Hoàn tất trọn gói VFX 2.0 + 10 đại chiêu Ch.09–10 100% tương thích `gl_compatibility` (60–144 FPS) |
+| **P3 — Bổ sung Polish** | **Quái thường tái sử dụng sprite Ch.04–08, Prop & Vũ khí đeo lưng** *(đã xong 3/3 Pickup `32×32` ở `v0.7.1`, 3 Mob Ch.09 ở `v0.8.0` & 4 Mob Ch.10 ở `v0.9.0`)* | **38 Mob cũ + Prop/Vũ khí** | Tùy chọn polish nâng cao (không chặn phát hành Ch.11) |
 
-> **Ghi chú đối chứng (Phần ĐÃ ĐẠT CHUẨN AI 32-bit HD Pixel Art — 100% Ch.01–09!)**:
+> **Ghi chú đối chứng (Phần ĐÃ ĐẠT CHUẨN AI 32-bit HD Pixel Art — 100% Ch.01–10!)**:
 > * `8/8` spritesheet Tiêu Viêm (`v0.6.1`) — True 8-Frame AI sắc nét.
-> * **`48/48` Boss Chương 01–09** (`v0.6.2`, `v0.6.3`, `v0.7.3`, **`v0.8.0`**) — **56/56 = 100% True 8-Frame (`4×2`) AI toàn dự án** + **48/48 chân dung Boss AI**.
-> * **100% NPC (46/46), Tileset vùng (28/28), Icon Đấu Kỹ (28/28) & 3 Mob mới Ch.09** đạt chuẩn AI 32-bit HD Pixel Art (`0` file P0/P1/Ch.09 còn tồn đọng!).
+> * **`56/56` Boss Chương 01–10** (`v0.6.2`, `v0.6.3`, `v0.7.3`, `v0.8.0`, **`v0.9.0`**) — **64/64 = 100% True 8-Frame (`4×2`) AI toàn dự án** + **56/56 chân dung Boss AI**.
+> * **100% NPC (54/54), Tileset vùng (35/35), Icon Đấu Kỹ (32/32) & 7 Mob mới Ch.09–10** đạt chuẩn AI 32-bit HD Pixel Art (`0` file P0/P1/Ch.09/Ch.10 còn tồn đọng!).
 
 ---
 

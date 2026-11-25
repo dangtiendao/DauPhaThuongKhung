@@ -510,11 +510,96 @@
     },
     "item_bo_de_tu": {
       "id": "item_bo_de_tu",
-      "name": "Chuẩn Bồ Đề Hóa Thể Đan (Bát Phẩm Đỉnh · Thất Sắc)",
+      "name": "Bồ Đề Tử / Chuẩn Bồ Đề Hóa Thể Đan (Bát Phẩm Đỉnh)",
       "type": "breakthrough",
       "tier": 8,
       "color_hex": "#06D6A0",
-      "description": "Bát Phẩm Đỉnh Phong Thần Đan độ THẤT SẮC ĐAN LÔI — giúp Cửu Chuyển Đấu Tôn cảm ngộ Bán Thánh bước vào Quyển IV (Ch.10)!"
+      "description": "Hạt giống & thần đan Bồ Đề độ THẤT SẮC ĐAN LÔI — giúp Cửu Chuyển Đấu Tôn bước vào Bán Thánh & làm dược liệu luyện Bồ Đề Đại Hoàn Đan!"
+    },
+    "item_bo_de_tam": {
+      "id": "item_bo_de_tam",
+      "name": "Bồ Đề Tâm (Nhựa Tim Bồ Đề Cổ Thụ)",
+      "type": "breakthrough",
+      "tier": 9,
+      "color_hex": "#34D399",
+      "description": "Chí bảo vạn năm của Bồ Đề Cổ Thụ — khai mở Ảo Cảnh Bách Thế Luân Hồi để Bán Thánh Đỉnh Phong chứng đạo NHẤT TINH ĐẤU THÁNH!"
+    },
+    "item_that_thai_bao_ngoc": {
+      "id": "item_that_thai_bao_ngoc",
+      "name": "Thất Thải Bảo Ngọc (Linh Ngọc Gia Mã)",
+      "type": "herb",
+      "tier": 7,
+      "color_hex": "#F472B6",
+      "description": "Linh ngọc bảy màu ngọt thơm — nguyên liệu đặc chế Ngũ Phẩm Đường Đậu Đan tặng bé Tiêu Tiêu (SQ_10_01)!"
+    },
+    "herb_mang_hoang_thu_huyet": {
+      "id": "herb_mang_hoang_thu_huyet",
+      "name": "Mãng Hoang Cổ Thú Huyết (Bán Thánh)",
+      "type": "herb",
+      "tier": 8,
+      "color_hex": "#EF4444",
+      "description": "Tinh huyết mãng thú thời hồng hoang — nguyên liệu chính luyện Cửu Dương Hoàn Cốt Đan chữa đôi chân đại ca Tiêu Đỉnh!"
+    },
+    "item_thanh_hon_tinh_phach": {
+      "id": "item_thanh_hon_tinh_phach",
+      "name": "Thánh Hồn Tinh Phách (Nhân Điện · Hoàng Tuyền)",
+      "type": "herb",
+      "tier": 9,
+      "color_hex": "#A78BFA",
+      "description": "Tinh phách linh hồn bậc Đấu Thánh rơi từ Hắc Thánh Vệ & Hoàng Tuyền — nguyên liệu luyện Bồ Đề Đại Hoàn Đan!"
+    },
+    "item_yeu_hoa_tinh_chung": {
+      "id": "item_yeu_hoa_tinh_chung",
+      "name": "Yêu Hỏa Tinh Chủng (Tịnh Liên Bản Nguyên)",
+      "type": "herb",
+      "tier": 9,
+      "color_hex": "#FDA4AF",
+      "description": "Hạt giống lửa trắng-hồng cô đặc trong Yêu Hỏa Không Gian — nguyên liệu luyện Chuẩn Cửu Phẩm Thánh Linh Phục Nguyên Đan!"
+    },
+    "core_kim_loi_9": {
+      "id": "core_kim_loi_9",
+      "name": "Cửu Huyền Kim Lôi Hạch Cấp 9 (Thánh Hạch)",
+      "type": "monster_core",
+      "tier": 9,
+      "color_hex": "#FBBF24",
+      "description": "Tinh hạch Cửu Huyền Kim Lôi siêu hiếm — nâng Bắc Vương lên Thất Tinh Đấu Thánh & khảm Vũ Khí (+420 ATK, +3.200 HP, +280 SOUL, +68% Hỏa)!"
+    },
+    "pill_duong_dau_dan": {
+      "id": "pill_duong_dau_dan",
+      "name": "Ngũ Phẩm Đường Đậu Đan (Kẹo Tiêu Tiêu & Tử Nghiên)",
+      "type": "consumable_hp",
+      "tier": 5,
+      "heal_hp": 3500,
+      "color_hex": "#F9A8D4",
+      "description": "Kẹo đan dược ngọt lịm Tiêu Viêm tự tay luyện cho con gái Tiêu Tiêu (SQ_10_01) — hồi +3.500 HP & làm ấm lòng gia đình!"
+    },
+    "pill_cuu_duong_hoan_cot": {
+      "id": "pill_cuu_duong_hoan_cot",
+      "name": "Cửu Dương Hoàn Cốt Đan (Bát Phẩm Cao · Lục Sắc Lôi)",
+      "type": "consumable_hp",
+      "tier": 8,
+      "heal_hp": 11000,
+      "color_hex": "#FB923C",
+      "description": "Thần đan chữa trị vĩnh viễn mọi ám tật kinh mạch (chữa đôi chân đại ca Tiêu Đỉnh) — hồi tức thì +11.000 HP!"
+    },
+    "pill_bo_de_dai_hoan": {
+      "id": "pill_bo_de_dai_hoan",
+      "name": "Bồ Đề Đại Hoàn Đan (Bát Phẩm Đỉnh · Cửu Sắc Lôi)",
+      "type": "consumable_exp",
+      "tier": 8,
+      "exp_gain": 1650000,
+      "color_hex": "#10B981",
+      "description": "Thần đan độ CỬU SẮC ĐAN LÔI — giúp dàn Đồng Hành đột phá Bán Thánh/Đấu Thánh (SQ_10_02) hoặc uống nhận +1.650.000 EXP!"
+    },
+    "pill_thanh_linh_phuc_nguyen": {
+      "id": "pill_thanh_linh_phuc_nguyen",
+      "name": "Thánh Linh Phục Nguyên Đan (Chuẩn Cửu Phẩm · Hắc Kim Lôi)",
+      "type": "consumable_qi",
+      "tier": 9,
+      "restore_qi": 4200,
+      "heal_hp": 16000,
+      "color_hex": "#F472B6",
+      "description": "Bảo đan Chuẩn Cửu Phẩm độ HẮC KIM ĐAN LÔI — hồi tức thì 80% HP & QI (+16.000 HP / +4.200 QI) giữa chiến trận Đấu Thánh!"
     }
   },
   "recipes": [
@@ -797,6 +882,46 @@
       "base_success_rate": 0.48,
       "soul_exp_gain": 360,
       "ingredients": { "core_nang_luong_9": 2, "herb_hon_anh_yeu_qua": 2, "herb_long_huyet_qua": 2 }
+    },
+    {
+      "id": "recipe_duong_dau_dan",
+      "output_item": "pill_duong_dau_dan",
+      "output_count": 3,
+      "tier": 5,
+      "req_soul": 120,
+      "base_success_rate": 0.94,
+      "soul_exp_gain": 45,
+      "ingredients": { "item_that_thai_bao_ngoc": 1, "herb_hoat_khi_qua": 2 }
+    },
+    {
+      "id": "recipe_cuu_duong_hoan_cot",
+      "output_item": "pill_cuu_duong_hoan_cot",
+      "output_count": 1,
+      "tier": 8,
+      "req_soul": 1150,
+      "base_success_rate": 0.62,
+      "soul_exp_gain": 320,
+      "ingredients": { "herb_mang_hoang_thu_huyet": 2, "core_nang_luong_8": 1 }
+    },
+    {
+      "id": "recipe_bo_de_dai_hoan",
+      "output_item": "pill_bo_de_dai_hoan",
+      "output_count": 1,
+      "tier": 8,
+      "req_soul": 1350,
+      "base_success_rate": 0.54,
+      "soul_exp_gain": 460,
+      "ingredients": { "item_bo_de_tu": 1, "item_thanh_hon_tinh_phach": 2 }
+    },
+    {
+      "id": "recipe_thanh_linh_phuc_nguyen",
+      "output_item": "pill_thanh_linh_phuc_nguyen",
+      "output_count": 2,
+      "tier": 9,
+      "req_soul": 1650,
+      "base_success_rate": 0.46,
+      "soul_exp_gain": 620,
+      "ingredients": { "item_yeu_hoa_tinh_chung": 2, "core_nang_luong_9": 1 }
     }
   ]
 }

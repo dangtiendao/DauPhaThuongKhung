@@ -8,7 +8,23 @@ extends RefCounted
 
 
 static func get_signature_color(enemy_id: String) -> Color:
-	if enemy_id == "trich_tinh_lao_quy_boss":
+	if enemy_id == "su_thien_cuu_thien_ton_boss":
+		return Color("#EF4444")
+	elif enemy_id == "hon_ngoc_ban_thanh_boss":
+		return Color("#9D4EDD")
+	elif enemy_id == "ac_niem_dau_de_boss":
+		return Color("#DC2626")
+	elif enemy_id == "thien_minh_lao_yeu_boss":
+		return Color("#38BDF8")
+	elif enemy_id == "hoang_tuyen_yeu_thanh_boss":
+		return Color("#CA8A04")
+	elif enemy_id == "pho_dien_chu_nhan_dien_boss":
+		return Color("#7C3AED")
+	elif enemy_id == "tinh_lien_yeu_hoa_boss":
+		return Color("#FFAFCC")
+	elif enemy_id == "hon_diet_sinh_boss":
+		return Color("#B91C1C")
+	elif enemy_id == "trich_tinh_lao_quy_boss":
 		return Color("#A855F7")
 	elif enemy_id == "hac_bach_thien_ton_boss":
 		return Color("#E0FBFC")
@@ -179,6 +195,22 @@ static func trigger_boss_phase_2(e) -> void:
 		cry = "THIÊN GIAI SƠ CẤP: ĐẠI TỊCH DIỆT CHỈ!! CHO NGƯƠI THẤY KHOẢNG CÁCH GIỮA CỔ TỘC VÀ PHẾ TỘC!!"
 	elif e.enemy_id == "huyet_dao_thanh_gia_boss":
 		cry = "NHỊ TINH ĐẤU THÁNH — NHẤT ĐAO TRẢM THIÊN MỘ!! HÃY CHỨNG MINH NGƯƠI XỨNG ĐÁNG GẶP TIÊU HUYỀN!!"
+	elif e.enemy_id == "su_thien_cuu_thien_ton_boss":
+		cry = "SƯ MINH TÔNG × CỬU THIÊN TÔN!! HÔM NAY TƯỜNG THÀNH VIÊM MINH PHẢI CHÌM TRONG BIỂN MÁU!!"
+	elif e.enemy_id == "hon_ngoc_ban_thanh_boss":
+		cry = "HỒN TỘC THẦN TỬ — U HỒN NHẬN!! BỒ ĐỀ CỔ THỤ LÀ CHIẾN LỢI PHẨM CỦA HỒN TỘC!!"
+	elif e.enemy_id == "ac_niem_dau_de_boss":
+		cry = "VẠN NĂM ĐẾ NIỆM BẤT DIỆT!! RỄ BỒ ĐỀ NÀY VÀ LINH HỒN NGƯƠI ĐỀU PHẢI CHẾT!!"
+	elif e.enemy_id == "thien_minh_lao_yeu_boss":
+		cry = "TAM ĐẠI TÀ PHÁI HỢP LỰC!! NHẤT TINH ĐẤU THÁNH THÌ SAO — HUYẾT CỐT BĂNG HỒN DIỆT SÁT!!"
+	elif e.enemy_id == "hoang_tuyen_yeu_thanh_boss":
+		cry = "HOÀNG TUYỀN YÊU THÁNH — HOÀNG TUYỀN THIÊN NỘ!! NGƯƠI CÓ CHỊU NỔI MỘT HỐNG CỦA CỬU TINH ĐẤU THÁNH KHÔNG?!"
+	elif e.enemy_id == "pho_dien_chu_nhan_dien_boss":
+		cry = "VẠN HỒN THỰC THIÊN MÀN × HẮC ÁM MA PHÁP TƯỚNG!! THIÊN PHỦ LIÊN MINH CHÔN XÁC TẠI NHÂN ĐIỆN ĐI!!"
+	elif e.enemy_id == "tinh_lien_yeu_hoa_boss":
+		cry = "VẠN NHÂN YÊU HỎA ĐẠI TRẬN!! BẢN VƯƠNG LÀ TỊNH LIÊN YÊU HỎA (#3) — VẠN VẬT ĐỀU HÓA TRO TRẮNG!!"
+	elif e.enemy_id == "hon_diet_sinh_boss":
+		cry = "THIÊN HỒN DUNG HUYẾT ĐỈNH — HỒN ĐIỆN ĐIỆN CHỦ GIÁ LÂM!! GIAO NỘP TỊNH LIÊN YÊU HỎA NGAY!!"
 
 	EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -108), "GIAI ĐOẠN II — CUỒNG BẠO!", Color("#FF4D6D"))
 	EventBus.shockwave_requested.emit(e.global_position, 290.0, 0.048, get_signature_color(e.enemy_id), 0.38)
@@ -1036,12 +1068,165 @@ static func execute_boss_signature_skill(e, player_node: Node2D) -> void:
 			var b_col: Color = Color("#FF2A5F") if (k % 2 == 0) else Color("#FFD166")
 			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 460.0, eff_atk * 1.32, b_col, "wave", 0.30, 1.8, 2.2 if (k % 5 == 0) else 0.0)
 
+	# =========================================================
+	# 8 BOSS ĐỘC QUYỀN CHƯƠNG 10 (GIA MÃ · MÃNG HOANG · BỒ ĐỀ · HOÀNG TUYỀN · NHÂN ĐIỆN · YÊU HỎA KHÔNG GIAN)
+	# =========================================================
+	elif e.enemy_id == "su_thien_cuu_thien_ton_boss":
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.52):
+			e._activate_boss_shield(0.24, 6.8, "SƯ VƯƠNG HỎA KÍCH THUẪN!", Color("#EF4444"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -116), "SƯ VƯƠNG LIỆT HỎA × TỎA HỒN XIỀNG!!", Color("#EF4444"))
+		var st_p: int = 5 if p2 else 3
+		for pi in range(st_p):
+			var ang_p: float = float(pi) * (TAU / float(st_p)) + e.spiral_angle_offset
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(ang_p), sin(ang_p)) * 126.0
+			e._spawn_boss_hazard(player_node.global_position + p_off, "pillar", 100.0, 0.64 + float(pi) * 0.12, 0.52, eff_atk * 1.60, Color("#EF4444"), 0.30, 1.8)
+		e.spiral_angle_offset += 0.34
+		for k in range(12 if p2 else 8):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(12 if p2 else 8))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 445.0, eff_atk * 1.28, Color("#EF4444") if (k % 2 == 0) else Color("#FFD166"), "spear", 0.28, 1.8)
+
+	elif e.enemy_id == "hon_ngoc_ban_thanh_boss":
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.55):
+			e._activate_boss_shield(0.26, 7.0, "HỒN TỘC U HỒN BẢO THUẪN!", Color("#9D4EDD"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -116), "HỒN NGỌC — U HỒN NHẬN XOÁY VỰC!!", Color("#9D4EDD"))
+		e._spawn_boss_hazard(player_node.global_position, "vortex", 150.0, 0.44, 3.2, eff_atk * 1.38, Color("#9D4EDD"), 0.42, 2.2, 210.0)
+		e.spiral_angle_offset += 0.36
+		for k in range(12 if p2 else 8):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(12 if p2 else 8))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 455.0, eff_atk * 1.30, Color("#9D4EDD") if (k % 2 == 0) else Color("#E0AAFF"), "orb", 0.30, 1.8, 2.2 if (k % 4 == 0) else 0.0)
+
+	elif e.enemy_id == "ac_niem_dau_de_boss":
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		if p2 and e.cur_hp < e.max_hp * 0.85:
+			var regen_an: float = e.max_hp * 0.03
+			e.cur_hp = minf(e.max_hp, e.cur_hp + regen_an)
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -138), "✦ HÚT RỄ BỒ ĐỀ +%d HP!" % int(round(regen_an)), Color("#DC2626"))
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.58):
+			e._activate_boss_shield(0.28, 7.2, "ÁC NIỆM ĐẤU ĐẾ HẮC THUẪN!", Color("#DC2626"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -118), "ĐẾ NIỆM THỰC TÂM × XÚC TU HẮC ÁM!!", Color("#DC2626"))
+		e._spawn_boss_hazard(player_node.global_position, "pool", 136.0, 0.50, 4.4, eff_atk * 1.44, Color("#DC2626"), 0.38, 2.2)
+		var an_p: int = 6 if p2 else 4
+		for pi in range(an_p):
+			var ang_p: float = float(pi) * (TAU / float(an_p)) + e.spiral_angle_offset
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(ang_p), sin(ang_p)) * 140.0
+			e._spawn_boss_hazard(player_node.global_position + p_off, "pillar", 108.0, 0.64 + float(pi) * 0.12, 0.54, eff_atk * 1.66, Color("#DC2626"), 0.35, 2.0)
+		e.spiral_angle_offset += 0.28
+		for k in range(14 if p2 else 10):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(14 if p2 else 10))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 460.0, eff_atk * 1.32, Color("#DC2626") if (k % 2 == 0) else Color("#FFD166"), "orb", 0.32, 1.8, 2.2 if (k % 5 == 0) else 0.0)
+
+	elif e.enemy_id == "thien_minh_lao_yeu_boss":
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.56):
+			e._activate_boss_shield(0.26, 7.0, "TAM TÀ PHÁI BĂNG CỐT THUẪN!", Color("#38BDF8"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -116), "THIÊN MINH HUYẾT CỐT × BĂNG HÀ SÁT!!", Color("#38BDF8"))
+		var tm_p: int = 6 if p2 else 4
+		for pi in range(tm_p):
+			var ang_p: float = float(pi) * (TAU / float(tm_p)) + e.spiral_angle_offset
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(ang_p), sin(ang_p)) * 130.0
+			e._spawn_boss_hazard(player_node.global_position + p_off, "pillar", 104.0, 0.62 + float(pi) * 0.12, 0.52, eff_atk * 1.64, Color("#38BDF8") if (pi % 2 == 0) else Color("#EF4444"), 0.45, 2.4)
+		e.spiral_angle_offset += 0.32
+		for k in range(12 if p2 else 9):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(12 if p2 else 9))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 465.0, eff_atk * 1.32, Color("#38BDF8") if (k % 2 == 0) else Color("#EF4444"), "spear", 0.40, 2.0)
+
+	elif e.enemy_id == "hoang_tuyen_yeu_thanh_boss":
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.58):
+			e._activate_boss_shield(0.28, 7.2, "HOÀNG TUYỀN THẠCH BIA THUẪN!", Color("#CA8A04"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -118), "HOÀNG TUYỀN TAM TUYỆT — THIÊN NỘ CHẤN HỒN!!", Color("#FDE047"))
+		e._spawn_boss_hazard(player_node.global_position, "vortex", 158.0, 0.44, 3.2, eff_atk * 1.44, Color("#CA8A04"), 0.44, 2.4, 215.0)
+		var ht_p: int = 6 if p2 else 4
+		for pi in range(ht_p):
+			var p_off: Vector2 = to_p * (float(pi) * 72.0 - 95.0)
+			e._spawn_boss_hazard(player_node.global_position + p_off, "pillar", 104.0, 0.60 + float(pi) * 0.11, 0.54, eff_atk * 1.70, Color("#FDE047"), 0.38, 2.2)
+		e.spiral_angle_offset += 0.30
+		for k in range(14 if p2 else 10):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(14 if p2 else 10))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 475.0, eff_atk * 1.36, Color("#FDE047") if (k % 2 == 0) else Color("#CA8A04"), "wave", 0.32, 2.0)
+
+	elif e.enemy_id == "pho_dien_chu_nhan_dien_boss":
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("boss_roar")
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.60):
+			e._activate_boss_shield(0.29, 7.4, "HẮC ÁM MA PHÁP TƯỚNG THUẪN!", Color("#7C3AED"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -118), "VẠN HỒN THỰC THIÊN MÀN × NHIẾP HỒN CHƯỞNG!!", Color("#A78BFA"))
+		e._spawn_boss_hazard(player_node.global_position, "pool", 144.0, 0.48, 4.6, eff_atk * 1.48, Color("#7C3AED"), 0.42, 2.4)
+		var pdc_p: int = 6 if p2 else 5
+		for pi in range(pdc_p):
+			var ang_p: float = float(pi) * (TAU / float(pdc_p)) + e.spiral_angle_offset
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(ang_p), sin(ang_p)) * 144.0
+			e._spawn_boss_hazard(player_node.global_position + p_off, "pillar", 108.0, 0.62 + float(pi) * 0.12, 0.56, eff_atk * 1.72, Color("#7C3AED") if (pi % 2 == 0) else Color("#EF4444"), 0.36, 2.2)
+		e.spiral_angle_offset += 0.28
+		for k in range(14 if p2 else 10):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(14 if p2 else 10))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 480.0, eff_atk * 1.38, Color("#A78BFA") if (k % 2 == 0) else Color("#38BDF8"), "spear", 0.34, 2.0, 2.2 if (k % 4 == 0) else 0.0)
+
+	elif e.enemy_id == "tinh_lien_yeu_hoa_boss":
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		if p2 and e.cur_hp < e.max_hp * 0.85:
+			var regen_tl: float = e.max_hp * 0.03
+			e.cur_hp = minf(e.max_hp, e.cur_hp + regen_tl)
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -140), "✦ YÊU HỎA TỊNH HÓA TÁI SINH +%d HP!" % int(round(regen_tl)), Color("#FFAFCC"))
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.62):
+			e._activate_boss_shield(0.30, 7.6, "VẠN NHÂN YÊU HỎA ĐẠI TRẬN THUẪN!", Color("#FFAFCC"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -120), "✿ VẠN NHÂN YÊU HỎA ĐẠI TRẬN — PHẦN THẾ BẠCH DIỄM!!", Color("#FFF1F2"))
+		var tl_p: int = 7 if p2 else 5
+		for pi in range(tl_p):
+			var ang_p: float = float(pi) * (TAU / float(tl_p)) + e.spiral_angle_offset
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(ang_p), sin(ang_p)) * 150.0
+			e._spawn_boss_hazard(player_node.global_position + p_off, "pillar", 112.0, 0.60 + float(pi) * 0.11, 0.56, eff_atk * 1.76, Color("#FFAFCC") if (pi % 2 == 0) else Color("#FFFFFF"), 0.34, 2.0)
+		e.spiral_angle_offset += 0.25
+		for k in range(16 if p2 else 12):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(16 if p2 else 12))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 490.0, eff_atk * 1.40, Color("#FFF1F2") if (k % 2 == 0) else Color("#FFAFCC"), "orb", 0.30, 1.8, 2.4 if (k % 4 == 0) else 0.0)
+
+	elif e.enemy_id == "hon_diet_sinh_boss":
+		# FINAL BOSS CH.10 — ĐIỆN CHỦ HỒN ĐIỆN HỒN DIỆT SINH (Ngũ Tinh Đấu Thánh): Thiên Hồn Dung Huyết Đỉnh + Huyết Lôi Tận Thế!
+		var eff_atk: float = e._get_effective_atk()
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		if p2 and e.cur_hp < e.max_hp * 0.85:
+			var regen_hds: float = e.max_hp * 0.035
+			e.cur_hp = minf(e.max_hp, e.cur_hp + regen_hds)
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -142), "✦ THIÊN HỒN DUNG HUYẾT ĐỈNH +%d HP!" % int(round(regen_hds)), Color("#B91C1C"))
+		if e.boss_shield_hp <= 0.0 and (p2 or randf() < 0.64):
+			e._activate_boss_shield(0.32, 7.8, "THIÊN HỒN DUNG HUYẾT ĐỈNH THUẪN!", Color("#B91C1C"))
+		else:
+			EventBus.floating_text_requested.emit(e.global_position + Vector2(0, -120), "NGŨ TINH ĐẤU THÁNH — THIÊN HỒN DUNG HUYẾT ĐẠI TRẬN!!", Color("#FCA5A5"))
+		e._spawn_boss_hazard(player_node.global_position, "vortex", 168.0, 0.44, 3.4, eff_atk * 1.50, Color("#B91C1C"), 0.42, 2.4, 225.0)
+		e._spawn_boss_hazard(player_node.global_position, "pool", 148.0, 0.50, 4.6, eff_atk * 1.46, Color("#991B1B"), 0.38, 2.2)
+		var hds_p: int = 7 if p2 else 5
+		for pi in range(hds_p):
+			var ang_p: float = float(pi) * (TAU / float(hds_p)) + e.spiral_angle_offset
+			var p_off: Vector2 = Vector2.ZERO if pi == 0 else Vector2(cos(ang_p), sin(ang_p)) * 152.0
+			e._spawn_boss_hazard(player_node.global_position + p_off, "pillar", 114.0, 0.58 + float(pi) * 0.11, 0.56, eff_atk * 1.80, Color("#B91C1C") if (pi % 2 == 0) else Color("#FFD700"), 0.36, 2.2)
+		e.spiral_angle_offset += 0.24
+		for k in range(16 if p2 else 12):
+			var ang: float = e.spiral_angle_offset + float(k) * (TAU / float(16 if p2 else 12))
+			var col_hds: Color = Color("#EF4444") if (k % 3 == 0) else (Color("#FFD700") if (k % 3 == 1) else Color("#A78BFA"))
+			e._spawn_boss_projectile(origin, Vector2(cos(ang), sin(ang)), 505.0, eff_atk * 1.44, col_hds, "wave", 0.34, 2.0, 2.4 if (k % 4 == 0) else 0.0)
+
 
 static func fire_boss_triple_wave(e) -> void:
 	EventBus.audio_sfx_requested.emit("skill_fire")
 	var wave_col: Color = get_signature_color(e.enemy_id)
-	var style_s: String = "orb" if (e.enemy_id == "co_ha_boss" or e.enemy_id == "lieu_tich_boss" or e.enemy_id == "hoa_linh_xa_boss" or e.enemy_id == "tieu_tu_tinh_su_boss" or e.enemy_id == "viem_loi_boss" or e.enemy_id == "van_lac_tam_viem_boss" or e.enemy_id == "han_phong_boss" or e.enemy_id == "hat_tat_nham_boss" or e.enemy_id == "han_phong_dau_tong_boss" or e.enemy_id == "cuu_long_loi_cuong_boss" or e.enemy_id == "mo_cot_lao_nhan_boss" or e.enemy_id == "tam_thien_diem_viem_boss" or e.enemy_id == "trich_tinh_lao_quy_boss") else ("spear" if (e.enemy_id == "muc_luc_boss" or e.enemy_id == "mac_ba_tu_boss" or e.enemy_id == "hai_ba_dong_boss" or e.enemy_id == "nap_lan_yen_nhien_boss" or e.enemy_id == "van_lang_boss" or e.enemy_id == "la_hau_boss" or e.enemy_id == "lieu_kinh_boss" or e.enemy_id == "vu_ho_phap_boss" or e.enemy_id == "nhan_lac_thien_boss" or e.enemy_id == "dia_ma_lao_quy_boss" or e.enemy_id == "phi_thien_boss" or e.enemy_id == "phuong_thanh_nhi_boss" or e.enemy_id == "bang_ha_thanh_hai_boss" or e.enemy_id == "hac_bach_thien_ton_boss" or e.enemy_id == "yeu_hoa_ta_quan_boss" or e.enemy_id == "bac_long_vuong_boss" or e.enemy_id == "co_yeu_do_thong_boss") else ("boulder" if (e.enemy_id == "moc_chien_boss" or e.enemy_id == "tuyet_ma_thien_vien_boss") else "wave"))
-	var slow_r: float = 0.35 if (e.enemy_id == "hai_ba_dong_boss" or e.enemy_id == "tuyet_ma_thien_vien_boss" or e.enemy_id == "han_phong_boss" or e.enemy_id == "han_phong_dau_tong_boss" or e.enemy_id == "dia_ma_lao_quy_boss" or e.enemy_id == "hat_tat_nham_boss" or e.enemy_id == "bang_ha_thanh_hai_boss" or e.enemy_id == "mo_cot_lao_nhan_boss" or e.enemy_id == "trich_tinh_lao_quy_boss" or e.enemy_id == "co_yeu_do_thong_boss") else 0.0
+	var style_s: String = "orb" if (e.enemy_id in ["co_ha_boss", "lieu_tich_boss", "hoa_linh_xa_boss", "tieu_tu_tinh_su_boss", "viem_loi_boss", "van_lac_tam_viem_boss", "han_phong_boss", "hat_tat_nham_boss", "han_phong_dau_tong_boss", "cuu_long_loi_cuong_boss", "mo_cot_lao_nhan_boss", "tam_thien_diem_viem_boss", "trich_tinh_lao_quy_boss", "hon_ngoc_ban_thanh_boss", "ac_niem_dau_de_boss", "tinh_lien_yeu_hoa_boss"]) else ("spear" if (e.enemy_id in ["muc_luc_boss", "mac_ba_tu_boss", "hai_ba_dong_boss", "nap_lan_yen_nhien_boss", "van_lang_boss", "la_hau_boss", "lieu_kinh_boss", "vu_ho_phap_boss", "nhan_lac_thien_boss", "dia_ma_lao_quy_boss", "phi_thien_boss", "phuong_thanh_nhi_boss", "bang_ha_thanh_hai_boss", "hac_bach_thien_ton_boss", "yeu_hoa_ta_quan_boss", "bac_long_vuong_boss", "co_yeu_do_thong_boss", "su_thien_cuu_thien_ton_boss", "thien_minh_lao_yeu_boss", "pho_dien_chu_nhan_dien_boss"]) else ("boulder" if (e.enemy_id == "moc_chien_boss" or e.enemy_id == "tuyet_ma_thien_vien_boss") else "wave"))
+	var slow_r: float = 0.35 if (e.enemy_id in ["hai_ba_dong_boss", "tuyet_ma_thien_vien_boss", "han_phong_boss", "han_phong_dau_tong_boss", "dia_ma_lao_quy_boss", "hat_tat_nham_boss", "bang_ha_thanh_hai_boss", "mo_cot_lao_nhan_boss", "trich_tinh_lao_quy_boss", "co_yeu_do_thong_boss", "thien_minh_lao_yeu_boss", "hoang_tuyen_yeu_thanh_boss", "pho_dien_chu_nhan_dien_boss", "hon_diet_sinh_boss"]) else 0.0
 	var slow_d: float = 2.0 if slow_r > 0.0 else 0.0
 	var eff_atk: float = e._get_effective_atk()
 	var angles: Array = [-0.28, 0.0, 0.28]

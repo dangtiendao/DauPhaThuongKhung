@@ -1,0 +1,407 @@
+{
+  "version": "1.0",
+  "chapter_title": "Chương 10 — Bồ Đề Hóa Thánh & Tịnh Liên Yêu Hỏa Hàng Thế (Mở Màn Quyển IV)",
+  "quests": [
+    {
+      "id": "q77_ch10_cuu_vien_viem_minh",
+      "title": "77. [CHƯƠNG 10 · QUYỂN IV] Một Ngón Tay Cứu Viêm Minh & Đoàn Tụ Con Gái Tiêu Tiêu!",
+      "objective": "Bước qua Trùng Động trở về Chiến Trường Viêm Minh (Gia Mã Đế Quốc), xóa sổ [BOSS] Sư Thiên & Cửu Thiên Tôn rồi tới ôm Thải Lân & con gái Tiêu Tiêu [V]!",
+      "type": "story_flag",
+      "flag_name": "ch10_viem_minh_saved",
+      "target_count": 1,
+      "reward_exp": 1650000,
+      "reward_gold": 520000,
+      "reward_items": { "item_that_thai_bao_ngoc": 2, "pill_cuu_duong_hoan_cot": 2 },
+      "intro_log": "KHẨN BÁO TỪ GIA MÃ ĐẾ QUỐC!! Sư Minh Tông & Cửu Thiên Tôn Hồn Điện đang tổng công kích Viêm Minh! Mau xuyên Trùng Động Đông từ Thiên Mộ trở về cứu Thải Lân & gia đình!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_beat_su_thien" }, "kind": "boss", "target": "su_thien_cuu_thien_ton_boss", "map": "ch10_viem_minh_chien_truong" },
+        { "default": true, "kind": "npc", "target": "ch10_thai_lan_tieu_tieu", "map": "ch10_viem_minh_chien_truong" }
+      ]
+    },
+    {
+      "id": "q78_ch10_mang_hoang_hon_ngoc",
+      "title": "78. Mãng Hoang Cổ Vực — Trảm Hồn Tộc Thần Tử Hồn Ngọc!",
+      "objective": "Tiến vào Mãng Hoang Cổ Vực hội quân cùng Cổ Huân Nhi [V], xuyên qua đàn Thiên Ngô Độc Trùng và đánh bại [BOSS BÁN THÁNH] Thần Tử Hồn Ngọc!",
+      "type": "story_flag",
+      "flag_name": "ch10_beat_hon_ngoc",
+      "target_count": 1,
+      "reward_exp": 1980000,
+      "reward_gold": 620000,
+      "reward_items": { "herb_mang_hoang_thu_huyet": 4, "item_bo_de_tu": 2 },
+      "intro_log": "Gia đình đã đoàn tụ bình an cùng con gái Tiêu Tiêu & Đồng Hành #11! Để vượt thiên kiếp bước lên ĐẤU THÁNH, hãy tiến sang Đông vào vùng cấm Mãng Hoang Cổ Vực tầm bảo Bồ Đề Cổ Thụ!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_mang_hoang_entered" }, "kind": "npc", "target": "ch10_huan_nhi_mang_hoang", "map": "ch10_mang_hoang_co_vuc" },
+        { "default": true, "kind": "boss", "target": "hon_ngoc_ban_thanh_boss", "map": "ch10_mang_hoang_co_vuc" }
+      ]
+    },
+    {
+      "id": "q79_ch10_bo_de_ac_niem",
+      "title": "79. Bồ Đề Cổ Thụ — Thanh Lọc Ác Niệm Đấu Đế Viễn Cổ!",
+      "objective": "Tiến vào Bồn Địa Bồ Đề Cổ Thụ, tiêu diệt [BOSS] Ác Niệm Đấu Đế Viễn Cổ rồi giao cảm cùng Bồ Đề Cổ Thụ [V] nhận [Bồ Đề Tâm] & 10 [Bồ Đề Tử]!",
+      "type": "story_flag",
+      "flag_name": "ch10_got_bo_de_heart",
+      "target_count": 1,
+      "reward_exp": 2450000,
+      "reward_gold": 740000,
+      "reward_items": { "item_bo_de_tam": 1, "item_bo_de_tu": 10 },
+      "intro_log": "Hồn Ngọc đã bị đánh lui! Lõi tâm thức của Bồ Đề Cổ Thụ đang bị luồng Ác Niệm Đấu Đế vạn năm ăn mòn — mau bước sang Bồn Địa Bồ Đề Cổ Thụ thanh tẩy nó!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_beat_ac_niem" }, "kind": "boss", "target": "ac_niem_dau_de_boss", "map": "ch10_bo_de_co_thu" },
+        { "default": true, "kind": "npc", "target": "ch10_bo_de_co_thu", "map": "ch10_bo_de_co_thu" }
+      ]
+    },
+    {
+      "id": "q80_ch10_bach_the_hoa_thanh",
+      "title": "80. Ảo Cảnh Bách Thế Luân Hồi — Chứng Đạo NHẤT TINH ĐẤU THÁNH!",
+      "objective": "Gặp Bồ Đề Cổ Thụ [V] trải qua Ảo Cảnh Bách Thế Luân Hồi (3 kiếp thủy mặc) chứng đạo Đấu Thánh, rồi nghiền nát [BOSS] Thiên Minh Lão Yêu & Tam Tà Phái và trở lại [V] xuất quan!",
+      "type": "story_flag",
+      "flag_name": "ch10_broke_dau_thanh",
+      "target_count": 1,
+      "reward_exp": 3100000,
+      "reward_gold": 920000,
+      "reward_items": { "pill_bo_de_dai_hoan": 2, "item_thanh_hon_tinh_phach": 3 },
+      "intro_log": "Bồ Đề Tâm & 10 hạt Bồ Đề Tử đã ở trong tay! Hãy giao cảm với Bồ Đề Cổ Thụ [V] bước vào Ảo Cảnh Bách Thế Luân Hồi để phá kén hóa thân NHẤT TINH ĐẤU THÁNH!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_bach_the_enlightened" }, "kind": "npc", "target": "ch10_bo_de_co_thu", "map": "ch10_bo_de_co_thu" },
+        { "when": { "missing_flag": "ch10_beat_thien_minh" }, "kind": "boss", "target": "thien_minh_lao_yeu_boss", "map": "ch10_bo_de_co_thu" },
+        { "default": true, "kind": "npc", "target": "ch10_bo_de_co_thu", "map": "ch10_bo_de_co_thu" }
+      ]
+    },
+    {
+      "id": "q81_ch10_thien_phu_lien_minh",
+      "title": "81. Hội Minh Tứ Phương — Thành Lập THIÊN PHỦ LIÊN MINH!",
+      "objective": "Bước sang Thiên Phủ Thành gặp Đan Tháp Lão Tổ [V] chủ trì Đại Lễ hợp nhất Tinh Vẫn Các · Đan Tháp · Hoa Tông · Phần Viêm Cốc thành siêu thế lực Cấp 4!",
+      "type": "story_flag",
+      "flag_name": "ch10_thien_phu_founded",
+      "target_count": 1,
+      "reward_exp": 3350000,
+      "reward_gold": 1050000,
+      "reward_items": { "pill_bo_de_dai_hoan": 1, "item_that_thai_bao_ngoc": 2 },
+      "intro_log": "NHẤT TINH ĐẤU THÁNH XUẤT QUAN — TAM TÀ PHÁI TAN TÁC!! Mau tiến sang Tổng Đàn Thiên Phủ Thành bái kiến Đan Tháp Lão Tổ [V] sáng lập THIÊN PHỦ LIÊN MINH đối kháng Hồn Điện!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch10_dan_thap_lao_to", "map": "ch10_thien_phu_lien_minh" }
+      ]
+    },
+    {
+      "id": "q82_ch10_hoang_tuyen_tam_tuyet",
+      "title": "82. Hoàng Tuyền Huyết Đàm — Lĩnh Ngộ HOÀNG TUYỀN TAM TUYỆT!",
+      "objective": "Lên phía Bắc tới Cửu U Hoàng Tuyền cứu Tộc Trưởng Yêu Minh [V], phá tan [BOSS] Tàn Ảnh Hoàng Tuyền Yêu Thánh rồi cảm ngộ Hoàng Tuyền Thạch Bia [V]!",
+      "type": "story_flag",
+      "flag_name": "ch10_hoang_tuyen_mastered",
+      "target_count": 1,
+      "reward_exp": 3950000,
+      "reward_gold": 1200000,
+      "reward_items": { "item_thanh_hon_tinh_phach": 4, "core_nang_luong_9": 2 },
+      "intro_log": "THIÊN PHỦ LIÊN MINH CHÍNH THỨC THÀNH LẬP (THẾ LỰC CẤP 4 [M])!! Trước khi công phá Nhân Điện, hãy lên Bắc tới Cửu U kết minh tộc Yêu Minh và đoạt truyền thừa Hoàng Tuyền Yêu Thánh!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_yeu_minh_allied" }, "kind": "npc", "target": "ch10_yeu_minh", "map": "ch10_cuu_u_hoang_tuyen" },
+        { "when": { "missing_flag": "ch10_beat_hoang_tuyen" }, "kind": "boss", "target": "hoang_tuyen_yeu_thanh_boss", "map": "ch10_cuu_u_hoang_tuyen" },
+        { "default": true, "kind": "npc", "target": "ch10_hoang_tuyen_stele", "map": "ch10_cuu_u_hoang_tuyen" }
+      ]
+    },
+    {
+      "id": "q83_ch10_cong_pha_nhan_dien",
+      "title": "83. Đại Quân San Bằng Nhân Điện — Sáng Tạo PHẬT NỘ LUÂN HỒI!",
+      "objective": "Tiến vào Pháo Đài Nhân Điện (Đông Bắc Thiên Phủ), dùng Hoàng Tuyền Thiên Nộ đánh gục [BOSS TAM TINH ĐẤU THÁNH] Phó Điện Chủ Nhân Điện rồi đập tan Lồng Giam Vạn Hồn [V]!",
+      "type": "story_flag",
+      "flag_name": "ch10_nhan_dien_destroyed",
+      "target_count": 1,
+      "reward_exp": 4650000,
+      "reward_gold": 1450000,
+      "reward_items": { "item_thanh_hon_tinh_phach": 5, "pill_thanh_linh_phuc_nguyen": 2 },
+      "intro_log": "NHỊ TINH ĐẤU THÁNH & HOÀNG TUYỀN THIÊN NỘ ĐÃ LĨNH NGỘ!! Đại quân Thiên Phủ Liên Minh cùng Cửu U Địa Minh Mãng đã tập kết — tiến vào Pháo Đài Nhân Điện san bằng tổng đàn Hồn Điện!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_beat_pho_dien_chu" }, "kind": "boss", "target": "pho_dien_chu_nhan_dien_boss", "map": "ch10_nhan_dien_hon_dien" },
+        { "default": true, "kind": "npc", "target": "ch10_nhan_dien_souls", "map": "ch10_nhan_dien_hon_dien" }
+      ]
+    },
+    {
+      "id": "q84_ch10_yeu_hoa_bac_vuong",
+      "title": "84. Song Nguyệt Đồng Hiện — Rèn Siêu Khôi Lỗi BẮC VƯƠNG & Yêu Thánh Truyền Thừa!",
+      "objective": "Dùng Yêu Liên Cổ Ngọc tiến vào Yêu Hỏa Không Gian (Đông Thiên Phủ), rèn xác Lục Tinh thành khôi lỗi [Bắc Vương] [V] rồi gặp Tàn Hồn Tịnh Liên Yêu Thánh [V] lĩnh ngộ Tịnh Liên Yêu Trận!",
+      "type": "story_flag",
+      "flag_name": "ch10_yeu_thanh_legacy",
+      "target_count": 1,
+      "reward_exp": 5250000,
+      "reward_gold": 1680000,
+      "reward_items": { "item_yeu_hoa_tinh_chung": 4, "core_kim_loi_9": 1 },
+      "intro_log": "PHÁO ĐÀI NHÂN ĐIỆN ĐÃ SỤP ĐỔ — PHẬT NỘ LUÂN HỒI RA ĐỜI!! Trên bầu trời Trung Châu bỗng xuất hiện Dị Tượng SONG NGUYỆT ĐỒNG HIỆN mở toang cổng Yêu Hỏa Không Gian (#3 Tịnh Liên Yêu Hỏa)!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_bac_vuong_forged" }, "kind": "npc", "target": "ch10_bac_vuong_forge", "map": "ch10_yeu_hoa_khong_gian" },
+        { "default": true, "kind": "npc", "target": "ch10_tinh_lien_yeu_thanh", "map": "ch10_yeu_hoa_khong_gian" }
+      ]
+    },
+    {
+      "id": "q85_ch10_song_luyen_tinh_lien",
+      "title": "85. Song Luyện #3 Tịnh Liên Yêu Hỏa — Khí Linh TIỂU Y & Thiên Giai Phần Quyết!",
+      "objective": "Cùng Bắc Vương phá Vạn Nhân Yêu Hỏa Đại Trận đánh bại [VUA LỬA #3] Bản Thể Tịnh Liên Yêu Hỏa, rồi bước vào Đài Sen [V] song luyện cùng Cổ Huân Nhi (#4 Kim Đế) ấp nở Khí Linh Tiểu Y!",
+      "type": "story_flag",
+      "flag_name": "ch10_tinh_lien_tamed",
+      "target_count": 1,
+      "reward_exp": 6200000,
+      "reward_gold": 2100000,
+      "reward_items": { "item_yeu_hoa_tinh_chung": 4, "pill_thanh_linh_phuc_nguyen": 3 },
+      "intro_log": "BẮC VƯƠNG (LỤC TINH ĐẤU THÁNH) & TỊNH LIÊN YÊU TRẬN ĐÃ SẴN SÀNG!! Phía Đông Bắc Biển Lửa Trắng là Bản Thể #3 Tịnh Liên Yêu Hỏa — tiến lên hàng phục vị Vua Lửa thứ ba thiên địa!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_beat_tinh_lien_yeu_hoa" }, "kind": "boss", "target": "tinh_lien_yeu_hoa_boss", "map": "ch10_yeu_hoa_khong_gian" },
+        { "default": true, "kind": "npc", "target": "ch10_huan_nhi_dai_sen", "map": "ch10_yeu_hoa_khong_gian" }
+      ]
+    },
+    {
+      "id": "q86_ch10_tram_hon_diet_sinh",
+      "title": "86. [CHỐT CHƯƠNG 10] Ngũ Tinh Đấu Thánh Xuất Thế — Chém Điện Chủ HỒN DIỆT SINH!",
+      "objective": "Thử lửa Ngũ Tinh Đấu Thánh + Khí Linh Tiểu Y + Bắc Vương đánh bại [FINAL BOSS CH.10] Điện Chủ Hồn Điện Hồn Diệt Sinh, rồi quay lại Đài Sen [V] cùng Huân Nhi khép lại Chương 10!",
+      "type": "story_flag",
+      "flag_name": "ch10_completed",
+      "target_count": 1,
+      "reward_exp": 7800000,
+      "reward_gold": 2800000,
+      "reward_items": { "core_kim_loi_9": 3, "pill_thanh_linh_phuc_nguyen": 4, "item_bo_de_tu": 3 },
+      "intro_log": "NGŨ TINH ĐẤU THÁNH · PHẦN QUYẾT THIÊN GIAI CAO CẤP · #4 KIM ĐẾ & #3 TỊNH LIÊN (KHÍ LINH TIỂU Y) ĐÃ THỨC TỈNH!! Điện Chủ Hồn Điện HỒN DIỆT SINH đang chắn cổng Đông Nam — xóa sổ hoàn toàn bóng ma Hồn Điện!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch10_beat_hon_diet_sinh" }, "kind": "boss", "target": "hon_diet_sinh_boss", "map": "ch10_yeu_hoa_khong_gian" },
+        { "default": true, "kind": "npc", "target": "ch10_huan_nhi_dai_sen", "map": "ch10_yeu_hoa_khong_gian" }
+      ]
+    }
+  ],
+  "enemy_kill_flags": {
+    "su_thien_cuu_thien_ton_boss": { "flag": "ch10_beat_su_thien" },
+    "hon_ngoc_ban_thanh_boss": { "flag": "ch10_beat_hon_ngoc" },
+    "ac_niem_dau_de_boss": { "flag": "ch10_beat_ac_niem" },
+    "thien_minh_lao_yeu_boss": { "flag": "ch10_beat_thien_minh" },
+    "hoang_tuyen_yeu_thanh_boss": { "flag": "ch10_beat_hoang_tuyen" },
+    "pho_dien_chu_nhan_dien_boss": { "flag": "ch10_beat_pho_dien_chu" },
+    "tinh_lien_yeu_hoa_boss": { "flag": "ch10_beat_tinh_lien_yeu_hoa" },
+    "hon_diet_sinh_boss": { "flag": "ch10_beat_hon_diet_sinh" }
+  },
+  "flag_effects": {
+    "ch10_beat_su_thien": {
+      "relic": "Một Ngón Tay Bóp Nát Sư Thiên & Cửu Thiên Tôn Trên Tường Thành Gia Mã!",
+      "set_flags": ["ach_10_01_viem_minh_chi_ton"],
+      "give_soul": 120,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.75],
+      "banter": "SƯ THIÊN & CỬU THIÊN TÔN TAN XÁC TRƯỚC VẠN QUÂN VIÊM MINH (Mở Thành Tựu [Viêm Minh Chí Tôn +5% ATK])!! Mau tiến lại ôm Thải Lân & con gái Tiêu Tiêu [V]!"
+    },
+    "ch10_viem_minh_saved": {
+      "relic": "Đoàn Tụ Gia Đình — Thải Lân & Công Chúa Nhỏ Tiêu Tiêu (Mở [Đồng Hành #11 [G]] · Bán Thánh Sơ Cấp!)",
+      "set_flags": ["FLAG_TIEU_TIEU_REUNITED"],
+      "unlock_companion": { "id": "thai_lan_tieu_tieu", "auto_summon": true },
+      "affection": { "my_do_toa": 75 },
+      "set_realm_min": { "realm": 10, "stage": 1 },
+      "give_soul": 150,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [16.0, 0.70],
+      "banter": "CON GÁI TIÊU TIÊU GỌI HAI TIẾNG 'CHA ƠI!' — ĐẠT [SƠ CẤP BÁN THÁNH] & MỞ [ĐỒNG HÀNH #11: THẢI LÂN & TIÊU TIÊU [G]]!! Cổng Đông sang Mãng Hoang Cổ Vực đã mở!"
+    },
+    "ch10_mang_hoang_entered": {
+      "relic": "Hội Quân Cùng Cổ Huân Nhi Tiến Sâu Vùng Cấm Mãng Hoang Cổ Vực!",
+      "affection": { "huan_nhi": 35 },
+      "give_soul": 60,
+      "sfx": "radar_ping",
+      "banter": "Cổ Huân Nhi khai hỏa Kim Đế Phần Thiên Viêm hộ tống xuyên đàn Thiên Ngô Độc Trùng! Phía Đông là Thần Tử Hồn Tộc HỒN NGỌC — tiến lên!"
+    },
+    "ch10_beat_hon_ngoc": {
+      "relic": "Đánh Lui Thần Tử Hồn Tộc Hồn Ngọc & Ngũ Tinh Bán Thánh Khôi Lỗi!",
+      "set_realm_min": { "realm": 10, "stage": 2 },
+      "give_soul": 140,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.75],
+      "banter": "HỒN NGỌC BẠI TRẬN RÚT LUI — ĐẠT [TRUNG CẤP BÁN THÁNH]!! Tiến qua cổng Đông vào Bồn Địa Bồ Đề Cổ Thụ thanh lọc Ác Niệm Đấu Đế!"
+    },
+    "ch10_beat_ac_niem": {
+      "relic": "Thanh Lọc Hoàn Toàn Ác Niệm Đấu Đế Viễn Cổ Trong Lõi Bồ Đề Cổ Thụ!",
+      "give_soul": 160,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "ÁC NIỆM ĐẤU ĐẾ VẠN NĂM ĐÃ BỊ NGŨ SẮC HỎA LIÊN THIÊU RỤI!! Quay lại giao cảm cùng Bồ Đề Cổ Thụ [V] nhận [Bồ Đề Tâm] & 10 [Bồ Đề Tử]!"
+    },
+    "ch10_got_bo_de_heart": {
+      "relic": "Thánh Bảo Vạn Năm: BỒ ĐỀ TÂM & 10 Bồ Đề Tử (Cao Cấp Bán Thánh Đỉnh Phong!)",
+      "give_gear": [
+        { "template": "ring_bo_de_thanh_tam_gioi", "rarity": "de", "auto_equip": false }
+      ],
+      "set_realm_min": { "realm": 10, "stage": 3 },
+      "give_soul": 180,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.80],
+      "banter": "NHẬN TRỌN [BỒ ĐỀ TÂM] · [10 BỒ ĐỀ TỬ] & [BỒ ĐỀ THÁNH TÂM GIỚI] — ĐẠT CAO CẤP BÁN THÁNH ĐỈNH PHONG!! Tiếp tục giao cảm Bồ Đề Cổ Thụ [V] mở Ảo Cảnh Bách Thế Luân Hồi!"
+    },
+    "ch10_bach_the_enlightened": {
+      "relic": "Ảo Cảnh Bách Thế Luân Hồi Viên Mãn — [THÁNH GIẢ ĐẠO TÂM] & Chứng Đạo [NHẤT TINH ĐẤU THÁNH]!",
+      "set_flags": ["FLAG_DAU_THANH_AWAKENED", "FLAG_THANH_GIA_DAO_TAM"],
+      "set_realm_min": { "realm": 11, "stage": 1 },
+      "give_soul": 220,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [24.0, 1.0],
+      "banter": "VỎ KÉN ĐÁ NỨT TOẠC — CHÍNH THỨC CHỨNG ĐẠO [NHẤT TINH ĐẤU THÁNH (ĐẤU THÁNH KHÔNG GIAN · XÉ KHÔNG 1.5s)]!! Tiến sang Đông Nam bóp nát Thiên Minh Lão Yêu & Liên Quân Tam Tà Phái!"
+    },
+    "ch10_beat_thien_minh": {
+      "relic": "Đấu Thánh Không Gian Nghiền Nát Thiên Minh Lão Yêu & Tam Đại Tà Phái!",
+      "give_soul": 150,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "LIÊN QUÂN TAM TÀ PHÁI TAN THÀNH TRO BỤI TRONG 5 PHÚT!! Quay lại gặp Bồ Đề Cổ Thụ [V] (hoặc mở cổng Đông) tiến về Tổng Đàn THIÊN PHỦ LIÊN MINH!"
+    },
+    "ch10_broke_dau_thanh": {
+      "relic": "Uy Chấn Trung Châu — Nhất Tinh Đấu Thánh Tiêu Viêm Khai Mở Đại Thời Đại Thiên Phủ!",
+      "give_gear": [
+        { "template": "arm_thien_phu_thong_soai_bao", "rarity": "de", "auto_equip": false }
+      ],
+      "set_realm_min": { "realm": 11, "stage": 1 },
+      "give_soul": 120,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "banter": "THÁNH UY ĐẤU THÁNH VANG DỘI TRUNG CHÂU!! Bước qua cổng Đông tới Thiên Phủ Thành họp cùng Đan Tháp Lão Tổ sáng lập THIÊN PHỦ LIÊN MINH!"
+    },
+    "ch10_thien_phu_founded": {
+      "relic": "Siêu Thế Lực Cấp 4 — [👑 THIÊN PHỦ LIÊN MINH] (Tinh Vẫn · Đan Tháp · Hoa Tông · Phần Viêm)!",
+      "set_flags": ["FLAG_THIEN_PHU_FOUNDED"],
+      "give_gear": [
+        { "template": "caul_thien_phu_thanh_dinh", "rarity": "de", "auto_equip": false }
+      ],
+      "give_soul": 140,
+      "give_fire_energy": 1600,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.80],
+      "banter": "THIÊN PHỦ LIÊN MINH CHÍNH THỨC THÀNH LẬP (MỞ THẾ LỰC CẤP 4 TRONG [M] & ĐAN THÁP THÁNH ĐỈNH)!! Tiến lên cổng Bắc tới Cửu U Hoàng Tuyền kết minh tộc Yêu Minh!"
+    },
+    "sq_10_01_tieu_tieu_candy": {
+      "relic": "Kỳ Ngộ SQ_10_01: Ngũ Phẩm Đường Đậu Đan Cho Bé Tiêu Tiêu -> [Phụ Nữ Đồng Tâm Kết]!",
+      "give_gear": [
+        { "template": "pend_phu_nu_dong_tam_ket", "rarity": "de", "auto_equip": false }
+      ],
+      "affection": { "my_do_toa": 50 },
+      "give_soul": 90,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ GIA ĐÌNH: Bé Tiêu Tiêu thích mê kẹo Đường Đậu Đan và tự tay buộc [Phụ Nữ Đồng Tâm Kết] (+10% toàn chỉ số khi HP < 50% · +90 SOUL)!"
+    },
+    "sq_10_02_bo_de_dan_gifted": {
+      "relic": "Kỳ Ngộ SQ_10_02: Ban Phát Bồ Đề Đại Hoàn Đan -> Toàn Bộ Đồng Hành Đột Phá Bán Thánh / Đấu Thánh!",
+      "affection": { "tieu_y_tien": 45, "my_do_toa": 45, "thanh_lan": 45, "van_chi": 45 },
+      "give_soul": 120,
+      "sfx": "breakthrough",
+      "shake": [16.0, 0.65],
+      "banter": "KỲ NGỘ BỒ ĐỀ: Dược Trần, Thải Lân, Tiểu Y Tiên & Thanh Lân đồng loạt đột phá Bán Thánh/Đấu Thánh (+6% ATK bản thân & +18% chiến lực Đồng Hành vĩnh viễn)!"
+    },
+    "ch10_yeu_minh_allied": {
+      "relic": "Minh Ước Cửu U Địa Minh Mãng — Tộc Trưởng Yêu Minh Xuất Binh Phò Tá Thiên Phủ!",
+      "give_soul": 80,
+      "sfx": "level_up",
+      "banter": "Tộc trưởng Yêu Minh mở đường xuống đáy Hoàng Tuyền Huyết Đàm! Hãy đánh tan Tàn Ảnh Hoàng Tuyền Yêu Thánh ở phía Bắc!"
+    },
+    "ch10_beat_hoang_tuyen": {
+      "relic": "Phá Tan Tàn Ảnh Hoàng Tuyền Yêu Thánh Dưới Đáy Cửu U!",
+      "give_soul": 160,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "TÀN ẢNH HOÀNG TUYỀN YÊU THÁNH ĐÃ TÁN TỤ!! Tiến lên Hoàng Tuyền Thạch Bia [V] hấp thu Yêu Thánh Tinh Huyết & lĩnh ngộ Hoàng Tuyền Tam Tuyệt!"
+    },
+    "ch10_hoang_tuyen_mastered": {
+      "relic": "Nhị Tinh Đấu Thánh · Thiên Giai [HOÀNG TUYỀN CHỈ-CHƯỞNG] & [HOÀNG TUYỀN THIÊN NỘ]!",
+      "unlock_skill": { "id": "hoang_tuyen_chuong", "slot": "Q" },
+      "set_realm_min": { "realm": 11, "stage": 2 },
+      "give_soul": 210,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "ĐỘT PHÁ [NHỊ TINH ĐẤU THÁNH] & LĨNH NGỘ TRỌN BỘ [HOÀNG TUYỀN CHƯỞNG + HOÀNG TUYỀN THIÊN NỘ]!! Về Thiên Phủ Thành bước qua cổng Đông Bắc công phá Pháo Đài Nhân Điện!"
+    },
+    "ch10_beat_pho_dien_chu": {
+      "relic": "Hoàng Tuyền Thiên Nộ Chấn Nát Ma Pháp Tướng — Chém Gục Phó Điện Chủ Nhân Điện!",
+      "give_soul": 190,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.90],
+      "banter": "PHÓ ĐIỆN CHỦ NHÂN ĐIỆN (TAM TINH ĐẤU THÁNH) ĐÃ GỤC NGÃ!! Mau tới Đại Lồng Giam Vạn Hồn [V] đập tan xiềng xích Hồn Điện & hoàn thành tuyệt học Phật Nộ Luân Hồi!"
+    },
+    "ch10_nhan_dien_destroyed": {
+      "relic": "San Bằng Pháo Đài Nhân Điện — Tự Sáng Tạo Thiên Giai [PHẬT NỘ LUÂN HỒI] & Tam Tinh Đấu Thánh!",
+      "set_flags": ["ach_10_03_thien_phu_thong_soai"],
+      "unlock_skill": { "id": "phat_no_luan_hoi", "slot": "R" },
+      "set_realm_min": { "realm": 11, "stage": 3 },
+      "give_soul": 220,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.95],
+      "banter": "NHÂN ĐIỆN ĐÃ SAN BẰNG — SÁNG TẠO [PHẬT NỘ LUÂN HỒI] & THÀNH TỰU [Thiên Phủ Thống Soái -20% CD Hoàng Tuyền]!! Dị Tượng SONG NGUYỆT ĐỒNG HIỆN đã mở cổng Đông vào YÊU HỎA KHÔNG GIAN!"
+    },
+    "sq_10_03_sieu_do_van_hon": {
+      "relic": "Kỳ Ngộ SQ_10_03: Siêu Độ 10.000 Linh Hồn Luyện Dược Sư -> Thiên Cảnh Đỉnh Phong Đại Viên Mãn (+350 SOUL)!",
+      "give_soul": 120,
+      "sfx": "breakthrough",
+      "banter": "KỲ NGỘ CÔNG ĐỨC: Vạn linh hồn Luyện Dược Sư mỉm cười siêu thoát! Linh hồn chạm [THIÊN CẢNH ĐỈNH PHONG ĐẠI VIÊN MÃN] (+350 SOUL thường trực + 120 SOUL thưởng)!"
+    },
+    "ch10_bac_vuong_forged": {
+      "relic": "Rèn Thành Siêu Khôi Lỗi Lục Tinh Đấu Thánh — [BẮC VƯƠNG] (Đồng Hành #10 [G] & [T] Trợ Chiến)!",
+      "set_flags": ["FLAG_BAC_VUONG_FORGED"],
+      "unlock_companion": { "id": "bac_vuong", "auto_summon": true },
+      "give_soul": 160,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "SIÊU KHÔI LỖI LỤC TINH ĐẤU THÁNH [BẮC VƯƠNG] THÀNH HÌNH (MỞ ĐỒNG HÀNH #10 [G] & [T] KIM CƯƠNG PHÁ THIÊN)!! Mau tới gặp Tàn Hồn Tịnh Liên Yêu Thánh [V] phía Tây Nam!"
+    },
+    "sq_10_04_bac_vuong_7star": {
+      "relic": "Kỳ Ngộ SQ_10_04: Tắm Sét Cửu Huyền Kim Lôi -> Siêu Khôi Lỗi BẮC VƯƠNG Đạt [THẤT TINH ĐẤU THÁNH]!",
+      "give_soul": 140,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.90],
+      "banter": "CỬU HUYỀN KIM LÔI TÔI LUYỆN HOÀN MỸ!! Nhục thân BẮC VƯƠNG hóa kim cương vàng sẫm, chiến lực vọt thẳng lên [THẤT TINH ĐẤU THÁNH]!"
+    },
+    "ch10_yeu_thanh_legacy": {
+      "relic": "Yêu Thánh Chân Giải — Lĩnh Ngộ Thiên Giai Cao Cấp Đỉnh [MỘNG YỂM THIÊN VỤ & TỊNH LIÊN YÊU TRẬN]!",
+      "unlock_skill": { "id": "tinh_lien_yeu_tran", "slot": "E" },
+      "set_realm_min": { "realm": 11, "stage": 4 },
+      "give_soul": 220,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "TỊNH LIÊN YÊU THÁNH TRAO TRỌN [TỊNH LIÊN YÊU TRẬN] (Tứ Tinh Đấu Thánh)!! Cùng Bắc Vương tiến lên Đông Bắc phá Vạn Nhân Yêu Hỏa Đại Trận hàng phục Bản Thể #3 Tịnh Liên Yêu Hỏa!"
+    },
+    "ch10_beat_tinh_lien_yeu_hoa": {
+      "relic": "Phá Vỡ Vạn Nhân Yêu Hỏa Đại Trận — Ép Bản Thể #3 Tịnh Liên Yêu Hỏa Về Đài Sen!",
+      "give_soul": 240,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.90],
+      "banter": "BẢN THỂ #3 TỊNH LIÊN YÊU HỎA ĐÃ BỊ PHONG ẤN VÀO ĐÀI SEN!! Mau bước tới Đài Sen Yêu Hỏa [V] phía Đông cùng Cổ Huân Nhi thực hiện nghi thức Song Luyện!"
+    },
+    "ch10_tinh_lien_tamed": {
+      "relic": "Song Luyện Viên Mãn — Thu Phục [#3 TỊNH LIÊN YÊU HỎA (Khí Linh TIỂU Y)] & Giao Cảm [#4 KIM ĐẾ PHẦN THIÊN VIÊM]!",
+      "set_flags": ["FLAG_TINH_LIEN_TAMED", "FLAG_TIEU_Y_ACTIVE", "ach_10_04_song_phung_yeu_lien"],
+      "unlock_flame": { "id": "di_hoa_03_tinh_lien", "auto_equip": true },
+      "give_gear": [
+        { "template": "wpn_xich_tinh_lien_luan_hoi", "rarity": "de", "auto_equip": false },
+        { "template": "wing_tinh_lien_song_phung_duc", "rarity": "de", "auto_equip": false }
+      ],
+      "affection": { "huan_nhi": 100 },
+      "set_realm_min": { "realm": 11, "stage": 5 },
+      "give_soul": 320,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [26.0, 1.1],
+      "banter": "PHẦN QUYẾT LÊN THIÊN GIAI CAO CẤP — NGŨ TINH ĐẤU THÁNH XUẤT THẾ!! Thu phục [#3 Tịnh Liên Yêu Hỏa (Khí Linh Tiểu Y)] & [#4 Kim Đế Phần Thiên Viêm], mở [Lục Sắc Hỏa Liên] & [Tiểu Y Luyện Nhanh [L]]!! Trảm Điện Chủ HỒN DIỆT SINH phía Đông Nam!"
+    },
+    "ch10_beat_hon_diet_sinh": {
+      "relic": "Hủy Diệt Thiên Hồn Dung Huyết Đỉnh — Đánh Phế Điện Chủ Hồn Điện HỒN DIỆT SINH!",
+      "give_soul": 280,
+      "sfx": "breakthrough",
+      "shake": [26.0, 1.1],
+      "banter": "ĐIỆN CHỦ HỒN ĐIỆN HỒN DIỆT SINH QUỲ RẠP DƯỚI CHÂN NGŨ TINH ĐẤU THÁNH!! Bóng ma Hồn Điện từ Chương 01 đã tan biến — quay lại Đài Sen [V] cùng Huân Nhi & Tiểu Y khép lại Chương 10!"
+    },
+    "ch10_completed": {
+      "relic": "HOÀN TẤT CHƯƠNG 10 (MỞ MÀN QUYỂN IV) — Lục Tinh Đấu Thánh · Khí Linh Tiểu Y (#3) · Bắc Vương Thất Tinh!",
+      "set_flags": ["FLAG_CH10_COMPLETED"],
+      "set_realm_min": { "realm": 11, "stage": 6 },
+      "give_soul": 360,
+      "give_fire_energy": 2400,
+      "affection": { "huan_nhi": 50, "my_do_toa": 50, "tieu_y_tien": 40, "van_chi": 40, "thanh_lan": 40 },
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [26.0, 1.1],
+      "banter": "CHÚC MỪNG HOÀN TẤT CHƯƠNG 10: BỒ ĐỀ HÓA THÁNH & TỊNH LIÊN YÊU HỎA (#3)!! Đạt Lục Tinh Đấu Thánh (Chiến Lực Thất Tinh), sẵn sàng tiến vào Đại Kết Cục Chương 11 — Cổ Đế Động Phủ & Song Đế Chi Chiến Hồn Thiên Đế!"
+    }
+  }
+}

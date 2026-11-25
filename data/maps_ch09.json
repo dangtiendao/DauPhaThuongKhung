@@ -568,13 +568,13 @@
           "require_flag": ""
         },
         {
-          "id": "to_ch10_bo_de_co_thu_future",
-          "label": "Mãng Hoang Cổ Vực Đông -> [CHƯƠNG 10] Bồ Đề Cổ Thụ & Tịnh Liên Yêu Hỏa (Quyển IV)",
+          "id": "to_ch10_viem_minh_chien_truong",
+          "label": "Không Gian Trùng Động Khẩn Cấp -> [CHƯƠNG 10 · QUYỂN IV] Giải Cứu Viêm Minh (Đế Đô Gia Mã!)",
           "pos": [2132, 580],
-          "target_map": "ch09_thien_mo_tam_tang",
-          "target_spawn": [1960, 580],
-          "require_flag": "ch10_unlocked_future",
-          "locked_hint": "CHÚC MỪNG HOÀN TẤT 100% QUYỂN III (CHƯƠNG 09: VONG HỒN ĐIỆN & THIÊN MỘ)!! Mãng Hoang Cổ Vực — Chương 10 (Quyển IV: Đấu Thánh Chi Lộ) sẽ mở ở phiên bản v0.9.0!"
+          "target_map": "ch10_viem_minh_chien_truong",
+          "target_spawn": [200, 580],
+          "require_flag": "ch09_completed",
+          "locked_hint": "Hãy diệt Huyết Đao Thánh Giả tại Tầng 3 Thiên Mộ và hoàn tất nghi thức Hoán Huyết Đấu Đế cùng Tổ Tiên Tiêu Huyền [V] để khai mở Quyển IV (Chương 10)!"
         }
       ]
     }

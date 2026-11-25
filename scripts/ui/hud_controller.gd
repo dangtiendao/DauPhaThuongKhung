@@ -1344,9 +1344,9 @@ func _refresh_quest_ui() -> void:
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		if PlayerData.is_demo_mode:
-			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA 100%% QUYỂN I–III ★\nBấm [M] Dịch Chuyển %d Map (Ch01–Ch09), Tinh Vẫn Các, thử [F] Ngũ Sắc Hỏa Liên, [X] Tộc Văn & Cửu Chuyển [B]!" % GameDatabase.maps_ordered.size()
+			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA 100%% CHƯƠNG 01–10 ★\nBấm [M] Dịch Chuyển %d Map, Thiên Phủ Liên Minh, thử [F] Lục Sắc Hỏa Liên, [T] Bắc Vương & Tiểu Y Luyện Nhanh [L]!" % GameDatabase.maps_ordered.size()
 		else:
-			quest_lbl.text = "★ HOÀN TẤT 100% QUYỂN III (CH.01–09 · VONG HỒN ĐIỆN & THIÊN MỘ) ★\nCày Năng Lượng Thể Thiên Mộ (x5 EXP) lên Cửu Chuyển [B], Tinh Vẫn Các [M] & Đấu Trường 15 Boss!"
+			quest_lbl.text = "★ HOÀN TẤT 100% CHƯƠNG 10 (CH.01–10 · BỒ ĐỀ HÓA THÁNH & #3 TỊNH LIÊN YÊU HỎA) ★\nNâng 6 Công Trình Thiên Phủ Liên Minh [M], dùng Tiểu Y Luyện Nhanh [L] & chinh phục 20 Boss Cường Bảng!"
 	else:
 		var goal: int = int(q.get("target_count", 1))
 		quest_lbl.text = "★ %s (%d/%d)\n%s" % [
@@ -1366,6 +1366,7 @@ func _on_exp_changed(_c: int, _r: int) -> void:
 func _on_realm_updated(title: String, unlock_txt: String) -> void:
 	_on_banter("ĐỘT PHÁ: %s — %s" % [title, unlock_txt])
 	_refresh_stats()
+	_refresh_current_map_banner()
 	if current_modal != "":
 		_populate_modal()
 
@@ -1382,15 +1383,35 @@ func _on_companion_changed(_cid: String) -> void:
 
 func _on_story_flag_changed(_flag_name: String) -> void:
 	_refresh_all()
+	_refresh_current_map_banner()
 	if current_modal != "":
 		_populate_modal()
 
 
-func _on_map_changed(map_id: String, map_title: String) -> void:
+func _format_map_banner(map_id: String, map_title: String) -> String:
+	var badges: Array[String] = []
 	if map_id == NineTurnManager.THIEN_MO_MAP_ID:
-		map_banner_lbl.text = "%s   [⏳ THIÊN MỘ · x5 EXP]" % map_title
-	else:
-		map_banner_lbl.text = map_title
+		badges.append("[⏳ THIÊN MỘ · x5 EXP]")
+	var saint_badge: String = SaintRealmManager.get_hud_domain_badge(PlayerData)
+	if saint_badge != "":
+		badges.append("[%s]" % saint_badge)
+	if badges.is_empty():
+		return map_title
+	return "%s   %s" % [map_title, "  ".join(badges)]
+
+
+func _refresh_current_map_banner() -> void:
+	var mid: String = PlayerData.current_map_id
+	if not GameDatabase.maps_by_id.has(mid):
+		return
+	var m_def: Dictionary = GameDatabase.get_map_def(mid)
+	var ch_str: String = str(m_def.get("chapter", "Chương 01"))
+	var nm_str: String = str(m_def.get("name", mid))
+	map_banner_lbl.text = _format_map_banner(mid, "%s — %s" % [ch_str, nm_str])
+
+
+func _on_map_changed(map_id: String, map_title: String) -> void:
+	map_banner_lbl.text = _format_map_banner(map_id, map_title)
 
 
 func _refresh_inventory_ui() -> void:

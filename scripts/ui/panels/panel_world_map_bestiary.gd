@@ -13,8 +13,11 @@ func _init(hud_ref: CanvasLayer) -> void:
 
 func build_content(vbox: VBoxContainer) -> void:
 	var total_maps: int = GameDatabase.maps_ordered.size()
+	var is_tp: bool = PanGateMgr.is_thien_phu_evolved(PlayerData)
+	var is_tv: bool = PanGateMgr.is_tinh_van_cac_evolved(PlayerData)
 	var is_vm: bool = PanGateMgr.is_viem_minh_evolved(PlayerData)
-	hud.modal_title_lbl.text = "[M] THẾ GIỚI (%d MAP) • HỒNG NHAN • %s • TÂM MA • THÁP • ĐỒ GIÁM" % [total_maps, "VIÊM MINH" if is_vm else "BÀN MÔN"]
+	var faction_short: String = "THIÊN PHỦ" if is_tp else ("TINH VẪN CÁC" if is_tv else ("VIÊM MINH" if is_vm else "BÀN MÔN"))
+	hud.modal_title_lbl.text = "[M] THẾ GIỚI (%d MAP) • HỒNG NHAN • %s • TÂM MA • THÁP • ĐỒ GIÁM" % [total_maps, faction_short]
 	vbox.add_theme_constant_override("separation", 6)
 
 	var tab_row := HFlowContainer.new()
@@ -93,7 +96,7 @@ func build_content(vbox: VBoxContainer) -> void:
 
 	var pan_ready: bool = PanGateMgr.is_unlocked(PlayerData) and PanGateMgr.get_harvest_cooldown_remaining(PlayerData) <= 0.0
 	var tab_pan_btn := Button.new()
-	var pan_label_base: String = "👑 Viêm Minh" if is_vm else "🏯 Bàn Môn"
+	var pan_label_base: String = "👑 Thiên Phủ" if is_tp else ("✦ Tinh Vẫn Các" if is_tv else ("👑 Viêm Minh" if is_vm else "🏯 Bàn Môn"))
 	tab_pan_btn.text = ("★ " if hud.world_map_tab == "pan_gate" else "") + pan_label_base + (" [THU!]" if pan_ready else "")
 	tab_pan_btn.disabled = (hud.world_map_tab == "pan_gate")
 	tab_pan_btn.add_theme_font_size_override("font_size", 12)
@@ -443,14 +446,18 @@ func build_bestiary_tab(vbox: VBoxContainer) -> void:
 
 func build_pan_gate_tab(vbox: VBoxContainer) -> void:
 	var unlocked: bool = PanGateMgr.is_unlocked(PlayerData)
+	var is_tp: bool = PanGateMgr.is_thien_phu_evolved(PlayerData)
+	var is_tv: bool = PanGateMgr.is_tinh_van_cac_evolved(PlayerData)
 	var is_vm: bool = PanGateMgr.is_viem_minh_evolved(PlayerData)
 	var st: Dictionary = PanGateMgr.ensure_state(PlayerData)
 	var d_lvl: int = PanGateMgr.get_hall_level(PlayerData, "dan_duong")
 	var v_lvl: int = PanGateMgr.get_hall_level(PlayerData, "vo_duong")
 	var a_lvl: int = PanGateMgr.get_hall_level(PlayerData, "am_duong")
 	var av_lvl: int = PanGateMgr.get_hall_level(PlayerData, "am_vong")
+	var tt_lvl: int = PanGateMgr.get_hall_level(PlayerData, "tinh_than_tran")
+	var tf_lvl: int = PanGateMgr.get_hall_level(PlayerData, "thien_phu_lien_quan")
 
-	# 1. Tổng quan Thế Lực Bàn Môn / Đế Quốc Viêm Minh & Thu Hoạch Thụ Động
+	# 1. Tổng quan Thế Lực (Bàn Môn -> Viêm Minh -> Tinh Vẫn Các -> Thiên Phủ Liên Minh) & Thu Hoạch Thụ Động
 	var hdr_card: PanelContainer = hud._make_styled_panel(Color(0.11, 0.08, 0.05, 0.96), Color("#FFD166"), 2, 10)
 	vbox.add_child(hdr_card)
 	var hv := VBoxContainer.new()
@@ -458,7 +465,13 @@ func build_pan_gate_tab(vbox: VBoxContainer) -> void:
 	hdr_card.add_child(hv)
 
 	var max_badge: String = ""
-	if is_vm:
+	if is_tp:
+		max_badge = "  [★ BÁ CHỦ TRUNG CHÂU — 6/6 CÔNG TRÌNH VIÊN MÃN!]" if PlayerData.has_flag("FLAG_THIEN_PHU_MAX") else "  (Đan %d · Hình %d · Tầm Bảo %d · Ám Võng %d · Tinh Thần %d · Liên Quân %d)" % [d_lvl, v_lvl, a_lvl, av_lvl, tt_lvl, tf_lvl]
+		hv.add_child(hud._make_label("👑 QUẢN TRỊ THIÊN PHỦ LIÊN MINH — TỨ PHƯƠNG HỢP NHẤT%s" % max_badge, 14, Color("#FFD166")))
+	elif is_tv:
+		max_badge = "  [★ TINH VẪN CỰC THỊNH!]" if PlayerData.has_flag("FLAG_TINH_VAN_MAX") else "  (Đan %d · Hình %d · Tầm Bảo %d · Ám Võng %d · Tinh Thần %d)" % [d_lvl, v_lvl, a_lvl, av_lvl, tt_lvl]
+		hv.add_child(hud._make_label("✦ QUẢN TRỊ TINH VẪN CÁC — TRUNG CHÂU THÁNH ĐỊA%s" % max_badge, 14, Color("#72EFDD")))
+	elif is_vm:
 		max_badge = "  [★ ĐẾ QUỐC CỰC THỊNH — SẴN SÀNG TRUNG CHÂU!]" if PlayerData.has_flag("FLAG_YAN_ALLIANCE_MAX") else "  (Đan %d/3 · Hình %d/3 · Tầm Bảo %d/3 · Ám Võng %d/3)" % [d_lvl, v_lvl, a_lvl, av_lvl]
 		hv.add_child(hud._make_label("👑 QUẢN TRỊ ĐẾ QUỐC VIÊM MINH — GIA MÃ & NỘI VIỆN%s" % max_badge, 14, Color("#FFD166")))
 	else:
@@ -473,13 +486,15 @@ func build_pan_gate_tab(vbox: VBoxContainer) -> void:
 		lock_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		hv.add_child(lock_l)
 	else:
-		var crit_str: String = " · +%d%% Crit (Ám Võng)" % int(round(PanGateMgr.get_crit_bonus_pct(PlayerData))) if is_vm else ""
+		var crit_str: String = " · +%d%% Crit" % int(round(PanGateMgr.get_crit_bonus_pct(PlayerData))) if is_vm else ""
+		var def_str: String = " · +%d%% DEF" % int(round(PanGateMgr.get_def_bonus_pct(PlayerData))) if is_tv else ""
+		var soul_str: String = " · +%d%% SOUL" % int(round(PanGateMgr.get_soul_bonus_pct(PlayerData))) if is_tp else ""
 		hv.add_child(hud._make_label(
-			"Ngân Khố:  🔥 %d Tinh Hỏa Năng  ·  💰 %d Kim Tệ  ·  💎 %d Đá CH   |   Buff: +%d%% ATK · +%d%% Đan Đạo%s" % [
+			"Ngân Khố:  🔥 %d Tinh Hỏa Năng  ·  💰 %d Kim Tệ  ·  💎 %d Đá CH   |   Buff: +%d%% ATK · +%d%% Đan Đạo%s%s%s" % [
 				PlayerData.fire_energy, PlayerData.gold, PlayerData.enhance_stones,
 				int(round(PanGateMgr.get_atk_bonus_pct(PlayerData))),
 				int(round(PanGateMgr.get_alchemy_bonus_pct(PlayerData))),
-				crit_str
+				crit_str, def_str, soul_str
 			],
 			12, Color("#80ED99")
 		))
@@ -490,7 +505,7 @@ func build_pan_gate_tab(vbox: VBoxContainer) -> void:
 
 		var rem_cd: float = PanGateMgr.get_harvest_cooldown_remaining(PlayerData)
 		var harv_btn := Button.new()
-		var ftitle_h: String = "VIÊM MINH" if is_vm else "BÀN MÔN"
+		var ftitle_h: String = "THIÊN PHỦ" if is_tp else ("TINH VẪN CÁC" if is_tv else ("VIÊM MINH" if is_vm else "BÀN MÔN"))
 		harv_btn.text = "★ THU HOẠCH %s NGAY! (Hỏa Năng · Kim Tệ · Đá · Ma Hạch)" % ftitle_h if rem_cd <= 0.0 else "Đang Luyện Đan & Tuần Tra... Còn %.0fs" % ceilf(rem_cd)
 		harv_btn.disabled = (rem_cd > 0.0)
 		harv_btn.add_theme_font_size_override("font_size", 12)
@@ -597,10 +612,11 @@ func build_pan_gate_tab(vbox: VBoxContainer) -> void:
 	var rv := VBoxContainer.new()
 	rv.add_theme_constant_override("separation", 5)
 	rank_card.add_child(rv)
-	rv.add_child(hud._make_label("⚔ CƯỜNG BẢNG NỘI VIỆN (TOP 10 RANKING) — KHIÊU CHIẾN ĐOẠT HẠNG", 13, Color("#FF9F1C")))
+	var roster_list: Array = PanGateMgr.get_strong_ranking_roster_for(PlayerData)
+	rv.add_child(hud._make_label("⚔ CƯỜNG BẢNG THẾ LỰC (%d CAO THỦ) — KHIÊU CHIẾN ĐOẠT HẠNG" % roster_list.size(), 13, Color("#FF9F1C")))
 	rv.add_child(hud._make_label("Khiêu chiến cao thủ Cường Bảng trong Lôi Đài riêng biệt để thử nghiệm kỹ năng & nhận Đá Cường Hóa + Kim Tệ!", 11, Color("#A8DADC")))
 
-	for entry in PanGateMgr.get_strong_ranking_roster_for(PlayerData):
+	for entry in roster_list:
 		var rk: int = int(entry["rank"])
 		var b_id: String = str(entry["boss_id"])
 		var diff_k: String = str(entry["diff"])
@@ -611,7 +627,7 @@ func build_pan_gate_tab(vbox: VBoxContainer) -> void:
 		rv.add_child(row_r)
 
 		var badge_s: String = " [★ HẠNG %s]" % best_g if best_g != "" else ""
-		var rank_prefix: String = "Đỉnh Đấu Tông" if rk <= 0 else ("Hạng #%d" % rk)
+		var rank_prefix: String = "Đấu Thánh / Tông" if rk <= 0 else ("Hạng #%d" % rk)
 		var rl: Label = hud._make_label("%s — %s <%s>%s" % [rank_prefix, str(entry["name"]), str(entry["realm"]), badge_s], 12, Color("#80ED99") if best_g != "" else Color("#F8F9FA"))
 		rl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row_r.add_child(rl)

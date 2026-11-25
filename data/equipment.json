@@ -102,6 +102,14 @@
         { "pieces": 2, "desc": "+920 Công kích, +280 Linh Hồn & +75% Sát thương Hỏa", "stats": { "atk": 920, "soul": 280, "flame_dmg": 75 } },
         { "pieces": 4, "desc": "+8.500 Sinh lực, +40% Chí mạng, +22% Hút máu & -30% Hồi chiêu", "stats": { "hp": 8500, "crit_chance": 40, "lifesteal": 22, "cooldown_red": 30 } }
       ]
+    },
+    "set_tinh_lien_dau_thanh": {
+      "id": "set_tinh_lien_dau_thanh",
+      "name": "Bộ Tịnh Liên Đấu Thánh · Thiên Phủ Thống Soái",
+      "bonuses": [
+        { "pieces": 2, "desc": "+1.650 Công kích, +520 Linh Hồn & +105% Sát thương Hỏa", "stats": { "atk": 1650, "soul": 520, "flame_dmg": 105 } },
+        { "pieces": 4, "desc": "+16.000 Sinh lực, +48% Chí mạng, +26% Hút máu & -35% Hồi chiêu", "stats": { "hp": 16000, "crit_chance": 48, "lifesteal": 26, "cooldown_red": 35 } }
+      ]
     }
   },
   "templates": {
@@ -599,6 +607,63 @@
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
       "base_stats": { "soul": 320, "alchemy_bonus": 82, "flame_dmg": 88, "qi": 640 },
       "description": "Thánh Đỉnh Bát Phẩm Đỉnh Phong do Bán Thánh Dược Trần truyền lại — chịu trọn Thất Sắc Đan Lôi luyện Chuẩn Bồ Đề Hóa Thể Đan!"
+    },
+    "wpn_xich_tinh_lien_luan_hoi": {
+      "id": "wpn_xich_tinh_lien_luan_hoi",
+      "name": "Huyền Trọng Xích · Luân Hồi Tịnh Liên",
+      "slot": "weapon",
+      "set_id": "set_tinh_lien_dau_thanh",
+      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
+      "attack_speed_mult": 1.24,
+      "base_stats": { "atk": 1350, "hp": 4800, "crit_chance": 42, "flame_dmg": 140 },
+      "description": "Huyền Trọng Xích thấm đẫm Tịnh Liên Yêu Hỏa (#3) & Kim Đế Phần Thiên Viêm (#4) — vung Xích xé toạc không gian Đấu Thánh!"
+    },
+    "arm_thien_phu_thong_soai_bao": {
+      "id": "arm_thien_phu_thong_soai_bao",
+      "name": "Thiên Phủ Thống Soái · Đấu Thánh Chiến Bào",
+      "slot": "armor",
+      "set_id": "set_tinh_lien_dau_thanh",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 9200, "def": 1180, "atk": 560, "soul": 480, "cooldown_red": 26 },
+      "description": "Chiến bào tối cao của Thống Soái Thiên Phủ Liên Minh — trấn áp vạn quân Hồn Điện Nhân Điện!"
+    },
+    "wing_tinh_lien_song_phung_duc": {
+      "id": "wing_tinh_lien_song_phung_duc",
+      "name": "Tịnh Liên Song Phụng Dực (Kim Đế · Yêu Liên)",
+      "slot": "wings",
+      "set_id": "set_tinh_lien_dau_thanh",
+      "icon": "res://assets/sprites/icons/icon_wings.png",
+      "base_stats": { "spd": 215, "crit_chance": 44, "cooldown_red": 32, "atk": 620, "flame_dmg": 115 },
+      "description": "Đôi cánh sen lửa trắng-hồng pha vàng kim từ nghi thức song luyện của Tiêu Viêm & Cổ Huân Nhi!"
+    },
+    "pend_phu_nu_dong_tam_ket": {
+      "id": "pend_phu_nu_dong_tam_ket",
+      "name": "Phụ Nữ Đồng Tâm Kết (Tiêu Tiêu & Thải Lân)",
+      "slot": "pendant",
+      "set_id": "set_tinh_lien_dau_thanh",
+      "icon": "res://assets/sprites/icons/icon_pendant.png",
+      "base_stats": { "atk": 540, "soul": 580, "hp": 6400, "flame_dmg": 108, "lifesteal": 18 },
+      "description": "Bùa hộ mệnh gia đình do bé Tiêu Tiêu & Thải Lân tự tay kết — tăng +10% toàn bộ chỉ số khi HP dưới 50%!"
+    },
+    "ring_bo_de_thanh_tam_gioi": {
+      "id": "ring_bo_de_thanh_tam_gioi",
+      "name": "Bồ Đề Thánh Tâm Giới (Bách Thế Luân Hồi)",
+      "slot": "ring",
+      "set_id": "set_tinh_lien_dau_thanh",
+      "icon": "res://assets/sprites/icons/icon_ring.png",
+      "base_stats": { "atk": 590, "soul": 680, "hp": 5800, "flame_dmg": 122, "exp_bonus": 75 },
+      "description": "Nhẫn ngọc bích kết tinh từ nhựa tim Bồ Đề Cổ Thụ — bảo hộ Đạo Tâm bất diệt trước mọi Tâm Ma!"
+    },
+    "caul_thien_phu_thanh_dinh": {
+      "id": "caul_thien_phu_thanh_dinh",
+      "name": "Thiên Phủ Thánh Đỉnh (Đan Tháp Lão Tổ Ban)",
+      "slot": "cauldron",
+      "set_id": "set_tinh_lien_dau_thanh",
+      "icon": "res://assets/sprites/icons/icon_cauldron.png",
+      "base_stats": { "soul": 620, "alchemy_bonus": 98, "flame_dmg": 135, "qi": 1250 },
+      "description": "Thánh Đỉnh Chuẩn Cửu Phẩm do Đan Tháp Lão Tổ ban tặng — chống trọn Cửu Sắc & Hắc Kim Đan Lôi!"
     }
   }
 }

@@ -69,7 +69,8 @@ static func cast_skill_slot(pl, slot_key: String, skill_id: String) -> void:
 	var m_cd_mult: float = float(mastery.get("cd_mult", 1.0))
 	var m_rad_mult: float = float(mastery.get("radius_mult", 1.0))
 
-	var cd_total: float = float(sdef.get("cooldown", 5.0)) * PlayerData.get_cooldown_multiplier() * m_cd_mult
+	var ht_cd_mult: float = SaintRealmManager.get_hoang_tuyen_cd_mult(PlayerData) if (behavior in ["yellow_springs_palm", "yellow_springs_wrath"]) else 1.0
+	var cd_total: float = float(sdef.get("cooldown", 5.0)) * PlayerData.get_cooldown_multiplier() * m_cd_mult * ht_cd_mult
 	pl.skill_cooldowns[slot_key] = cd_total
 	pl.skill_cooldown_totals[slot_key] = cd_total
 	EventBus.skill_cooldown_updated.emit(slot_key, cd_total, cd_total)
@@ -851,6 +852,152 @@ static func cast_skill_slot(pl, slot_key: String, skill_id: String) -> void:
 					if enemy_node.has_method("receive_hit"):
 						enemy_node.receive_hit(dmg, push_d * kb, r_pen, burn_val * 1.5, 0.30, 1.0, 68.0 * poise_mult)
 
+	elif behavior == "yellow_springs_palm":
+		# HOÀNG TUYỀN CHỈ & CHƯỞNG (Thiên Giai Trung Cấp Ch.10): Chỉ lực xuyên giáp + Chưởng ấn vàng sẫm hút 6% HP & làm chậm 3s!
+		pl._start_skill_pose(aim_dir, 0.38, "cast")
+		var ysp_vec: Vector2 = aim_target - pl.global_position
+		var ysp_pos: Vector2 = (pl.global_position + aim_dir * 185.0) if ysp_vec.length() < 24.0 else (pl.global_position + aim_dir * minf(ysp_vec.length(), 340.0))
+		pl._spawn_skill_vfx("yellow_springs_palm", ysp_pos + Vector2(0, -20), aim_dir, rad_px, 0.82, Color("#FEF08A"), Color("#CA8A04"), Color("#713F12"))
+		VfxAssets.spawn_spark_burst(pl.get_parent(), ysp_pos + Vector2(0, -24), Color("#FEF08A"), Color("#CA8A04"), 38, 135.0, 360.0, 0.52, aim_dir, 140.0, 0.32, 0.78, true)
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.audio_sfx_requested.emit("poise_break")
+		EventBus.screen_shake_requested.emit(16.0, 0.42)
+		EventBus.shockwave_requested.emit(ysp_pos, rad_px * 1.55, 0.068, Color("#CA8A04"), 0.46)
+		VfxAssets.spawn_ground_crater(pl.get_parent(), ysp_pos, rad_px * 0.86, Color("#CA8A04"), 3.6)
+		EventBus.floating_text_requested.emit(pl.global_position + Vector2(0, -94), "THIÊN GIAI: HOÀNG TUYỀN CHỈ & CHƯỞNG!!", Color("#FDE047"))
+		var hit_ysp: bool = false
+		for en in pl.get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if ysp_pos.distance_to(enemy_node.global_position) <= rad_px:
+					var push_d: Vector2 = (enemy_node.global_position - ysp_pos).normalized()
+					if push_d == Vector2.ZERO:
+						push_d = aim_dir
+					if enemy_node.has_method("break_boss_shield"):
+						enemy_node.break_boss_shield()
+					if enemy_node.has_method("apply_slow"):
+						enemy_node.apply_slow(0.45, 3.0)
+					if enemy_node.has_method("apply_stun"):
+						enemy_node.apply_stun(float(sdef.get("stun_sec", 2.4)))
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(dmg, push_d * kb, r_pen, burn_val * 1.5, 0.55, 1.0, 118.0 * poise_mult)
+						pl._try_trigger_inner_heart_ignition(enemy_node)
+						hit_ysp = true
+		if hit_ysp:
+			var drain_hp: float = PlayerData.get_max_hp() * 0.06 * PlayerData.get_heal_effectiveness_mult()
+			PlayerData.current_hp = minf(PlayerData.get_max_hp(), PlayerData.current_hp + drain_hp)
+			EventBus.stats_changed.emit()
+			EventBus.trigger_hitstop(0.056, 0.08)
+
+	elif behavior == "yellow_springs_wrath":
+		# HOÀNG TUYỀN THIÊN NỘ (Thiên Giai Cao Cấp Hồn Kỹ Ch.10): 2.200% SOUL toàn màn hình — Kết liễu quái thường < Bán Thánh & Choáng 4s cả Boss Đấu Thánh!
+		pl._start_skill_pose(aim_dir, 0.44, "cast")
+		var wrath_dmg: float = float(PlayerData.get_soul()) * 22.0 + dmg * 0.35
+		pl._spawn_skill_vfx("yellow_springs_wrath", pl.global_position + Vector2(0, -24), Vector2.UP, rad_px, 0.96, Color("#FFFFFF"), Color("#F59E0B"), Color("#78350F"))
+		VfxAssets.spawn_spark_burst(pl.get_parent(), pl.global_position + Vector2(0, -24), Color("#FEF08A"), Color("#F59E0B"), 52, 160.0, 440.0, 0.62, Vector2.UP, 180.0, 0.36, 0.88, true)
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		EventBus.audio_sfx_requested.emit("skill_stun")
+		EventBus.screen_shake_requested.emit(22.0, 0.58)
+		EventBus.shockwave_requested.emit(pl.global_position, rad_px * 1.80, 0.080, Color("#F59E0B"), 0.56)
+		EventBus.screen_flash_requested.emit(Color("#FDE047"), 0.40, 0.30)
+		EventBus.floating_text_requested.emit(pl.global_position + Vector2(0, -98), "CỬU U HOÀNG TUYỀN THIÊN NỘ!! (CHOÁNG HỒN 4s)", Color("#FDE047"))
+		var stun_ysw: float = float(sdef.get("stun_sec", 4.0))
+		var hit_ysw: bool = false
+		for en in pl.get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if pl.global_position.distance_to(enemy_node.global_position) <= rad_px:
+					var push_d: Vector2 = (enemy_node.global_position - pl.global_position).normalized()
+					if push_d == Vector2.ZERO:
+						push_d = aim_dir
+					var is_boss_e: bool = bool(enemy_node.get("is_boss")) if ("is_boss" in enemy_node) else false
+					var er_idx: int = int(enemy_node.get("realm_index")) if ("realm_index" in enemy_node) else 1
+					var exec_dmg: float = wrath_dmg
+					if not is_boss_e and er_idx < 10 and ("max_hp" in enemy_node):
+						exec_dmg = maxf(exec_dmg, float(enemy_node.get("max_hp")) * 1.25) # Kết liễu linh hồn quái thường dưới Bán Thánh!
+					if enemy_node.has_method("break_boss_shield"):
+						enemy_node.break_boss_shield()
+					if enemy_node.has_method("apply_def_shred"):
+						enemy_node.apply_def_shred(0.45, 9.0)
+					if enemy_node.has_method("apply_stun"):
+						enemy_node.apply_stun(stun_ysw)
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(exec_dmg, push_d * kb, 1.0, burn_val * 1.2, 1.0, 1.0, 135.0 * poise_mult)
+						pl._try_trigger_inner_heart_ignition(enemy_node)
+						hit_ysw = true
+		if hit_ysw:
+			EventBus.trigger_hitstop(0.066, 0.07)
+
+	elif behavior == "reincarnation_fire_disc":
+		# PHẬT NỘ LUÂN HỒI (Tự Sáng Tạo Thiên Giai Ch.10): Đĩa lửa Đen–Trắng 4 Dị Hỏa cắt đôi không gian, hút gom & nghiền nát!
+		pl._start_skill_pose(aim_dir, 0.44, "cast")
+		var pnl_vec: Vector2 = aim_target - pl.global_position
+		var pnl_pos: Vector2 = (pl.global_position + aim_dir * 200.0) if pnl_vec.length() < 24.0 else (pl.global_position + aim_dir * minf(pnl_vec.length(), 360.0))
+		pl._spawn_skill_vfx("reincarnation_fire_disc", pnl_pos + Vector2(0, -22), aim_dir, rad_px, 0.94, Color("#FFFFFF"), Color("#00F5D4"), Color("#1D1E2C"))
+		VfxAssets.spawn_spark_burst(pl.get_parent(), pnl_pos + Vector2(0, -24), Color("#FFFFFF"), Color("#00F5D4"), 48, 150.0, 420.0, 0.60, Vector2.UP, 180.0, 0.36, 0.86, true)
+		VfxAssets.spawn_spark_burst(pl.get_parent(), pnl_pos + Vector2(0, -24), Color("#FFAFCC"), Color("#9D4EDD"), 32, 120.0, 360.0, 0.56, aim_dir, 160.0, 0.32, 0.78, true)
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.screen_shake_requested.emit(21.0, 0.54)
+		EventBus.shockwave_requested.emit(pnl_pos, rad_px * 1.78, 0.082, Color("#00F5D4"), 0.56)
+		EventBus.screen_flash_requested.emit(Color("#FFFFFF"), 0.42, 0.28)
+		VfxAssets.spawn_ground_crater(pl.get_parent(), pnl_pos, rad_px * 0.96, Color("#9D4EDD"), 4.2)
+		EventBus.floating_text_requested.emit(pl.global_position + Vector2(0, -98), "TỨ DIỄM NGHỊCH CHUYỂN: PHẬT NỘ LUÂN HỒI!!", Color("#00F5D4"))
+		var hit_pnl: bool = false
+		for en in pl.get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if pnl_pos.distance_to(enemy_node.global_position) <= rad_px:
+					var pull_d: Vector2 = (pnl_pos - enemy_node.global_position).normalized()
+					if enemy_node.has_method("break_boss_shield"):
+						enemy_node.break_boss_shield()
+					if enemy_node.has_method("apply_def_shred"):
+						enemy_node.apply_def_shred(0.50, 10.0)
+					if enemy_node.has_method("apply_stun"):
+						enemy_node.apply_stun(float(sdef.get("stun_sec", 3.0)))
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(dmg, pull_d * absf(kb), 1.0, burn_val * 2.2, 0.75, 1.0, 145.0 * poise_mult)
+						pl._try_trigger_inner_heart_ignition(enemy_node)
+						hit_pnl = true
+		if hit_pnl:
+			EventBus.trigger_hitstop(0.068, 0.07)
+
+	elif behavior == "purifying_lotus_array":
+		# MỘNG YỂM THIÊN VỤ & TỊNH LIÊN YÊU TRẬN (Ch.10 Yêu Thánh): 12 Cánh Sen Trắng-Hồng khóa sân 12s, -50% DEF & đốt 5% Max HP/s!
+		pl._start_skill_pose(aim_dir, 0.42, "cast")
+		var dur_tl: float = float(sdef.get("buff_duration", 12.0))
+		PlayerData.is_tinh_lien_tran_active = true
+		PlayerData.player_slow_timer = 0.0
+		PlayerData.player_slow_ratio = 0.0
+		pl.tinh_lien_tran_timer = dur_tl
+		pl.tinh_lien_tran_tick = 1.0
+		pl.tinh_lien_tran_dmg = dmg * 0.48
+		pl.tinh_lien_tran_rad = rad_px
+		pl._refresh_flame_shader()
+		pl._spawn_skill_vfx("purifying_lotus_array", pl.global_position + Vector2(0, -20), Vector2.UP, rad_px, 1.05, Color("#FFFFFF"), Color("#FFAFCC"), Color("#9D4EDD"), { "follow_target": pl, "follow_offset": Vector2(0, -20) })
+		VfxAssets.spawn_spark_burst(pl.get_parent(), pl.global_position + Vector2(0, -24), Color("#FFFFFF"), Color("#FDA4AF"), 52, 145.0, 410.0, 0.62, Vector2.UP, 180.0, 0.36, 0.88, true)
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		EventBus.audio_sfx_requested.emit("skill_burst")
+		EventBus.screen_shake_requested.emit(18.0, 0.48)
+		EventBus.shockwave_requested.emit(pl.global_position, rad_px * 1.65, 0.074, Color("#FDA4AF"), 0.54)
+		EventBus.screen_flash_requested.emit(Color("#FFF1F2"), 0.36, 0.26)
+		EventBus.stats_changed.emit()
+		EventBus.floating_text_requested.emit(pl.global_position + Vector2(0, -98), "✿ TỊNH LIÊN YÊU TRẬN!! (12s · -50% GIÁP · ĐỐT 5% HP/s)", Color("#FDA4AF"))
+		for en in pl.get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var enemy_node: Node2D = en as Node2D
+				if pl.global_position.distance_to(enemy_node.global_position) <= rad_px:
+					if enemy_node.has_method("break_boss_shield"):
+						enemy_node.break_boss_shield()
+					if enemy_node.has_method("apply_def_shred"):
+						enemy_node.apply_def_shred(0.50, dur_tl)
+					if enemy_node.has_method("apply_slow"):
+						enemy_node.apply_slow(0.50, 4.0)
+					if enemy_node.has_method("apply_stun"):
+						enemy_node.apply_stun(float(sdef.get("stun_sec", 2.5)))
+					if enemy_node.has_method("receive_hit"):
+						enemy_node.receive_hit(dmg * 0.75, Vector2.ZERO, 1.0, burn_val * 2.0, 1.0, 1.0, 105.0 * poise_mult)
+
 	elif behavior == "flame_wave":
 		pl._start_skill_pose(aim_dir, 0.28, "weapon")
 		EventBus.audio_sfx_requested.emit("skill_fire")
@@ -990,6 +1137,29 @@ static func pulse_kim_khoi_tran(pl) -> void:
 		EventBus.audio_sfx_requested.emit("thunder_blink")
 
 
+static func pulse_tinh_lien_tran(pl) -> void:
+	var poise_val: float = 28.0 * PlayerData.get_poise_dmg_multiplier()
+	var struck: bool = false
+	for en in pl.get_tree().get_nodes_in_group("enemies"):
+		if not is_instance_valid(en) or not (en is Node2D):
+			continue
+		var enemy_node: Node2D = en as Node2D
+		if pl.global_position.distance_to(enemy_node.global_position) <= pl.tinh_lien_tran_rad:
+			var emhp: float = float(enemy_node.get("max_hp")) if ("max_hp" in enemy_node) else 10000.0
+			var is_boss_e: bool = bool(enemy_node.get("is_boss")) if ("is_boss" in enemy_node) else false
+			var pct_burn: float = minf(emhp * 0.05, PlayerData.get_atk() * (4.5 if is_boss_e else 8.0))
+			var tick_dmg: float = maxf(pl.tinh_lien_tran_dmg, pct_burn)
+			if enemy_node.has_method("apply_def_shred"):
+				enemy_node.apply_def_shred(0.50, 2.5)
+			if enemy_node.has_method("receive_hit"):
+				enemy_node.receive_hit(tick_dmg, Vector2.ZERO, 1.0, 0.0, 1.0, 1.0, poise_val)
+				VfxAssets.spawn_spark_burst(pl.get_parent(), enemy_node.global_position + Vector2(0, -26), Color("#FFFFFF"), Color("#FDA4AF"), 10, 75.0, 190.0, 0.30, Vector2.UP, 180.0, 0.24, 0.56, true)
+				struck = true
+	if struck:
+		pl._spawn_skill_vfx("purifying_lotus_array", pl.global_position + Vector2(0, -20), Vector2.UP, pl.tinh_lien_tran_rad * 0.85, 0.42, Color("#FFFFFF"), Color("#FFAFCC"), Color("#9D4EDD"), { "follow_target": pl, "follow_offset": Vector2(0, -20) })
+		EventBus.audio_sfx_requested.emit("skill_fire")
+
+
 static func activate_duoc_lao_assist(pl) -> void:
 	var mode: String = PlayerData.get_assist_mode()
 	if mode == "locked":
@@ -1012,9 +1182,65 @@ static func activate_duoc_lao_assist(pl) -> void:
 	pl._refresh_flame_shader()
 	EventBus.audio_sfx_requested.emit("breakthrough")
 	EventBus.stats_changed.emit()
-	EventBus.screen_shake_requested.emit(16.5 if mode == "ban_thanh_duoc_tran" else (14.0 if mode == "thien_yeu_khoi" else (12.0 if mode == "dia_yeu_khoi" else (10.5 if mode == "medusa_dau_tong" else 8.5))), 0.40 if mode == "ban_thanh_duoc_tran" else 0.36)
-	EventBus.trigger_hitstop(0.056 if mode == "ban_thanh_duoc_tran" else (0.048 if mode == "thien_yeu_khoi" else 0.044), 0.08)
-	if mode == "ban_thanh_duoc_tran":
+	EventBus.screen_shake_requested.emit(22.0 if (mode == "tinh_lien_hop_bich" or mode == "bac_vuong") else (16.5 if mode == "ban_thanh_duoc_tran" else (14.0 if mode == "thien_yeu_khoi" else (12.0 if mode == "dia_yeu_khoi" else (10.5 if mode == "medusa_dau_tong" else 8.5)))), 0.50 if (mode == "tinh_lien_hop_bich" or mode == "bac_vuong") else (0.40 if mode == "ban_thanh_duoc_tran" else 0.36))
+	EventBus.trigger_hitstop(0.064 if (mode == "tinh_lien_hop_bich" or mode == "bac_vuong") else (0.056 if mode == "ban_thanh_duoc_tran" else (0.048 if mode == "thien_yeu_khoi" else 0.044)), 0.08)
+	if mode == "tinh_lien_hop_bich":
+		PlayerData.player_slow_timer = 0.0
+		PlayerData.player_slow_ratio = 0.0
+		PlayerData.lotus_shield_hp = maxf(PlayerData.lotus_shield_hp, PlayerData.get_max_hp() * 0.60)
+		pl._spawn_skill_vfx("bac_vuong_tinh_lien_assist", pl.global_position + Vector2(0, -24), Vector2.UP, 460.0, 1.05, Color("#FFFFFF"), Color("#FFD700"), Color("#FFAFCC"), { "follow_target": pl, "follow_offset": Vector2(0, -24) })
+		EventBus.shockwave_requested.emit(pl.global_position, 520.0, 0.082, Color("#FFAFCC"), 0.58)
+		EventBus.screen_flash_requested.emit(Color("#FFF1F2"), 0.42, 0.30)
+		VfxAssets.spawn_ground_crater(pl.get_parent(), pl.global_position, 260.0, Color("#FFD700"), 4.4)
+		pl._spawn_hit_sparks(pl.global_position + Vector2(0, -24), Color("#FFD700"), Vector2.UP, 58)
+		var hb_dmg: float = PlayerData.get_atk() * 6.40 + float(PlayerData.get_soul()) * 5.2
+		for en in pl.get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var en_nd: Node2D = en as Node2D
+				if pl.global_position.distance_to(en_nd.global_position) <= 460.0:
+					var push_d: Vector2 = (en_nd.global_position - pl.global_position).normalized()
+					if en_nd.has_method("break_boss_shield"):
+						en_nd.break_boss_shield()
+					if en_nd.has_method("apply_def_shred"):
+						en_nd.apply_def_shred(0.50, 12.0)
+					if en_nd.has_method("receive_hit"):
+						en_nd.receive_hit(hb_dmg, push_d * 820.0, 1.0, PlayerData.get_core_burn_dps() * 1.5, 1.0, 1.0, 155.0 * PlayerData.get_poise_dmg_multiplier())
+					if en_nd.has_method("apply_stun"):
+						en_nd.apply_stun(4.5)
+		# Tiểu Y & Bắc Vương tự động hút nhặt toàn bộ chiến lợi phẩm trên sân!
+		for lp in pl.get_tree().get_nodes_in_group("loot_pickups"):
+			if is_instance_valid(lp) and lp is Node2D:
+				(lp as Node2D).global_position = pl.global_position
+		EventBus.floating_text_requested.emit(pl.global_position + Vector2(0, -100), "✿ KIM ĐẾ TỊNH LIÊN HỢP BÍCH & BẮC VƯƠNG!! (+60% KHIÊN · TỰ NHẶT ĐỒ)", Color("#FFD700"))
+		EventBus.banter_triggered.emit("Cổ Huân Nhi & Tiểu Y + Bắc Vương: 'Kim Đế dẫn lối, Tịnh Liên phần thiên — Y Y nha~ Tiêu Viêm ca ca, cùng xuất chiêu!!'")
+	elif mode == "bac_vuong":
+		PlayerData.player_slow_timer = 0.0
+		PlayerData.player_slow_ratio = 0.0
+		PlayerData.lotus_shield_hp = maxf(PlayerData.lotus_shield_hp, PlayerData.get_max_hp() * 0.50)
+		pl._spawn_skill_vfx("bac_vuong_tinh_lien_assist", pl.global_position + Vector2(0, -24), Vector2.UP, 420.0, 0.96, Color("#FFFFFF"), Color("#FFD700"), Color("#CA8A04"), { "follow_target": pl, "follow_offset": Vector2(0, -24) })
+		EventBus.shockwave_requested.emit(pl.global_position, 480.0, 0.076, Color("#FFD700"), 0.54)
+		EventBus.screen_flash_requested.emit(Color("#FEF08A"), 0.38, 0.28)
+		VfxAssets.spawn_ground_crater(pl.get_parent(), pl.global_position, 240.0, Color("#FFD700"), 4.0)
+		pl._spawn_hit_sparks(pl.global_position + Vector2(0, -24), Color("#FFD700"), Vector2.UP, 50)
+		var bv_mult: float = 1.35 if SaintRealmManager.has_bac_vuong_seven_star(PlayerData) else 1.0
+		var bv_dmg: float = (PlayerData.get_atk() * 5.20 + float(PlayerData.get_soul()) * 3.8) * bv_mult
+		for en in pl.get_tree().get_nodes_in_group("enemies"):
+			if is_instance_valid(en) and en is Node2D:
+				var en_nd: Node2D = en as Node2D
+				if pl.global_position.distance_to(en_nd.global_position) <= 420.0:
+					var pull_d: Vector2 = (pl.global_position - en_nd.global_position).normalized()
+					if en_nd.has_method("break_boss_shield"):
+						en_nd.break_boss_shield()
+					if en_nd.has_method("apply_def_shred"):
+						en_nd.apply_def_shred(0.45, 10.0)
+					if en_nd.has_method("receive_hit"):
+						en_nd.receive_hit(bv_dmg, pull_d * 520.0, 1.0, PlayerData.get_core_burn_dps(), 0.65, 1.0, 135.0 * PlayerData.get_poise_dmg_multiplier())
+					if en_nd.has_method("apply_stun"):
+						en_nd.apply_stun(4.2)
+		var star_lbl: String = "THẤT TINH KIM LÔI" if SaintRealmManager.has_bac_vuong_seven_star(PlayerData) else "LỤC TINH ĐẤU THÁNH"
+		EventBus.floating_text_requested.emit(pl.global_position + Vector2(0, -98), "BẮC VƯƠNG (%s) — KIM CƯƠNG PHÁ THIÊN!! (+50%% KHIÊN)" % star_lbl, Color("#FFD700"))
+		EventBus.banter_triggered.emit("Siêu Khôi Lỗi [Bắc Vương — %s] đấm nát không gian gom toàn bộ kẻ địch, dựng Khiên 50%% HP & tăng +280%% ATK!!" % star_lbl)
+	elif mode == "ban_thanh_duoc_tran":
 		PlayerData.player_slow_timer = 0.0
 		PlayerData.player_slow_ratio = 0.0
 		PlayerData.lotus_shield_hp = maxf(PlayerData.lotus_shield_hp, PlayerData.get_max_hp() * 0.40)

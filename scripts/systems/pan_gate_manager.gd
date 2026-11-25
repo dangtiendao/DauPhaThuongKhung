@@ -18,6 +18,7 @@ static func default_state() -> Dictionary:
 		"am_duong": 0,
 		"am_vong": 0,
 		"tinh_than_tran": 0,
+		"thien_phu_lien_quan": 0,
 		"last_harvest_playtime": -100.0,
 		"total_harvests": 0,
 		"ziyan_expeditions": 0,
@@ -29,7 +30,7 @@ static func ensure_state(pd: Node) -> Dictionary:
 	if not ("pan_gate_state" in pd) or not (pd.pan_gate_state is Dictionary) or pd.pan_gate_state.is_empty():
 		pd.pan_gate_state = default_state()
 	var st: Dictionary = pd.pan_gate_state
-	for k in ["dan_duong", "vo_duong", "am_duong", "am_vong", "tinh_than_tran", "total_harvests", "ziyan_expeditions"]:
+	for k in ["dan_duong", "vo_duong", "am_duong", "am_vong", "tinh_than_tran", "thien_phu_lien_quan", "total_harvests", "ziyan_expeditions"]:
 		if not st.has(k):
 			st[k] = 0
 	if not st.has("last_harvest_playtime"):
@@ -40,18 +41,24 @@ static func ensure_state(pd: Node) -> Dictionary:
 
 
 static func is_unlocked(pd: Node) -> bool:
-	return pd.has_flag("ch06_ban_mon_founded") or pd.has_flag("ch07_viem_minh_founded") or pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or bool(pd.is_demo_mode)
+	return pd.has_flag("ch06_ban_mon_founded") or pd.has_flag("ch07_viem_minh_founded") or pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or pd.has_flag("ch10_thien_phu_founded") or bool(pd.is_demo_mode)
 
 
 static func is_viem_minh_evolved(pd: Node) -> bool:
-	return pd.has_flag("ch07_viem_minh_founded") or pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or bool(pd.is_demo_mode)
+	return pd.has_flag("ch07_viem_minh_founded") or pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or pd.has_flag("ch10_thien_phu_founded") or bool(pd.is_demo_mode)
 
 
 static func is_tinh_van_cac_evolved(pd: Node) -> bool:
-	return pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or pd.has_flag("FLAG_TINH_VAN_CAC_FOUNDED") or bool(pd.is_demo_mode)
+	return pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or pd.has_flag("FLAG_TINH_VAN_CAC_FOUNDED") or pd.has_flag("ch10_thien_phu_founded") or bool(pd.is_demo_mode)
+
+
+static func is_thien_phu_evolved(pd: Node) -> bool:
+	return pd.has_flag("ch10_thien_phu_founded") or pd.has_flag("FLAG_THIEN_PHU_FOUNDED") or bool(pd.is_demo_mode)
 
 
 static func get_faction_title(pd: Node) -> String:
+	if is_thien_phu_evolved(pd):
+		return "👑 THIÊN PHỦ LIÊN MINH (TRUNG CHÂU BÁ CHỦ)"
 	if is_tinh_van_cac_evolved(pd):
 		return "✦ TINH VẪN CÁC (TRUNG CHÂU)"
 	return "ĐẾ QUỐC VIÊM MINH" if is_viem_minh_evolved(pd) else "BÀN MÔN NỘI VIỆN"
@@ -105,6 +112,16 @@ static func get_hall_defs() -> Array:
 			"per_lvl_desc": "Thu +75/150/240 Hỏa Năng + Hồn Anh Quả / Long Huyết Quả / Năng Lượng Hạch 8 · +5%/cấp ATK & DEF!",
 			"costs_fe": [160, 320, 520],
 			"costs_gold": [22000, 48000, 88000]
+		},
+		{
+			"id": "thien_phu_lien_quan",
+			"name": "Đan Tháp Viện & Vệ Đội Cổ Long (Thiên Phủ Tổng Bộ)",
+			"color": "#FBBF24",
+			"thien_phu_only": true,
+			"desc": "Siêu quân đoàn liên minh Đan Tháp Lão Tổ · Hoa Tông · Phần Viêm Cốc · Cửu U Địa Minh Mãng!",
+			"per_lvl_desc": "Thu +120/240/380 Hỏa Năng + Thánh Hồn Tinh Phách / Yêu Hỏa Tinh Chủng / Bồ Đề Tử · +6%/cấp ATK, DEF & SOUL!",
+			"costs_fe": [280, 540, 880],
+			"costs_gold": [65000, 145000, 260000]
 		}
 	]
 
@@ -112,11 +129,14 @@ static func get_hall_defs() -> Array:
 static func get_hall_defs_for(pd: Node) -> Array:
 	var vm: bool = is_viem_minh_evolved(pd)
 	var tv: bool = is_tinh_van_cac_evolved(pd)
+	var tp: bool = is_thien_phu_evolved(pd)
 	var out: Array = []
 	for hd in get_hall_defs():
 		if bool(hd.get("viem_minh_only", false)) and not vm:
 			continue
 		if bool(hd.get("tinh_van_only", false)) and not tv:
+			continue
+		if bool(hd.get("thien_phu_only", false)) and not tp:
 			continue
 		out.append(hd)
 	return out
@@ -133,13 +153,24 @@ static func get_atk_bonus_pct(pd: Node) -> float:
 	var base_a: float = float(get_hall_level(pd, "vo_duong")) * 4.0
 	if is_tinh_van_cac_evolved(pd):
 		base_a += float(get_hall_level(pd, "tinh_than_tran")) * 5.0
+	if is_thien_phu_evolved(pd):
+		base_a += float(get_hall_level(pd, "thien_phu_lien_quan")) * 6.0
 	return base_a
 
 
 static func get_def_bonus_pct(pd: Node) -> float:
-	if not is_tinh_van_cac_evolved(pd):
+	var base_d: float = 0.0
+	if is_tinh_van_cac_evolved(pd):
+		base_d += float(get_hall_level(pd, "tinh_than_tran")) * 5.0
+	if is_thien_phu_evolved(pd):
+		base_d += float(get_hall_level(pd, "thien_phu_lien_quan")) * 6.0
+	return base_d
+
+
+static func get_soul_bonus_pct(pd: Node) -> float:
+	if not is_thien_phu_evolved(pd):
 		return 0.0
-	return float(get_hall_level(pd, "tinh_than_tran")) * 5.0
+	return float(get_hall_level(pd, "thien_phu_lien_quan")) * 6.0
 
 
 static func get_crit_bonus_pct(pd: Node) -> float:
@@ -186,6 +217,11 @@ static func upgrade_hall(pd: Node, hall_id: String) -> Dictionary:
 		if is_viem_minh_evolved(pd) and get_hall_level(pd, "am_vong") >= MAX_HALL_LEVEL:
 			pd.set_story_flag("FLAG_YAN_ALLIANCE_MAX")
 			pd.add_story_relic("Đế Quốc Viêm Minh Cực Thịnh (Cả 4 Đường Đế Quốc Cấp 3 — Sẵn Sàng Trung Châu)")
+			if is_tinh_van_cac_evolved(pd) and get_hall_level(pd, "tinh_than_tran") >= MAX_HALL_LEVEL:
+				pd.set_story_flag("FLAG_TINH_VAN_MAX")
+				if is_thien_phu_evolved(pd) and get_hall_level(pd, "thien_phu_lien_quan") >= MAX_HALL_LEVEL:
+					pd.set_story_flag("FLAG_THIEN_PHU_MAX")
+					pd.add_story_relic("Thiên Phủ Liên Minh Bá Chủ Trung Châu (6/6 Công Trình Cấp 3 Viên Mãn!)")
 	pd.recalculate_and_clamp(false)
 	EventBus.audio_sfx_requested.emit("breakthrough")
 	EventBus.stats_changed.emit()
@@ -214,15 +250,17 @@ static func claim_passive_harvest(pd: Node) -> Dictionary:
 	var v_lvl: int = get_hall_level(pd, "vo_duong")
 	var av_lvl: int = get_hall_level(pd, "am_vong") if is_viem_minh_evolved(pd) else 0
 	var tv_lvl: int = get_hall_level(pd, "tinh_than_tran") if is_tinh_van_cac_evolved(pd) else 0
+	var tp_lvl: int = get_hall_level(pd, "thien_phu_lien_quan") if is_thien_phu_evolved(pd) else 0
 	var fe_table: Array = [30, 70, 115, 165]
 	var av_fe_table: Array = [0, 35, 75, 120]
 	var tv_fe_table: Array = [0, 75, 150, 240]
+	var tp_fe_table: Array = [0, 120, 240, 380]
 	var gold_table: Array = [1200, 2700, 4800, 7500]
 	var stone_table: Array = [2, 6, 11, 18]
 
-	var fe_gain: int = int(fe_table[d_lvl]) + int(av_fe_table[av_lvl]) + int(tv_fe_table[tv_lvl])
-	var gold_gain: int = int(gold_table[d_lvl]) + (2200 * av_lvl) + (6500 * tv_lvl)
-	var stone_gain: int = int(stone_table[v_lvl]) + (2 * av_lvl) + (4 * tv_lvl)
+	var fe_gain: int = int(fe_table[d_lvl]) + int(av_fe_table[av_lvl]) + int(tv_fe_table[tv_lvl]) + int(tp_fe_table[tp_lvl])
+	var gold_gain: int = int(gold_table[d_lvl]) + (2200 * av_lvl) + (6500 * tv_lvl) + (18000 * tp_lvl)
+	var stone_gain: int = int(stone_table[v_lvl]) + (2 * av_lvl) + (4 * tv_lvl) + (8 * tp_lvl)
 	pd.fire_energy += fe_gain
 	pd.gold += gold_gain
 	pd.enhance_stones += stone_gain
@@ -252,6 +290,15 @@ static func claim_passive_harvest(pd: Node) -> Dictionary:
 	if tv_lvl >= 3:
 		pd.add_item("core_nang_luong_8", 1)
 		extra_str += " + 1 [Năng Lượng Hạch Cấp 8]"
+	if tp_lvl >= 1:
+		pd.add_item("item_thanh_hon_tinh_phach", 1)
+		extra_str += " + 1 [Thánh Hồn Tinh Phách]"
+	if tp_lvl >= 2:
+		pd.add_item("item_yeu_hoa_tinh_chung", 1)
+		extra_str += " + 1 [Yêu Hỏa Tinh Chủng]"
+	if tp_lvl >= 3:
+		pd.add_item("item_bo_de_tu", 1)
+		extra_str += " + 1 [Bồ Đề Tử]"
 
 	st["last_harvest_playtime"] = float(pd.playtime_sec)
 	st["total_harvests"] = int(st.get("total_harvests", 0)) + 1
@@ -336,4 +383,10 @@ static func get_strong_ranking_roster_for(pd: Node) -> Array:
 		roster.append({ "rank": -6, "name": "[HOA TÔNG] Thiên Minh Song Sát Yêu Hoa Tà Quân", "boss_id": "yeu_hoa_ta_quan_boss", "diff": "normal", "realm": "Lục Tinh Đấu Tôn", "reward_fe": 840 })
 		roster.append({ "rank": -7, "name": "[CỔ LONG] Phản Tặc Bắc Long Vương (Ngụy Bán Thánh)", "boss_id": "bac_long_vuong_boss", "diff": "nightmare", "realm": "Tam Tinh Bán Thánh Ngụy", "reward_fe": 980 })
 		roster.append({ "rank": -8, "name": "[ĐỈNH QUYỂN III] Huyết Đao Thánh Giả — Tầng 3 Thiên Mộ", "boss_id": "huyet_dao_thanh_gia_boss", "diff": "nightmare", "realm": "Nhị Tinh Đấu Thánh", "reward_fe": 1250 })
+	if is_thien_phu_evolved(pd):
+		roster.append({ "rank": -9, "name": "[GIA MÃ] Sư Thiên & Cửu Thiên Tôn (Sư Minh Tông)", "boss_id": "su_thien_cuu_thien_ton_boss", "diff": "normal", "realm": "Sơ Cấp Bán Thánh", "reward_fe": 1400 })
+		roster.append({ "rank": -10, "name": "[BỒ ĐỀ] Ác Niệm Đấu Đế Viễn Cổ (Tâm Thức Thần Thụ)", "boss_id": "ac_niem_dau_de_boss", "diff": "normal", "realm": "Nhất Tinh Đấu Thánh Ám Ảnh", "reward_fe": 1650 })
+		roster.append({ "rank": -11, "name": "[HOÀNG TUYỀN] Tàn Ảnh Hoàng Tuyền Yêu Thánh", "boss_id": "hoang_tuyen_yeu_thanh_boss", "diff": "nightmare", "realm": "Tứ Tinh Đấu Thánh Tàn Ảnh", "reward_fe": 1950 })
+		roster.append({ "rank": -12, "name": "[NHÂN ĐIỆN] Phó Điện Chủ Nhân Điện — Hồn Điện Trung Châu", "boss_id": "pho_dien_chu_nhan_dien_boss", "diff": "nightmare", "realm": "Tam Tinh Đấu Thánh", "reward_fe": 2300 })
+		roster.append({ "rank": -13, "name": "[ĐỈNH CH.10] Điện Chủ Hồn Điện HỒN DIỆT SINH (Ác Mộng)", "boss_id": "hon_diet_sinh_boss", "diff": "nightmare", "realm": "Ngũ Tinh Đấu Thánh", "reward_fe": 2900 })
 	return roster
