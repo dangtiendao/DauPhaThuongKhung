@@ -17,6 +17,7 @@ static func default_state() -> Dictionary:
 		"vo_duong": 0,
 		"am_duong": 0,
 		"am_vong": 0,
+		"tinh_than_tran": 0,
 		"last_harvest_playtime": -100.0,
 		"total_harvests": 0,
 		"ziyan_expeditions": 0,
@@ -28,7 +29,7 @@ static func ensure_state(pd: Node) -> Dictionary:
 	if not ("pan_gate_state" in pd) or not (pd.pan_gate_state is Dictionary) or pd.pan_gate_state.is_empty():
 		pd.pan_gate_state = default_state()
 	var st: Dictionary = pd.pan_gate_state
-	for k in ["dan_duong", "vo_duong", "am_duong", "am_vong", "total_harvests", "ziyan_expeditions"]:
+	for k in ["dan_duong", "vo_duong", "am_duong", "am_vong", "tinh_than_tran", "total_harvests", "ziyan_expeditions"]:
 		if not st.has(k):
 			st[k] = 0
 	if not st.has("last_harvest_playtime"):
@@ -39,14 +40,20 @@ static func ensure_state(pd: Node) -> Dictionary:
 
 
 static func is_unlocked(pd: Node) -> bool:
-	return pd.has_flag("ch06_ban_mon_founded") or pd.has_flag("ch07_viem_minh_founded") or bool(pd.is_demo_mode)
+	return pd.has_flag("ch06_ban_mon_founded") or pd.has_flag("ch07_viem_minh_founded") or pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or bool(pd.is_demo_mode)
 
 
 static func is_viem_minh_evolved(pd: Node) -> bool:
-	return pd.has_flag("ch07_viem_minh_founded") or bool(pd.is_demo_mode)
+	return pd.has_flag("ch07_viem_minh_founded") or pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or bool(pd.is_demo_mode)
+
+
+static func is_tinh_van_cac_evolved(pd: Node) -> bool:
+	return pd.has_flag("ch09_broke_dau_ton") or pd.has_flag("ch09_duoc_tran_revived") or pd.has_flag("FLAG_TINH_VAN_CAC_FOUNDED") or bool(pd.is_demo_mode)
 
 
 static func get_faction_title(pd: Node) -> String:
+	if is_tinh_van_cac_evolved(pd):
+		return "✦ TINH VẪN CÁC (TRUNG CHÂU)"
 	return "ĐẾ QUỐC VIÊM MINH" if is_viem_minh_evolved(pd) else "BÀN MÔN NỘI VIỆN"
 
 
@@ -88,15 +95,28 @@ static func get_hall_defs() -> Array:
 			"per_lvl_desc": "Thu thêm +35/75/120 Hỏa Năng + Hồn Tinh Đen / Hủ Cốt Thảo · Vĩnh viễn +4%/cấp Chí Mạng",
 			"costs_fe": [90, 190, 340],
 			"costs_gold": [6500, 15000, 28000]
+		},
+		{
+			"id": "tinh_than_tran",
+			"name": "Tinh Thần Hộ Các Đại Trận (Phong Tôn Giả · Bán Thánh Dược Trần)",
+			"color": "#72EFDD",
+			"tinh_van_only": true,
+			"desc": "Đại trận thiên thạch bạc chấn giữ Tinh Vẫn Giới — mở kho dược tài Bát Phẩm & gia hộ toàn diện!",
+			"per_lvl_desc": "Thu +75/150/240 Hỏa Năng + Hồn Anh Quả / Long Huyết Quả / Năng Lượng Hạch 8 · +5%/cấp ATK & DEF!",
+			"costs_fe": [160, 320, 520],
+			"costs_gold": [22000, 48000, 88000]
 		}
 	]
 
 
 static func get_hall_defs_for(pd: Node) -> Array:
 	var vm: bool = is_viem_minh_evolved(pd)
+	var tv: bool = is_tinh_van_cac_evolved(pd)
 	var out: Array = []
 	for hd in get_hall_defs():
 		if bool(hd.get("viem_minh_only", false)) and not vm:
+			continue
+		if bool(hd.get("tinh_van_only", false)) and not tv:
 			continue
 		out.append(hd)
 	return out
@@ -110,7 +130,16 @@ static func get_hall_level(pd: Node, hall_id: String) -> int:
 static func get_atk_bonus_pct(pd: Node) -> float:
 	if not is_unlocked(pd):
 		return 0.0
-	return float(get_hall_level(pd, "vo_duong")) * 4.0
+	var base_a: float = float(get_hall_level(pd, "vo_duong")) * 4.0
+	if is_tinh_van_cac_evolved(pd):
+		base_a += float(get_hall_level(pd, "tinh_than_tran")) * 5.0
+	return base_a
+
+
+static func get_def_bonus_pct(pd: Node) -> float:
+	if not is_tinh_van_cac_evolved(pd):
+		return 0.0
+	return float(get_hall_level(pd, "tinh_than_tran")) * 5.0
 
 
 static func get_crit_bonus_pct(pd: Node) -> float:
@@ -184,14 +213,16 @@ static func claim_passive_harvest(pd: Node) -> Dictionary:
 	var d_lvl: int = get_hall_level(pd, "dan_duong")
 	var v_lvl: int = get_hall_level(pd, "vo_duong")
 	var av_lvl: int = get_hall_level(pd, "am_vong") if is_viem_minh_evolved(pd) else 0
+	var tv_lvl: int = get_hall_level(pd, "tinh_than_tran") if is_tinh_van_cac_evolved(pd) else 0
 	var fe_table: Array = [30, 70, 115, 165]
 	var av_fe_table: Array = [0, 35, 75, 120]
+	var tv_fe_table: Array = [0, 75, 150, 240]
 	var gold_table: Array = [1200, 2700, 4800, 7500]
 	var stone_table: Array = [2, 6, 11, 18]
 
-	var fe_gain: int = int(fe_table[d_lvl]) + int(av_fe_table[av_lvl])
-	var gold_gain: int = int(gold_table[d_lvl]) + (2200 * av_lvl)
-	var stone_gain: int = int(stone_table[v_lvl]) + (2 * av_lvl)
+	var fe_gain: int = int(fe_table[d_lvl]) + int(av_fe_table[av_lvl]) + int(tv_fe_table[tv_lvl])
+	var gold_gain: int = int(gold_table[d_lvl]) + (2200 * av_lvl) + (6500 * tv_lvl)
+	var stone_gain: int = int(stone_table[v_lvl]) + (2 * av_lvl) + (4 * tv_lvl)
 	pd.fire_energy += fe_gain
 	pd.gold += gold_gain
 	pd.enhance_stones += stone_gain
@@ -212,6 +243,15 @@ static func claim_passive_harvest(pd: Node) -> Dictionary:
 	if av_lvl >= 2:
 		pd.add_item("item_hon_tinh_den", 1)
 		extra_str += " + 1 [Hồn Tinh Đen]"
+	if tv_lvl >= 1:
+		pd.add_item("herb_hon_anh_yeu_qua", 1)
+		extra_str += " + 1 [Hồn Anh Yêu Quả]"
+	if tv_lvl >= 2:
+		pd.add_item("herb_long_huyet_qua", 1)
+		extra_str += " + 1 [Long Huyết Quả]"
+	if tv_lvl >= 3:
+		pd.add_item("core_nang_luong_8", 1)
+		extra_str += " + 1 [Năng Lượng Hạch Cấp 8]"
 
 	st["last_harvest_playtime"] = float(pd.playtime_sec)
 	st["total_harvests"] = int(st.get("total_harvests", 0)) + 1
@@ -259,7 +299,7 @@ static func send_ziyan_forage(pd: Node, use_candy: bool = true) -> Dictionary:
 	if is_viem_minh_evolved(pd):
 		pd.add_item("herb_hu_cot_thao", 1 + int(a_lvl >= 2))
 		extra_notes.append("%dx Hủ Cốt Thảo" % (1 + int(a_lvl >= 2)))
-	if pd.has_flag("ch08_broke_dau_tong") or pd.is_demo_mode:
+	if pd.has_flag("ch08_broke_dau_tong") or is_tinh_van_cac_evolved(pd) or pd.is_demo_mode:
 		pd.add_item("herb_bach_cot_linh_chi", 1)
 		extra_notes.append("1x Bạch Cốt Linh Chi")
 	EventBus.audio_sfx_requested.emit("chest_open")
@@ -287,8 +327,13 @@ static func get_strong_ranking_roster_for(pd: Node) -> Array:
 		roster.append({ "rank": 1, "name": "[VIÊM MINH] Lão Tông Chủ Vân Sơn (Tái Chiến)", "boss_id": "van_son_boss", "diff": "normal", "realm": "Tam Tinh Đấu Tông", "reward_fe": 240 })
 		roster.append({ "rank": 0, "name": "[VIÊM MINH] Lão Tổ Vạn Hạt Môn Hạt Tất Nham", "boss_id": "hat_tat_nham_boss", "diff": "normal", "realm": "Tam Tinh Đấu Tông", "reward_fe": 280 })
 		roster.append({ "rank": -1, "name": "[ĐỈNH QUYỂN II] Địa Ma Lão Quỷ (Ác Mộng Đấu Tông 7★)", "boss_id": "dia_ma_lao_quy_boss", "diff": "nightmare", "realm": "Thất Tinh Đấu Tông", "reward_fe": 380 })
-	if pd.has_flag("ch08_broke_dau_tong") or pd.is_demo_mode:
+	if pd.has_flag("ch08_broke_dau_tong") or is_tinh_van_cac_evolved(pd) or pd.is_demo_mode:
 		roster.append({ "rank": -2, "name": "[TRUNG CHÂU] Thiên Kiêu Phượng Thanh Nhi (Phong Lôi Các #1)", "boss_id": "phuong_thanh_nhi_boss", "diff": "normal", "realm": "Ngũ Tinh Đấu Tông", "reward_fe": 440 })
 		roster.append({ "rank": -3, "name": "[ĐAN HỘI] Đại Nghịch Đồ Mộ Cốt Lão Nhân (Hồn Điện)", "boss_id": "mo_cot_lao_nhan_boss", "diff": "normal", "realm": "Tam Tinh Đấu Tôn", "reward_fe": 520 })
 		roster.append({ "rank": -4, "name": "[ĐỈNH CH.08] Thái Hư Tử Hắc Cự Long #9 (Ác Mộng)", "boss_id": "tam_thien_diem_viem_boss", "diff": "nightmare", "realm": "Chuẩn Đấu Tôn · Dị Hỏa #9", "reward_fe": 680 })
+	if is_tinh_van_cac_evolved(pd):
+		roster.append({ "rank": -5, "name": "[VONG HỒN] Thiên Tôn Hồn Điện Trích Tinh Lão Quỷ", "boss_id": "trich_tinh_lao_quy_boss", "diff": "normal", "realm": "Ngũ Tinh Đấu Tôn", "reward_fe": 760 })
+		roster.append({ "rank": -6, "name": "[HOA TÔNG] Thiên Minh Song Sát Yêu Hoa Tà Quân", "boss_id": "yeu_hoa_ta_quan_boss", "diff": "normal", "realm": "Lục Tinh Đấu Tôn", "reward_fe": 840 })
+		roster.append({ "rank": -7, "name": "[CỔ LONG] Phản Tặc Bắc Long Vương (Ngụy Bán Thánh)", "boss_id": "bac_long_vuong_boss", "diff": "nightmare", "realm": "Tam Tinh Bán Thánh Ngụy", "reward_fe": 980 })
+		roster.append({ "rank": -8, "name": "[ĐỈNH QUYỂN III] Huyết Đao Thánh Giả — Tầng 3 Thiên Mộ", "boss_id": "huyet_dao_thanh_gia_boss", "diff": "nightmare", "realm": "Nhị Tinh Đấu Thánh", "reward_fe": 1250 })
 	return roster

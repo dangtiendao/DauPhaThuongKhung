@@ -75,7 +75,22 @@ static func refresh_moba_dock(hud) -> void:
 	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa / Địa Yêu Khôi / Chuẩn Thiên Yêu Khôi
 	var btn_t: MobaSlotButton = hud.skill_slots["T"]
 	var t_mode: String = PlayerData.get_assist_mode()
-	if t_mode == "thien_yeu_khoi":
+	if t_mode == "ban_thanh_duoc_tran":
+		btn_t.set_slot_visual(
+			hud._get_cached_tex("res://assets/sprites/npcs/npc_duoc_tran_ban_thanh.png"),
+			"BÁN THÁNH",
+			false,
+			PlayerData.is_duoc_lao_active,
+			false,
+			Color("#E0FBFC")
+		)
+		btn_t.set_tooltip_info(
+			"[T] Bán Thánh Dược Trần — Cốt Linh Vạn Lý Băng Phong",
+			"Hồi 45s · Duy trì 12s · ATK x3.35 · SPD +58% · Khiên 40% HP · Đóng Băng Toàn Sân 4.0s",
+			"Bán Thánh Dược Trần xuất thế hộ pháp! Đóng băng tuyệt đối toàn bộ kẻ địch trong 380px suốt 4 giây, tạo Khiên 40% HP, phá giáp -35% & tăng +235% ATK!",
+			Color("#E0FBFC")
+		)
+	elif t_mode == "thien_yeu_khoi":
 		btn_t.set_slot_visual(
 			hud._get_cached_tex("res://assets/sprites/npcs/npc_dia_yeu_khoi.png"),
 			"THIÊN KHÔI",
@@ -152,13 +167,14 @@ static func refresh_moba_dock(hud) -> void:
 			Color("#70D6FF") if t_unl else Color("#ADB5BD")
 		)
 
-	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Đấu Tông Đạp Hư Không / Đấu Khí Hóa Dực / Tam Thiên Lôi Động / Tử Vân Dực!)
+	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Đấu Tôn Xé Rách Không Gian / Đấu Tông Đạp Hư Không / Đấu Khí Hóa Dực / Tam Thiên Lôi Động / Tử Vân Dực!)
+	var has_spatial_blink: bool = PlayerData.has_dau_ton_spatial_blink()
 	var has_void_step: bool = PlayerData.has_dau_tong_void_step()
 	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
 	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
-	var dash_sub: String = "Hư Không" if has_void_step else ("Lôi·Dực" if (has_dw_wings and has_thunder) else ("Hóa Dực" if has_dw_wings else ("Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt"))))
-	var dash_col: Color = Color("#C77DFF") if has_void_step else (Color("#00F5D4") if has_dw_wings else (Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF"))))
+	var dash_sub: String = "Xé Không" if has_spatial_blink else ("Hư Không" if has_void_step else ("Lôi·Dực" if (has_dw_wings and has_thunder) else ("Hóa Dực" if has_dw_wings else ("Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt")))))
+	var dash_col: Color = Color("#72EFDD") if has_spatial_blink else (Color("#C77DFF") if has_void_step else (Color("#00F5D4") if has_dw_wings else (Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF")))))
 	var dash_tex: Texture2D = hud._get_cached_tex("res://assets/sprites/icons/skill_tam_thien_loi_dong.png") if has_thunder else (
 		hud._get_cached_tex("res://assets/sprites/icons/skill_tu_van_duc.png") if has_wings else hud._get_cached_tex("res://assets/sprites/icons/skill_dash.png")
 	)
@@ -166,11 +182,18 @@ static func refresh_moba_dock(hud) -> void:
 		dash_tex,
 		dash_sub,
 		false,
-		has_wings or has_thunder or has_void_step,
+		has_wings or has_thunder or has_void_step or has_spatial_blink,
 		false,
 		dash_col
 	)
-	if has_void_step:
+	if has_spatial_blink:
+		hud.slot_dash.set_tooltip_info(
+			"[Space] Đấu Tôn — Xé Rách Không Gian (True Spatial Blink)!",
+			"Hồi 0.48s · Tốc độ 980px/s · Bất tử I-frame 0.60s · Sóng chấn động không gian!",
+			"Đặc quyền Đấu Tôn Chương 09: Xé toạc khe nứt hư không dịch chuyển tức thì né trọn đại chiêu Boss Đấu Thánh!",
+			Color("#72EFDD")
+		)
+	elif has_void_step:
 		hud.slot_dash.set_tooltip_info(
 			"[Space] Đấu Tông — Đạp Hư Không + Tam Thiên Lôi Động!",
 			"Tốc độ xé gió 860px/s · I-frame kéo dài · Sóng không gian dưới chân!",
@@ -249,12 +272,23 @@ static func refresh_moba_dock(hud) -> void:
 		c_sub = "Huân Nhi"
 		c_col = Color("#FFD166")
 	elif cur_c == "tu_nghien":
-		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_tu_nghien.png")
-		c_sub = "Tử Nghiên"
-		c_col = Color("#E0AAFF")
+		var is_lh_ic: bool = PlayerData.has_flag("ch09_co_long_unified")
+		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_tu_nghien_long_hoang.png" if is_lh_ic else "res://assets/sprites/npcs/npc_tu_nghien.png")
+		c_sub = "Long Hoàng" if is_lh_ic else "Tử Nghiên"
+		c_col = Color("#FFD166") if is_lh_ic else Color("#E0AAFF")
+	elif cur_c == "thanh_lan":
+		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_thanh_lan_dau_ton.png")
+		c_sub = "Thanh Lân"
+		c_col = Color("#80ED99")
+	elif cur_c == "van_van_hoa_tong":
+		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_van_van_hoa_tong.png")
+		c_sub = "Vân Vận"
+		c_col = Color("#FFC8DD")
 	elif cur_c == "duoc_lao_phantom":
-		c_sub = "Dược Lão"
-		c_col = Color("#70D6FF")
+		var is_bt_ic: bool = PlayerData.has_flag("ch09_duoc_tran_revived")
+		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_duoc_tran_ban_thanh.png" if is_bt_ic else "res://assets/sprites/npcs/npc_duoc_lao.png")
+		c_sub = "Dược Trần" if is_bt_ic else "Dược Lão"
+		c_col = Color("#E0FBFC") if is_bt_ic else Color("#70D6FF")
 	hud.slot_companion.set_slot_visual(
 		c_tex,
 		c_sub,

@@ -163,7 +163,7 @@ var autosave_toast_timer: float = 0.0
 
 
 func _exit_tree() -> void:
-	for p in [panel_pause_settings, panel_world_map_bestiary, panel_tower_boss_rush, panel_alchemy, panel_auction, panel_equipment]:
+	for p in [panel_pause_settings, panel_world_map_bestiary, panel_tower_boss_rush, panel_alchemy, panel_auction, panel_equipment, panel_skills_cultivation]:
 		if p != null:
 			p.hud = null
 	panel_pause_settings = null
@@ -1344,9 +1344,9 @@ func _refresh_quest_ui() -> void:
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		if PlayerData.is_demo_mode:
-			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ ★\nBấm [M] Dịch Chuyển Nhanh %d Map (Ch01–Ch06), Quản Trị Bàn Môn, thử [F] Song Dị Hỏa Liên & Đấu Khí Hóa Dực!" % GameDatabase.maps_ordered.size()
+			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA 100%% QUYỂN I–III ★\nBấm [M] Dịch Chuyển %d Map (Ch01–Ch09), Tinh Vẫn Các, thử [F] Ngũ Sắc Hỏa Liên, [X] Tộc Văn & Cửu Chuyển [B]!" % GameDatabase.maps_ordered.size()
 		else:
-			quest_lbl.text = "★ HOÀN TẤT CHƯƠNG 06 (NỘI VIỆN GIÀ NAM & VẪN LẠC TÂM VIÊM) ★\nTự do nâng cấp Bàn Môn [M], leo Thiên Phần Tháp, Tâm Ma (28 Boss) & chờ Chương 07: Tam Thượng Vân Lam Sơn!"
+			quest_lbl.text = "★ HOÀN TẤT 100% QUYỂN III (CH.01–09 · VONG HỒN ĐIỆN & THIÊN MỘ) ★\nCày Năng Lượng Thể Thiên Mộ (x5 EXP) lên Cửu Chuyển [B], Tinh Vẫn Các [M] & Đấu Trường 15 Boss!"
 	else:
 		var goal: int = int(q.get("target_count", 1))
 		quest_lbl.text = "★ %s (%d/%d)\n%s" % [
@@ -1386,8 +1386,11 @@ func _on_story_flag_changed(_flag_name: String) -> void:
 		_populate_modal()
 
 
-func _on_map_changed(_map_id: String, map_title: String) -> void:
-	map_banner_lbl.text = map_title
+func _on_map_changed(map_id: String, map_title: String) -> void:
+	if map_id == NineTurnManager.THIEN_MO_MAP_ID:
+		map_banner_lbl.text = "%s   [⏳ THIÊN MỘ · x5 EXP]" % map_title
+	else:
+		map_banner_lbl.text = map_title
 
 
 func _refresh_inventory_ui() -> void:

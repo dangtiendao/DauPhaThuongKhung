@@ -213,6 +213,16 @@ func _draw() -> void:
 			_draw_thunder_clone(t)
 		"thien_yeu_khoi_assist":
 			_draw_thien_yeu_khoi_assist(t)
+		"spatial_giant_palm":
+			_draw_spatial_giant_palm(t)
+		"creation_heaven_palm":
+			_draw_creation_heaven_palm(t)
+		"ten_golden_puppets":
+			_draw_ten_golden_puppets(t)
+		"xiao_clan_crest":
+			_draw_xiao_clan_crest(t)
+		"ban_thanh_duoc_tran_assist":
+			_draw_ban_thanh_duoc_tran_assist(t)
 		"ground_crater":
 			_draw_ground_crater(t)
 		"dan_lei_pillar":
@@ -1375,6 +1385,85 @@ func _draw_dan_lei_pillar(t: float) -> void:
 	_draw_ancient_rune_seal(Vector2.ZERO, r, elapsed * 2.8, mid_color, core_color, fade, 6)
 	draw_arc(Vector2.ZERO, r * 1.15, 0.0, TAU, 48, Color(1.0, 1.0, 1.0, 0.92 * fade), 5.0 * fade)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+func _draw_spatial_giant_palm(t: float) -> void:
+	# KHÔNG GIAN ĐẠI THỦ ẤN (Đấu Tôn Ch.09): Xoáy không gian bạc-tím + Bàn tay không gian khổng lồ nén tâm + vết nứt không gian!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.75), 0.0, 1.0)
+	var r: float = radius_px * (1.15 - 0.35 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.85, Color(0.45, 0.94, 0.87, 0.16 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.96, -elapsed * 3.4, Color("#72EFDD"), Color("#C77DFF"), fade, 8)
+	for i in range(6):
+		var a: float = float(i) * (TAU / 6.0) + elapsed * 2.2
+		var p_out := Vector2(cos(a), sin(a)) * (r * 1.15)
+		_draw_fractal_bolt(p_out, Vector2.ZERO, Color(0.45, 0.94, 0.87, 0.88 * fade), Color(1.0, 1.0, 1.0, 0.96 * fade), 3.2 * fade, i + 231, 16.0)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 52, Color(0.85, 0.98, 1.0, 0.94 * fade), 5.8 * fade)
+	draw_circle(Vector2.ZERO, 28.0 * (1.0 - 0.35 * t), Color(1.0, 1.0, 1.0, 0.92 * fade))
+
+
+func _draw_creation_heaven_palm(t: float) -> void:
+	# ĐẠI THIÊN TẠO HÓA CHƯỞNG (Thiên Giai Ch.09): Cột kim quang giáng trời + Ấn Tạo Hóa 8 Cánh + Bàn tay Thiên Giai khổng lồ!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.65), 0.0, 1.0)
+	var r: float = radius_px * (0.28 + 0.92 * ease_t)
+	draw_line(Vector2(0, -radius_px * 1.9), Vector2(0, 14.0), Color(1.0, 0.30, 0.43, 0.55 * fade), 68.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.9), Vector2(0, 14.0), Color(1.0, 0.82, 0.40, 0.88 * fade), 36.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.9), Vector2(0, 14.0), Color(1.0, 1.0, 1.0, 0.98 * fade), 15.0 * fade)
+	draw_circle(Vector2.ZERO, r * 0.92, Color(1.0, 0.82, 0.40, 0.22 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r, elapsed * 2.4, Color("#FFD166"), Color("#FF4D6D"), fade, 8)
+	for i in range(8):
+		var a: float = float(i) * (TAU / 8.0) - elapsed * 1.5
+		var d := Vector2(cos(a), sin(a))
+		draw_line(d * (r * 0.22), d * (r * 1.15), Color(1.0, 0.82, 0.40, 0.88 * fade), 5.2 * fade)
+	draw_arc(Vector2.ZERO, r * 1.08, 0.0, TAU, 56, Color(1.0, 0.96, 0.82, 0.95 * fade), 6.5 * fade)
+
+
+func _draw_ten_golden_puppets(t: float) -> void:
+	# THẬP TUYỆT KIM KHÔI TRẬN (10 Thiên Yêu Khôi Ch.09): 10 Điểm Sao Khôi Lỗi Hoàng Kim kết thành Thập Giác Lôi Trận!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.65), 0.0, 1.0)
+	var r: float = radius_px * (0.30 + 0.82 * ease_t)
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.94, elapsed * 2.6, Color("#FFD166"), Color("#C77DFF"), fade, 10)
+	var prev_pt := Vector2.ZERO
+	for i in range(10):
+		var a: float = float(i) * (TAU / 10.0) + elapsed * 1.8
+		var pt := Vector2(cos(a), sin(a)) * r
+		draw_circle(pt, 9.0 * fade, Color(1.0, 0.88, 0.45, 0.92 * fade))
+		draw_circle(pt, 4.5 * fade, Color(1.0, 1.0, 1.0, 0.98 * fade))
+		if i > 0:
+			_draw_fractal_bolt(prev_pt, pt, Color(1.0, 0.82, 0.40, 0.85 * fade), Color(1.0, 1.0, 1.0, 0.95 * fade), 2.8 * fade, i + 251, 10.0)
+		prev_pt = pt
+	draw_arc(Vector2.ZERO, r * 1.04, 0.0, TAU, 52, Color(0.84, 0.56, 1.0, 0.82 * fade), 4.2 * fade)
+
+
+func _draw_xiao_clan_crest(t: float) -> void:
+	# TỘC VĂN ĐẤU ĐẾ TIÊU TỘC (Ch.09 Thiên Mộ): Trụ huyết kim quang + Huy hiệu kim cương rực lửa đỏ-vàng bùng nổ!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.6), 0.0, 1.0)
+	var r: float = radius_px * (0.28 + 0.90 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.88, Color(1.0, 0.30, 0.43, 0.22 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.92, elapsed * 2.8, Color("#FF4D6D"), Color("#FFD166"), fade, 6)
+	var diam := PackedVector2Array([Vector2(0, -r * 0.72), Vector2(r * 0.42, 0), Vector2(0, r * 0.72), Vector2(-r * 0.42, 0)])
+	draw_colored_polygon(diam, Color(1.0, 0.82, 0.40, 0.32 * fade))
+	draw_polyline(PackedVector2Array([diam[0], diam[1], diam[2], diam[3], diam[0]]), Color(1.0, 0.96, 0.85, 0.96 * fade), 5.0 * fade)
+	draw_arc(Vector2.ZERO, r * 1.05, 0.0, TAU, 54, Color(1.0, 0.35, 0.48, 0.94 * fade), 6.0 * fade)
+
+
+func _draw_ban_thanh_duoc_tran_assist(t: float) -> void:
+	# BÁN THÁNH DƯỢC TRẦN — CỐT LINH VẠN LÝ BĂNG PHONG: Cột Băng Hỏa trắng xanh chói lòa + 12 tinh thể băng tỏa toàn sân!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var r: float = radius_px * (0.24 + 0.96 * ease_t)
+	draw_line(Vector2(0, -radius_px * 1.85), Vector2(0, 16.0), Color(0.30, 0.79, 0.94, 0.62 * fade), 62.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.85), Vector2(0, 16.0), Color(0.88, 0.98, 1.0, 0.96 * fade), 24.0 * fade)
+	draw_circle(Vector2.ZERO, r * 0.94, Color(0.75, 0.96, 1.0, 0.22 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.95, -elapsed * 2.0, Color("#E0FBFC"), Color("#4CC9F0"), fade, 12)
+	for i in range(12):
+		var a: float = float(i) * (TAU / 12.0) + elapsed * 1.4
+		var p_end := Vector2(cos(a), sin(a)) * (r * 1.08)
+		_draw_fractal_bolt(Vector2.ZERO, p_end, Color(0.66, 0.90, 0.96, 0.92 * fade), Color(1.0, 1.0, 1.0, 0.98 * fade), 3.6 * fade, i + 271, 14.0)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 58, Color(0.92, 0.99, 1.0, 0.96 * fade), 6.8 * fade)
 
 
 func _draw_generic_ring(t: float) -> void:

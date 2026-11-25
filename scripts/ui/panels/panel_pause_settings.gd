@@ -237,7 +237,7 @@ func build_content(vbox: VBoxContainer) -> void:
 	var kb_specs: Array = [
 		["move_up", "Đi Lên"], ["move_down", "Đi Xuống"], ["move_left", "Sang Trái"], ["move_right", "Sang Phải"],
 		["dash", "Lướt Né"], ["interact", "Tương Tác"], ["skill_q", "Đấu Kỹ 1"], ["skill_e", "Đấu Kỹ 2"],
-		["skill_r", "Đấu Kỹ 3"], ["skill_ult", "Hỏa Liên"], ["skill_assist", "Trợ Chiến"],
+		["skill_r", "Đấu Kỹ 3"], ["skill_ult", "Hỏa Liên"], ["skill_assist", "Trợ Chiến"], ["toc_van_crest", "Tộc Văn"],
 		["toggle_weight", "Trọng Áp"], ["toggle_companion", "Đồng Hành"], ["soul_radar", "Radar Hồn"]
 	]
 	for spec in kb_specs:

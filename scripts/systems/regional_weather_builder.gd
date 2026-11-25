@@ -56,6 +56,97 @@ static func build_regional_weather(stage, m_def: Dictionary) -> void:
 		or current_map_id == "tam_ma_luyen_canh"
 		or base_tile.find("arena_violet") != -1
 	)
+	var amb_weather: String = str(m_def.get("ambient_weather", ""))
+	if amb_weather == "sakura_petals" or current_map_id == "ch09_hoa_tong_thanh_dia":
+		# Hoa Tông Thánh Địa: Cánh hoa anh đào hồng phấn bay nhẹ lãng mạn khắp thung lũng!
+		var sakura := CPUParticles2D.new()
+		sakura.position = map_size * 0.5
+		sakura.emitting = true
+		sakura.preprocess = 2.4
+		sakura.amount = 54
+		sakura.lifetime = 6.5
+		sakura.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		sakura.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		sakura.direction = Vector2(0.58, 0.80).normalized()
+		sakura.spread = 28.0
+		sakura.gravity = Vector2(6.0, 10.0)
+		sakura.initial_velocity_min = 22.0
+		sakura.initial_velocity_max = 48.0
+		sakura.angle_min = -180.0
+		sakura.angle_max = 180.0
+		sakura.angular_velocity_min = -80.0
+		sakura.angular_velocity_max = 80.0
+		sakura.scale_amount_min = 0.30
+		sakura.scale_amount_max = 0.58
+		sakura.texture = VfxAssets.get_spark_streak_texture()
+		sakura.scale_amount_curve = VfxAssets.get_scale_ember_curve()
+		sakura.color_ramp = make_soft_ambient_gradient(Color(1.0, 0.72, 0.84, 0.86))
+		sakura.color = Color.WHITE
+		map_overlay_root.add_child(sakura)
+		return
+	elif amb_weather == "soul_mist" or current_map_id == "ch09_vong_hon_son_mach":
+		# Vong Hồn Sơn Mạch: Phệ Hồn Mê Vụ xanh lục ma quái + tàn hồn bay lờ mờ!
+		var smist := CPUParticles2D.new()
+		smist.position = map_size * 0.5
+		smist.emitting = true
+		smist.preprocess = 2.4
+		smist.amount = 28
+		smist.lifetime = 7.0
+		smist.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		smist.emission_rect_extents = Vector2(map_size.x * 0.52, map_size.y * 0.48)
+		smist.direction = Vector2(-1.0, 0.10).normalized()
+		smist.spread = 20.0
+		smist.gravity = Vector2(-6.0, 0.0)
+		smist.initial_velocity_min = 18.0
+		smist.initial_velocity_max = 40.0
+		smist.scale_amount_min = 3.2
+		smist.scale_amount_max = 6.0
+		smist.texture = VfxAssets.get_smoke_puff_texture()
+		smist.scale_amount_curve = VfxAssets.get_scale_smoke_curve()
+		smist.color_ramp = make_soft_ambient_gradient(Color(0.18, 0.78, 0.58, 0.16))
+		smist.color = Color.WHITE
+		map_overlay_root.add_child(smist)
+		return
+	elif amb_weather == "void_lightning" or current_map_id == "ch09_co_long_loi_tri":
+		# Hư Không Lôi Trì (Cổ Long Đảo): Tia sét Hắc Ma Lôi tím-vàng nhảy tách tách giữa hư không!
+		var vsparks := CPUParticles2D.new()
+		vsparks.position = map_size * 0.5
+		vsparks.emitting = true
+		vsparks.preprocess = 1.6
+		vsparks.amount = 64
+		vsparks.lifetime = 1.6
+		vsparks.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		vsparks.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		vsparks.direction = Vector2(0.0, 1.0)
+		vsparks.spread = 180.0
+		vsparks.gravity = Vector2(0.0, 12.0)
+		vsparks.initial_velocity_min = 45.0
+		vsparks.initial_velocity_max = 125.0
+		vsparks.scale_amount_min = 0.24
+		vsparks.scale_amount_max = 0.56
+		VfxAssets.configure_glow_particles(vsparks, Color("#FFD166"), Color("#9D4EDD"), true)
+		map_overlay_root.add_child(vsparks)
+		return
+	elif amb_weather == "tomb_energy" or current_map_id == "ch09_thien_mo_tam_tang":
+		# Thiên Mộ Tam Tầng: Hạt năng lượng bạc-vàng cổ đại bốc lên chậm rãi tạo cảm giác dòng chảy thời gian x5!
+		var tmotes := CPUParticles2D.new()
+		tmotes.position = map_size * 0.5
+		tmotes.emitting = true
+		tmotes.preprocess = 2.2
+		tmotes.amount = 60
+		tmotes.lifetime = 4.6
+		tmotes.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		tmotes.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		tmotes.direction = Vector2(0.0, -1.0)
+		tmotes.spread = 35.0
+		tmotes.gravity = Vector2(0.0, -16.0)
+		tmotes.initial_velocity_min = 18.0
+		tmotes.initial_velocity_max = 46.0
+		tmotes.scale_amount_min = 0.22
+		tmotes.scale_amount_max = 0.50
+		VfxAssets.configure_glow_particles(tmotes, Color("#FFF3B0"), Color("#ADB5BD"), false)
+		map_overlay_root.add_child(tmotes)
+		return
 
 	if is_tower_arena:
 		# Thiên Phần Luyện Khí Tháp: Tàn lửa Vẫn Lạc Tâm Viêm (#FF4D6D / #FFD166) bốc cuộn dày đặc khắp đấu trường!

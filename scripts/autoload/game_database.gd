@@ -64,6 +64,7 @@ func _setup_default_input_map() -> void:
 	_bind_key("skill_r", KEY_R)
 	_bind_key("skill_ult", KEY_F)
 	_bind_key("skill_assist", KEY_T)
+	_bind_key("toc_van_crest", KEY_X)
 
 	_bind_key("quick_pill_1", KEY_1)
 	_bind_key("quick_pill_2", KEY_2)

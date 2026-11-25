@@ -625,13 +625,13 @@
           "require_flag": ""
         },
         {
-          "id": "to_ch09_vong_hon_son_mach_future",
-          "label": "Không Gian Trùng Động -> [CHƯƠNG 09] Huyết Chiến Vong Hồn Điện Cứu Sư Tôn Dược Lão!",
+          "id": "to_ch09_tinh_van_cac",
+          "label": "Không Gian Trùng Động -> [CHƯƠNG 09] Đại Bản Doanh Tinh Vẫn Các & Cứu Sư Vong Hồn!",
           "pos": [2052, 580],
-          "target_map": "ch08_tinh_vuc_phong_an",
-          "target_spawn": [1860, 580],
-          "require_flag": "ch09_unlocked_future",
-          "locked_hint": "CHÚC MỪNG HOÀN TẤT CHƯƠNG 08 (QUYỂN III — BẮC VỰC TRUNG CHÂU & ĐAN HỘI)!! Chương 09: Đột Kích Vong Hồn Điện Cứu Sư Tôn Dược Lão, Thiên Mộ Tam Tầng & Phục Sinh Bán Thánh đang chờ phía trước!"
+          "target_map": "ch09_tinh_van_cac",
+          "target_spawn": [210, 580],
+          "require_flag": "ch08_completed",
+          "locked_hint": "Hãy hoàn tất Chương 08 (hàng phục & thôn phệ #9 Tam Thiên Diễm Viêm Hỏa) để bước vào Chương 09: Huyết Chiến Vong Hồn & Thiên Mộ!"
         }
       ]
     }

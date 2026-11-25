@@ -1,0 +1,398 @@
+{
+  "version": "1.0",
+  "chapter_title": "Chương 09 — Huyết Chiến Vong Hồn Cứu Sư Tôn & Kỳ Ngộ Thiên Mộ (Hoàn Tất Quyển III)",
+  "quests": [
+    {
+      "id": "q67_ch09_tinh_van_hoi_quan",
+      "title": "67. [CHƯƠNG 09 — CHỐT QUYỂN III] Tinh Vẫn Các Tập Kết 6 Cường Giả!",
+      "objective": "Bước qua Không Gian Trùng Động tới Đại Bản Doanh Tinh Vẫn Các, gặp Phong Tôn Giả & Thiết Kiếm Tôn Giả [V] phát lệnh đột kích Vong Hồn Sơn Mạch!",
+      "type": "story_flag",
+      "flag_name": "ch09_tinh_van_rally",
+      "target_count": 1,
+      "reward_exp": 320000,
+      "reward_gold": 120000,
+      "reward_items": { "herb_hon_anh_yeu_qua": 3, "pill_phuc_hon_thanh_dan": 1 },
+      "intro_log": "Đấu Tông 9 Tinh Đỉnh Phong cùng #9 Tam Thiên Diễm Viêm Hỏa đã sẵn sàng! Mau tiến vào Tinh Vẫn Các hội quân cùng Phong Tôn Giả, Tiểu Y Tiên, Thiên Hỏa, Tử Nghiên và Thiết Kiếm Tôn Giả!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch09_phong_thiet_kiem", "map": "ch09_tinh_van_cac" }
+      ]
+    },
+    {
+      "id": "q68_ch09_vong_hon_cuu_su",
+      "title": "68. Huyết Chiến Vong Hồn Sơn Mạch — Cứu Dược Lão & Chặn Trích Tinh Lão Quỷ!",
+      "objective": "Xông vào Vong Hồn Sơn Mạch, tử chiến đánh lui [BOSS NGŨ TINH ĐẤU TÔN] Trích Tinh Lão Quỷ rồi phá Tỏa Hồn Tháp [V] đón bản thể Sư Tôn Dược Trần rút về Tinh Vẫn Các!",
+      "type": "story_flag",
+      "flag_name": "ch09_saved_duoc_lao",
+      "target_count": 1,
+      "reward_exp": 460000,
+      "reward_gold": 165000,
+      "reward_items": { "item_hon_tinh_den": 4, "pill_phuc_hon_thanh_dan": 2 },
+      "intro_log": "Đội quân 6 cường giả đã xuất phát vào Phệ Hồn Mê Vụ! Trích Tinh Lão Quỷ đang trấn giữ Phân Điện Hồn Điện — hãy phá vòng vây và cứu Sư Tôn Dược Lão khỏi Tỏa Hồn Tháp [V]!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch09_beat_trich_tinh" }, "kind": "boss", "target": "trich_tinh_lao_quy_boss", "map": "ch09_vong_hon_son_mach" },
+        { "default": true, "kind": "npc", "target": "ch09_duoc_lao_prison", "map": "ch09_vong_hon_son_mach" }
+      ]
+    },
+    {
+      "id": "q69_ch09_niet_ban_dau_ton",
+      "title": "69. Một Năm Niết Bàn Hóa ĐẤU TÔN — Phá Vây Hắc Bạch Thiên Tôn!",
+      "objective": "Trở về Hậu Sơn Tinh Vẫn Các [V] hoàn tất 1 năm Niết Bàn từ Bất Tử Chi Thể lên NHẤT TINH ĐẤU TÔN, rồi bước ra phía Đông đánh tan [BOSS] Hắc Bạch Thiên Tôn!",
+      "type": "story_flag",
+      "flag_name": "ch09_broke_dau_ton",
+      "target_count": 1,
+      "reward_exp": 580000,
+      "reward_gold": 210000,
+      "reward_items": { "herb_hon_anh_yeu_qua": 3, "pill_kim_cuong_bat_hoai": 1 },
+      "intro_log": "Thiết Kiếm Tôn Giả đã tự bạo mở đường máu, bạn cũng trọng thương hôn mê sau đóa Tứ Sắc Hủy Diệt Hỏa Liên! Về Hậu Sơn Tinh Vẫn Các [V] Niết Bàn đột phá ĐẤU TÔN và đẩy lùi Hắc Bạch Thiên Tôn!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch09_nirvana_awakened" }, "kind": "npc", "target": "ch09_duoc_tran_revival", "map": "ch09_tinh_van_cac" },
+        { "default": true, "kind": "boss", "target": "hac_bach_thien_ton_boss", "map": "ch09_tinh_van_cac" }
+      ]
+    },
+    {
+      "id": "q70_ch09_hoa_tong_van_van",
+      "title": "70. Hoa Tông Giải Vây — Tái Ngộ Vân Vận & Trảm Yêu Hoa Tà Quân!",
+      "objective": "Tiến sang Hoa Tông Thánh Địa đánh bại [BOSS LỤC TINH ĐẤU TÔN] Yêu Hoa Tà Quân & Hoa Cẩm, rồi giúp Vân Vận [V] hóa giải phong ấn đăng cơ Tông Chủ Hoa Tông!",
+      "type": "story_flag",
+      "flag_name": "ch09_hoa_tong_saved",
+      "target_count": 1,
+      "reward_exp": 660000,
+      "reward_gold": 240000,
+      "reward_items": { "pill_bach_hoa_ngoc_lo": 3, "herb_hon_anh_yeu_qua": 2 },
+      "intro_log": "NHẤT TINH ĐẤU TÔN XUẤT THẾ — HẮC BẠCH THIÊN TÔN THẢM BẠI!! Nạp Lan Yên Nhiên cấp báo Vân Vận đang bị Hoa Cẩm & Yêu Hoa Tà Quân bức hại tại Hoa Tông — lập tức lên đường cứu nàng!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch09_beat_yeu_hoa" }, "kind": "boss", "target": "yeu_hoa_ta_quan_boss", "map": "ch09_hoa_tong_thanh_dia" },
+        { "default": true, "kind": "npc", "target": "ch09_van_van_hoa_tong", "map": "ch09_hoa_tong_thanh_dia" }
+      ]
+    },
+    {
+      "id": "q71_ch09_vien_co_di_tich",
+      "title": "71. Viễn Cổ Di Tích — Tái Ngộ Thanh Lân & Đoạt Tạo Hóa Thánh Cốt!",
+      "objective": "Vào Đầm Lầy Khô Cốt hội ngộ Thanh Lân [V], đánh lui [BOSS] Tàn Hồn Tạo Hóa Thánh Giả rồi bước lên 99 bậc Thạch Giai [V] đoạt 3 Thánh Cốt & học [Đại Thiên Tạo Hóa Chưởng]!",
+      "type": "story_flag",
+      "flag_name": "ch09_got_tao_hoa_palm",
+      "target_count": 1,
+      "reward_exp": 780000,
+      "reward_gold": 280000,
+      "reward_items": { "herb_vien_co_thu_cot": 4, "herb_hon_anh_yeu_qua": 3 },
+      "intro_log": "Vân Vận đã đăng cơ Tông Chủ Hoa Tông & gia nhập hàng ngũ Đồng Hành #9 [G]! Thú Vực vừa mở Viễn Cổ Di Tích Đấu Thánh chứa Thánh Cốt & Hồn Anh Quả đúc thân xác cho Dược Lão — mau xuất phát!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch09_thanh_lan_reunited" }, "kind": "npc", "target": "ch09_thanh_lan_relic", "map": "ch09_vien_co_di_tich" },
+        { "when": { "missing_flag": "ch09_beat_tan_hon_tao_hoa" }, "kind": "boss", "target": "tan_hon_tao_hoa_boss", "map": "ch09_vien_co_di_tich" },
+        { "default": true, "kind": "npc", "target": "ch09_tao_hoa_skeleton", "map": "ch09_vien_co_di_tich" }
+      ]
+    },
+    {
+      "id": "q72_ch09_phuc_sinh_ban_thanh",
+      "title": "72. Đại Trận Luyện Thân — Phục Sinh BÁN THÁNH DƯỢC TRẦN!",
+      "objective": "Mang 3 Tạo Hóa Thánh Cốt & Hồn Anh Quả về Hậu Sơn Tinh Vẫn Các [V], khai mở Đại Trận Luyện Thân phục sinh Sư Tôn Dược Trần thành BÁN THÁNH, nhận #11 Cốt Linh & Ngũ Sắc Hỏa Liên!",
+      "type": "story_flag",
+      "flag_name": "ch09_duoc_tran_revived",
+      "target_count": 1,
+      "reward_exp": 920000,
+      "reward_gold": 340000,
+      "reward_items": { "pill_phuc_hon_thanh_dan": 2, "core_nang_luong_8": 2 },
+      "intro_log": "ĐẠI THIÊN TẠO HÓA CHƯỞNG ĐÃ LĨNH NGỘ & BA CHIẾC THÁNH CỐT ĐÃ VỀ TAY!! Mau quay lại Hậu Sơn Tinh Vẫn Các [V] bắt đầu Nghi Thức Thất Nhật Luyện Thân phục sinh Sư Tôn Dược Trần!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch09_duoc_tran_revival", "map": "ch09_tinh_van_cac" }
+      ]
+    },
+    {
+      "id": "q73_ch09_co_long_loi_tri",
+      "title": "73. Hư Không Lôi Trì — Luyện Hóa Long Ma Tinh & Rèn 10 Kim Sắc Yêu Khôi!",
+      "objective": "Theo Trưởng Lão Hắc Kình tới Đông Long Đảo [V], vận 4 loại Dị Hỏa giải phong ấn Long Ma Tinh cho Tử Nghiên và tắm Hắc Ma Lôi rèn [Thập Tuyệt Kim Khôi Trận]!",
+      "type": "story_flag",
+      "flag_name": "ch09_forged_ten_puppets",
+      "target_count": 1,
+      "reward_exp": 1020000,
+      "reward_gold": 380000,
+      "reward_items": { "herb_long_huyet_qua": 3, "pill_kim_cuong_bat_hoai": 2 },
+      "intro_log": "BÁN THÁNH DƯỢC TRẦN TÁI XUẤT CHẤN ĐỘNG TRUNG CHÂU — #11 CỐT LINH & 4/4 TÀN ĐỒ ĐÃ ĐỦ!! Nhưng Tử Nghiên lỡ nuốt Long Hoàng Quả hóa đá thành Long Ma Tinh — mau tới Đông Long Đảo gặp Hắc Kình [V]!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch09_hac_kinh_long_dao", "map": "ch09_co_long_loi_tri" }
+      ]
+    },
+    {
+      "id": "q74_ch09_thong_nhat_co_long",
+      "title": "74. Đại Chiến Tam Long Vương — Chém Bắc Long Vương Nhất Thống Cổ Long Đảo!",
+      "objective": "Triệu hồi Thập Tuyệt Kim Khôi Trận đánh bại [BOSS NGỤY BÁN THÁNH] Bắc Long Vương, rồi cùng Long Hoàng Tử Nghiên [V] hoàn tất nhất thống Thái Hư Cổ Long Đảo!",
+      "type": "story_flag",
+      "flag_name": "ch09_co_long_unified",
+      "target_count": 1,
+      "reward_exp": 1180000,
+      "reward_gold": 440000,
+      "reward_items": { "core_nang_luong_8": 2, "pill_cuu_chuyen_ton_nguyen": 2 },
+      "intro_log": "10 KIM SẮC THIÊN YÊU KHÔI ĐÃ THÀNH & LONG HOÀNG TỬ NGHIÊN SẮP XUẤT QUAN!! Bắc Long Vương phản loạn đang vây công Đông Long Đảo — hãy xuất chiến chém đầu kẻ phản tặc!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch09_beat_bac_long_vuong" }, "kind": "boss", "target": "bac_long_vuong_boss", "map": "ch09_co_long_loi_tri" },
+        { "default": true, "kind": "npc", "target": "ch09_tu_nghien_long_hoang", "map": "ch09_co_long_loi_tri" }
+      ]
+    },
+    {
+      "id": "q75_ch09_co_gioi_co_yeu",
+      "title": "75. Cổ Giới Thành Nhân Lễ — Song Tuyệt Thiên Giai Đánh Bại Cổ Yêu!",
+      "objective": "Tiến vào Cổ Giới Cổ Thánh Thành, đánh bại [BOSS BÁT TINH ĐẤU TÔN ĐỈNH] Tu La Đô Thống Cổ Yêu rồi bái kiến Tộc Trưởng Cổ Nguyên [V] nhận lệnh bài vào Thiên Mộ!",
+      "type": "story_flag",
+      "flag_name": "ch09_beat_co_yeu",
+      "target_count": 1,
+      "reward_exp": 1350000,
+      "reward_gold": 500000,
+      "reward_items": { "core_nang_luong_8": 3, "pill_cuu_chuyen_ton_nguyen": 2 },
+      "intro_log": "Thái Hư Cổ Long Đảo đã nhất thống dưới trướng Long Hoàng Tử Nghiên! Huân Nhi gửi thư mời tới Cổ Giới dự Thành Nhân Lễ & tranh suất tiến vào Bí Cảnh Thiên Mộ (x5 Thời Gian)!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch09_killed_co_yeu_boss" }, "kind": "boss", "target": "co_yeu_do_thong_boss", "map": "ch09_co_gioi_thanh_thanh" },
+        { "default": true, "kind": "npc", "target": "ch09_co_nguyen_ceremony", "map": "ch09_co_gioi_thanh_thanh" }
+      ]
+    },
+    {
+      "id": "q76_ch09_tieu_huyen_hoan_huyet",
+      "title": "76. [CHỐT CHƯƠNG 09 & QUYỂN III] Thiên Mộ Tam Tầng — Tổ Tiên Tiêu Huyền Hoán Huyết Đấu Đế!",
+      "objective": "Tiến vào Bí Cảnh Thiên Mộ (x5 EXP), trảm [FINAL BOSS ĐẤU THÁNH] Huyết Đao Thánh Giả rồi diện kiến Tổ Tiên Tiêu Huyền [V] thức tỉnh [Tộc Văn Tiêu Tộc] & Cửu Chuyển Đấu Tôn Đỉnh Phong!",
+      "type": "story_flag",
+      "flag_name": "ch09_completed",
+      "target_count": 1,
+      "reward_exp": 1850000,
+      "reward_gold": 680000,
+      "reward_items": { "core_nang_luong_9": 3, "item_bo_de_tu": 1 },
+      "intro_log": "ĐẠI THIÊN TẠO HÓA CHƯỞNG ĐẬP NÁT ĐẠI TỊCH DIỆT CHỈ — CỔ NGUYÊN ĐÍCH THÂN TRAO LỆNH BÀI THIÊN MỘ!! Tiến vào Thiên Mộ Tam Tầng (x5 Thời Gian), trảm Huyết Đao Thánh Giả và gặp Tổ Tiên Tiêu Huyền!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch09_beat_huyet_dao_thanh_gia" }, "kind": "boss", "target": "huyet_dao_thanh_gia_boss", "map": "ch09_thien_mo_tam_tang" },
+        { "default": true, "kind": "npc", "target": "ch09_tieu_huyen_tomb", "map": "ch09_thien_mo_tam_tang" }
+      ]
+    }
+  ],
+  "enemy_kill_flags": {
+    "trich_tinh_lao_quy_boss": { "set_flag": "ch09_beat_trich_tinh" },
+    "hac_bach_thien_ton_boss": { "set_flag": "ch09_broke_dau_ton" },
+    "yeu_hoa_ta_quan_boss": { "set_flag": "ch09_beat_yeu_hoa" },
+    "tan_hon_tao_hoa_boss": { "set_flag": "ch09_beat_tan_hon_tao_hoa" },
+    "bac_long_vuong_boss": { "set_flag": "ch09_beat_bac_long_vuong" },
+    "co_yeu_do_thong_boss": { "set_flag": "ch09_killed_co_yeu_boss" },
+    "huyet_dao_thanh_gia_boss": { "set_flag": "ch09_beat_huyet_dao_thanh_gia" }
+  },
+  "flag_effects": {
+    "ch09_tinh_van_rally": {
+      "relic": "Hội Quân Tinh Vẫn Các — 6 Cường Giả Xuất Kích Vong Hồn Sơn Mạch",
+      "give_soul": 45,
+      "give_fire_energy": 350,
+      "sfx": "level_up",
+      "banter": "Phong Tôn Giả, Tiểu Y Tiên, Thiên Hỏa, Tử Nghiên & Thiết Kiếm Tôn Giả đã tập kết đủ! Cửa Không Gian Tây Bắc dẫn tới Vong Hồn Sơn Mạch đã mở!"
+    },
+    "ch09_beat_trich_tinh": {
+      "relic": "Tử Chiến Trích Tinh Lão Quỷ — Bi Tráng Thiết Kiếm Tự Bạo Mở Đường Máu!",
+      "give_soul": 65,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.75],
+      "banter": "ĐÓA TỨ SẮC HỦY DIỆT HỎA LIÊN NỔ BAY CÁNH TAY TRÍCH TINH LÃO QUỶ!! Thiết Kiếm Tôn Giả đã tự bạo mở khe không gian — lập tức tới Tỏa Hồn Tháp [V] đón Sư Tôn Dược Lão rút lui!"
+    },
+    "ch09_saved_duoc_lao": {
+      "relic": "Thầy Trò Trùng Phùng Rơi Lệ — Giải Cứu Bản Thể Dược Trần Khỏi Vong Hồn Điện!",
+      "set_flags": ["FLAG_SAVED_DUOC_LAO"],
+      "give_soul": 90,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [16.0, 0.70],
+      "banter": "CHÉM ĐỨT XIỀNG XÍCH HỒN ĐIỆN — ĐÓN SƯ TÔN DƯỢC TRẦN VỀ NHÀ!! Mau quay lại Hậu Sơn Tinh Vẫn Các [V] dưỡng thương Niết Bàn từ Bất Tử Chi Thể lên ĐẤU TÔN!"
+    },
+    "ch09_nirvana_awakened": {
+      "relic": "Phá Hậu Nhi Lập (1 Năm Niết Bàn) -> NHẤT TINH ĐẤU TÔN · [Xé Rách Không Gian] & [Không Gian Đại Thủ Ấn]!",
+      "set_flags": ["FLAG_DAU_TON_AWAKENED", "FLAG_TINH_VAN_CAC_FOUNDED"],
+      "unlock_skill": { "id": "khong_gian_dai_thu_an", "slot": "Q" },
+      "set_realm_min": { "realm": 9, "stage": 1 },
+      "give_soul": 120,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "CỘT HỎA DIỄM TÍM ĐEN XÉ TOẠC HẬU SƠN TINH VẪN CÁC!! PHÁ HẬU NHI LẬP -> ĐỘT PHÁ [NHẤT TINH ĐẤU TÔN] · Mở [XÉ RÁCH KHÔNG GIAN] & [KHÔNG GIAN ĐẠI THỦ ẤN]!! Tiến ra phía Đông nghiền nát Hắc Bạch Thiên Tôn!"
+    },
+    "ch09_broke_dau_ton": {
+      "relic": "Đấu Tôn Uy Chấn Trung Châu — Đánh Tan Hắc Bạch Thiên Tôn & Tinh Vẫn Các Tiến Hóa Cấp 3!",
+      "set_flags": ["FLAG_DAU_TON_AWAKENED", "FLAG_TINH_VAN_CAC_FOUNDED"],
+      "unlock_skill": { "id": "khong_gian_dai_thu_an", "slot": "Q" },
+      "set_realm_min": { "realm": 9, "stage": 2 },
+      "give_gear": [
+        { "template": "arm_tinh_van_thieu_cac_bao", "rarity": "de", "auto_equip": false }
+      ],
+      "give_soul": 85,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.75],
+      "banter": "HẮC BẠCH THIÊN TÔN THẢM BẠI BỎ CHẠY — TINH VẪN CÁC CHÍNH THỨC TIẾN HÓA CẤP 3 [M]!! Cửa Bắc tới Hoa Tông Thánh Địa đã mở — mau đi cứu Vân Vận!"
+    },
+    "ch09_sq01_thiet_kiem_grave_done": {
+      "relic": "Kỳ Ngộ Vong Hồn: Mộ Bia Thiết Kiếm Tôn Giả -> [Thiết Kiếm Trung Nghĩa Bội (+15% ATK khi HP < 50%)]!",
+      "give_gear": [
+        { "template": "pend_thiet_kiem_trung_nghia", "rarity": "de", "auto_equip": false }
+      ],
+      "give_soul": 55,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ VONG HỒN: Dựng mộ bia & tưới rượu tế Thiết Kiếm Tôn Giả! Nhận tín vật [Thiết Kiếm Trung Nghĩa Bội] (+15% ATK khi HP < 50%) & +55 SOUL!"
+    },
+    "ch09_beat_yeu_hoa": {
+      "relic": "Trảm Lục Tinh Đấu Tôn Yêu Hoa Tà Quân Trên Lôi Đài Bạch Ngọc!",
+      "give_soul": 70,
+      "sfx": "breakthrough",
+      "shake": [15.0, 0.65],
+      "banter": "ĐÁNH GỤC YÊU HOA TÀ QUÂN & HOA CẨM TRƯỚC TOÀN THỂ HOA TÔNG!! Quay lại gặp Vân Vận [V] dùng Dị Hỏa hóa giải phong ấn truyền thừa của Hoa Bà Bà!"
+    },
+    "ch09_hoa_tong_saved": {
+      "relic": "Minh Ước Hoa Tông — Tông Chủ Vân Vận (Bát Tinh Đấu Tôn) Gia Nhập [Đồng Hành #9 [G]]!",
+      "set_flags": ["FLAG_HOA_TONG_ALLY"],
+      "unlock_companion": { "id": "van_van_hoa_tong", "auto_summon": true },
+      "affection": { "van_chi": 60 },
+      "set_realm_min": { "realm": 9, "stage": 3 },
+      "give_soul": 80,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [16.0, 0.70],
+      "banter": "VÂN VẬN ĐĂNG CƠ TÔNG CHỦ HOA TÔNG (BÁT TINH ĐẤU TÔN) & MỞ [ĐỒNG HÀNH #9: VÂN VẬN [G]]!! Đường Đông Bắc vào Viễn Cổ Di Tích Đấu Thánh đã mở!"
+    },
+    "ch09_sq02_van_van_peach_done": {
+      "relic": "Kỳ Ngộ Hoa Tông: Khúc Cầm Dưới Hoa Đào Cùng Vân Vận (+40 Hảo Cảm · Bách Hoa Ngọc Lộ Hoàn)",
+      "affection": { "van_chi": 40 },
+      "give_items": { "pill_bach_hoa_ngoc_lo": 3 },
+      "give_soul": 45,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ HOA TÔNG: Một đêm hoa đào rơi nghe Vân Vận gảy cầm (+40 Hảo Cảm · +3 Bách Hoa Ngọc Lộ Hoàn · +45 SOUL)!"
+    },
+    "ch09_thanh_lan_reunited": {
+      "relic": "Tái Ngộ Thanh Lân (Bích Xà Tam Hoa Đồng · Đấu Tôn) — Mở [Đồng Hành #8 [G]]!",
+      "set_flags": ["FLAG_THANH_LAN_COMPANION"],
+      "unlock_companion": { "id": "thanh_lan", "auto_summon": true },
+      "affection": { "thanh_lan": 55 },
+      "give_soul": 70,
+      "sfx": "level_up",
+      "banter": "TÁI NGỘ THANH LÂN GIỮA ĐẦM LẦY KHÔ CỐT — MỞ [ĐỒNG HÀNH #8: THANH LÂN [G]] (Bích Xà Khống Thú)!! Tiến sâu vào Chủ Điện đoạt 3 Tạo Hóa Thánh Cốt!"
+    },
+    "ch09_sq03_thanh_lan_serpent_done": {
+      "relic": "Kỳ Ngộ Di Tích: Thu Phục Viễn Cổ Thiên Xà Cửu Đầu Cùng Thanh Lân (+50 Hảo Cảm · +50 SOUL)",
+      "unlock_companion": { "id": "thanh_lan", "auto_summon": false },
+      "affection": { "thanh_lan": 50 },
+      "give_items": { "herb_vien_co_thu_cot": 3 },
+      "give_soul": 50,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ DI TÍCH: Cùng Thanh Lân thu phục Viễn Cổ Thiên Xà Cửu Đầu! Kỹ năng khống chế Bích Xà của Thanh Lân tăng mạnh (+50 SOUL)!"
+    },
+    "ch09_beat_tan_hon_tao_hoa": {
+      "relic": "Cộng Hưởng Đỡ Trọn Một Chưởng Của Tàn Hồn Tạo Hóa Thánh Giả!",
+      "give_soul": 85,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.75],
+      "banter": "ĐÁNH LUI TÀN HỒN TẠO HÓA THÁNH GIẢ!! Mau bước lên 99 bậc Thạch Giai [V] thu lấy 3 chiếc Tạo Hóa Thánh Cốt & truyền thừa Đấu Kỹ Thiên Giai!"
+    },
+    "ch09_got_tao_hoa_palm": {
+      "relic": "Đấu Kỹ Thiên Giai Sơ Cấp [ĐẠI THIÊN TẠO HÓA CHƯỞNG] & 3 Chiếc Tạo Hóa Thánh Cốt + 10 Địa Yêu Khôi!",
+      "set_flags": ["FLAG_GOT_TAO_HOA_PALM"],
+      "unlock_skill": { "id": "dai_thien_tao_hoa_chuong", "slot": "E" },
+      "give_gear": [
+        { "template": "wpn_xich_tao_hoa_thien_mo", "rarity": "de", "auto_equip": false }
+      ],
+      "set_realm_min": { "realm": 9, "stage": 4 },
+      "give_soul": 110,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "ĐOẠT TRỌN 3 TẠO HÓA THÁNH CỐT + HỒN ANH QUẢ + 10 ĐỊA YÊU KHÔI & LĨNH NGỘ THIÊN GIAI [ĐẠI THIÊN TẠO HÓA CHƯỞNG]!! Lập tức quay về Tinh Vẫn Các [V] phục sinh Sư Tôn Dược Trần!"
+    },
+    "ch09_duoc_tran_revived": {
+      "relic": "BÁN THÁNH DƯỢC TRẦN TÁI XUẤT! Thu Trọn [#11 Cốt Linh Lãnh Hỏa] · [Ngũ Sắc Hỏa Liên] · [4/4 Tàn Đồ Yêu Hỏa]!",
+      "set_flags": ["FLAG_DUOC_TRAN_BAN_THANH", "FLAG_FIVE_FLAME_LOTUS", "FLAG_FOUR_MAP_COMPLETE"],
+      "unlock_flame": { "id": "di_hoa_11_cot_linh", "auto_equip": false },
+      "give_gear": [
+        { "template": "ring_yeu_lien_co_ngoc", "rarity": "de", "auto_equip": false },
+        { "template": "caul_ban_thanh_tinh_than_dinh", "rarity": "de", "auto_equip": false }
+      ],
+      "set_realm_min": { "realm": 9, "stage": 5 },
+      "give_soul": 180,
+      "give_fire_energy": 900,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.95],
+      "banter": "BÁN THÁNH DƯỢC TRẦN XUẤT THẾ CHẤN ĐỘNG TRUNG CHÂU!! Nhận trọn [#11 CỐT LINH LÃNH HỎA] · Mở [NGŨ SẮC PHẬT NỘ HỎA LIÊN] · Ghép đủ [4/4 TÀN ĐỒ TỊNH LIÊN YÊU HỎA] · [T] Trợ Chiến Bán Thánh Băng Phong Toàn Sân!!"
+    },
+    "ch09_forged_ten_puppets": {
+      "relic": "Hư Không Lôi Trì — Rèn Thành [THẬP TUYỆT KIM KHÔI TRẬN (10 Kim Sắc Thiên Yêu Khôi)]!",
+      "set_flags": ["FLAG_THAP_TUYET_KIM_KHOI"],
+      "unlock_skill": { "id": "thap_tuyet_kim_khoi_tran", "slot": "R" },
+      "set_realm_min": { "realm": 9, "stage": 7 },
+      "give_soul": 120,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.80],
+      "banter": "TẮM HẮC MA LÔI THÀNH CÔNG — 10 ĐỊA YÊU KHÔI LỘT XÁC THÀNH [THẬP TUYỆT KIM KHÔI TRẬN] & ĐỘT PHÁ ĐẤU TÔN 7 TINH!! Hợp lực cùng Tử Nghiên chém Bắc Long Vương!"
+    },
+    "ch09_sq04_hac_ma_loi_king_done": {
+      "relic": "Kỳ Ngộ Lôi Trì: Hắc Ma Lôi Châu -> [Yêu Khôi Thống Lĩnh Cửu Tinh (+25% Sát Thương Thập Tuyệt Trận)]!",
+      "set_flags": ["FLAG_KIM_KHOI_THONG_LINH"],
+      "give_items": { "pill_kim_cuong_bat_hoai": 2 },
+      "give_soul": 60,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ HƯ KHÔNG LÔI TRÌ: Đoạt Hắc Ma Lôi Châu rèn thành [Yêu Khôi Thống Lĩnh] (+25% sát thương Thập Tuyệt Kim Khôi Trận · +60 SOUL)!"
+    },
+    "ch09_beat_bac_long_vuong": {
+      "relic": "Hợp Lực Long Hoàng Tử Nghiên Chém Gục Bắc Long Vương (Ngụy Bán Thánh)!",
+      "give_soul": 100,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "LONG HOÀNG CỔ KIẾM CHÉM ĐỨT ĐẦU BẮC LONG VƯƠNG!! Tây · Nam Long Vương quỳ rạp thần phục — mau tới gặp Long Hoàng Tử Nghiên [V] hoàn tất nhất thống Cổ Long Đảo!"
+    },
+    "ch09_co_long_unified": {
+      "relic": "Nhất Thống Thái Hư Cổ Long Đảo — Hậu Thuẫn Long Hoàng Tử Nghiên & Đạt Bát Tinh Đấu Tôn!",
+      "set_flags": ["FLAG_CO_LONG_UNIFIED"],
+      "give_gear": [
+        { "template": "wing_xe_rach_hu_khong", "rarity": "de", "auto_equip": false }
+      ],
+      "set_realm_min": { "realm": 9, "stage": 8 },
+      "give_soul": 110,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.80],
+      "banter": "THÁI HƯ CỔ LONG TỘC CHÍNH THỨC NHẤT THỐNG — TỬ NGHIÊN LỘT XÁC LONG HOÀNG!! Nhận [Hư Không Long Hoàng Dực] & đột phá BÁT TINH ĐẤU TÔN! Cổng Đông Nam tới Cổ Giới đã mở!"
+    },
+    "ch09_killed_co_yeu_boss": {
+      "relic": "Song Tuyệt Thiên Giai — Đại Thiên Tạo Hóa Chưởng Đánh Nát Đại Tịch Diệt Chỉ Cổ Yêu!",
+      "give_soul": 105,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.75],
+      "banter": "ĐẠI THIÊN TẠO HÓA CHƯỞNG ĐẬP TAN ĐẠI TỊCH DIỆT CHỈ TRƯỚC VẠN TỘC NHÂN CỔ TỘC!! Quay lại bái kiến Cổ Nguyên Tộc Trưởng [V] nhận lệnh bài tiến vào Bí Cảnh Thiên Mộ!"
+    },
+    "ch09_beat_co_yeu": {
+      "relic": "Vang Danh Cổ Giới — Lệnh Bài Khai Mở Bí Cảnh Thiên Mộ (x5 Thời Gian · Cửu Tinh Đấu Tôn)!",
+      "set_flags": ["FLAG_THIEN_MO_PASS"],
+      "affection": { "huan_nhi": 50 },
+      "set_realm_min": { "realm": 9, "stage": 9 },
+      "give_soul": 140,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [18.0, 0.80],
+      "banter": "CỔ NGUYÊN ĐÍCH THÂN TRAO LỆNH BÀI THIÊN MỘ & ĐỘT PHÁ [CỬU TINH ĐẤU TÔN ĐỈNH PHONG] (Mở Hệ Thống Cửu Chuyển Đấu Tôn [B])!! Bước qua cổng Đông vào Thiên Mộ Tam Tầng (x5 EXP)!"
+    },
+    "ch09_beat_huyet_dao_thanh_gia": {
+      "relic": "Trảm Nhị Tinh Đấu Thánh Huyết Đao Thánh Giả Tại Thâm Uyên Tầng 3 Thiên Mộ!",
+      "give_soul": 130,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "ĐÁNH GÃY THANH HUYẾT ĐAO THÁNH GIẢ TẠI TẦNG 3 THIÊN MỘ!! Tiếng gọi huyết mạch vạn năm đang vang lên từ ngôi mộ cổ phía Đông Nam — mau diện kiến Tổ Tiên TIÊU HUYỀN [V]!"
+    },
+    "ch09_completed": {
+      "relic": "HOÀN TẤT CHƯƠNG 09 & 100% QUYỂN III — [TỘC VĂN ĐẤU ĐẾ TIÊU TỘC [X]] & CỬU CHUYỂN ĐẤU TÔN ĐỈNH PHONG!",
+      "set_flags": ["FLAG_CH09_COMPLETED", "FLAG_BOOK_03_COMPLETED", "FLAG_TIEU_TOC_VAN"],
+      "unlock_skill": { "id": "toc_van_tieu_toc", "slot": "" },
+      "set_realm_min": { "realm": 9, "stage": 9 },
+      "give_soul": 260,
+      "give_fire_energy": 1200,
+      "affection": { "huan_nhi": 40, "tieu_y_tien": 30, "van_chi": 30, "thanh_lan": 30 },
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [24.0, 1.0],
+      "banter": "HOÁN HUYẾT TAM TỘC ĐẤU ĐẾ VIÊN MÃN — THỨC TỈNH [TỘC VĂN TIÊU TỘC (PHÍM X / K)] & ĐẠT [CỬU CHUYỂN ĐẤU TÔN ĐỈNH PHONG]!! CHÚC MỪNG HOÀN TẤT 100% QUYỂN III (TRUNG CHÂU PHONG VÂN)!!"
+    },
+    "ch09_sq05_tieu_huyen_stele_done": {
+      "relic": "Kỳ Ngộ Thiên Mộ: Lời Thề Phục Tộc Trước Mộ Tiêu Huyền (+10% Thời Gian Duy Trì Tộc Văn Vĩnh Viễn!)",
+      "set_flags": ["FLAG_TIEU_HUYEN_OATH"],
+      "give_items": { "core_nang_luong_9": 2 },
+      "give_soul": 80,
+      "sfx": "loot_rare",
+      "banter": "KỲ NGỘ THIÊN MỘ: Khắc dòng chữ 'Bất Tiêu Tử Tôn Tiêu Viêm Lập Thệ Phục Tộc' & đặt Hỏa Liên bất diệt! Tộc Văn Tiêu Tộc tăng +10% thời gian duy trì vĩnh viễn (+80 SOUL)!"
+    }
+  }
+}

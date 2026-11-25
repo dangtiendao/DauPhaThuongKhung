@@ -131,6 +131,7 @@ static func build_save_payload(pd: Node) -> Dictionary:
 		"current_map_id": pd.current_map_id,
 		"realm_index": pd.realm_index,
 		"stage": pd.stage,
+		"nine_turn_level": int(pd.nine_turn_level) if ("nine_turn_level" in pd) else 0,
 		"current_exp": pd.current_exp,
 		"bonus_soul": pd.bonus_soul,
 		"gold": pd.gold,
@@ -185,6 +186,8 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 	pd.current_map_id = str(d.get("current_map_id", "ch01_tieu_gia"))
 	pd.realm_index = int(d.get("realm_index", 1))
 	pd.stage = int(d.get("stage", 3))
+	if "nine_turn_level" in pd:
+		pd.nine_turn_level = clampi(int(d.get("nine_turn_level", 0)), 0, 9)
 	pd.current_exp = int(d.get("current_exp", 0))
 	pd.bonus_soul = int(d.get("bonus_soul", 0))
 	pd.gold = int(d.get("gold", 35))
@@ -246,6 +249,10 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 		pd.is_nhi_bien_active = false
 	if "is_tam_bien_active" in pd:
 		pd.is_tam_bien_active = false
+	if "is_toc_van_active" in pd:
+		pd.is_toc_van_active = false
+	if "is_kim_khoi_tran_active" in pd:
+		pd.is_kim_khoi_tran_active = false
 	if "immortal_revive_cd" in pd:
 		pd.immortal_revive_cd = 0.0
 	pd.equipped_flame_id = str(d.get("equipped_flame_id", ""))

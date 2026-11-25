@@ -94,6 +94,14 @@
         { "pieces": 2, "desc": "+520 Công kích, +160 Linh Hồn & +52% Sát thương Hỏa", "stats": { "atk": 520, "soul": 160, "flame_dmg": 52 } },
         { "pieces": 4, "desc": "+4.400 Sinh lực, +32% Chí mạng, +18% Hút máu & -26% Hồi chiêu", "stats": { "hp": 4400, "crit_chance": 32, "lifesteal": 18, "cooldown_red": 26 } }
       ]
+    },
+    "set_tinh_van_thien_mo": {
+      "id": "set_tinh_van_thien_mo",
+      "name": "Bộ Tinh Vẫn Thiên Mộ · Cửu Chuyển Đấu Tôn",
+      "bonuses": [
+        { "pieces": 2, "desc": "+920 Công kích, +280 Linh Hồn & +75% Sát thương Hỏa", "stats": { "atk": 920, "soul": 280, "flame_dmg": 75 } },
+        { "pieces": 4, "desc": "+8.500 Sinh lực, +40% Chí mạng, +22% Hút máu & -30% Hồi chiêu", "stats": { "hp": 8500, "crit_chance": 40, "lifesteal": 22, "cooldown_red": 30 } }
+      ]
     }
   },
   "templates": {
@@ -534,6 +542,63 @@
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
       "base_stats": { "soul": 185, "alchemy_bonus": 65, "flame_dmg": 62, "qi": 360 },
       "description": "Thánh đỉnh Bát Phẩm thưởng Quán Quân Đan Hội Trung Châu — chịu trọn Ngũ Sắc Đan Lôi & luyện Sinh Cốt Dung Huyết Đan!"
+    },
+    "wpn_xich_tao_hoa_thien_mo": {
+      "id": "wpn_xich_tao_hoa_thien_mo",
+      "name": "Huyền Trọng Xích · Tạo Hóa Ngũ Sắc",
+      "slot": "weapon",
+      "set_id": "set_tinh_van_thien_mo",
+      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
+      "attack_speed_mult": 1.16,
+      "base_stats": { "atk": 680, "hp": 2200, "crit_chance": 34, "flame_dmg": 96 },
+      "description": "Huyền Trọng Xích tắm qua Hắc Ma Lôi Trì & khắc ấn Tộc Văn Tiêu Huyền dưới Đáy Thiên Mộ — mang thần uy Cửu Chuyển Đấu Tôn!"
+    },
+    "arm_tinh_van_thieu_cac_bao": {
+      "id": "arm_tinh_van_thieu_cac_bao",
+      "name": "Tinh Vẫn Thiếu Các Chủ · Cửu Chuyển Chiến Bào",
+      "slot": "armor",
+      "set_id": "set_tinh_van_thien_mo",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 4600, "def": 620, "atk": 290, "soul": 260, "cooldown_red": 22 },
+      "description": "Thánh bào Thiếu Các Chủ Tinh Vẫn Các dệt từ Tinh Thần Ti và vảy Đông Long Đảo — hộ thân trước áp lực Đấu Thánh!"
+    },
+    "wing_xe_rach_hu_khong": {
+      "id": "wing_xe_rach_hu_khong",
+      "name": "Thái Hư Long Hoàng Dực (Xé Rách Không Gian)",
+      "slot": "wings",
+      "set_id": "set_tinh_van_thien_mo",
+      "icon": "res://assets/sprites/icons/icon_wings.png",
+      "base_stats": { "spd": 168, "crit_chance": 36, "cooldown_red": 28, "atk": 320, "flame_dmg": 68 },
+      "description": "Đôi cánh Đấu Tôn gia trì tinh huyết Long Hoàng Tử Nghiên — xé rách không gian tức thì xuyên mọi trận pháp!"
+    },
+    "pend_thiet_kiem_trung_nghia": {
+      "id": "pend_thiet_kiem_trung_nghia",
+      "name": "Thiết Kiếm Trung Nghĩa Bội (Di Sản Vong Hồn)",
+      "slot": "pendant",
+      "set_id": "set_tinh_van_thien_mo",
+      "icon": "res://assets/sprites/icons/icon_pendant.png",
+      "base_stats": { "atk": 280, "soul": 340, "hp": 2900, "flame_dmg": 72, "lifesteal": 14 },
+      "description": "Di sản khắc từ thanh kiếm gãy của Thiết Kiếm Tôn Giả trên đỉnh Tinh Vẫn Các — tăng +15% sát thương phản kích khi HP dưới 50%!"
+    },
+    "ring_yeu_lien_co_ngoc": {
+      "id": "ring_yeu_lien_co_ngoc",
+      "name": "Yêu Liên Cổ Ngọc · Tứ Mảnh Hợp Nhất (4/4)",
+      "slot": "ring",
+      "set_id": "set_tinh_van_thien_mo",
+      "icon": "res://assets/sprites/icons/icon_ring.png",
+      "base_stats": { "atk": 310, "soul": 360, "hp": 2600, "flame_dmg": 84, "exp_bonus": 55 },
+      "description": "Tứ Mảnh Tàn Đồ Tịnh Liên Yêu Hỏa (4/4) hợp nhất thành Cổ Ngọc — chìa khóa duy nhất tiến vào Yêu Hỏa Không Gian (Ch.10)!"
+    },
+    "caul_ban_thanh_tinh_than_dinh": {
+      "id": "caul_ban_thanh_tinh_than_dinh",
+      "name": "Bán Thánh Tinh Thần Đỉnh (Dược Trần Chân Truyền)",
+      "slot": "cauldron",
+      "set_id": "set_tinh_van_thien_mo",
+      "icon": "res://assets/sprites/icons/icon_cauldron.png",
+      "base_stats": { "soul": 320, "alchemy_bonus": 82, "flame_dmg": 88, "qi": 640 },
+      "description": "Thánh Đỉnh Bát Phẩm Đỉnh Phong do Bán Thánh Dược Trần truyền lại — chịu trọn Thất Sắc Đan Lôi luyện Chuẩn Bồ Đề Hóa Thể Đan!"
     }
   }
 }

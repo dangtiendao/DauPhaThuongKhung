@@ -1,13 +1,15 @@
 extends Node
 ## Hệ thống Âm Thanh, Nhạc Nền Cổ Phong Tiên Hiệp (Procedural AudioStreamWAV) & Cài Đặt Hiển Thị:
 ## - Không phụ thuộc file MP3 ngoài -> tổng hợp trực tiếp chuẩn Ngũ Cung & Địa Vực (Cổ Tranh / Sáo Trúc / Tỳ Bà / Biên Chung / Trống Chiến).
-## - 11 Bản nhạc nền tự động chuyển mượt theo bản đồ & Boss:
+## - 14 Bản nhạc nền tự động chuyển mượt theo bản đồ & Boss:
 ##   bgm_peaceful, bgm_wild, bgm_boss, bgm_desert, bgm_lava, bgm_capital, bgm_yunlan,
-##   bgm_hac_giac, bgm_gia_nam, bgm_poison, bgm_zhongzhou.
+##   bgm_hac_giac, bgm_gia_nam, bgm_poison, bgm_zhongzhou,
+##   bgm_tinh_van, bgm_vong_hon, bgm_thien_mo.
 ## - 24 Hiệu ứng SFX chiến đấu (gồm Phá Thế poise_break, Đột Phá breakthrough & Choáng skill_stun hòa âm giàu sắc thái).
 ## - Lưu & gộp sạch cài đặt Âm Thanh + Hiển Thị (Fullscreen / VSync / FPS / Screen Shake) trong user://dptk_settings.json.
 
 const BgmCh0508 = preload("res://scripts/systems/audio_bgm_ch05_08.gd")
+const BgmCh09 = preload("res://scripts/systems/audio_bgm_ch09.gd")
 const SETTINGS_PATH: String = "user://dptk_settings.json"
 const SAMPLE_RATE: int = 22050
 
@@ -33,6 +35,7 @@ const DEFAULT_KEYBINDS: Dictionary = {
 	"skill_r": KEY_R,
 	"skill_ult": KEY_F,
 	"skill_assist": KEY_T,
+	"toc_van_crest": KEY_X,
 	"toggle_weight": KEY_C,
 	"toggle_companion": KEY_G,
 	"soul_radar": KEY_Z
@@ -346,6 +349,11 @@ func _build_all_bgm() -> void:
 	var extra_tracks: Dictionary = BgmCh0508.build_tracks(SAMPLE_RATE)
 	for tk in extra_tracks.keys():
 		bgm_tracks[str(tk)] = extra_tracks[tk]
+
+	# 12–14. Bộ 3 nhạc nền địa vực Chương 09 (Tinh Vẫn Các/Hoa Tông, Vong Hồn Sơn Mạch/Di Tích, Cổ Giới/Thiên Mộ)
+	var ch09_tracks: Dictionary = BgmCh09.build_tracks(SAMPLE_RATE)
+	for tk9 in ch09_tracks.keys():
+		bgm_tracks[str(tk9)] = ch09_tracks[tk9]
 
 
 func _synth_pentatonic_loop(notes: Array, step_sec: float, drone_freq: float, with_drums: bool) -> AudioStreamWAV:

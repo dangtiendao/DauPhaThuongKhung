@@ -431,6 +431,90 @@
       "tier": 8,
       "color_hex": "#F72585",
       "description": "Bát Phẩm Thượng Hạng thần đan độ Ngũ Sắc Đan Lôi đoạt Quán Quân Đan Hội — dùng đột phá Đấu Tông -> ĐẤU TÔN & phục sinh nhục thân Bán Thánh cho Sư Tôn Dược Trần (Ch.09)!"
+    },
+    "herb_hon_anh_yeu_qua": {
+      "id": "herb_hon_anh_yeu_qua",
+      "name": "Hồn Anh Yêu Quả (Viễn Cổ Di Tích)",
+      "type": "herb",
+      "tier": 8,
+      "color_hex": "#72EFDD",
+      "description": "Thánh quả dưỡng hồn đoạt từ Di Tích Tạo Hóa Thánh Giả — chủ dược khôi phục đỉnh phong linh hồn Dược Trần & luyện Phục Hồn Thánh Đan!"
+    },
+    "herb_long_huyet_qua": {
+      "id": "herb_long_huyet_qua",
+      "name": "Long Huyết Quả & Hắc Ma Lôi Tinh",
+      "type": "herb",
+      "tier": 8,
+      "color_hex": "#FF4D6D",
+      "description": "Thiên tài địa bảo tại Đông Long Đảo & Hư Không Lôi Trì — dùng rèn Kim Sắc Thiên Yêu Khôi & luyện Bát Phẩm Đan!"
+    },
+    "herb_vien_co_thu_cot": {
+      "id": "herb_vien_co_thu_cot",
+      "name": "Viễn Cổ Thú Cốt & Bản Nguyên Hồn Châu",
+      "type": "herb",
+      "tier": 8,
+      "color_hex": "#E0AAFF",
+      "description": "Tinh hoa Hồn Điện Tôn Lão & Ma Thú Cổ Đại — nguyên liệu luyện Kim Cương Bất Hoại Đan & Phục Hồn Thánh Đan!"
+    },
+    "core_nang_luong_8": {
+      "id": "core_nang_luong_8",
+      "name": "Năng Lượng Hạch Cấp 8 (Thiên Mộ Tầng 1–2)",
+      "type": "monster_core",
+      "tier": 8,
+      "color_hex": "#48CAE4",
+      "description": "Tinh hạch cô đặc từ Năng Lượng Thể Đấu Tôn trong Thiên Mộ — dùng ngưng tụ Chuyển 1–5 Cửu Chuyển Đấu Tôn & khảm vũ khí (+185 ATK, +1.150 HP, +120 SOUL)!"
+    },
+    "core_nang_luong_9": {
+      "id": "core_nang_luong_9",
+      "name": "Kim Sắc Năng Lượng Hạch Cấp 9 (Thiên Mộ Tầng 3)",
+      "type": "monster_core",
+      "tier": 9,
+      "color_hex": "#FFD166",
+      "description": "Năng Lượng Hạch Bán Thánh/Đấu Thánh hiếm có ở đáy Thiên Mộ — dùng hoàn tất Chuyển 6–9 Cửu Chuyển Đấu Tôn & khảm vũ khí (+260 ATK, +1.800 HP, +180 SOUL, +48% Sát thương Hỏa)!"
+    },
+    "pill_phuc_hon_thanh_dan": {
+      "id": "pill_phuc_hon_thanh_dan",
+      "name": "Phục Hồn Thánh Đan (Bát Phẩm Sơ)",
+      "type": "consumable_qi",
+      "tier": 8,
+      "restore_qi": 1800,
+      "color_hex": "#72EFDD",
+      "description": "Bát Phẩm Sơ cấp bảo đan độ Nhị Sắc Đan Lôi — hồi tức thì +1.800 Đấu Khí và cường hóa Linh Hồn Thiên Cảnh!"
+    },
+    "pill_cuu_chuyen_ton_nguyen": {
+      "id": "pill_cuu_chuyen_ton_nguyen",
+      "name": "Cửu Chuyển Tôn Nguyên Đan (Bát Phẩm Trung)",
+      "type": "consumable_exp",
+      "tier": 8,
+      "exp_gain": 650000,
+      "color_hex": "#4CC9F0",
+      "description": "Bát Phẩm Trung cấp thần đan độ Tứ Sắc Đan Lôi — dùng đột phá trực tiếp 1 tầng Cửu Chuyển Đấu Tôn trong [B] hoặc uống nhận +650.000 EXP!"
+    },
+    "pill_kim_cuong_bat_hoai": {
+      "id": "pill_kim_cuong_bat_hoai",
+      "name": "Kim Cương Bất Hoại Đan (Bát Phẩm Cao)",
+      "type": "consumable_hp",
+      "tier": 8,
+      "heal_hp": 6500,
+      "color_hex": "#FFD166",
+      "description": "Bát Phẩm Cao cấp bảo đan độ Ngũ Sắc Đan Lôi — hồi tức thì +6.500 HP & củng cố Kim Thân chống áp chế Bán Thánh!"
+    },
+    "pill_bach_hoa_ngoc_lo": {
+      "id": "pill_bach_hoa_ngoc_lo",
+      "name": "Bách Hoa Ngọc Lộ Hoàn (Đặc Sản Hoa Tông)",
+      "type": "consumable_hp",
+      "tier": 7,
+      "heal_hp": 4200,
+      "color_hex": "#FF8FA3",
+      "description": "Thánh dược trân truyền Hoa Tông do Tông Chủ Vân Vận trao tặng — hồi +4.200 HP và làm dịu tâm ma!"
+    },
+    "item_bo_de_tu": {
+      "id": "item_bo_de_tu",
+      "name": "Chuẩn Bồ Đề Hóa Thể Đan (Bát Phẩm Đỉnh · Thất Sắc)",
+      "type": "breakthrough",
+      "tier": 8,
+      "color_hex": "#06D6A0",
+      "description": "Bát Phẩm Đỉnh Phong Thần Đan độ THẤT SẮC ĐAN LÔI — giúp Cửu Chuyển Đấu Tôn cảm ngộ Bán Thánh bước vào Quyển IV (Ch.10)!"
     }
   },
   "recipes": [
@@ -673,6 +757,46 @@
       "base_success_rate": 0.52,
       "soul_exp_gain": 240,
       "ingredients": { "herb_huyet_tinh_yeu_qua": 2, "herb_bach_cot_linh_chi": 2, "herb_long_huyet_chi": 2, "core_tinh_7": 1 }
+    },
+    {
+      "id": "recipe_phuc_hon_thanh_dan",
+      "output_item": "pill_phuc_hon_thanh_dan",
+      "output_count": 2,
+      "tier": 8,
+      "req_soul": 920,
+      "base_success_rate": 0.66,
+      "soul_exp_gain": 190,
+      "ingredients": { "herb_hon_anh_yeu_qua": 1, "herb_vien_co_thu_cot": 2 }
+    },
+    {
+      "id": "recipe_cuu_chuyen_ton_nguyen",
+      "output_item": "pill_cuu_chuyen_ton_nguyen",
+      "output_count": 1,
+      "tier": 8,
+      "req_soul": 960,
+      "base_success_rate": 0.58,
+      "soul_exp_gain": 260,
+      "ingredients": { "core_nang_luong_8": 2, "herb_long_huyet_qua": 2 }
+    },
+    {
+      "id": "recipe_kim_cuong_bat_hoai",
+      "output_item": "pill_kim_cuong_bat_hoai",
+      "output_count": 2,
+      "tier": 8,
+      "req_soul": 1000,
+      "base_success_rate": 0.56,
+      "soul_exp_gain": 280,
+      "ingredients": { "herb_long_huyet_qua": 2, "herb_vien_co_thu_cot": 2, "core_loi_7": 1 }
+    },
+    {
+      "id": "recipe_bo_de_hoa_the_dan",
+      "output_item": "item_bo_de_tu",
+      "output_count": 1,
+      "tier": 8,
+      "req_soul": 1100,
+      "base_success_rate": 0.48,
+      "soul_exp_gain": 360,
+      "ingredients": { "core_nang_luong_9": 2, "herb_hon_anh_yeu_qua": 2, "herb_long_huyet_qua": 2 }
     }
   ]
 }

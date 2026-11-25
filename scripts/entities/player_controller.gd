@@ -65,6 +65,12 @@ var invuln_timer: float = 0.0
 var knockback_vel: Vector2 = Vector2.ZERO
 var duoc_lao_timer: float = 0.0
 var flame_buff_timer: float = 0.0
+var toc_van_timer: float = 0.0
+var toc_van_free_casts: int = 0
+var kim_khoi_tran_timer: float = 0.0
+var kim_khoi_tran_tick: float = 0.0
+var kim_khoi_tran_dmg: float = 0.0
+var kim_khoi_tran_rad: float = 285.0
 
 # Hỏa Liên Phân Thân (3 quả cầu Dị Hỏa xoay quanh thân)
 var flame_clone_timer: float = 0.0
@@ -83,14 +89,16 @@ var skill_cooldowns: Dictionary = {
 	"E": 0.0,
 	"R": 0.0,
 	"F": 0.0,
-	"T": 0.0
+	"T": 0.0,
+	"X": 0.0
 }
 var skill_cooldown_totals: Dictionary = {
 	"Q": 1.0,
 	"E": 1.0,
 	"R": 1.0,
 	"F": 1.0,
-	"T": 1.0
+	"T": 1.0,
+	"X": 1.0
 }
 var dash_cooldown_total: float = 0.72
 
@@ -374,7 +382,13 @@ func _update_char_motion_shader(delta: float) -> void:
 	var sway_s: float = 3.4 if anim_state == "idle" else (8.5 if dash_timer > 0.0 else 5.2)
 	var rim_c: Color = active_mid_col
 	var rim_s: float = 0.24 if not PlayerData.get_active_flame_def().is_empty() else 0.0
-	if PlayerData.is_tam_bien_active:
+	if PlayerData.is_toc_van_active:
+		rim_c = Color("#FF4D6D")
+		rim_s = 1.42
+	elif PlayerData.is_kim_khoi_tran_active:
+		rim_c = Color("#FFD166")
+		rim_s = 1.32
+	elif PlayerData.is_tam_bien_active:
 		rim_c = Color("#FFD166")
 		rim_s = 1.28
 	elif PlayerData.is_nhi_bien_active:
@@ -461,10 +475,23 @@ func _physics_process(delta: float) -> void:
 		if flame_clone_timer <= 0.0:
 			_detonate_flame_clone_finale()
 
+	# Thập Tuyệt Kim Khôi Trận (Ch.09): 10 Kim Sắc Thiên Yêu Khôi giật thiên lôi quanh thân mỗi 1.2s!
+	if kim_khoi_tran_timer > 0.0:
+		kim_khoi_tran_timer = maxf(0.0, kim_khoi_tran_timer - delta)
+		kim_khoi_tran_tick -= delta
+		if kim_khoi_tran_tick <= 0.0:
+			kim_khoi_tran_tick = 1.20
+			PlayerSkillExec.pulse_kim_khoi_tran(self)
+		if kim_khoi_tran_timer <= 0.0:
+			PlayerData.is_kim_khoi_tran_active = false
+			_refresh_flame_shader()
+			EventBus.stats_changed.emit()
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Thu Hồi Thập Tuyệt Kim Khôi Trận", Color("#ADB5BD"))
+
 	var move_input: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var desired_vel: Vector2 = Vector2.ZERO
 	if dash_timer > 0.0:
-		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (860.0 if PlayerData.has_dau_tong_void_step() else (780.0 if PlayerData.has_dau_vuong_wings() else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0)))
+		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (980.0 if PlayerData.has_dau_ton_spatial_blink() else (860.0 if PlayerData.has_dau_tong_void_step() else (780.0 if PlayerData.has_dau_vuong_wings() else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0))))
 		desired_vel = dash_dir * d_spd
 		velocity = desired_vel
 		if int(floor(dash_timer * 46.0)) != int(floor((dash_timer - delta) * 46.0)):
@@ -710,6 +737,15 @@ func _tick_timers(delta: float) -> void:
 			EventBus.stats_changed.emit()
 			EventBus.floating_text_requested.emit(global_position + Vector2(0, -68), "Hết Thiên Hỏa Tam Biến" if was_t3 else ("Hết Thiên Hỏa Nhị Biến" if was_t2 else "Hết Thiên Hỏa Tam Huyền Biến"), Color("#ADB5BD"))
 
+	if PlayerData.is_toc_van_active:
+		toc_van_timer -= delta
+		if toc_van_timer <= 0.0:
+			PlayerData.is_toc_van_active = false
+			toc_van_free_casts = 0
+			_refresh_flame_shader()
+			EventBus.stats_changed.emit()
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Hết Tộc Văn Tiêu Tộc", Color("#ADB5BD"))
+
 	# Nội tại #9 Tam Thiên Diễm Viêm Hỏa (Bất Tử Chi Thân): hồi 3.5% Max HP/giây khi HP < 45%!
 	if PlayerData.immortal_revive_cd > 0.0:
 		PlayerData.immortal_revive_cd = maxf(0.0, PlayerData.immortal_revive_cd - delta)
@@ -842,6 +878,8 @@ func _handle_combat_inputs() -> void:
 			trigger_ui_skill("T")
 		else:
 			_queue_buffer("skill_T")
+	if InputMap.has_action("toc_van_crest") and Input.is_action_just_pressed("toc_van_crest"):
+		trigger_ui_toc_van()
 
 	if not mouse_over_ui:
 		if Input.is_action_just_pressed("attack"):
@@ -937,6 +975,16 @@ func trigger_ui_skill(slot_key: String) -> void:
 		_activate_duoc_lao_assist()
 
 
+func trigger_ui_toc_van() -> void:
+	if input_blocked_by_ui:
+		return
+	if not PlayerData.is_skill_unlocked("toc_van_tieu_toc"):
+		EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Chưa thức tỉnh Tộc Văn Tiêu Tộc [X]!", Color("#ADB5BD"))
+		EventBus.banter_triggered.emit("Gợi ý cốt truyện: Hoàn thành Hồi 9.7 (Gặp Tổ Tiên Tiêu Huyền dưới Tầng 3 Thiên Mộ) để thức tỉnh [Tộc Văn Đấu Đế Tiêu Tộc [X]]!")
+		return
+	_cast_skill_slot("X", "toc_van_tieu_toc")
+
+
 func trigger_ui_use_pill(slot_num: int) -> void:
 	if input_blocked_by_ui:
 		return
@@ -970,20 +1018,26 @@ func _perform_dash() -> void:
 		body_sprite.flip_h = dash_dir.x < 0.0
 
 	var start_p: Vector2 = global_position
+	var has_spatial: bool = PlayerData.has_dau_ton_spatial_blink()
 	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
 	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
-	dash_duration_cur = 0.27 if has_dw_wings else (0.24 if has_wings else 0.18)
+	var van_van_dash_mult: float = 0.75 if PlayerData.active_companion_id == "van_van_hoa_tong" else 1.0
+	dash_duration_cur = 0.29 if has_spatial else (0.27 if has_dw_wings else (0.24 if has_wings else 0.18))
 	dash_timer = dash_duration_cur
 	dash_speed_override = 0.0
-	dash_cooldown_total = (0.56 if has_dw_wings else (0.64 if has_wings else 0.72)) * PlayerData.get_cooldown_multiplier()
+	dash_cooldown_total = (0.48 if has_spatial else (0.56 if has_dw_wings else (0.64 if has_wings else 0.72))) * PlayerData.get_cooldown_multiplier() * van_van_dash_mult
 	dash_cooldown = dash_cooldown_total
-	invuln_timer = maxf(invuln_timer, 0.48 if has_dw_wings else (0.42 if has_thunder else (0.34 if has_wings else 0.28)))
+	invuln_timer = maxf(invuln_timer, 0.60 if has_spatial else (0.48 if has_dw_wings else (0.42 if has_thunder else (0.34 if has_wings else 0.28))))
 	EventBus.skill_cooldown_updated.emit("SPACE", dash_cooldown, dash_cooldown_total)
-	EventBus.audio_sfx_requested.emit("thunder_blink" if has_thunder else "dash_whoosh")
+	EventBus.audio_sfx_requested.emit("portal_warp" if has_spatial else ("thunder_blink" if has_thunder else "dash_whoosh"))
 	_spawn_dash_afterimage()
 	VfxAssets.spawn_dust_puff(get_parent(), global_position + Vector2(0, 10), Color(0.75, 0.84, 0.96, 0.48), 7, 110.0, 1.15)
-	if has_dw_wings:
+	if has_spatial:
+		EventBus.shockwave_requested.emit(start_p + Vector2(0, -18), 145.0, 0.036, Color("#72EFDD"), 0.26)
+		_spawn_hit_sparks(start_p + Vector2(0, -24), Color("#72EFDD"), -dash_dir, 16)
+		_spawn_hit_sparks(start_p + Vector2(0, -24), Color("#C77DFF"), dash_dir, 12)
+	elif has_dw_wings:
 		_spawn_hit_sparks(global_position + Vector2(0, -24), Color("#00F5D4"), -dash_dir, 14)
 		_spawn_hit_sparks(global_position + Vector2(0, -24), Color("#E0AAFF"), -dash_dir, 10)
 	elif has_wings:

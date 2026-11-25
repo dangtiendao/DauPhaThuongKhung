@@ -1,0 +1,582 @@
+{
+  "version": "1.0",
+  "chapter": 9,
+  "map_order": [
+    "ch09_tinh_van_cac",
+    "ch09_vong_hon_son_mach",
+    "ch09_hoa_tong_thanh_dia",
+    "ch09_vien_co_di_tich",
+    "ch09_co_long_loi_tri",
+    "ch09_co_gioi_thanh_thanh",
+    "ch09_thien_mo_tam_tang"
+  ],
+  "maps": {
+    "ch09_tinh_van_cac": {
+      "id": "ch09_tinh_van_cac",
+      "name": "Tinh Vẫn Các (Tinh Vẫn Giới — Đại Bản Doanh Trung Châu)",
+      "subtitle": "Hồi 9.1 · 9.2 · 9.5 — Hội Quân 6 Cường Giả · Niết Bàn Đấu Tôn · Phục Sinh Bán Thánh Dược Trần",
+      "is_safe_zone": false,
+      "size": [2200, 1200],
+      "default_spawn": [210, 580],
+      "bgm": "bgm_tinh_van",
+      "ambient_weather": "sparks",
+      "ground_tile": "res://assets/sprites/tiles/tinh_van_star_pavilion.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 530, 1980, 112],
+        [480, 110, 110, 980],
+        [1020, 110, 118, 980],
+        [1520, 110, 110, 980]
+      ],
+      "decor_type": "palace",
+      "decor_points": [
+        [280, 220], [820, 220], [1320, 220], [1860, 220],
+        [280, 960], [820, 960], [1320, 960], [1860, 960]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch09_tinh_van_treasury",
+          "pos": [760, 320],
+          "gold": 135000,
+          "items": { "herb_hon_anh_yeu_qua": 3, "pill_phuc_hon_thanh_dan": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch09_phong_thiet_kiem",
+          "name": "Phong Tôn Giả & Thiết Kiếm Tôn Giả (Đại Điện Tinh Vẫn Các)",
+          "title": "Hội Quân 6 Cường Giả — Phát Lệnh Đột Kích Vong Hồn Sơn Mạch Cứu Sư Tôn!",
+          "sprite": "res://assets/sprites/npcs/npc_thiet_kiem.png",
+          "pos": [380, 420],
+          "role": "ch09_phong_thiet_kiem",
+          "glow_hex": "#72EFDD",
+          "name_hex": "#A8DADC",
+          "prompt_text": "[V] Hội Quân Cùng Phong Tôn Giả & Thiết Kiếm Tôn Giả (Khai Chiến Vong Hồn)"
+        },
+        {
+          "id": "npc_ch09_duoc_tran_revival",
+          "name": "Lò Phục Sinh Hậu Sơn — Bán Thánh Dược Trần",
+          "title": "Niết Bàn Đấu Tôn (9.2) · Nghi Thức Luyện Thân Phục Sinh Bán Thánh Dược Trần (9.5)!",
+          "sprite": "res://assets/sprites/npcs/npc_duoc_tran_ban_thanh.png",
+          "pos": [680, 740],
+          "role": "ch09_duoc_tran_revival",
+          "glow_hex": "#E0FBFC",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Hậu Sơn Tinh Vẫn Các — Niết Bàn Hóa Tôn / Phục Sinh Sư Tôn Dược Trần"
+        },
+        {
+          "id": "npc_ch09_tinh_van_steward",
+          "name": "Tổng Quản Tinh Vẫn Các (Bàn Môn -> Viêm Minh -> Tinh Vẫn Các)",
+          "title": "Quản Lý Thế Lực Cấp 3 [M] · Tinh Thần Hộ Các Đại Trận · Thu Hoạch Linh Dược Bát Phẩm!",
+          "sprite": "res://assets/sprites/npcs/npc_phong_ton_gia.png",
+          "pos": [380, 760],
+          "role": "ch09_tinh_van_steward",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFE66D",
+          "prompt_text": "[V] Quản Lý Đại Bản Doanh TINH VẪN CÁC / Đấu Trường Cường Bảng [M]"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "hon_dien_ton_lao", "pos": [1440, 410], "respawn": 18.0 },
+        { "enemy_id": "hon_dien_ton_lao", "pos": [1440, 760], "respawn": 18.0 },
+        { "enemy_id": "hac_bach_thien_ton_boss", "pos": [1820, 580], "respawn": 46.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tinh_vuc_from_tinh_van",
+          "label": "Trùng Động Tây -> Ngân Hà Tinh Vực (Chương 08)",
+          "pos": [108, 580],
+          "target_map": "ch08_tinh_vuc_phong_an",
+          "target_spawn": [1900, 580],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch09_vong_hon_son_mach",
+          "label": "Không Gian Đột Kích Tây Bắc -> Vong Hồn Sơn Mạch (Cứu Dược Lão!)",
+          "pos": [520, 118],
+          "target_map": "ch09_vong_hon_son_mach",
+          "target_spawn": [200, 580],
+          "require_flag": "ch09_tinh_van_rally",
+          "locked_hint": "Hãy hội quân cùng Phong Tôn Giả & Thiết Kiếm Tôn Giả [V] tại Đại Điện Tinh Vẫn Các trước khi đột kích Vong Hồn Sơn Mạch!"
+        },
+        {
+          "id": "to_ch09_hoa_tong_thanh_dia",
+          "label": "Cổ Trận Bắc -> Hoa Tông Thánh Địa (Tái Ngộ Vân Vận)",
+          "pos": [1060, 118],
+          "target_map": "ch09_hoa_tong_thanh_dia",
+          "target_spawn": [200, 580],
+          "require_flag": "ch09_broke_dau_ton",
+          "locked_hint": "Hãy cứu Dược Lão, Niết Bàn đột phá ĐẤU TÔNG -> ĐẤU TÔN và đánh tan Hắc Bạch Thiên Tôn trước khi đi giải vây cho Vân Vận tại Hoa Tông!"
+        },
+        {
+          "id": "to_ch09_vien_co_di_tich",
+          "label": "Thú Vực Đông Bắc -> Đầm Lầy Khô Cốt & Viễn Cổ Di Tích Đấu Thánh",
+          "pos": [1580, 118],
+          "target_map": "ch09_vien_co_di_tich",
+          "target_spawn": [200, 580],
+          "require_flag": "ch09_hoa_tong_saved",
+          "locked_hint": "Hãy giúp Vân Vận đăng cơ Tông Chủ Hoa Tông trước khi tiến vào Thú Vực thám hiểm Viễn Cổ Di Tích Đấu Thánh!"
+        },
+        {
+          "id": "to_ch09_co_long_loi_tri",
+          "label": "Hư Không Loạn Lưu Tây Nam -> Đông Long Đảo & Hư Không Lôi Trì",
+          "pos": [520, 1086],
+          "target_map": "ch09_co_long_loi_tri",
+          "target_spawn": [200, 580],
+          "require_flag": "ch09_duoc_tran_revived",
+          "locked_hint": "Hãy hoàn tất Nghi Thức Phục Sinh Bán Thánh Dược Trần [V] tại Hậu Sơn Tinh Vẫn Các trước khi cùng Hắc Kình tới Đông Long Đảo cứu Tử Nghiên!"
+        },
+        {
+          "id": "to_ch09_co_gioi_thanh_thanh",
+          "label": "Không Gian Vị Diện Đông Nam -> Cổ Giới · Cổ Thánh Thành (Thành Nhân Lễ)",
+          "pos": [1580, 1086],
+          "target_map": "ch09_co_gioi_thanh_thanh",
+          "target_spawn": [200, 580],
+          "require_flag": "ch09_co_long_unified",
+          "locked_hint": "Hãy cùng Long Hoàng Tử Nghiên đánh bại Bắc Long Vương nhất thống Cổ Long Đảo trước khi nhận lời mời Huân Nhi tiến vào Cổ Giới!"
+        }
+      ]
+    },
+    "ch09_vong_hon_son_mach": {
+      "id": "ch09_vong_hon_son_mach",
+      "name": "Vong Hồn Sơn Mạch — Phệ Hồn Mê Vụ & Tỏa Hồn Phân Điện",
+      "subtitle": "Hồi 9.1 & 9.2 — Giải Cứu Sư Tôn Dược Trần · Bi Tráng Thiết Kiếm Tự Bạo · Tử Chiến Trích Tinh Lão Quỷ!",
+      "is_safe_zone": false,
+      "size": [2140, 1160],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_vong_hon",
+      "ambient_weather": "soul_mist",
+      "ground_tile": "res://assets/sprites/tiles/vong_hon_mist_stone.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 525, 1940, 112],
+        [1040, 200, 120, 760]
+      ],
+      "decor_type": "ruins",
+      "decor_points": [
+        [340, 220], [760, 220], [1360, 220], [1780, 220],
+        [340, 940], [760, 940], [1360, 940], [1780, 940]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch09_vong_hon_chains",
+          "pos": [1680, 240],
+          "gold": 148000,
+          "items": { "item_hon_tinh_den": 4, "herb_hon_anh_yeu_qua": 3, "pill_phuc_hon_thanh_dan": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch09_duoc_lao_prison",
+          "name": "Tỏa Hồn Tháp — Bản Thể Linh Hồn Sư Tôn Dược Trần",
+          "title": "Chém Đứt Xiềng Xích Hồn Điện Cứu Sư Tôn! (Cần Hạ Trích Tinh Lão Quỷ Đánh Đường Máu)",
+          "sprite": "res://assets/sprites/npcs/npc_duoc_lao.png",
+          "pos": [1740, 860],
+          "role": "ch09_duoc_lao_prison",
+          "glow_hex": "#90E0EF",
+          "name_hex": "#E0FBFC",
+          "prompt_text": "[V] Phá Tỏa Hồn Tháp — Giải Cứu Sư Tôn Dược Trần Khỏi Xiềng Xích Hồn Điện!"
+        },
+        {
+          "id": "npc_ch09_thiet_kiem_grave",
+          "name": "Thanh Kiếm Sắt Gãy Của Thiết Kiếm Tôn Giả (Kỳ Ngộ SQ_09_01)",
+          "title": "Dựng Mộ Bia Tri Ân Vị Kiếm Tôn Tự Bạo Mở Đường Máu -> [Thiết Kiếm Trung Nghĩa Bội]!",
+          "sprite": "res://assets/sprites/npcs/npc_thiet_kiem.png",
+          "pos": [480, 820],
+          "role": "ch09_thiet_kiem_grave",
+          "require_flag": "ch09_broke_dau_ton",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFE66D",
+          "prompt_text": "[V] [Kỳ Ngộ] Nhặt Thanh Kiếm Gãy Thiết Kiếm Tôn Giả & Tưới Rượu Tế Mộ"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "vong_hon_thuc_cot_ve", "pos": [760, 400], "respawn": 16.0 },
+        { "enemy_id": "vong_hon_thuc_cot_ve", "pos": [760, 760], "respawn": 16.0 },
+        { "enemy_id": "hon_dien_ton_lao", "pos": [1180, 410], "respawn": 18.0 },
+        { "enemy_id": "hon_dien_ton_lao", "pos": [1180, 750], "respawn": 18.0 },
+        { "enemy_id": "trich_tinh_lao_quy_boss", "pos": [1560, 560], "respawn": 46.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tinh_van_from_vong_hon",
+          "label": "Khe Nứt Hư Không Tây -> Rút Về Tinh Vẫn Các",
+          "pos": [108, 580],
+          "target_map": "ch09_tinh_van_cac",
+          "target_spawn": [520, 220],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch09_hoa_tong_thanh_dia": {
+      "id": "ch09_hoa_tong_thanh_dia",
+      "name": "Hoa Tông Thánh Địa — Lôi Đài Bạch Ngọc & Đồi Hoa Đào",
+      "subtitle": "Hồi 9.3 — Giải Vây Vân Vận · Đánh Bại Yêu Hoa Tà Quân · Đăng Cơ Tông Chủ Hoa Tông!",
+      "is_safe_zone": false,
+      "size": [2100, 1160],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_zhongzhou",
+      "ambient_weather": "sakura_petals",
+      "ground_tile": "res://assets/sprites/tiles/hoa_tong_blossom_jade.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 525, 1900, 110],
+        [980, 190, 128, 780]
+      ],
+      "decor_type": "bamboo",
+      "decor_points": [
+        [340, 220], [720, 220], [1340, 220], [1740, 220],
+        [340, 940], [720, 940], [1340, 940], [1740, 940]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch09_hoa_tong_nectar",
+          "pos": [1680, 240],
+          "gold": 156000,
+          "items": { "pill_bach_hoa_ngoc_lo": 3, "herb_hon_anh_yeu_qua": 3 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch09_van_van_hoa_tong",
+          "name": "Vân Vận (Tân Tông Chủ Hoa Tông — Bát Tinh Đấu Tôn)",
+          "title": "Đập Tan Yêu Hoa Tà Quân · Hóa Giải Phong Ấn Hoa Bà Bà -> Đồng Hành #9 [G]!",
+          "sprite": "res://assets/sprites/npcs/npc_van_van_hoa_tong.png",
+          "pos": [450, 420],
+          "role": "ch09_van_van_hoa_tong",
+          "glow_hex": "#FFAFCC",
+          "name_hex": "#FFC8DD",
+          "prompt_text": "[V] Gặp Vân Vận & Hóa Giải Phong Ấn Truyền Thừa Hoa Bà Bà"
+        },
+        {
+          "id": "npc_ch09_hoa_dao_night",
+          "name": "Đồi Hoa Đào Đêm Trăng — Khúc Cầm Cố Nhân (Kỳ Ngộ SQ_09_02)",
+          "title": "Ở Lại Hoa Tông 1 Đêm Hồi Tưởng Sơn Mạch Ma Thú -> Bách Hoa Ngọc Lộ & +40 Hảo Cảm!",
+          "sprite": "res://assets/sprites/npcs/npc_van_van_hoa_tong.png",
+          "pos": [450, 800],
+          "role": "ch09_hoa_dao_night",
+          "require_flag": "ch09_hoa_tong_saved",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFE66D",
+          "prompt_text": "[V] [Kỳ Ngộ] Tản Bộ Đồi Hoa Đào Nghe Vân Vận Đánh Cầm"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "thien_minh_ta_ve", "pos": [860, 400], "respawn": 16.0 },
+        { "enemy_id": "thien_minh_ta_ve", "pos": [860, 760], "respawn": 16.0 },
+        { "enemy_id": "thien_minh_ta_ve", "pos": [1220, 420], "respawn": 16.0 },
+        { "enemy_id": "yeu_hoa_ta_quan_boss", "pos": [1560, 560], "respawn": 46.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tinh_van_from_hoa_tong",
+          "label": "Cổ Trận Tây -> Quay Về Tinh Vẫn Các",
+          "pos": [108, 580],
+          "target_map": "ch09_tinh_van_cac",
+          "target_spawn": [1060, 220],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch09_vien_co_di_tich": {
+      "id": "ch09_vien_co_di_tich",
+      "name": "Đầm Lầy Khô Cốt & Viễn Cổ Di Tích Tạo Hóa Thánh Giả",
+      "subtitle": "Hồi 9.4 — Tái Ngộ Thanh Lân (Bích Xà Tam Hoa Đồng) · Thu 10 Địa Yêu Khôi · Đoạt 3 Tạo Hóa Thánh Cốt & Thiên Giai Chưởng!",
+      "is_safe_zone": false,
+      "size": [2160, 1160],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_vong_hon",
+      "ambient_weather": "embers",
+      "ground_tile": "res://assets/sprites/tiles/di_tich_ancient_relic.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 525, 1960, 112],
+        [1060, 190, 128, 780]
+      ],
+      "decor_type": "ruins",
+      "decor_points": [
+        [340, 220], [760, 220], [1380, 220], [1800, 220],
+        [340, 940], [760, 940], [1380, 940], [1800, 940]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch09_di_tich_puppets",
+          "pos": [1720, 240],
+          "gold": 172000,
+          "items": { "herb_vien_co_thu_cot": 4, "herb_hon_anh_yeu_qua": 3, "core_nang_luong_8": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch09_thanh_lan_relic",
+          "name": "Thanh Lân (Thiên Xà Phủ Đấu Tôn · Bích Xà Tam Hoa Đồng)",
+          "title": "Hội Ngộ Cô Em Nhỏ Năm Xưa -> Đồng Hành #8 [G] & Kỳ Ngộ Viễn Cổ Thiên Xà (SQ_09_03)!",
+          "sprite": "res://assets/sprites/npcs/npc_thanh_lan_dau_ton.png",
+          "pos": [440, 420],
+          "role": "ch09_thanh_lan_relic",
+          "glow_hex": "#52B788",
+          "name_hex": "#95D5B2",
+          "prompt_text": "[V] Hội Ngộ Thanh Lân & Hỗ Trợ Thu Phục Viễn Cổ Thiên Xà Cửu Đầu"
+        },
+        {
+          "id": "npc_ch09_tao_hoa_skeleton",
+          "name": "Ngai Vàng Thạch Giai — Ba Chiếc Xương Sườn Tạo Hóa Thánh Cốt",
+          "title": "Đoạt 3 Tạo Hóa Thánh Cốt · Hồn Anh Quả · Long Hoàng Quả & Lĩnh Ngộ [Đại Thiên Tạo Hóa Chưởng]!",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [1760, 860],
+          "role": "ch09_tao_hoa_skeleton",
+          "require_flag": "ch09_beat_tan_hon_tao_hoa",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFF3B0",
+          "prompt_text": "[V] Bước Lên 99 Bậc Thạch Giai — Cạy 3 Tạo Hóa Thánh Cốt & Nhận Truyền Thừa Thiên Giai!"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "vien_co_thu_linh_ve", "pos": [820, 400], "respawn": 17.0 },
+        { "enemy_id": "vien_co_thu_linh_ve", "pos": [820, 760], "respawn": 17.0 },
+        { "enemy_id": "vien_co_thu_linh_ve", "pos": [1220, 580], "respawn": 17.0 },
+        { "enemy_id": "tan_hon_tao_hoa_boss", "pos": [1580, 560], "respawn": 48.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tinh_van_from_di_tich",
+          "label": "Rời Di Tích Tây -> Quay Về Tinh Vẫn Các (Phục Sinh Dược Lão)",
+          "pos": [108, 580],
+          "target_map": "ch09_tinh_van_cac",
+          "target_spawn": [1580, 220],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch09_co_long_loi_tri": {
+      "id": "ch09_co_long_loi_tri",
+      "name": "Đông Long Đảo & Hư Không Lôi Trì (Thái Hư Cổ Long Tộc)",
+      "subtitle": "Hồi 9.6 — Luyện Hóa Long Ma Tinh Cứu Tử Nghiên · Rèn 10 Kim Sắc Thiên Yêu Khôi · Chém Bắc Long Vương!",
+      "is_safe_zone": false,
+      "size": [2180, 1180],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_tinh_van",
+      "ambient_weather": "void_lightning",
+      "ground_tile": "res://assets/sprites/tiles/co_long_void_thunder.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 530, 1980, 112],
+        [1060, 190, 128, 800]
+      ],
+      "decor_type": "ruins",
+      "decor_points": [
+        [340, 220], [760, 220], [1380, 220], [1820, 220],
+        [340, 960], [760, 960], [1380, 960], [1820, 960]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch09_co_long_thunder",
+          "pos": [1740, 240],
+          "gold": 195000,
+          "items": { "herb_long_huyet_qua": 4, "pill_kim_cuong_bat_hoai": 2, "core_nang_luong_8": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch09_hac_kinh_long_dao",
+          "name": "Trưởng Lão Hắc Kình (Đông Long Đảo · Thái Hư Cổ Long)",
+          "title": "Luyện Hóa Long Ma Tinh Cứu Tử Nghiên & Tắm Hắc Ma Lôi Rèn [Thập Tuyệt Kim Khôi Trận]!",
+          "sprite": "res://assets/sprites/npcs/npc_hac_kinh.png",
+          "pos": [440, 420],
+          "role": "ch09_hac_kinh_long_dao",
+          "glow_hex": "#9D4EDD",
+          "name_hex": "#E0AAFF",
+          "prompt_text": "[V] Cùng Hắc Kình Luyện Hóa Long Ma Tinh & Rèn 10 Kim Sắc Thiên Yêu Khôi"
+        },
+        {
+          "id": "npc_ch09_tu_nghien_long_hoang",
+          "name": "Long Hoàng Tử Nghiên (Thái Hư Cổ Long Hoàng Xuất Quan)",
+          "title": "Nhất Thống Tứ Đại Long Đảo · Kết Minh Thái Hư Cổ Long Tộc -> Bát Tinh Đấu Tôn!",
+          "sprite": "res://assets/sprites/npcs/npc_tu_nghien_long_hoang.png",
+          "pos": [1760, 880],
+          "role": "ch09_tu_nghien_long_hoang",
+          "require_flag": "ch09_beat_bac_long_vuong",
+          "glow_hex": "#C77DFF",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Hội Quân Long Hoàng Tử Nghiên — Hoàn Tất Thống Nhất Thái Hư Cổ Long Đảo!"
+        },
+        {
+          "id": "npc_ch09_hac_ma_loi_chau",
+          "name": "Tâm Xoáy Hắc Ma Lôi Vương (Kỳ Ngộ SQ_09_04)",
+          "title": "Đoạt Hắc Ma Lôi Châu Rèn [Yêu Khôi Thống Lĩnh Cửu Tinh] (+25% Sát Thương Thập Tuyệt Trận)!",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [440, 820],
+          "role": "ch09_hac_ma_loi_chau",
+          "require_flag": "ch09_forged_ten_puppets",
+          "glow_hex": "#F72585",
+          "name_hex": "#FF99C8",
+          "prompt_text": "[V] [Kỳ Ngộ] Đoạt Hắc Ma Lôi Châu Cường Hóa Yêu Khôi Thống Lĩnh"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "hu_khong_loi_giao", "pos": [820, 400], "respawn": 17.0 },
+        { "enemy_id": "hu_khong_loi_giao", "pos": [820, 760], "respawn": 17.0 },
+        { "enemy_id": "co_long_dao_ve", "pos": [1220, 420], "respawn": 18.0 },
+        { "enemy_id": "co_long_dao_ve", "pos": [1220, 750], "respawn": 18.0 },
+        { "enemy_id": "bac_long_vuong_boss", "pos": [1600, 560], "respawn": 48.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tinh_van_from_co_long",
+          "label": "Khe Hư Không Tây -> Quay Về Tinh Vẫn Các",
+          "pos": [108, 580],
+          "target_map": "ch09_tinh_van_cac",
+          "target_spawn": [520, 960],
+          "require_flag": ""
+        }
+      ]
+    },
+    "ch09_co_gioi_thanh_thanh": {
+      "id": "ch09_co_gioi_thanh_thanh",
+      "name": "Cổ Giới — Cổ Thánh Thành & Quảng Trường Thành Nhân Lễ",
+      "subtitle": "Hồi 9.7 (Thượng) — Huân Nhi Thức Tỉnh Thần Phẩm Huyết Mạch · Đối Oanh Thiên Giai Bại Cổ Yêu · Diện Kiến Cổ Nguyên!",
+      "is_safe_zone": false,
+      "size": [2160, 1180],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_tinh_van",
+      "ambient_weather": "sparks",
+      "ground_tile": "res://assets/sprites/tiles/co_gioi_golden_plaza.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 530, 1960, 112],
+        [1060, 190, 128, 800]
+      ],
+      "decor_type": "palace",
+      "decor_points": [
+        [340, 220], [760, 220], [1380, 220], [1800, 220],
+        [340, 960], [760, 960], [1380, 960], [1800, 960]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch09_co_gioi_gift",
+          "pos": [1720, 240],
+          "gold": 220000,
+          "items": { "core_nang_luong_8": 2, "pill_cuu_chuyen_ton_nguyen": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch09_co_nguyen_ceremony",
+          "name": "Tộc Trưởng Cổ Tộc — Cổ Nguyên (Cửu Tinh Đấu Thánh Đỉnh Phong)",
+          "title": "Thành Nhân Lễ Cổ Giới · Đánh Bại Đô Thống Cổ Yêu Đoạt Lệnh Bài Tiến Vào Thiên Mộ!",
+          "sprite": "res://assets/sprites/npcs/npc_co_nguyen.png",
+          "pos": [450, 420],
+          "role": "ch09_co_nguyen_ceremony",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFF3B0",
+          "prompt_text": "[V] Bái Kiến Cổ Nguyên Tộc Trưởng & Nhận Lệnh Bài Khai Mở Thiên Mộ"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "co_long_dao_ve", "pos": [860, 400], "respawn": 18.0 },
+        { "enemy_id": "co_long_dao_ve", "pos": [860, 760], "respawn": 18.0 },
+        { "enemy_id": "co_yeu_do_thong_boss", "pos": [1540, 580], "respawn": 48.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_tinh_van_from_co_gioi",
+          "label": "Không Gian Môn Tây -> Quay Về Tinh Vẫn Các",
+          "pos": [108, 580],
+          "target_map": "ch09_tinh_van_cac",
+          "target_spawn": [1580, 960],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch09_thien_mo_tam_tang",
+          "label": "Cổng Đá Cổ Xưa Đông -> BÍ CẢNH THIÊN MỘ TAM TẦNG (x5 Thời Gian Tu Luyện!)",
+          "pos": [2052, 580],
+          "target_map": "ch09_thien_mo_tam_tang",
+          "target_spawn": [200, 580],
+          "require_flag": "ch09_beat_co_yeu",
+          "locked_hint": "Hãy đánh bại Tu La Đô Thống Cổ Yêu trên Quảng Trường Thành Nhân Lễ và nhận lệnh bài của Tộc Trưởng Cổ Nguyên [V] để khai mở cánh cổng Thiên Mộ!"
+        }
+      ]
+    },
+    "ch09_thien_mo_tam_tang": {
+      "id": "ch09_thien_mo_tam_tang",
+      "name": "Bí Cảnh Thiên Mộ Tam Tầng (Dòng Chảy Thời Gian x5 · Mộ Tổ Tiêu Huyền)",
+      "subtitle": "Hồi 9.7 (Hạ) — Săn Năng Lượng Thể Cày Cửu Chuyển Đấu Tôn · Trảm Huyết Đao Thánh Giả · Hoán Huyết Đấu Đế Tiêu Huyền!",
+      "is_safe_zone": false,
+      "size": [2240, 1200],
+      "default_spawn": [200, 580],
+      "bgm": "bgm_thien_mo",
+      "ambient_weather": "tomb_energy",
+      "ground_tile": "res://assets/sprites/tiles/thien_mo_ancient_tomb.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [100, 535, 2040, 114],
+        [1100, 190, 130, 820]
+      ],
+      "decor_type": "ruins",
+      "decor_points": [
+        [340, 220], [780, 220], [1420, 220], [1860, 220],
+        [340, 980], [780, 980], [1420, 980], [1860, 980]
+      ],
+      "chests": [
+        {
+          "id": "chest_ch09_thien_mo_cores",
+          "pos": [1740, 240],
+          "gold": 280000,
+          "items": { "core_nang_luong_8": 3, "core_nang_luong_9": 2, "pill_cuu_chuyen_ton_nguyen": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch09_tieu_huyen_tomb",
+          "name": "Tổ Tiên Tiêu Tộc — TIÊU HUYỀN (Cửu Tinh Đấu Thánh Đỉnh Phong)",
+          "title": "HOÀN TẤT CHƯƠNG 09 & QUYỂN III — Hoán Huyết Tam Tộc · Tộc Văn Tiêu Tộc [X] · Cửu Chuyển Đấu Tôn!",
+          "sprite": "res://assets/sprites/npcs/npc_tieu_huyen.png",
+          "pos": [1840, 880],
+          "role": "ch09_tieu_huyen_tomb",
+          "require_flag": "ch09_beat_huyet_dao_thanh_gia",
+          "glow_hex": "#FF4D6D",
+          "name_hex": "#FFD166",
+          "prompt_text": "[V] Diện Kiến Tổ Tiên TIÊU HUYỀN — Khai Trận Hoán Huyết Đấu Đế Tiêu Tộc!"
+        },
+        {
+          "id": "npc_ch09_tieu_huyen_stele",
+          "name": "Bia Mộ Cô Độc Tổ Tiên Tiêu Huyền (Kỳ Ngộ SQ_09_05)",
+          "title": "Khắc Lời Thề Phục Tộc & Đặt Hỏa Liên Bất Diệt -> +10% Thời Gian Duy Trì Tộc Văn Vĩnh Viễn!",
+          "sprite": "res://assets/sprites/props/testing_stele.png",
+          "pos": [460, 840],
+          "role": "ch09_tieu_huyen_stele",
+          "require_flag": "ch09_completed",
+          "glow_hex": "#FFD166",
+          "name_hex": "#FFF3B0",
+          "prompt_text": "[V] [Kỳ Ngộ] Khắc Dòng Chữ Phục Tộc Lên Bia Mộ Tổ Tiên Tiêu Huyền"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "thien_mo_nang_luong_the", "pos": [760, 380], "respawn": 15.0 },
+        { "enemy_id": "thien_mo_nang_luong_the", "pos": [760, 780], "respawn": 15.0 },
+        { "enemy_id": "thien_mo_nang_luong_the", "pos": [1200, 390], "respawn": 15.0 },
+        { "enemy_id": "thien_mo_nang_luong_the", "pos": [1200, 770], "respawn": 15.0 },
+        { "enemy_id": "huyet_dao_thanh_gia_boss", "pos": [1660, 580], "respawn": 50.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_co_gioi_from_thien_mo",
+          "label": "Rời Thiên Mộ Tây -> Quay Về Cổ Thánh Thành (Cổ Giới)",
+          "pos": [108, 580],
+          "target_map": "ch09_co_gioi_thanh_thanh",
+          "target_spawn": [1900, 580],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch10_bo_de_co_thu_future",
+          "label": "Mãng Hoang Cổ Vực Đông -> [CHƯƠNG 10] Bồ Đề Cổ Thụ & Tịnh Liên Yêu Hỏa (Quyển IV)",
+          "pos": [2132, 580],
+          "target_map": "ch09_thien_mo_tam_tang",
+          "target_spawn": [1960, 580],
+          "require_flag": "ch10_unlocked_future",
+          "locked_hint": "CHÚC MỪNG HOÀN TẤT 100% QUYỂN III (CHƯƠNG 09: VONG HỒN ĐIỆN & THIÊN MỘ)!! Mãng Hoang Cổ Vực — Chương 10 (Quyển IV: Đấu Thánh Chi Lộ) sẽ mở ở phiên bản v0.9.0!"
+        }
+      ]
+    }
+  }
+}

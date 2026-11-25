@@ -18,7 +18,8 @@ func build_skills_codex_content(vbox: VBoxContainer) -> void:
 	var e_n: String = str(GameDatabase.get_skill_def(PlayerData.slot_e_skill).get("name", "(Trống)")) if PlayerData.slot_e_skill != "" else "(Trống)"
 	var r_n: String = str(GameDatabase.get_skill_def(PlayerData.slot_r_skill).get("name", "(Trống)")) if PlayerData.slot_r_skill != "" else "(Trống)"
 	var f_n: String = str(GameDatabase.get_skill_def(PlayerData.slot_f_skill).get("name", "(Khóa — Ch.03)")) if PlayerData.slot_f_skill != "" else "(Khóa — Chương 03)"
-	active_bar.add_child(hud._make_label("Bộ Chiêu Đang Lắp:  [Q] %s   |   [E] %s   |   [R] %s   |   [F] %s" % [q_n, e_n, r_n, f_n], 13, Color("#FFE599")))
+	var x_tag: String = "   |   [X] Tộc Văn Tiêu Tộc ✓" if PlayerData.is_skill_unlocked("toc_van_tieu_toc") else ""
+	active_bar.add_child(hud._make_label("Bộ Chiêu Đang Lắp:  [Q] %s   |   [E] %s   |   [R] %s   |   [F] %s%s" % [q_n, e_n, r_n, f_n, x_tag], 13, Color("#FFE599")))
 
 	for sid in GameDatabase.skills_by_id.keys():
 		var sdef: Dictionary = GameDatabase.get_skill_def(str(sid))
@@ -95,7 +96,9 @@ func build_skills_codex_content(vbox: VBoxContainer) -> void:
 	lotus_card.add_child(lv)
 
 	var bonus_pct: int = max(0, PlayerData.lotus_fusion_flames.size() - 1) * 28
-	lv.add_child(hud._make_label("XƯỞNG DUNG HỢP PHẬT NỘ HỎA LIÊN (%d/4 Hỏa đã ghép — Uy lực +%d%% + Hiệu ứng riêng từng Hỏa!)" % [PlayerData.lotus_fusion_flames.size(), bonus_pct], 14, Color("#E0AAFF")))
+	var max_lotus_f: int = PlayerData.get_lotus_max_flames()
+	var five_tag: String = " · ★ Đã Mở NGŨ SẮC BĂNG PHONG 3s!" if max_lotus_f >= 5 else ""
+	lv.add_child(hud._make_label("XƯỞNG DUNG HỢP PHẬT NỘ HỎA LIÊN (%d/%d Hỏa đã ghép — Uy lực +%d%%%s)" % [PlayerData.lotus_fusion_flames.size(), max_lotus_f, bonus_pct, five_tag], 14, Color("#E0AAFF")))
 	if PlayerData.unlocked_flames.is_empty():
 		lv.add_child(hud._make_label("Chưa thu phục ngọn Hỏa nào! Hãy bái sư Dược Lão (Phàm Hỏa) -> Hạ Mục Xà (Tử Hỏa) -> Sa Mạc Chương 03 (Thanh Liên Địa Tâm Hỏa).", 12, Color("#ADB5BD")))
 	else:
@@ -159,6 +162,52 @@ func build_breakthrough_content(vbox: VBoxContainer) -> void:
 		hud._populate_modal()
 	)
 	vbox.add_child(bt_btn)
+
+	# Hệ thống Cửu Chuyển Đấu Tôn (Chương 09 — Thiên Mộ Tam Tầng)
+	var nt_card: PanelContainer = hud._make_styled_panel(Color(0.11, 0.08, 0.18, 0.95), Color("#FFD166"), 2, 10)
+	vbox.add_child(nt_card)
+	var nt_v := VBoxContainer.new()
+	nt_v.add_theme_constant_override("separation", 6)
+	nt_card.add_child(nt_v)
+	var cur_turn: int = NineTurnManager.get_turn_level(PlayerData)
+	var cur_pct: int = int(round(float(cur_turn) * NineTurnManager.BONUS_PER_TURN * 100.0))
+	nt_v.add_child(hud._make_label("✦ CỬU CHUYỂN ĐẤU TÔN — CHUYỂN LUÂN NIẾT BÀN (%d / 9 Chuyển · +%d%% Toàn Bộ Chỉ Số)" % [cur_turn, cur_pct], 14, Color("#FFD166")))
+	var nt_chk: Dictionary = NineTurnManager.can_condense_next_turn(PlayerData)
+	var nt_req: Dictionary = NineTurnManager.get_next_turn_requirement(PlayerData)
+	var nt_desc: String = ""
+	if not NineTurnManager.is_unlocked(PlayerData):
+		nt_desc = "Mở khóa khi đột phá cảnh giới Đấu Tôn (Chương 09 — Hồi 9.2). Săn Năng Lượng Thể trong Thiên Mộ (x5 EXP) lấy Năng Lượng Hạch 8/9 để ngưng tụ 9 Chuyển Luân!"
+	elif bool(nt_req.get("maxed", false)):
+		nt_desc = "★ ĐÃ VIÊN MÃN CỬU CHUYỂN ĐẤU TÔN ĐỈNH PHONG (9/9 Chuyển · +72% HP / QI / ATK / DEF / SOUL)! Đủ sức giao phong ngang ngửa Bán Thánh!"
+	else:
+		var req_iid: String = str(nt_req.get("req_item", "core_nang_luong_8"))
+		var req_iname: String = str(GameDatabase.get_item_def(req_iid).get("name", req_iid))
+		var req_qty: int = int(nt_req.get("req_qty", 2))
+		var g_cost: int = int(nt_req.get("gold_cost", 65000))
+		nt_desc = "Chuyển Luân kế tiếp (%d/9 -> +%d%% chỉ số): Cần %dx [%s] (Đang có: %d) HOẶC 1x [Cửu Chuyển Tôn Nguyên Đan] (Đang có: %d) + %d Kim Tệ." % [
+			int(nt_req.get("next_turn", cur_turn + 1)),
+			int(round(float(cur_turn + 1) * 8.0)),
+			req_qty, req_iname, PlayerData.get_item_count(req_iid),
+			PlayerData.get_item_count("pill_cuu_chuyen_ton_nguyen"), g_cost
+		]
+	var nt_lbl: Label = hud._make_label(nt_desc, 12, Color("#E0FBFC") if bool(nt_chk.get("ok", false)) else Color("#CED4DA"))
+	nt_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	nt_v.add_child(nt_lbl)
+	if NineTurnManager.is_unlocked(PlayerData) and not bool(nt_req.get("maxed", false)):
+		var nt_btn := Button.new()
+		nt_btn.text = "NGƯNG TỤ CHUYỂN LUÂN %d/9 (+8%% TOÀN CHỈ SỐ)!" % (cur_turn + 1)
+		nt_btn.disabled = not bool(nt_chk.get("ok", false))
+		nt_btn.add_theme_font_size_override("font_size", 13)
+		nt_btn.add_theme_color_override("font_color", Color("#FFD166"))
+		nt_btn.pressed.connect(func() -> void:
+			var r_nt: Dictionary = NineTurnManager.condense_next_turn(PlayerData)
+			if bool(r_nt.get("ok", false)):
+				hud.modal_status_lbl.text = "✦ NGƯNG TỤ THÀNH CÔNG CỬU CHUYỂN %d/9 (+%d%% TOÀN BỘ CHỈ SỐ)!" % [int(r_nt.get("turn", 1)), int(r_nt.get("bonus_pct", 8))]
+			else:
+				hud.modal_status_lbl.text = str(r_nt.get("reason", "Chưa đủ điều kiện ngưng tụ!"))
+			hud._populate_modal()
+		)
+		nt_v.add_child(nt_btn)
 
 
 func build_flames_content(vbox: VBoxContainer) -> void:

@@ -347,9 +347,13 @@ func _detonate_fire_lotus() -> void:
 		final_pen = 1.0
 		final_dmg *= 1.25
 		effect_tags.append("Đế Viêm 100% Xuyên")
+	var is_five_flame_lotus: bool = (f_cnt >= 5)
+	if is_five_flame_lotus:
+		final_dmg *= 1.45
+		effect_tags.append("Ngũ Sắc Băng Phong 3s")
 
-	var lotus_cry: String = "PHẬT NỘ HỎA LIÊN (%d HỎA)!" % f_cnt if f_cnt >= 2 else "PHẬT NỘ HỎA LIÊN!"
-	EventBus.floating_text_requested.emit(global_position + Vector2(0, -56), lotus_cry, Color("#FFD166"))
+	var lotus_cry: String = "NGŨ SẮC PHẬT NỘ HỎA LIÊN!! (BĂNG PHONG 3s)" if is_five_flame_lotus else ("PHẬT NỘ HỎA LIÊN (%d HỎA)!" % f_cnt if f_cnt >= 2 else "PHẬT NỘ HỎA LIÊN!")
+	EventBus.floating_text_requested.emit(global_position + Vector2(0, -56), lotus_cry, Color("#E0FBFC") if is_five_flame_lotus else Color("#FFD166"))
 	if not effect_tags.is_empty():
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -84), "✦ " + " · ".join(effect_tags.slice(0, 3)), Color("#72EFDD"))
 
@@ -376,7 +380,9 @@ func _detonate_fire_lotus() -> void:
 				enemy_node.apply_slow(0.50, 4.5)
 			elif _has_flame("di_hoa_16_hoa_van") and enemy_node.has_method("apply_slow"):
 				enemy_node.apply_slow(0.40, 4.5)
-			if _has_flame("di_hoa_12_cuu_long") and enemy_node.has_method("apply_stun"):
+			if is_five_flame_lotus and enemy_node.has_method("apply_stun"):
+				enemy_node.apply_stun(3.0)
+			elif _has_flame("di_hoa_12_cuu_long") and enemy_node.has_method("apply_stun"):
 				enemy_node.apply_stun(2.0)
 			elif _has_flame("di_hoa_18_phong_loi") and enemy_node.has_method("apply_stun"):
 				enemy_node.apply_stun(1.2)
