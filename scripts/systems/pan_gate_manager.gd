@@ -389,4 +389,10 @@ static func get_strong_ranking_roster_for(pd: Node) -> Array:
 		roster.append({ "rank": -11, "name": "[HOÀNG TUYỀN] Tàn Ảnh Hoàng Tuyền Yêu Thánh", "boss_id": "hoang_tuyen_yeu_thanh_boss", "diff": "nightmare", "realm": "Tứ Tinh Đấu Thánh Tàn Ảnh", "reward_fe": 1950 })
 		roster.append({ "rank": -12, "name": "[NHÂN ĐIỆN] Phó Điện Chủ Nhân Điện — Hồn Điện Trung Châu", "boss_id": "pho_dien_chu_nhan_dien_boss", "diff": "nightmare", "realm": "Tam Tinh Đấu Thánh", "reward_fe": 2300 })
 		roster.append({ "rank": -13, "name": "[ĐỈNH CH.10] Điện Chủ Hồn Điện HỒN DIỆT SINH (Ác Mộng)", "boss_id": "hon_diet_sinh_boss", "diff": "nightmare", "realm": "Ngũ Tinh Đấu Thánh", "reward_fe": 2900 })
+	if pd.has_flag("ch11_duoc_gioi_escaped") or pd.has_flag("ch11_viem_de_ascended") or bool(pd.is_demo_mode):
+		roster.append({ "rank": -14, "name": "[DƯỢC GIỚI] Hồn Hư Tử — Đệ Nhất Đan Sư Hồn Tộc", "boss_id": "hon_hu_tu_boss", "diff": "normal", "realm": "Thất Tinh Đấu Thánh", "reward_fe": 3400 })
+		roster.append({ "rank": -15, "name": "[CỔ ĐẾ] Đế Phẩm Sồ Đan — Linh Trí Bán Đế Vạn Cổ", "boss_id": "de_pham_so_dan_boss", "diff": "normal", "realm": "Nửa Bước Đấu Đế", "reward_fe": 4200 })
+		roster.append({ "rank": -16, "name": "[FINAL BOSS] HỒN ĐẾ HỒN THIÊN ĐẾ (3 Phase · Trảm Đế Đao)", "boss_id": "hon_thien_de_boss", "diff": "nightmare", "realm": "Đấu Đế · Song Đế Chiến", "reward_fe": 5800 })
+		roster.append({ "rank": -17, "name": "[SUPERBOSS #1] VÕ TỔ LÂM ĐỘNG (Bát Đại Tổ Phù)", "boss_id": "vo_to_lam_dong_boss", "diff": "nightmare", "realm": "Chúa Tể Đại Thiên · Tổ Cảnh", "reward_fe": 7500 })
+		roster.append({ "rank": -18, "name": "[SUPERBOSS #2] ĐẠI CHÚA TỂ MỤC TRẦN (Thương Khung Bảng)", "boss_id": "muc_ton_muc_tran_boss", "diff": "nightmare", "realm": "Chúa Tể Đại Thiên · Đỉnh Phong", "reward_fe": 9999 })
 	return roster

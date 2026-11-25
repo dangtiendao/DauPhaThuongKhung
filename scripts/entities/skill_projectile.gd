@@ -347,9 +347,15 @@ func _detonate_fire_lotus() -> void:
 		final_pen = 1.0
 		final_dmg *= 1.25
 		effect_tags.append("Đế Viêm 100% Xuyên")
+	var is_emperor_lotus: bool = (f_cnt >= 7 or _has_flame("di_hoa_01_de_viem"))
 	var is_six_flame_lotus: bool = (f_cnt >= 6)
 	var is_five_flame_lotus: bool = (f_cnt >= 5)
-	if is_six_flame_lotus:
+	if is_emperor_lotus:
+		final_dmg *= 2.50
+		ignore_def = 1.0
+		final_pen = 1.0
+		effect_tags.append("Hằng Cổ Đế Viêm · Dừng Thời Gian 5s")
+	elif is_six_flame_lotus:
 		final_dmg *= 1.75
 		ignore_def = 1.0
 		effect_tags.append("Lục Sắc Thánh Liên · Tịnh Hóa")
@@ -357,8 +363,8 @@ func _detonate_fire_lotus() -> void:
 		final_dmg *= 1.45
 		effect_tags.append("Ngũ Sắc Băng Phong 3s")
 
-	var lotus_cry: String = "✿ LỤC SẮC TỊNH LIÊN HỦY DIỆT HỎA LIÊN!! (XÓA KHIÊN · 3.5s)" if is_six_flame_lotus else ("NGŨ SẮC PHẬT NỘ HỎA LIÊN!! (BĂNG PHONG 3s)" if is_five_flame_lotus else ("PHẬT NỘ HỎA LIÊN (%d HỎA)!" % f_cnt if f_cnt >= 2 else "PHẬT NỘ HỎA LIÊN!"))
-	EventBus.floating_text_requested.emit(global_position + Vector2(0, -56), lotus_cry, Color("#FFAFCC") if is_six_flame_lotus else (Color("#E0FBFC") if is_five_flame_lotus else Color("#FFD166")))
+	var lotus_cry: String = "👑 HẰNG CỔ DỊ HỎA LIÊN (%d HỎA · #1 ĐẾ VIÊM)!! (DỪNG THỜI GIAN 5s)" % f_cnt if is_emperor_lotus else ("✿ LỤC SẮC TỊNH LIÊN HỦY DIỆT HỎA LIÊN!! (XÓA KHIÊN · 3.5s)" if is_six_flame_lotus else ("NGŨ SẮC PHẬT NỘ HỎA LIÊN!! (BĂNG PHONG 3s)" if is_five_flame_lotus else ("PHẬT NỘ HỎA LIÊN (%d HỎA)!" % f_cnt if f_cnt >= 2 else "PHẬT NỘ HỎA LIÊN!")))
+	EventBus.floating_text_requested.emit(global_position + Vector2(0, -56), lotus_cry, Color("#00F5D4") if is_emperor_lotus else (Color("#FFAFCC") if is_six_flame_lotus else (Color("#E0FBFC") if is_five_flame_lotus else Color("#FFD166"))))
 	if not effect_tags.is_empty():
 		EventBus.floating_text_requested.emit(global_position + Vector2(0, -84), "✦ " + " · ".join(effect_tags.slice(0, 3)), Color("#72EFDD"))
 
@@ -375,9 +381,11 @@ func _detonate_fire_lotus() -> void:
 			if out_dir == Vector2.ZERO:
 				out_dir = Vector2.RIGHT
 
-			if (is_six_flame_lotus or _has_flame("di_hoa_07_cuu_u_kim_to") or _has_flame("di_hoa_03_tinh_lien")) and enemy_node.has_method("break_boss_shield"):
+			if (is_emperor_lotus or is_six_flame_lotus or _has_flame("di_hoa_07_cuu_u_kim_to") or _has_flame("di_hoa_03_tinh_lien")) and enemy_node.has_method("break_boss_shield"):
 				enemy_node.break_boss_shield()
-			if is_six_flame_lotus and enemy_node.has_method("apply_def_shred"):
+			if is_emperor_lotus and enemy_node.has_method("apply_def_shred"):
+				enemy_node.apply_def_shred(0.60, 10.0)
+			elif is_six_flame_lotus and enemy_node.has_method("apply_def_shred"):
 				enemy_node.apply_def_shred(0.50, 8.0)
 			if _has_flame("cuu_u_minh_hoa") and enemy_node.has_method("apply_def_shred"):
 				enemy_node.apply_def_shred(0.15, 5.5)
@@ -387,7 +395,9 @@ func _detonate_fire_lotus() -> void:
 				enemy_node.apply_slow(0.50, 4.5)
 			elif _has_flame("di_hoa_16_hoa_van") and enemy_node.has_method("apply_slow"):
 				enemy_node.apply_slow(0.40, 4.5)
-			if is_six_flame_lotus and enemy_node.has_method("apply_stun"):
+			if is_emperor_lotus and enemy_node.has_method("apply_stun"):
+				enemy_node.apply_stun(5.0)
+			elif is_six_flame_lotus and enemy_node.has_method("apply_stun"):
 				enemy_node.apply_stun(3.5)
 			elif is_five_flame_lotus and enemy_node.has_method("apply_stun"):
 				enemy_node.apply_stun(3.0)

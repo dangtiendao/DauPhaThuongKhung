@@ -102,13 +102,23 @@ static func trigger_npc_interaction(npc_entry: Dictionary) -> void:
 			], "heal_full")
 
 	elif role_str == "story_tu_hon":
-		EventBus.dialogue_requested.emit(npc_name, sprite_p, [
-			"Nạp Lan Yên Nhiên (lạnh nhạt): 'Tiêu Viêm công tử, ba năm qua ngươi dậm chân tại Đấu Chi Khí Tam Đoạn. Khoảng cách giữa chúng ta đã là trời vực...'",
-			"Cát Diệp Trưởng Lão (phóng uy áp Đấu Linh): 'Vân Lam Tông tặng Tiêu Gia một viên Tụ Khí Tán Tam Phẩm, chỉ mong công tử hủy bỏ hôn ước này!'",
-			"Tiêu Viêm (rạch tay viết Hưu Thư đẫm máu): 'Lấy Tụ Khí Tán về đi! Không phải ngươi từ hôn ta, mà là TIÊU VIÊM TA HƯU NGƯƠI!'",
-			"Tiêu Viêm (gằn từng chữ): 'TAM THẬP NIÊN HÀ ĐÔNG, TAM THẬP NIÊN HÀ TÂY — MẠC KHI THIẾU NIÊN CÙNG! Ba năm sau ta sẽ bước lên Vân Lam Sơn rửa nhục!'",
-			"Nạp Lan Yên Nhiên tái mặt phất tay áo rời khỏi Tiêu Gia... (Nhận Buff [Ấn Ký Tôn Nghiêm +5% ATK] & mở Cổng Bắc lên Hậu Sơn!)"
-		], "flag:tu_hon_done")
+		if EmperorRealmManager.is_ng_plus_active(PlayerData):
+			EventBus.dialogue_choice_requested.emit(npc_name, sprite_p, [
+				"Nạp Lan Yên Nhiên (lạnh nhạt): 'Tiêu Viêm công tử, ba năm qua ngươi dậm chân tại Đấu Chi Khí Tam Đoạn. Khoảng cách giữa chúng ta đã là trời vực...'",
+				"Cát Diệp Trưởng Lão (phóng uy áp Đấu Linh): 'Vân Lam Tông tặng Tiêu Gia một viên Tụ Khí Tán Tam Phẩm, chỉ mong công tử hủy bỏ hôn ước này!'",
+				"Tiểu Y (ngồi trên vai Tiêu Viêm nháy mắt tinh nghịch — chỉ Tiêu Viêm thấy): 'Y Y nha~ Ông lão Đấu Linh này dám khoe uy áp trước mặt Đế Cảnh Viêm Đế sao?!'"
+			], [
+				{ "label": "☯ [NG+ Đế Cảnh] Phóng 0,01% Uy Áp Đế Cảnh Linh Hồn làm Cát Diệp & Nạp Lan đánh rơi chén trà ngơ ngác!", "action": "choice:tu_hon_ng_plus_flex" },
+				{ "label": "Rạch tay viết Hưu Thư chuẩn nguyên tác: 'Tam Thập Niên Hà Đông, Tam Thập Niên Hà Tây!'", "action": "flag:tu_hon_done" }
+			])
+		else:
+			EventBus.dialogue_requested.emit(npc_name, sprite_p, [
+				"Nạp Lan Yên Nhiên (lạnh nhạt): 'Tiêu Viêm công tử, ba năm qua ngươi dậm chân tại Đấu Chi Khí Tam Đoạn. Khoảng cách giữa chúng ta đã là trời vực...'",
+				"Cát Diệp Trưởng Lão (phóng uy áp Đấu Linh): 'Vân Lam Tông tặng Tiêu Gia một viên Tụ Khí Tán Tam Phẩm, chỉ mong công tử hủy bỏ hôn ước này!'",
+				"Tiêu Viêm (rạch tay viết Hưu Thư đẫm máu): 'Lấy Tụ Khí Tán về đi! Không phải ngươi từ hôn ta, mà là TIÊU VIÊM TA HƯU NGƯƠI!'",
+				"Tiêu Viêm (gằn từng chữ): 'TAM THẬP NIÊN HÀ ĐÔNG, TAM THẬP NIÊN HÀ TÂY — MẠC KHI THIẾU NIÊN CÙNG! Ba năm sau ta sẽ bước lên Vân Lam Sơn rửa nhục!'",
+				"Nạp Lan Yên Nhiên tái mặt phất tay áo rời khỏi Tiêu Gia... (Nhận Buff [Ấn Ký Tôn Nghiêm +5% ATK] & mở Cổng Bắc lên Hậu Sơn!)"
+			], "flag:tu_hon_done")
 
 	elif role_str == "story_nhuoc_lam":
 		if not PlayerData.has_flag("got_gia_nam_leave"):

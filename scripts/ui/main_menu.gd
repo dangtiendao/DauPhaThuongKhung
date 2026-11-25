@@ -102,14 +102,14 @@ func _build_title_ui() -> void:
 	menu_col.add_theme_constant_override("separation", 8)
 	add_child(menu_col)
 
-	var badge_lbl := _make_label("FAN-GAME 2D HD PIXEL ACTION RPG  •  TRỌN BỘ QUYỂN I & II (CHƯƠNG 01–07)", 12, Color("#70D6FF"))
+	var badge_lbl := _make_label("OFFICIAL RELEASE v1.0.0  •  TRỌN BỘ 4/4 QUYỂN (11/11 CHƯƠNG · ĐẠI KẾT CỤC VIÊM ĐẾ)", 12, Color("#70D6FF"))
 	menu_col.add_child(badge_lbl)
 
 	var title_lbl := _make_label("ĐẤU PHÁ\nTHƯƠNG KHUNG", 40, Color("#FFD166"))
 	title_lbl.add_theme_constant_override("outline_size", 8)
 	menu_col.add_child(title_lbl)
 
-	var sub_lbl := _make_label("Ô Thản Thành · Ma Thú Sơn Mạch · Tháp Qua Nhĩ · Đế Đô · Già Nam · Tam Thượng Vân Lam · Xuất Vân & Thiên Nhai Thành", 13, Color("#E9ECEF"))
+	var sub_lbl := _make_label("Ô Thản Thành · Già Nam · Trung Châu · Thiên Mộ · Bồ Đề Hóa Thánh · Đà Xá Cổ Đế Động Phủ · Song Đế Chiến & Đại Thiên Thế Giới", 13, Color("#E9ECEF"))
 	sub_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	menu_col.add_child(sub_lbl)
 
@@ -129,7 +129,7 @@ func _build_title_ui() -> void:
 	menu_col.add_child(new_btn)
 
 	# Nút 3: OPTION 1 — CHẾ ĐỘ DEMO (MỞ KHÓA TẤT CẢ!)
-	var demo_btn := _make_menu_button("★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (%d MAP · FULL ĐỒ)" % GameDatabase.maps_ordered.size(), Color("#E0AAFF"))
+	var demo_btn := _make_menu_button("★ CHẾ ĐỘ DEMO — MỞ KHÓA TẤT CẢ (%d MAP · VIÊM ĐẾ 23 DỊ HỎA)" % GameDatabase.maps_ordered.size(), Color("#E0AAFF"))
 	demo_btn.pressed.connect(_on_demo_unlock_all_pressed)
 	menu_col.add_child(demo_btn)
 
@@ -435,17 +435,17 @@ func _open_controls_panel() -> void:
 	var lines: String = (
 		"• [W A S D] / Mũi tên: Di chuyển 8 hướng\n"
 		+ "• [V] hoặc [Enter]: Nói chuyện NPC, Chạm Ma Thạch Bi, Mở Rương & Đi qua Cổng\n"
-		+ "• [Chuột Trái]: Đánh Combo 3 nhịp (Quyền Cước -> Vũ Khí Liền Thân)\n"
-		+ "• [Space]: Lướt né (tự nâng cấp Tử Vân Dực -> Tam Thiên Lôi Động!)\n"
-		+ "• [Chuột Phải / C]: Bật/Tắt Trọng Áp Huyền Trọng Xích (+30% EXP)\n"
-		+ "• [Q] [E] [R] [F] [T]: 15 Đấu Kỹ, Phật Nộ Hỏa Liên & Cốt Linh / Mỹ Đỗ Toa Hộ Pháp (bấm chuột trực tiếp được!)\n"
-		+ "• [G]: Triệu hồi / Đổi 4 Đồng Hành AI (Dược Lão / Tiểu Y Tiên / Thải Lân / Tiêu Huân Nhi)\n"
+		+ "• [Chuột Trái]: Đánh Combo 3 nhịp (phóng 3 Kiếm Khí Đấu Thánh -> 5 Đạo Kiếm Khí 23 Sắc Viêm Đế!)\n"
+		+ "• [Space]: Lướt né (tự tiến hóa Tử Vân Dực -> Lôi Động -> Hóa Dực -> Đạp Hư Không -> Xé Không -> Đấu Thánh -> Đế Bước 1.280px/s!)\n"
+		+ "• [Chuột Phải / C]: Bật/Tắt Trọng Áp Huyền Trọng Xích / Hằng Cổ Xích (+30% EXP)\n"
+		+ "• [Q] [E] [R] [F] [T] [X]: 37 Đấu Kỹ, Hằng Cổ Dị Hỏa Liên (7–23 Hỏa), Trợ Chiến [T] Viêm Đế & Tộc Văn Tiêu Tộc [X]\n"
+		+ "• [G]: Triệu hồi / Đổi 12 Đồng Hành AI (gồm Bắc Vương 7★, Chúc Khôn #12 + Khí Linh Tiểu Y thường trực!)\n"
 		+ "• [Z]: Radar Linh Hồn — Quét rương báu & phát hiện kẻ địch ẩn thân\n"
 		+ "• [1] [2] [3]: Uống nhanh Đan Dược hồi HP / Đấu Khí / EXP\n"
-		+ "• [I] Trang Bị 10 Ô & Khảm Ma Hạch  |  [K] Kho Đấu Kỹ  |  [B] Đột Phá\n"
-		+ "• [L] Lò Luyện Đan (Mini-game Hỏa Hầu + Đan Lôi)  |  [H] Dị Hỏa Bảng (28 Hỏa)\n"
-		+ "• [M] Thế Giới (%d Map · Ch01–Ch05), Hồng Nhan, Tâm Ma (23 Boss), Thiên Phần Tháp & Đồ Giám\n" % GameDatabase.maps_ordered.size()
-		+ "• [ESC] Tạm Dừng, Đổi Phím Tùy Chỉnh, Hiển Thị, Auto-Save, Lưu/Tải 3 Ô & Chế Độ DEMO"
+		+ "• [I] Trang Bị 10 Ô & Khảm Ma Hạch 1–10  |  [K] Kho 37 Đấu Kỹ  |  [B] Đột Phá · Cửu Chuyển · Viêm Đế\n"
+		+ "• [L] Lò Luyện Đan Phẩm 1–10 (+ Tiểu Y Luyện Nhanh)  |  [H] Dị Hỏa Bảng (28 Hỏa · 23 Dị Hỏa)\n"
+		+ "• [M] Thế Giới (%d Map · Ch.01–11), Hồng Nhan, Thiên Phủ (25 Cường Bảng), Tâm Ma (64 Boss), Tháp & Đồ Giám (118 loài)\n" % GameDatabase.maps_ordered.size()
+		+ "• [ESC] Tạm Dừng, True Ending Credits, Luân Hồi New Game+, Đổi Phím, Hiển Thị, Auto-Save, 3 Ô & DEMO"
 	)
 	var l := _make_label(lines, 13, Color("#F8F9FA"))
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

@@ -233,6 +233,18 @@ func _draw() -> void:
 			_draw_purifying_lotus_array(t)
 		"bac_vuong_tinh_lien_assist":
 			_draw_bac_vuong_tinh_lien_assist(t)
+		"emperor_soul_avatar":
+			_draw_emperor_soul_avatar(t)
+		"myriad_flames_meteor":
+			_draw_myriad_flames_meteor(t)
+		"flame_plaza_seal":
+			_draw_flame_plaza_seal(t)
+		"eternal_ruler_cleave":
+			_draw_eternal_ruler_cleave(t)
+		"genesis_fire_lotus":
+			_draw_genesis_fire_lotus(t)
+		"chuc_khon_assist":
+			_draw_chuc_khon_assist(t)
 		"ground_crater":
 			_draw_ground_crater(t)
 		"dan_lei_pillar":
@@ -1564,6 +1576,116 @@ func _draw_bac_vuong_tinh_lien_assist(t: float) -> void:
 		var bc: Color = Color(1.0, 0.84, 0.0, 0.94 * fade) if (i % 2 == 0) else Color(1.0, 0.69, 0.80, 0.94 * fade)
 		_draw_fractal_bolt(Vector2.ZERO, p_end, bc, Color(1.0, 1.0, 1.0, 0.98 * fade), 4.0 * fade, i + 307, 18.0)
 	draw_arc(Vector2.ZERO, r, 0.0, TAU, 60, Color(1.0, 0.95, 0.86, 0.96 * fade), 7.2 * fade)
+
+
+func _draw_emperor_soul_avatar(t: float) -> void:
+	# ĐẾ HỒN PHÁP TƯỚNG (Đế Cảnh Linh Hồn Ch.11): Vầng hào quang kim sắc vạn trượng + Ấn Hồn 12 Cánh + Trụ Quang Đế Hồn!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var r: float = radius_px * (0.26 + 0.88 * ease_t)
+	draw_line(Vector2(0, -radius_px * 1.95), Vector2(0, 18.0), Color(1.0, 0.82, 0.25, 0.62 * fade), 84.0 * fade)
+	draw_line(Vector2(0, -radius_px * 1.95), Vector2(0, 18.0), Color(1.0, 0.98, 0.88, 0.96 * fade), 32.0 * fade)
+	draw_circle(Vector2(0, -42.0 * ease_t), r * 0.52, Color(1.0, 0.84, 0.28, 0.24 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.96, elapsed * 2.4, Color("#FFD700"), Color("#FFFFFF"), fade, 12)
+	for i in range(12):
+		var a: float = float(i) * (TAU / 12.0) + elapsed * 1.4
+		var p_end := Vector2(cos(a), sin(a)) * (r * 1.12)
+		_draw_fractal_bolt(Vector2.ZERO, p_end, Color(1.0, 0.84, 0.22, 0.92 * fade), Color(1.0, 1.0, 1.0, 0.98 * fade), 3.8 * fade, i + 331, 16.0)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 60, Color(1.0, 0.96, 0.78, 0.96 * fade), 7.5 * fade)
+
+
+func _draw_myriad_flames_meteor(t: float) -> void:
+	# VẠN HỎA PHẦN THƯƠNG KHUNG (Ch.11 Viêm Đế): Mưa thiên thạch 23 sắc Dị Hỏa giáng từ trời xuống nổ rực mặt đất!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var r: float = radius_px * (0.25 + 0.94 * ease_t)
+	var palette: Array[Color] = [Color("#00F5D4"), Color("#FFD700"), Color("#FF4D6D"), Color("#C77DFF"), Color("#51CF66"), Color("#38BDF8"), Color("#FFAFCC")]
+	for i in range(11):
+		var fi: float = float(i)
+		var col: Color = palette[i % palette.size()]
+		var ang: float = fi * (TAU / 11.0) + 0.25
+		var land_p := Vector2(cos(ang), sin(ang)) * (radius_px * (0.28 + 0.62 * fmod(fi * 0.37, 1.0)))
+		var fall_t: float = clampf(t * 2.2 - fmod(fi * 0.13, 0.45), 0.0, 1.0)
+		var start_p: Vector2 = land_p + Vector2(-120.0, -340.0)
+		var cur_p: Vector2 = start_p.lerp(land_p, fall_t)
+		draw_line(cur_p + Vector2(-42.0, -110.0), cur_p, Color(col.r, col.g, col.b, 0.78 * fade), 10.0 * fade)
+		draw_circle(cur_p, 16.0 * fade, Color(col.r, col.g, col.b, 0.92 * fade))
+		draw_circle(cur_p, 7.5 * fade, Color(1.0, 1.0, 1.0, 0.98 * fade))
+		if fall_t > 0.85:
+			draw_arc(land_p, 48.0 * ease_t, 0.0, TAU, 24, Color(col.r, col.g, col.b, 0.86 * fade), 4.2 * fade)
+	draw_arc(Vector2.ZERO, r, 0.0, TAU, 64, Color(1.0, 0.88, 0.45, 0.92 * fade), 6.5 * fade)
+
+
+func _draw_flame_plaza_seal(t: float) -> void:
+	# DỊ HỎA QUẢNG TRƯỜNG — PHONG THIÊN (Ch.11): 23 Cột Lửa Thất Sắc kết vòng đại trận phong ấn vạn cổ!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.6), 0.0, 1.0)
+	var r: float = radius_px * (0.30 + 0.74 * ease_t)
+	draw_circle(Vector2.ZERO, r * 0.94, Color(0.02, 0.95, 0.85, 0.12 * fade))
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.92, -elapsed * 1.9, Color("#00F5D4"), Color("#FFD700"), fade, 12)
+	for i in range(23):
+		var a: float = float(i) * (TAU / 23.0) + elapsed * 0.45
+		var base_p := Vector2(cos(a), sin(a)) * r
+		var pc: Color = Color.from_hsv(float(i) / 23.0, 0.78, 1.0, 0.90 * fade)
+		var ph: float = (130.0 + 45.0 * sin(elapsed * 8.0 + float(i))) * ease_t
+		draw_line(base_p, base_p + Vector2(0.0, -ph), pc, 10.5 * fade)
+		draw_line(base_p, base_p + Vector2(0.0, -ph), Color(1.0, 1.0, 1.0, 0.92 * fade), 3.6 * fade)
+		draw_circle(base_p, 8.5 * fade, pc)
+	draw_arc(Vector2.ZERO, r * 1.04, 0.0, TAU, 64, Color(1.0, 0.92, 0.55, 0.95 * fade), 6.2 * fade)
+
+
+func _draw_eternal_ruler_cleave(t: float) -> void:
+	# HẰNG CỔ NHẤT XÍCH — VIÊM ĐẾ PHẦN THIÊN (Ch.11): Lưỡi Xích 23 Sắc Dị Hỏa bổ nứt đôi bầu trời!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.5), 0.0, 1.0)
+	var r: float = radius_px * (0.35 + 0.76 * ease_t)
+	var f_dir := Vector2(cos(aim_angle), sin(aim_angle))
+	var start_a: float = aim_angle - 1.55
+	var end_a: float = aim_angle + 1.55
+	for band in range(5):
+		var bc: Color = Color.from_hsv(fmod(float(band) * 0.19 + elapsed * 1.2, 1.0), 0.80, 1.0, (0.90 - float(band) * 0.12) * fade)
+		_draw_tapered_arc_ribbon(Vector2.ZERO, r * (0.78 + float(band) * 0.08), (34.0 - float(band) * 4.5) * fade, start_a, end_a, bc, 26)
+	_draw_tapered_arc_ribbon(Vector2.ZERO, r * 1.04, 14.0 * fade, aim_angle - 1.25, aim_angle + 1.25, Color(1.0, 1.0, 1.0, 0.98 * fade), 22)
+	draw_line(-f_dir * (r * 0.3), f_dir * (r * 1.28), Color(1.0, 0.96, 0.82, 0.94 * fade), 9.0 * fade)
+
+
+func _draw_genesis_fire_lotus(t: float) -> void:
+	# VIÊM ĐẾ HẰNG CỔ DỊ HỎA LIÊN (SÁNG THẾ — 23 Sắc): Tinh cầu 23 cánh sen thất sắc dừng thời gian rồi nổ sáng thế!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var r: float = radius_px * (0.22 + 1.05 * ease_t)
+	var flash_a: float = clampf(1.0 - t * 2.6, 0.0, 1.0)
+	if flash_a > 0.01:
+		draw_circle(Vector2.ZERO, r * 0.92, Color(1.0, 0.98, 0.90, 0.60 * flash_a))
+	for i in range(23):
+		var a: float = float(i) * (TAU / 23.0) + elapsed * 2.2
+		var d := Vector2(cos(a), sin(a))
+		var p := Vector2(-d.y, d.x)
+		var pc: Color = Color.from_hsv(float(i) / 23.0, 0.82, 1.0, 0.56 * fade)
+		var petal := PackedVector2Array([
+			d * (r * 0.18),
+			d * (r * 0.66) + p * (r * 0.10),
+			d * (r * 1.08),
+			d * (r * 0.66) - p * (r * 0.10)
+		])
+		draw_colored_polygon(petal, pc)
+		draw_polyline(PackedVector2Array([petal[0], petal[1], petal[2], petal[3], petal[0]]), Color(1.0, 1.0, 1.0, 0.86 * fade), 2.2 * fade)
+	_draw_ancient_rune_seal(Vector2.ZERO, r * 0.88, -elapsed * 2.6, Color("#FFD700"), Color("#00F5D4"), fade, 12)
+	draw_arc(Vector2.ZERO, r * 1.06, 0.0, TAU, 64, Color(1.0, 0.96, 0.82, 0.96 * fade), 8.5 * fade)
+
+
+func _draw_chuc_khon_assist(t: float) -> void:
+	# LÃO LONG HOÀNG CHÚC KHÔN (Đồng Hành #12): 3 Vết Cào Cổ Long Hoàng Tím-Kim Xé Hư Không!
+	var ease_t: float = _ease_out_expo(t)
+	var fade: float = clampf(1.0 - pow(t, 1.55), 0.0, 1.0)
+	var r: float = radius_px * (0.28 + 0.84 * ease_t)
+	var f_dir := Vector2(cos(aim_angle), sin(aim_angle))
+	var perp := Vector2(-f_dir.y, f_dir.x)
+	for k in range(-1, 2):
+		var off: Vector2 = perp * (float(k) * 26.0)
+		draw_line(off - f_dir * (r * 0.55), off + f_dir * (r * 1.05), Color(0.75, 0.35, 0.98, 0.82 * fade), 14.0 * fade)
+		draw_line(off - f_dir * (r * 0.55), off + f_dir * (r * 1.05), Color(1.0, 0.86, 0.35, 0.96 * fade), 5.0 * fade)
+	draw_arc(Vector2.ZERO, r * 0.92, 0.0, TAU, 48, Color(0.84, 0.56, 1.0, 0.86 * fade), 5.2 * fade)
 
 
 func _draw_generic_ring(t: float) -> void:

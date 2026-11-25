@@ -110,6 +110,14 @@
         { "pieces": 2, "desc": "+1.650 Công kích, +520 Linh Hồn & +105% Sát thương Hỏa", "stats": { "atk": 1650, "soul": 520, "flame_dmg": 105 } },
         { "pieces": 4, "desc": "+16.000 Sinh lực, +48% Chí mạng, +26% Hút máu & -35% Hồi chiêu", "stats": { "hp": 16000, "crit_chance": 48, "lifesteal": 26, "cooldown_red": 35 } }
       ]
+    },
+    "set_vinh_hang_viem_de": {
+      "id": "set_vinh_hang_viem_de",
+      "name": "Bộ Vĩnh Hằng Viêm Đế · Chúa Tể Đại Thiên",
+      "bonuses": [
+        { "pieces": 2, "desc": "+5.800 Công kích, +1.800 Linh Hồn & +220% Sát thương 23 Dị Hỏa", "stats": { "atk": 5800, "soul": 1800, "flame_dmg": 220 } },
+        { "pieces": 4, "desc": "+65.000 Sinh lực, +60% Chí mạng, +35% Hút máu & -45% Hồi chiêu", "stats": { "hp": 65000, "crit_chance": 60, "lifesteal": 35, "cooldown_red": 45 } }
+      ]
     }
   },
   "templates": {
@@ -664,6 +672,63 @@
       "icon": "res://assets/sprites/icons/icon_cauldron.png",
       "base_stats": { "soul": 620, "alchemy_bonus": 98, "flame_dmg": 135, "qi": 1250 },
       "description": "Thánh Đỉnh Chuẩn Cửu Phẩm do Đan Tháp Lão Tổ ban tặng — chống trọn Cửu Sắc & Hắc Kim Đan Lôi!"
+    },
+    "wpn_di_hoa_hang_co_xich": {
+      "id": "wpn_di_hoa_hang_co_xich",
+      "name": "Dị Hỏa Hằng Cổ Xích (Thần Binh 23 Dị Hỏa)",
+      "slot": "weapon",
+      "set_id": "set_vinh_hang_viem_de",
+      "icon": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "weapon_sprite": "res://assets/sprites/weapons/huyen_trong_xich.png",
+      "attack_sheet": "res://assets/sprites/player/tieu_viem_attack_ruler.png",
+      "attack_speed_mult": 1.38,
+      "base_stats": { "atk": 6800, "hp": 28000, "soul": 1600, "crit_chance": 45, "flame_dmg": 260, "lifesteal": 25 },
+      "description": "Thần binh chí tôn dung hợp trọn vẹn 23 Dị Hỏa thiên địa — chém gãy Trảm Đế Quỷ Huyết Đao của Hồn Thiên Đế!"
+    },
+    "arm_vinh_hang_viem_de_bao": {
+      "id": "arm_vinh_hang_viem_de_bao",
+      "name": "Vĩnh Hằng Viêm Đế Bào (Chúa Tể Đại Thiên)",
+      "slot": "armor",
+      "set_id": "set_vinh_hang_viem_de",
+      "icon": "res://assets/sprites/icons/icon_armor.png",
+      "base_stats": { "hp": 52000, "def": 3600, "qi": 6500, "soul": 1200, "flame_dmg": 150 },
+      "description": "Đế bào đen tuyền thêu 23 sắc cầu vồng Dị Hỏa — biểu tượng bất diệt của Viêm Đế Tiêu Viêm trên Cửu Tiêu Thương Khung!"
+    },
+    "wing_van_hoa_thai_so_duc": {
+      "id": "wing_van_hoa_thai_so_duc",
+      "name": "Vạn Hỏa Thái Sơ Chi Dực (23 Sắc Cầu Vồng)",
+      "slot": "wings",
+      "set_id": "set_vinh_hang_viem_de",
+      "icon": "res://assets/sprites/icons/icon_wings.png",
+      "base_stats": { "spd": 185, "atk": 2900, "crit_chance": 38, "cooldown_red": 32, "flame_dmg": 180 },
+      "description": "Đôi cánh ngưng tụ từ 23 ngọn Dị Hỏa nguyên thủy — một nhịp vỗ vượt ngàn dặm Đế Bước Hư Không!"
+    },
+    "pend_loi_de_to_phu_an": {
+      "id": "pend_loi_de_to_phu_an",
+      "name": "Lôi Đế Tổ Phù Ấn (Kỷ Niệm Võ Tổ & Đại Chúa Tể)",
+      "slot": "pendant",
+      "set_id": "set_vinh_hang_viem_de",
+      "icon": "res://assets/sprites/icons/icon_pendant.png",
+      "base_stats": { "atk": 3200, "def": 1800, "hp": 32000, "soul": 1400, "crit_chance": 30 },
+      "description": "Tín vật giao hữu của Võ Tổ Lâm Động & Đại Chúa Tể Mục Trần tại Đại Thiên Thế Giới — cộng +15% toàn bộ sát thương Đấu Kỹ!"
+    },
+    "ring_da_xa_co_de_gioi": {
+      "id": "ring_da_xa_co_de_gioi",
+      "name": "Đà Xá Cổ Đế Bản Nguyên Giới (Đế Viêm #1)",
+      "slot": "ring",
+      "set_id": "set_vinh_hang_viem_de",
+      "icon": "res://assets/sprites/icons/icon_ring.png",
+      "base_stats": { "atk": 2800, "soul": 2200, "hp": 26000, "flame_dmg": 210, "exp_bonus": 120 },
+      "description": "Chiếc nhẫn kết tinh từ giọt Nguyên Khí Đấu Đế cuối cùng của Đà Xá Cổ Đế — Đế Cảnh Linh Hồn vạn cổ bất diệt!"
+    },
+    "caul_duoc_de_bach_kim_dinh": {
+      "id": "caul_duoc_de_bach_kim_dinh",
+      "name": "Dược Đế Bạch Kim Đỉnh (Thiên Đỉnh Chí Tôn)",
+      "slot": "cauldron",
+      "set_id": "set_vinh_hang_viem_de",
+      "icon": "res://assets/sprites/icons/icon_cauldron.png",
+      "base_stats": { "soul": 2500, "alchemy_bonus": 150, "flame_dmg": 240, "qi": 5000 },
+      "description": "Đỉnh luyện đan chí tôn trấn áp mọi Hắc Ma Lôi Kiếp Cửu Phẩm & Đế Phẩm — bảo chứng danh hiệu Đan Tháp Vô Thượng Tôn!"
     }
   }
 }

@@ -9,6 +9,7 @@ const ThienPhanTowerMgr = preload("res://scripts/systems/thien_phan_tower_manage
 const PanGateMgr = preload("res://scripts/systems/pan_gate_manager.gd")
 const NineTurnMgr = preload("res://scripts/systems/nine_turn_manager.gd")
 const SaintRealmMgr = preload("res://scripts/systems/saint_realm_manager.gd")
+const EmperorRealmMgr = preload("res://scripts/systems/emperor_realm_manager.gd")
 
 var passed_count: int = 0
 var failed_count: int = 0
@@ -71,6 +72,7 @@ func _run_all_suites() -> void:
 	_suite_13_audio_and_modular_refactor()
 	_suite_14_ch09_systems()
 	_suite_15_ch10_systems()
+	await _suite_16_ch11_systems()
 
 	_restore_user_settings()
 
@@ -95,10 +97,10 @@ func _suite_01_json_schema() -> void:
 	var json_files: Array = [
 		"res://data/realms.json", "res://data/flames.json", "res://data/skills.json",
 		"res://data/alchemy_items.json", "res://data/equipment.json",
-		"res://data/enemies.json", "res://data/enemies_ch04.json", "res://data/enemies_ch05.json", "res://data/enemies_ch06.json", "res://data/enemies_ch07.json", "res://data/enemies_ch08.json", "res://data/enemies_ch09.json", "res://data/enemies_ch10.json",
-		"res://data/maps.json", "res://data/maps_ch04.json", "res://data/maps_ch05.json", "res://data/maps_ch06.json", "res://data/maps_ch07.json", "res://data/maps_ch08.json", "res://data/maps_ch09.json", "res://data/maps_ch10.json",
-		"res://data/quests_ch01.json", "res://data/quests_ch04.json", "res://data/quests_ch05.json", "res://data/quests_ch06.json", "res://data/quests_ch07.json", "res://data/quests_ch08.json", "res://data/quests_ch09.json", "res://data/quests_ch10.json",
-		"res://data/dialogues_ch04.json", "res://data/dialogues_ch05.json", "res://data/dialogues_ch06.json", "res://data/dialogues_ch07.json", "res://data/dialogues_ch08.json", "res://data/dialogues_ch09.json", "res://data/dialogues_ch10.json"
+		"res://data/enemies.json", "res://data/enemies_ch04.json", "res://data/enemies_ch05.json", "res://data/enemies_ch06.json", "res://data/enemies_ch07.json", "res://data/enemies_ch08.json", "res://data/enemies_ch09.json", "res://data/enemies_ch10.json", "res://data/enemies_ch11.json",
+		"res://data/maps.json", "res://data/maps_ch04.json", "res://data/maps_ch05.json", "res://data/maps_ch06.json", "res://data/maps_ch07.json", "res://data/maps_ch08.json", "res://data/maps_ch09.json", "res://data/maps_ch10.json", "res://data/maps_ch11.json",
+		"res://data/quests_ch01.json", "res://data/quests_ch04.json", "res://data/quests_ch05.json", "res://data/quests_ch06.json", "res://data/quests_ch07.json", "res://data/quests_ch08.json", "res://data/quests_ch09.json", "res://data/quests_ch10.json", "res://data/quests_ch11.json",
+		"res://data/dialogues_ch04.json", "res://data/dialogues_ch05.json", "res://data/dialogues_ch06.json", "res://data/dialogues_ch07.json", "res://data/dialogues_ch08.json", "res://data/dialogues_ch09.json", "res://data/dialogues_ch10.json", "res://data/dialogues_ch11.json"
 	]
 	for jf in json_files:
 		_assert(FileAccess.file_exists(jf), "JSON exists: " + jf)
@@ -115,13 +117,13 @@ func _suite_01_json_schema() -> void:
 	for fl in GameDatabase.flames_ordered:
 		_assert(fl is Dictionary and str(fl.get("id", "")) != "" and str(fl.get("lotus_effect", "")) != "", "Flame entry valid: %s" % str(fl.get("id", "")))
 
-	_assert(GameDatabase.skills_by_id.size() == 32, "32 skills loaded", "got %d" % GameDatabase.skills_by_id.size())
+	_assert(GameDatabase.skills_by_id.size() == 37, "37 skills loaded", "got %d" % GameDatabase.skills_by_id.size())
 	for sid in GameDatabase.skills_by_id.keys():
 		var sk: Dictionary = GameDatabase.skills_by_id[sid]
 		_assert(str(sk.get("name", "")) != "" and str(sk.get("icon", "")).begins_with("res://"), "Skill valid: " + str(sid))
 
-	_assert(GameDatabase.items_by_id.size() >= 72, "72+ alchemy items loaded", "got %d" % GameDatabase.items_by_id.size())
-	_assert(GameDatabase.recipes_list.size() >= 32, "32+ alchemy recipes loaded", "got %d" % GameDatabase.recipes_list.size())
+	_assert(GameDatabase.items_by_id.size() >= 83, "83+ alchemy items loaded", "got %d" % GameDatabase.items_by_id.size())
+	_assert(GameDatabase.recipes_list.size() >= 36, "36+ alchemy recipes loaded", "got %d" % GameDatabase.recipes_list.size())
 	for rec in GameDatabase.recipes_list:
 		var out_id: String = str(rec.get("output_item", ""))
 		_assert(GameDatabase.items_by_id.has(out_id), "Recipe output exists: " + out_id)
@@ -132,8 +134,8 @@ func _suite_01_json_schema() -> void:
 
 	_assert(GameDatabase.equipment_slots.size() == 10, "10 equipment slots")
 	_assert(GameDatabase.equipment_rarities.size() == 6, "6 equipment rarities")
-	_assert(GameDatabase.equipment_sets.size() >= 10, "10+ equipment sets")
-	_assert(GameDatabase.equipment_templates.size() >= 58, "58+ equipment templates")
+	_assert(GameDatabase.equipment_sets.size() >= 11, "11+ equipment sets")
+	_assert(GameDatabase.equipment_templates.size() >= 64, "64+ equipment templates")
 	var valid_slots: Dictionary = {}
 	for sl in GameDatabase.equipment_slots:
 		valid_slots[str(sl.get("id", ""))] = true
@@ -148,17 +150,17 @@ func _suite_01_json_schema() -> void:
 		if bool(ed.get("is_boss", false)):
 			boss_cnt += 1
 			_assert(str(ed.get("anim_sheet", "")) != "", "Boss has anim_sheet: " + str(eid))
-	_assert(GameDatabase.enemies_by_id.size() >= 105, "105+ enemies loaded", "got %d" % GameDatabase.enemies_by_id.size())
-	_assert(boss_cnt >= 56, "56+ bosses loaded", "got %d" % boss_cnt)
+	_assert(GameDatabase.enemies_by_id.size() >= 118, "118+ enemies loaded", "got %d" % GameDatabase.enemies_by_id.size())
+	_assert(boss_cnt >= 64, "64+ bosses loaded", "got %d" % boss_cnt)
 
-	_assert(GameDatabase.all_quests.size() >= 86, "86+ quests loaded", "got %d" % GameDatabase.all_quests.size())
+	_assert(GameDatabase.all_quests.size() >= 96, "96+ quests loaded", "got %d" % GameDatabase.all_quests.size())
 	var seen_qids: Dictionary = {}
 	for q in GameDatabase.all_quests:
 		var qid: String = str(q.get("id", ""))
 		_assert(qid != "" and not seen_qids.has(qid), "Quest ID unique: " + qid)
 		seen_qids[qid] = true
 
-	_assert(GameDatabase.maps_ordered.size() >= 60, "60+ maps loaded", "got %d" % GameDatabase.maps_ordered.size())
+	_assert(GameDatabase.maps_ordered.size() >= 67, "67+ maps loaded", "got %d" % GameDatabase.maps_ordered.size())
 	_assert(GameDatabase.maps_by_id.has(GameDatabase.start_map_id), "Start map exists: " + GameDatabase.start_map_id)
 	for mid in GameDatabase.maps_by_id.keys():
 		var md: Dictionary = GameDatabase.maps_by_id[mid]
@@ -252,10 +254,10 @@ func _suite_02_assets_exist() -> void:
 
 
 # =========================================================
-# SUITE 3: WORLD PORTAL GRAPH CONNECTIVITY (60 MAPS BFS)
+# SUITE 3: WORLD PORTAL GRAPH CONNECTIVITY (67 MAPS BFS)
 # =========================================================
 func _suite_03_portal_graph_bfs() -> void:
-	print("[Suite 3] World Portal Graph Connectivity (60 Maps BFS)...")
+	print("[Suite 3] World Portal Graph Connectivity (67 Maps BFS)...")
 	var adj: Dictionary = {}
 	for mid in GameDatabase.maps_by_id.keys():
 		adj[str(mid)] = []
@@ -360,6 +362,7 @@ func _suite_05_save_load_roundtrip() -> void:
 		"last_harvest_playtime": 12.5, "total_harvests": 3, "ziyan_expeditions": 4, "strong_rank_cleared": {}
 	}
 	PlayerData.ma_doc_ban_stacks = 7
+	PlayerData.ng_plus_cycle = 2
 	PlayerData.saved_player_pos = Vector2(777.0, 333.0)
 	PlayerData.has_saved_player_pos = true
 
@@ -384,7 +387,7 @@ func _suite_05_save_load_roundtrip() -> void:
 	_assert(int(PlayerData.skill_mastery_uses.get("bat_cuc_bang", 0)) == 42, "Restored skill mastery")
 	_assert(str(PlayerData.get_boss_rush_record("la_hau_boss", "nightmare").get("best_grade", "")) == "SS", "Restored boss rush record")
 	_assert(PanGateMgr.get_hall_level(PlayerData, "dan_duong") == 2 and PanGateMgr.get_hall_level(PlayerData, "am_duong") == 3 and PanGateMgr.get_hall_level(PlayerData, "am_vong") == 2 and PanGateMgr.get_hall_level(PlayerData, "tinh_than_tran") == 3 and PanGateMgr.get_hall_level(PlayerData, "thien_phu_lien_quan") == 2, "Restored pan_gate_state 6 halls")
-	_assert(PlayerData.ma_doc_ban_stacks == 7, "Restored ma_doc_ban_stacks")
+	_assert(PlayerData.ma_doc_ban_stacks == 7 and PlayerData.ng_plus_cycle == 2, "Restored ma_doc_ban_stacks & ng_plus_cycle")
 	_assert(PlayerData.has_saved_player_pos and PlayerData.saved_player_pos.is_equal_approx(Vector2(777.0, 333.0)), "Restored player position")
 
 	# Kiểm thử tự nâng cấp bản lưu cũ (v0.3 dừng ở mốc 21 -> tự mở tiếp Ch.04/Ch.05)
@@ -409,16 +412,16 @@ func _suite_06_demo_mode() -> void:
 	print("[Suite 6] DEMO Mode (activate_demo_unlock_all)...")
 	PlayerData.activate_demo_unlock_all(3)
 	_assert(PlayerData.is_demo_mode, "DEMO flag active")
-	_assert(PlayerData.realm_index == 11 and PlayerData.stage == 6 and PlayerData.nine_turn_level == 9, "DEMO realm is Luc Tinh Dau Thanh + Cuu Chuyen 9/9")
-	_assert(PlayerData.has_flag("ch04_completed") and PlayerData.has_flag("ch05_completed") and PlayerData.has_flag("ch06_completed") and PlayerData.has_flag("ch07_completed") and PlayerData.has_flag("ch08_completed") and PlayerData.has_flag("ch09_completed") and PlayerData.has_flag("ch10_completed") and PlayerData.has_flag("ch10_thien_phu_founded"), "DEMO unlocks Ch01-Ch10 story flags")
+	_assert(PlayerData.realm_index == 12 and PlayerData.nine_turn_level == 9, "DEMO realm is Viem De (Realm 12) + Cuu Chuyen 9/9")
+	_assert(PlayerData.has_flag("ch04_completed") and PlayerData.has_flag("ch05_completed") and PlayerData.has_flag("ch06_completed") and PlayerData.has_flag("ch07_completed") and PlayerData.has_flag("ch08_completed") and PlayerData.has_flag("ch09_completed") and PlayerData.has_flag("ch10_completed") and PlayerData.has_flag("ch11_completed") and PlayerData.has_flag("ch11_viem_de_ascended"), "DEMO unlocks Ch01-Ch11 story flags")
 	_assert(PlayerData.unlocked_flames.size() == 28, "DEMO unlocks all 28 flames")
-	_assert(PlayerData.unlocked_skills.size() == GameDatabase.skills_by_id.size() and PlayerData.unlocked_skills.size() == 32, "DEMO unlocks all 32 skills")
-	_assert(PlayerData.unlocked_companions.size() == 11 and PlayerData.unlocked_companions.has("bac_vuong") and PlayerData.unlocked_companions.has("thai_lan_tieu_tieu"), "DEMO unlocks all 11 companions incl. Bac Vuong & Thai Lan-Tieu Tieu")
-	_assert(PlayerData.has_van_lac_passive() and PlayerData.has_dau_vuong_wings() and PlayerData.has_dau_tong_void_step() and PlayerData.has_dau_ton_spatial_blink() and PlayerData.has_tam_thien_immortal_body() and SaintRealmMgr.has_dau_thanh_domain(PlayerData) and SaintRealmMgr.has_tieu_y_spirit(PlayerData), "DEMO enables Dau Thanh Domain & Khi Linh Tieu Y")
-	_assert(PlayerData.get_assist_mode() == "tinh_lien_hop_bich", "DEMO upgrades [T] Assist to Tinh Lien Hop Bich")
-	_assert(PlayerData.lotus_fusion_flames.size() == 6 and PlayerData.get_lotus_max_flames() == 6, "DEMO equips 6-Flame Luc Sac Thanh Lien")
+	_assert(PlayerData.unlocked_skills.size() == GameDatabase.skills_by_id.size() and PlayerData.unlocked_skills.size() == 37, "DEMO unlocks all 37 skills")
+	_assert(PlayerData.unlocked_companions.size() == 12 and PlayerData.unlocked_companions.has("bac_vuong") and PlayerData.unlocked_companions.has("chuc_khon_long_hoang"), "DEMO unlocks all 12 companions incl. Chuc Khon Long Hoang")
+	_assert(PlayerData.has_van_lac_passive() and PlayerData.has_dau_vuong_wings() and PlayerData.has_dau_tong_void_step() and PlayerData.has_dau_ton_spatial_blink() and PlayerData.has_tam_thien_immortal_body() and SaintRealmMgr.has_dau_thanh_domain(PlayerData) and SaintRealmMgr.has_tieu_y_spirit(PlayerData) and EmperorRealmMgr.has_de_canh_soul(PlayerData) and EmperorRealmMgr.is_viem_de_emperor(PlayerData), "DEMO enables Viem De Emperor & De Canh Soul")
+	_assert(PlayerData.get_assist_mode() == "viem_de_phap_tuong", "DEMO upgrades [T] Assist to Viem De Phap Tuong")
+	_assert(PlayerData.lotus_fusion_flames.size() == 8 and PlayerData.get_lotus_max_flames() == 23, "DEMO equips 8-Flame Hang Co Di Hoa Lien (max 23)")
 	_assert(PanGateMgr.is_thien_phu_evolved(PlayerData) and PanGateMgr.get_hall_level(PlayerData, "thien_phu_lien_quan") == 2, "DEMO initializes Thien Phu Lien Minh Tier-4 with 6th hall Lv.2")
-	_assert(PlayerData.weapon_core_sockets.size() == 3 and PlayerData.weapon_core_sockets[0] == "core_kim_loi_9", "DEMO sockets 3 cores incl. core_kim_loi_9")
+	_assert(PlayerData.weapon_core_sockets.size() == 3 and PlayerData.weapon_core_sockets[0] == "core_de_viem_10", "DEMO sockets 3 cores incl. core_de_viem_10")
 	var has_44: bool = false
 	for r in PlayerData.story_relics:
 		if str(r).find("4/4") != -1:
@@ -488,13 +491,14 @@ func _suite_08_live_scene_and_panels() -> void:
 		and hud.get("panel_alchemy") != null
 		and hud.get("panel_auction") != null
 		and hud.get("panel_equipment") != null
-		and hud.get("panel_skills_cultivation") != null,
-		"All 7 extracted HUD panels initialized"
+		and hud.get("panel_skills_cultivation") != null
+		and hud.get("panel_ending_credits") != null,
+		"All 8 extracted HUD panels initialized"
 	)
 
 	# Mở toàn bộ modal & tab để đảm bảo 0 lỗi dựng UI sau refactor
 	var modal_host: Control = hud.get("modal_content_host") as Control
-	for mk in ["pause", "equipment", "skills", "breakthrough", "alchemy", "flames"]:
+	for mk in ["pause", "equipment", "skills", "breakthrough", "alchemy", "flames", "ending_credits"]:
 		hud.set("current_modal", mk)
 		hud.call("_populate_modal")
 		_assert(modal_host.get_child_count() > 0, "HUD modal populated: " + mk)
@@ -537,10 +541,10 @@ func _suite_08_live_scene_and_panels() -> void:
 
 
 # =========================================================
-# SUITE 9: 8-FRAME DEFAULT SPRITESHEET & CH.04-10 ART VERIFICATION
+# SUITE 9: 8-FRAME DEFAULT SPRITESHEET & CH.04-11 ART VERIFICATION
 # =========================================================
 func _suite_09_8frame_spritesheets() -> void:
-	print("[Suite 9] 8-Frame Default Spritesheet & Unique Art Verification (8 Player + 56 Boss + 32 Skills + 27 Tiles + 39 NPCs)...")
+	print("[Suite 9] 8-Frame Default Spritesheet & Unique Art Verification (8 Player + 64 Boss + 37 Skills + 34 Tiles + 47 NPCs)...")
 	var player_sheets: Array = [
 		{ "p": "res://assets/sprites/player/tieu_viem_idle.png", "kind": "square", "fh": 4, "fv": 2 },
 		{ "p": "res://assets/sprites/player/tieu_viem_run.png", "kind": "square", "fh": 4, "fv": 2 },
@@ -579,9 +583,9 @@ func _suite_09_8frame_spritesheets() -> void:
 		for st in ["idle", "move", "windup", "strike"]:
 			var st_arr: PackedInt32Array = SpriteAnimHelper.get_enemy_state_frames(bmeta, st)
 			_assert(st_arr.size() == 2, "Boss 8f state has 2 crisp frames (%s): %s" % [st, ap], "got %s" % str(st_arr))
-	_assert(checked_boss_sheets.size() == 56, "Verified all 56/56 unique boss anim sheets are 8 frames", "got %d" % checked_boss_sheets.size())
+	_assert(checked_boss_sheets.size() == 64, "Verified all 64/64 unique boss anim sheets are 8 frames", "got %d" % checked_boss_sheets.size())
 
-	# Kiểm tra 32/32 Đấu Kỹ đều có icon riêng biệt (không tái sử dụng trùng lặp)
+	# Kiểm tra 37/37 Đấu Kỹ đều có icon riêng biệt (không tái sử dụng trùng lặp)
 	var unique_skill_icons: Dictionary = {}
 	for sid in GameDatabase.skills_by_id.keys():
 		var sk: Dictionary = GameDatabase.skills_by_id[sid]
@@ -589,9 +593,9 @@ func _suite_09_8frame_spritesheets() -> void:
 		var itex: Texture2D = load(ip)
 		_assert(itex != null and itex.get_width() == 56 and itex.get_height() == 56, "Skill icon is 56x56: " + ip)
 		unique_skill_icons[ip] = true
-	_assert(unique_skill_icons.size() == 32, "All 32 skills have 32 unique icons", "got %d" % unique_skill_icons.size())
+	_assert(unique_skill_icons.size() == 37, "All 37 skills have 37 unique icons", "got %d" % unique_skill_icons.size())
 
-	# Kiểm tra 27 tileset vùng mới Ch.04–10 chuẩn 128x128
+	# Kiểm tra 34 tileset vùng mới Ch.04–11 chuẩn 128x128
 	var new_tiles: Array = [
 		"res://assets/sprites/tiles/de_do_palace.png",
 		"res://assets/sprites/tiles/yunlan_marble.png",
@@ -619,13 +623,20 @@ func _suite_09_8frame_spritesheets() -> void:
 		"res://assets/sprites/tiles/thien_phu_grand_citadel.png",
 		"res://assets/sprites/tiles/hoang_tuyen_abyss_stone.png",
 		"res://assets/sprites/tiles/nhan_dien_bone_fortress.png",
-		"res://assets/sprites/tiles/yeu_hoa_lotus_sea.png"
+		"res://assets/sprites/tiles/yeu_hoa_lotus_sea.png",
+		"res://assets/sprites/tiles/duoc_gioi_herb_terrace.png",
+		"res://assets/sprites/tiles/tang_thien_shattered_ridge.png",
+		"res://assets/sprites/tiles/gia_nam_deep_magma.png",
+		"res://assets/sprites/tiles/co_de_palace_floor.png",
+		"res://assets/sprites/tiles/cuu_tieu_blood_clouds.png",
+		"res://assets/sprites/tiles/o_than_wedding_plaza.png",
+		"res://assets/sprites/tiles/dai_thien_cosmic_bridge.png"
 	]
 	for tp in new_tiles:
 		var ttex: Texture2D = load(tp)
 		_assert(ttex != null and ttex.get_width() == 128 and ttex.get_height() == 128, "New regional tile is 128x128: " + tp)
 
-	# Kiểm tra 39 sprite NPC mới Ch.04–10
+	# Kiểm tra 47 sprite NPC mới Ch.04–11
 	var new_npcs: Array = [
 		"res://assets/sprites/npcs/npc_nap_lan_kiet.png",
 		"res://assets/sprites/npcs/npc_phap_ma.png",
@@ -665,11 +676,19 @@ func _suite_09_8frame_spritesheets() -> void:
 		"res://assets/sprites/npcs/npc_bac_vuong.png",
 		"res://assets/sprites/npcs/npc_tinh_lien_yeu_thanh.png",
 		"res://assets/sprites/npcs/npc_tieu_y.png",
-		"res://assets/sprites/npcs/npc_huan_nhi_dau_thanh.png"
+		"res://assets/sprites/npcs/npc_huan_nhi_dau_thanh.png",
+		"res://assets/sprites/npcs/npc_duoc_dien_lao_to.png",
+		"res://assets/sprites/npcs/npc_viem_tan_loi_doanh.png",
+		"res://assets/sprites/npcs/npc_tieu_chien_reunion.png",
+		"res://assets/sprites/npcs/npc_chuc_khon_long_hoang.png",
+		"res://assets/sprites/npcs/npc_da_xa_co_de_statue.png",
+		"res://assets/sprites/npcs/npc_huan_nhi_bride.png",
+		"res://assets/sprites/npcs/npc_thai_lan_bride.png",
+		"res://assets/sprites/npcs/npc_dai_thien_portal.png"
 	]
 	for np in new_npcs:
 		var ntex: Texture2D = load(np)
-		_assert(ntex != null and ntex.get_width() >= 92 and ntex.get_height() >= 92, "New Ch.04-10 NPC sprite loads cleanly: " + np)
+		_assert(ntex != null and ntex.get_width() >= 92 and ntex.get_height() >= 92, "New Ch.04-11 NPC sprite loads cleanly: " + np)
 
 
 # =========================================================
@@ -1360,6 +1379,180 @@ func _suite_15_ch10_systems() -> void:
 		var f10 := FileAccess.open(core_p10, FileAccess.READ)
 		var loc10: int = f10.get_as_text().split("\n").size() if f10 != null else 99999
 		_assert(loc10 < 1800, "Core script stays strictly under 1800 LOC: %s (%d LOC)" % [core_p10, loc10])
+
+
+# =========================================================
+# SUITE 16: v1.0.0 CH.11 ĐẠI KẾT CỤC VIÊM ĐẾ (ĐẾ CẢNH · PHẨM 10 · 23 DỊ HỎA · 3-PHASE BOSS · NG+)
+# =========================================================
+func _suite_16_ch11_systems() -> void:
+	print("[Suite 16] v1.0.0 Ch.11 Systems (7 Maps, 8 Bosses, 22 BGMs, De Canh Tier-10, Viem De 23 Flames, 3-Phase Boss, Chuc Khon #12, NG+)...")
+	PlayerData.reset_for_new_game(1)
+
+	# 1. 4 Bản nhạc nền Ch.11 mới -> tổng 22 BGM hợp lệ & nạp sạch 3 mô-đun mới
+	_assert(AudioManager.bgm_tracks.size() >= 22, "AudioManager built 22+ procedural BGM tracks", "got %d" % AudioManager.bgm_tracks.size())
+	for ch11_bk in ["bgm_co_de_dong_phu", "bgm_song_de_chi_chien", "bgm_o_than_dai_hon", "bgm_dai_thien_the_gioi"]:
+		var st = AudioManager.bgm_tracks.get(ch11_bk, null)
+		_assert(st is AudioStreamWAV and (st as AudioStreamWAV).data.size() > 10000 and (st as AudioStreamWAV).loop_mode == AudioStreamWAV.LOOP_FORWARD, "Ch.11 BGM track valid looping WAV: " + ch11_bk)
+		AudioManager.play_bgm(ch11_bk)
+		_assert(AudioManager.current_bgm_name == ch11_bk, "AudioManager plays Ch.11 BGM cleanly: " + ch11_bk)
+	_assert(load("res://scripts/systems/audio_bgm_ch11.gd") != null, "audio_bgm_ch11.gd loads cleanly")
+	_assert(load("res://scripts/systems/emperor_realm_manager.gd") != null, "emperor_realm_manager.gd loads cleanly")
+	_assert(load("res://scripts/ui/panels/panel_ending_credits.gd") != null, "panel_ending_credits.gd loads cleanly")
+
+	# 2. Xác nhận 7 Map Ch.11, 10 Main Quests q87..q96, 14 NPC dialogue roles, Set #11 & 5 Đấu Kỹ Đế Cảnh
+	for m11 in [
+		"ch11_duoc_gioi_van_duoc_son", "ch11_tang_thien_son_mach", "ch11_day_thap_gia_nam",
+		"ch11_co_de_dong_phu", "ch11_cuu_tieu_thuong_khung", "ch11_o_than_thanh_dai_hon", "ch11_dai_thien_giao_gioi"
+	]:
+		_assert(GameDatabase.maps_by_id.has(m11), "Ch.11 map loaded: " + m11)
+	for q11 in [
+		"q87_ch11_duoc_dien_huyen_dan", "q88_ch11_duoc_gioi_pha_vay", "q89_ch11_de_canh_tang_thien",
+		"q90_ch11_cuu_phu_than_tieu_chien", "q91_ch11_day_thap_chuc_khon", "q92_ch11_de_pham_so_dan",
+		"q93_ch11_van_hoa_trieu_tong", "q94_ch11_song_de_chi_chien", "q95_ch11_o_than_dai_hon",
+		"q96_ch11_dai_thien_chi_mon"
+	]:
+		_assert(GameDatabase.quests_by_id.has(q11), "Ch.11 quest loaded: " + q11)
+	for r11 in [
+		"ch11_duoc_dien_lao_to", "ch11_viem_tan_alliance", "ch11_tieu_chien_rescue", "ch11_chuc_khon_reunion",
+		"ch11_tu_nghien_father", "ch11_da_xa_co_de_statue", "ch11_song_de_victory", "ch11_wedding_ceremony",
+		"ch11_eq01_tieu_y_tien", "ch11_eq02_van_van", "ch11_eq03_nha_phi", "ch11_eq04_candy_party",
+		"ch11_eq05_ancestor_oath", "ch11_dai_thien_monolith"
+	]:
+		_assert(not GameDatabase.get_dialogue_def(r11).is_empty(), "Ch.11 dialogue role loaded: " + r11)
+	_assert(GameDatabase.equipment_sets.has("set_vinh_hang_viem_de"), "Set #11 set_vinh_hang_viem_de loaded")
+	for sk11 in ["de_hon_phap_tuong", "van_hoa_phan_thuong_khung", "di_hoa_quang_truong", "hang_co_xich_tram", "hang_co_di_hoa_lien"]:
+		_assert(GameDatabase.skills_by_id.has(sk11), "Ch.11 Emperor skill loaded: " + sk11)
+
+	# 3. Đế Cảnh Linh Hồn (SOUL >= 3500, max_tier = 10), Luyện Đan Phẩm 10 (Đà Xá Đế Phẩm Hoàn Đan +25% chỉ số) & Lôi Kiếp Huyền Đan (+150 SOUL)
+	var rec_t10: Dictionary = {}
+	for r in GameDatabase.recipes_list:
+		if str(r.get("id", "")) == "recipe_da_xa_de_pham_hoan_dan":
+			rec_t10 = r
+			break
+	_assert(not rec_t10.is_empty() and int(rec_t10.get("tier", 0)) == 10, "Tier 10 recipe_da_xa_de_pham_hoan_dan loaded")
+	for ik11 in (rec_t10.get("ingredients", {}) as Dictionary).keys():
+		PlayerData.add_item(str(ik11), int((rec_t10["ingredients"] as Dictionary)[ik11]) + 2)
+	PlayerData.bonus_soul = 1500
+	_assert(int(PlayerData.get_soul_realm_info().get("alchemy_max_tier", 6)) == 9, "SOUL 1500 is Thien Canh (max_tier=9)")
+	_assert(not bool(AlchemySystem.can_craft(rec_t10).get("ok", true)), "Tier 10 Pill BLOCKED in Thien Canh (SOUL < 3500)")
+
+	PlayerData.bonus_soul = 2300
+	PlayerData.set_story_flag("ch11_de_canh_soul_awakened")
+	_assert(EmperorRealmMgr.has_de_canh_soul(PlayerData) and PlayerData.get_soul() >= 3500, "ch11_de_canh_soul_awakened reaches De Canh Soul (3500+ SOUL)")
+	_assert(int(PlayerData.get_soul_realm_info().get("alchemy_max_tier", 6)) == 10, "De Canh Soul unlocks alchemy_max_tier=10")
+	_assert(PlayerData.is_skill_unlocked("de_hon_phap_tuong"), "De Canh Soul unlocks de_hon_phap_tuong")
+	_assert(bool(AlchemySystem.can_craft(rec_t10).get("ok", false)), "Tier 10 Da Xa De Pham Hoan Dan ALLOWED in De Canh")
+
+	var soul_pre_lk: int = PlayerData.get_soul()
+	PlayerData.add_item("pill_loi_kiep_huyen_dan", 1)
+	_assert(PlayerData.use_consumable("pill_loi_kiep_huyen_dan", Vector2.ZERO) and PlayerData.get_soul() >= soul_pre_lk + 150, "pill_loi_kiep_huyen_dan permanently adds +150 SOUL")
+
+	var atk_pre_dx: float = PlayerData.get_atk()
+	PlayerData.add_item("pill_da_xa_de_pham_hoan_dan", 1)
+	_assert(PlayerData.use_consumable("pill_da_xa_de_pham_hoan_dan", Vector2.ZERO) and PlayerData.has_flag("ch11_da_xa_pill_eaten"), "pill_da_xa_de_pham_hoan_dan consumed cleanly")
+	_assert(PlayerData.get_atk() >= atk_pre_dx * 1.24, "Da Xa De Pham Hoan Dan boosts all stats by +25% permanently")
+
+	# 4. Dược Giới (#5/#10), Long Hoàng Chúc Khôn (#12), Chứng Đạo Viêm Đế (Realm 12, #1 Đế Viêm, 25 Boss Cường Bảng, [T] Viêm Đế, 23 Hỏa Liên)
+	PlayerData.set_story_flag("ch11_beat_hon_hu_tu")
+	_assert(PlayerData.has_flag("ach_11_01_dan_thap_vo_thuong"), "Beating Hon Hu Tu grants ACH_11_01")
+	PlayerData.set_story_flag("ch11_duoc_gioi_escaped")
+	_assert(PlayerData.unlocked_flames.has("di_hoa_05_sinh_linh") and PlayerData.unlocked_flames.has("di_hoa_10_cuu_u_phong"), "Escaping Duoc Gioi grants #5 Sinh Linh & #10 Cuu U")
+	PlayerData.set_story_flag("ch11_chuc_khon_allied")
+	_assert(PlayerData.unlocked_companions.has("chuc_khon_long_hoang"), "Companion #12 Chuc Khon Long Hoang unlocked")
+	PlayerData.set_story_flag("ch10_thien_phu_founded")
+	PlayerData.set_story_flag("ch11_viem_de_ascended")
+	_assert(PlayerData.realm_index == 12 and EmperorRealmMgr.is_viem_de_emperor(PlayerData), "ch11_viem_de_ascended reaches Realm 12 Viem De")
+	_assert(PlayerData.unlocked_flames.has("di_hoa_01_de_viem") and PlayerData.unlocked_flames.has("di_hoa_02_hu_vo"), "Viem De ascension unlocks #1 De Viem & #2 Hu Vo")
+	_assert(EmperorRealmMgr.has_hang_co_xich(PlayerData), "Viem De auto-equips wpn_di_hoa_hang_co_xich")
+	_assert(PlayerData.get_assist_mode() == "viem_de_phap_tuong", "[T] Assist upgrades to Viem De Phap Tuong")
+	_assert(PlayerData.get_lotus_max_flames() == 23, "Viem De unlocks 23-Flame Hang Co Di Hoa Lien")
+	_assert(is_equal_approx(EmperorRealmMgr.get_emperor_supremacy_mult(PlayerData, 11), 1.45) and is_equal_approx(EmperorRealmMgr.get_emperor_supremacy_mult(PlayerData, 12), 1.0), "Viem De grants +45% Emperor Supremacy vs below-Emperor")
+	_assert(PanGateMgr.get_strong_ranking_roster_for(PlayerData).size() == 25, "Ch.11 expands Strong Ranking roster to 25 Bosses")
+	PlayerData.add_item("core_de_viem_10", 1)
+	_assert(bool(PlayerData.socket_monster_core(0, "core_de_viem_10").get("ok", false)), "Socketed Tier 10 core_de_viem_10 cleanly")
+
+	# 5. Live Final Boss 3-Phase State Machine (hon_thien_de_boss: Phase 1 -> Phase 2 <=65% -> Phase 3 <=25%)
+	var enemy_scene: PackedScene = load("res://scenes/entities/enemy_base.tscn")
+	var htd: Node = enemy_scene.instantiate()
+	htd.set("enemy_id", "hon_thien_de_boss")
+	add_child(htd)
+	await get_tree().process_frame
+	_assert(bool(htd.get("is_boss_unit")) and bool(htd.get("is_three_phase_boss")) and int(htd.get("boss_phase")) == 1, "Hon Thien De spawns in Phase 1 with is_three_phase_boss=true")
+	var htd_max: float = float(htd.get("max_hp"))
+	htd.set("cur_hp", htd_max * 0.62)
+	htd.call("receive_hit", 50.0, Vector2.RIGHT, 1.0, 0.0, 1.0, 1.0, 12.0)
+	_assert(int(htd.get("boss_phase")) == 2, "Hon Thien De transitions to Phase 2 below 65% HP", "got phase %d" % int(htd.get("boss_phase")))
+	htd.set("cur_hp", htd_max * 0.22)
+	htd.call("receive_hit", 50.0, Vector2.RIGHT, 1.0, 0.0, 1.0, 1.0, 12.0)
+	_assert(int(htd.get("boss_phase")) == 3, "Hon Thien De transitions to Phase 3 below 25% HP", "got phase %d" % int(htd.get("boss_phase")))
+	htd.queue_free()
+	await get_tree().process_frame
+
+	# 6. Song Đế Phong Ấn, Đại Hôn, 5 Hậu Truyện -> ACH_11_04 (+10%), 17 Bí Cảnh (23/23 Dị Hỏa) & ACH_11_05 (+15%)
+	PlayerData.set_story_flag("ch11_beat_hon_thien_de")
+	PlayerData.set_story_flag("ch11_hon_thien_de_sealed")
+	_assert(PlayerData.has_flag("ach_11_03_tam_thap_nien") and PlayerData.is_skill_unlocked("di_hoa_quang_truong"), "Sealing Hon Thien De unlocks di_hoa_quang_truong & ACH_11_03")
+	PlayerData.set_story_flag("ch11_wedding_completed")
+	_assert(PlayerData.is_skill_unlocked("hang_co_di_hoa_lien"), "Wedding ceremony unlocks hang_co_di_hoa_lien")
+	var atk_pre_ep: float = PlayerData.get_atk()
+	for eqf in ["eq_11_01_tieu_y_tien_done", "eq_11_02_van_van_done", "eq_11_03_nha_phi_done", "eq_11_04_candy_party_done", "eq_11_05_ancestor_oath_done"]:
+		PlayerData.set_story_flag(eqf)
+	_assert(EmperorRealmMgr.get_epilogue_done_count(PlayerData) == 5, "All 5 Ch.11 Epilogue quests completed")
+	_assert(PlayerData.has_flag("ach_11_02_phu_tu_tinh_tham") and PlayerData.has_flag("ach_11_04_song_hau_dong_quy"), "5/5 Epilogue + Wedding awards ACH_11_02 & ACH_11_04")
+	_assert(PlayerData.get_atk() >= atk_pre_ep * 1.09, "ACH_11_04 Song Hau Dong Quy grants +10% permanent stats")
+
+	PlayerData.set_story_flag("ch11_all_23_flames_hunted")
+	_assert(EmperorRealmMgr.get_heavenly_flame_count(PlayerData) == 23 and EmperorRealmMgr.has_all_23_heavenly_flames(PlayerData), "17 Hidden Flame Realms unlock full 23/23 Heavenly Flames")
+	var atk_pre_a5: float = PlayerData.get_atk()
+	PlayerData.set_story_flag("ach_11_05_chua_te_dai_thien")
+	_assert(PlayerData.get_atk() >= atk_pre_a5 * 1.14, "ACH_11_05 Chua Te Dai Thien grants +15% permanent stats")
+	_assert(EmperorRealmMgr.get_hud_emperor_badge(PlayerData).find("CHÚA TỂ ĐẠI THIÊN") != -1, "HUD Emperor badge displays Chua Te Dai Thien")
+
+	# 7. Luân Hồi Chuyển Thế (New Game+) & Đối thoại Bia Đại Thiên
+	var d11: Dictionary = GameDatabase.get_dialogue_def("ch11_dai_thien_monolith")
+	var emitted11: Array = [false]
+	var cb11a := func(_s: String, _a: String, _l: Array, _x: Variant) -> void: emitted11[0] = true
+	var cb11b := func(_s: String, _a: String, _l: Array, _x: String) -> void: emitted11[0] = true
+	EventBus.dialogue_choice_requested.connect(cb11a)
+	EventBus.dialogue_requested.connect(cb11b)
+	var ran11: bool = StoryDlgRunner.run_data_driven_dialogue(d11, "Bia Đại Thiên", "res://assets/sprites/npcs/npc_dai_thien_portal.png")
+	EventBus.dialogue_choice_requested.disconnect(cb11a)
+	EventBus.dialogue_requested.disconnect(cb11b)
+	_assert(ran11 and bool(emitted11[0]), "StoryDialogueRunner runs Ch.11 JSON dialogue cleanly")
+
+	var ng_res: Dictionary = EmperorRealmMgr.start_new_game_plus(PlayerData)
+	_assert(bool(ng_res.get("ok", false)) and PlayerData.ng_plus_cycle == 1, "New Game+ started cleanly (Cycle 1)", str(ng_res))
+	_assert(PlayerData.current_map_id == "ch01_tieu_gia" and PlayerData.has_flag("FLAG_NG_PLUS_ACTIVE") and PlayerData.has_flag("FLAG_TIEU_Y_ACTIVE"), "NG+ resets map to O Than Thanh while keeping Tieu Y & NG+ flag")
+	_assert(EmperorRealmMgr.get_heavenly_flame_count(PlayerData) == 23 and PlayerData.unlocked_skills.size() >= 5, "NG+ carries over 23/23 Heavenly Flames & unlocked Emperor skills")
+	var ng_m: Dictionary = EmperorRealmMgr.get_ng_plus_enemy_multipliers(PlayerData)
+	_assert(is_equal_approx(float(ng_m.get("hp", 1.0)), 3.0) and is_equal_approx(float(ng_m.get("atk", 1.0)), 1.5) and is_equal_approx(float(ng_m.get("spd", 1.0)), 1.35), "NG+ Cycle 1 enemy scaling is +200% HP, +50% ATK, +35% SPD")
+
+	# 8. 6 Ch.11 VFX Modes + 8 Ch.11 Boss/Superboss Signature Colors + <1800 LOC Guard
+	for v11 in ["emperor_soul_avatar", "myriad_flames_meteor", "flame_plaza_seal", "eternal_ruler_cleave", "genesis_fire_lotus", "chuc_khon_assist"]:
+		var vb11 := SkillVfxBurst.new()
+		add_child(vb11)
+		vb11.configure(v11, Vector2.ZERO, Vector2.RIGHT, 280.0, 0.85, Color("#FFFFFF"), Color("#FFD700"), Color("#FF0054"))
+		_assert(vb11.vfx_mode == v11, "SkillVfxBurst configures Ch.11 mode cleanly: " + v11)
+		vb11.queue_free()
+
+	var b_mod11 = load("res://scripts/entities/boss_skill_executor.gd")
+	for bid11 in [
+		"hon_hu_tu_boss", "hu_vo_thon_viem_boss", "tu_ma_thanh_boss", "de_pham_so_dan_boss",
+		"hon_thien_de_boss", "ho_ve_di_hoa_boss", "vo_to_lam_dong_boss", "muc_ton_muc_tran_boss"
+	]:
+		var col11: Color = b_mod11.get_signature_color(bid11)
+		_assert(col11.a > 0.9, "BossSkillExecutor Ch.11 signature color valid: " + bid11)
+
+	for core_p11 in [
+		"res://scripts/autoload/player_data.gd",
+		"res://scripts/entities/enemy_controller.gd",
+		"res://scripts/entities/player_controller.gd",
+		"res://scripts/ui/hud_controller.gd",
+		"res://scripts/systems/world_stage_manager.gd"
+	]:
+		var f11 := FileAccess.open(core_p11, FileAccess.READ)
+		var loc11: int = f11.get_as_text().split("\n").size() if f11 != null else 99999
+		_assert(loc11 < 1800, "v1.0.0 core script stays strictly under 1800 LOC: %s (%d LOC)" % [core_p11, loc11])
 
 
 

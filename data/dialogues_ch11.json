@@ -1,0 +1,482 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 11",
+  "dialogues": {
+    "ch11_duoc_dien_lao_to": {
+      "marker_when": { "missing_flag": "ch11_duoc_gioi_escaped" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_duoc_dien_entered" },
+          "speaker": "Lão Tổ DƯỢC ĐIỂN & THẦN NÔNG (Quảng Trường Vạn Dược Sơn)",
+          "sfx": "radar_ping",
+          "lines": [
+            "Lão Tổ Dược Điển (ánh mắt trang nghiêm nhìn Lục Tinh Đấu Thánh Tiêu Viêm & Sư Tôn Dược Trần): 'Tiêu Viêm tiểu hữu! Linh Tộc và Thạch Tộc đã bị Hồn Tộc xóa sổ trong đêm đoạt mất hai mảnh Đà Xá Cổ Đế Ngọc. Hôm nay đệ nhất đan sư Hồn Tộc — HỒN HƯ TỬ (phân thân tử hỏa của #2 Hư Vô Thôn Viêm) ngang nhiên xông vào Vạn Dược Sơn khiêu chiến Dược Điển!'",
+            "Tiêu Viêm (vung tay triệu hồi Khí Linh Tiểu Y & Lục Sắc Thánh Liên): 'Hồn Hư Tử giao cho vãn bối! Để ta dùng Cửu Phẩm Huyền Đan dẫn Hắc Ma Lôi nhập đan nghiền nát tên tà sư Hồn Tộc kia ngay trước vạn người!'"
+          ],
+          "choices": [
+            {
+              "label": "Tiếp Chiến Đại Hội Dược Điển — Đánh Bại HỒN HƯ TỬ!",
+              "action": "effect:eff_ch11_enter_duoc_dien"
+            }
+          ]
+        },
+        {
+          "when": { "missing_flag": "ch11_beat_hon_hu_tu" },
+          "speaker": "Lão Tổ Dược Điển (Vạn Dược Sơn)",
+          "lines": [
+            "Hồn Hư Tử đang đứng phía Đông Bắc Quảng Trường khiêu khích toàn bộ Dược Tộc! Mau đánh bại hắn để đoạt danh hiệu Đan Tháp Vô Thượng Tôn!"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch11_beat_hu_vo_thon_viem" },
+          "speaker": "Huyết Tế Dược Giới — Bản Thể #2 Hư Vô Thôn Viêm Giáng Lâm!",
+          "lines": [
+            "Lão Tổ Dược Điển (hét lớn giữa bầu trời nứt đen): 'Hồn Hư Tử đã kích nổ nội ứng phá vỡ Hộ Tộc Đại Trận! Bản thể #2 HƯ VÔ THÔN VIÊM (Cửu Tinh Đấu Thánh Sơ Kỳ) đang nuốt chửng cả Dược Giới ở phía Đông — mau cầm chân nó!'"
+          ],
+          "action": "heal_full"
+        },
+        {
+          "when": { "missing_flag": "ch11_duoc_gioi_escaped" },
+          "speaker": "Lão Tổ DƯỢC ĐIỂN & THẦN NÔNG — Khúc Tráng Ca Dược Giới",
+          "sfx": "breakthrough",
+          "shake": [22.0, 0.90],
+          "lines": [
+            "Giữa biển lửa đen nuốt chửng non sông Dược Giới, Thần Nông Lão Nhân và Dược Tinh Cực đẫm máu ép hai ngọn Dị Hỏa truyền thừa [#5 SINH LINH CHI DIỄM] và [#10 CỬU U PHONG VIÊM] vào lòng bàn tay bạn: 'Dược Tộc ta hôm nay kiếp nạn khó thoát... Xin giao hai mồi lửa cuối cùng này cho Tiêu Viêm tiểu hữu giữ lấy hỏa chủng cho thiên hạ!'",
+            "Lão Tổ Dược Điển (cười bi tráng ngửa mặt nhìn trời, thân thể Bát Tinh Đấu Thánh bừng sáng rực rỡ): 'Hư Vô Thôn Viêm, ngươi tưởng có thể diệt sạch huyết mạch Luyện Dược Sư sao?! TỰ BẠO PHÁ KHÔNG!! Dược Trần, Tiêu Viêm — MAU CHẠY TỚI TÁNG THIÊN SƠN MẠCH HỘI QUÂN LIÊN MINH TAM TỘC!!'",
+            "ẦM!! Cú tự bạo rung trời đục thủng khe nứt không gian đẩy bạn và sư tôn thoát khỏi Dược Giới diệt vong — sở hữu 7 Dị Hỏa chân chính, đạt THẤT TINH ĐẤU THÁNH!"
+          ],
+          "choices": [
+            {
+              "label": "Ghi Khắc Huyết Thù Dược Giới — Tiếp Nhận #5 Sinh Linh · #10 Cửu U & Tiến Tới Táng Thiên Sơn Mạch!",
+              "action": "effect:eff_ch11_escape_duoc_gioi"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Di Chỉ Vạn Dược Sơn",
+          "lines": [
+            "Mồi lửa #5 Sinh Linh Chi Diễm và #10 Cửu U Phong Viêm đang bừng cháy trong Phần Quyết. Cổng Đông tới Táng Thiên Sơn Mạch đã mở!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_viem_tan_alliance": {
+      "marker_when": { "missing_flag": "ch11_de_canh_soul_awakened" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_de_canh_soul_awakened" },
+          "speaker": "Tộc Trưởng VIÊM TẪN & LÔI DOANH (Liên Minh Tam Tộc — Táng Thiên Sơn Mạch)",
+          "sfx": "breakthrough",
+          "shake": [24.0, 1.0],
+          "lines": [
+            "Viêm Tẫn (vung áo giáp rực lửa): 'Liên Minh Cổ Tộc — Viêm Tộc — Lôi Tộc — Thiên Phủ đã tập kết tại Táng Thiên Sơn Mạch! Phía trước là Hồn Tộc Tứ Ma Thánh bày Tứ Ma Tuyệt Sát Trận.'",
+            "Tiêu Viêm (nuốt trọn viên ngọc bản nguyên cuối cùng Tịnh Liên Yêu Thánh để lại, nhắm mắt nhập định): Hồn hải bừng nở kim quang vạn đạo phá tan bức tường ngàn năm của Thiên Cảnh — CHÍNH THỨC CHỨNG ĐẠO [ĐẾ CẢNH LINH HỒN (3.500+ SOUL)] & LĨNH NGỘ [ĐẾ HỒN PHÁP TƯỚNG]!!"
+          ],
+          "choices": [
+            {
+              "label": "Phá Tan Gông Cùm Ngàn Năm — Bước Vào ĐẾ CẢNH LINH HỒN & Triệu Hồi ĐẾ HỒN PHÁP TƯỚNG!",
+              "action": "effect:eff_ch11_awaken_de_canh"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Viêm Tẫn & Lôi Doanh (Chiến Tuyến Táng Thiên)",
+          "lines": [
+            "Viêm Tẫn (cười vang hào sảng): 'Đế Cảnh Linh Hồn vạn cổ vô song!! Dùng Đế Hồn Pháp Tướng đập tan Tứ Ma Thánh rồi lao sang phía Đông cứu phụ thân Tiêu Chiến!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_tieu_chien_rescue": {
+      "marker_when": { "has_flag": "ch11_beat_tu_ma_thanh", "missing_flag": "ch11_tieu_chien_saved" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_tieu_chien_saved" },
+          "speaker": "PHỤ THÂN TIÊU CHIẾN & CỔ HUÂN NHI (Đoàn Viên Sinh Tử Sau 20 Năm!)",
+          "sfx": "breakthrough",
+          "shake": [22.0, 0.90],
+          "lines": [
+            "Không gian xé toạc — Tộc trưởng Hồn Tộc HỒN THIÊN ĐẾ (Cửu Tinh Đấu Thánh Đỉnh Phong) hiện thân lôi ra người cha tóc đã điểm bạc mà bạn tìm suốt 20 năm: PHỤ THÂN TIÊU CHIẾN! Hắn ép đổi 1-1 mảnh Đà Xá Cổ Đế Ngọc cuối cùng!",
+            "Bạn vận Đế Cảnh Linh Hồn tạo mảnh Đế Ngọc Giả giống thật 99,9% ném sang rồi xé không gian ôm chặt lấy cha ruột, nước mắt tuôn rơi: 'Phụ thân... Hài nhi bất hiếu, Viêm Nhi tới đón người về nhà rồi!'",
+            "Tiêu Chiến (đưa bàn tay run run vuốt mặt con trai, cười rạng rỡ): 'Viêm Nhi của cha... Con trai của Tiêu Chiến ta chưa bao giờ là phế vật cả! Nhìn con hôm nay sừng sững giữa đất trời thế này, cha dù nhắm mắt cũng mỉm cười!'",
+            "RẮC! Mảnh ngọc giả vỡ nát — Hồn Thiên Đế nổi giận giáng một chưởng Cửu Tinh Đỉnh Phong thẳng tim bạn! Ngay 0,01 giây sinh tử ấy, CỔ HUÂN NHI rút mảnh Đế Ngọc Thật ném sang buộc hắn phải thu chưởng chụp ngọc: 'Tiêu Viêm ca ca, thế gian ra sao mặc kệ — Huân Nhi chỉ cần huynh sống!!'",
+            "(Phụ thân Tiêu Chiến được cứu về an toàn! Cảm ứng Đế Ngọc bỗng chỉ thẳng tọa độ Đà Xá Cổ Đế Động Phủ — ngay dưới ĐÁY THÁP HỌC VIỆN GIÀ NAM năm xưa!)"
+          ],
+          "choices": [
+            {
+              "label": "Ôm Chặt Cha & Huân Nhi — Đạt Bát Tinh Đấu Thánh & Truy Vết Về Đáy Tháp Già Nam!",
+              "action": "effect:eff_ch11_save_tieu_chien"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Phụ Thân Tiêu Chiến (An Toàn Tại Hậu Phương)",
+          "lines": [
+            "Tiêu Chiến (mỉm cười ấm áp): 'Viêm Nhi cứ yên tâm tiến về Đáy Tháp Học Viện Già Nam chặn Hồn Thiên Đế! Cha và sư tôn con sẽ chờ con khải hoàn về Ô Thản Thành!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_chuc_khon_reunion": {
+      "marker_when": { "missing_flag": "ch11_chuc_khon_allied" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_chuc_khon_allied" },
+          "speaker": "LÃO LONG HOÀNG CHÚC KHÔN & LONG HOÀNG TỬ NGHIÊN",
+          "sfx": "breakthrough",
+          "shake": [22.0, 0.90],
+          "lines": [
+            "Dưới đáy vực dung nham sâu thẳm bên dưới Thiên Phần Luyện Khí Tháp Già Nam, cánh cửa đá vạn cổ Đà Xá Cổ Đế Động Phủ hiện ra cùng bóng người tóc tím uy chấn thiên địa: LÃO LONG HOÀNG CHÚC KHÔN (Cửu Tinh Đấu Thánh Đỉnh Phong)!",
+            "Chúc Khôn tưởng hai phe hãm hại con gái mình nên bộc phát sát khí ngút trời, Hồn Thiên Đế đứng bên đắc ý cười thầm — đúng khoảnh khắc ấy, Long Hoàng TỬ NGHIÊN bước từ sau lưng bạn chạy tới bật khóc: 'Phụ hoàng!! Là Tiêu Viêm đã đút kẹo đan dược nuôi lớn con và cứu con thống nhất Cổ Long Đảo!'",
+            "Lão Long Hoàng Chúc Khôn sững người rồi bật cười sảng khoái chấn động biển dung nham, vỗ mạnh vai bạn: 'Hảo tiểu tử! Ngươi chăm sóc con gái bổn hoàng chu đáo như vậy, hôm nay Chúc Khôn ta đứng về phía ngươi đập nát tên Hồn Thiên Đế kia!!' (Mở Đồng Hành #12 [G] Chúc Khôn & Cửa Đông vào Đà Xá Cổ Đế Động Phủ!)"
+          ],
+          "choices": [
+            {
+              "label": "Nghênh Đón Lão Long Hoàng CHÚC KHÔN (#12 [G]) — Mở Cửa Đà Xá Cổ Đế Động Phủ!",
+              "action": "effect:eff_ch11_ally_chuc_khon"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Lão Long Hoàng Chúc Khôn",
+          "lines": [
+            "Chúc Khôn (cười hào sảng): 'Cánh cửa Cổ Đế Động Phủ phía Đông đã mở! Bấm [G] gọi lão phu ra đấm vỡ mặt đám Hồn Tộc cùng Đế Phẩm Sồ Đan đi tiểu tử!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_tu_nghien_father": {
+      "branches": [
+        {
+          "default": true,
+          "speaker": "Thái Hư Cổ Long Hoàng Tử Nghiên",
+          "lines": [
+            "Tử Nghiên (mắt đỏ hoe cười rạng rỡ): 'Cảm ơn Tiêu Viêm! Không ngờ dưới đáy Thiên Phần Tháp nơi chúng ta quen nhau ở Chương 06 lại chính là nơi tìm thấy phụ hoàng! Để muội hồi đầy HP & Đấu Khí cho huynh nhé!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_da_xa_co_de_statue": {
+      "marker_when": { "has_flag": "ch11_beat_de_pham_so_dan", "missing_flag": "ch11_viem_de_ascended" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_viem_de_ascended" },
+          "speaker": "THẠCH TƯỢNG ĐÀ XÁ CỔ ĐẾ — VẠN HỎA TRIỀU TÔNG HÓA VIÊM ĐẾ!!",
+          "sfx": "breakthrough",
+          "shake": [28.0, 1.2],
+          "lines": [
+            "Bên ngoài Trung Châu, Hồn Thiên Đế đã nuốt sống #2 Hư Vô Thôn Viêm & Đế Phẩm Sồ Đan, huyết tế toàn bộ Hồn Tộc hóa thành HỒN ĐẾ! Cổ Nguyên, Chúc Khôn, Huân Nhi, Thải Lân đẫm máu gục xuống câu giờ từng giây cho bạn...",
+            "Bạn đặt tay lên Thạch Tượng Đà Xá Cổ Đế giải mã chân tướng vạn năm: Đà Xá Cổ Đế chính là ngọn tự nhiên Dị Hỏa đầu tiên tu luyện Phần Quyết nuốt 21 Dị Hỏa tự xưng [#1 ĐẾ VIÊM]! Giọt Bản Nguyên Đế Viêm cuối cùng dung nhập vào tim bạn...",
+            "BOOOM!! KHẮP ĐẤU KHÍ ĐẠI LỤC NGÂN VANG TIẾNG CHUÔNG LỬA VẠN CỔ — [VẠN HỎA TRIỀU TÔNG]!! Trọn vẹn 22 dải cầu vồng Dị Hỏa từ khắp bốn biển, cả #2 Hư Vô Thôn Viêm xé bụng Hồn Thiên Đế bay ra, quy tụ thành đóa lửa chí tôn thứ 23 [#1 ĐẾ VIÊM]!!",
+            "CẢNH GIỚI 12: ĐẤU ĐẾ — VIÊM ĐẾ TIÊU VIÊM GIÁNG LÂM!! Huyền Trọng Xích lột xác thành thần binh 23 sắc [DỊ HỎA HẰNG CỔ XÍCH]: 'Thiên Hỏa Hằng Cổ, Vạn Diễm Qui Tông — Hồn Thiên Đế, đối thủ của ngươi là VIÊM ĐẾ TIÊU VIÊM TA!!'"
+          ],
+          "choices": [
+            {
+              "label": "★ VẠN HỎA TRIỀU TÔNG — Chứng Đạo VIÊM ĐẾ (Cấp 12 · #1 Đế Viêm · Dị Hỏa Hằng Cổ Xích)!",
+              "action": "effect:eff_ch11_ascend_viem_de"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Thạch Tượng Đà Xá Cổ Đế",
+          "lines": [
+            "Bạn đã kế thừa trọn vẹn #1 Đế Viêm & Thần Binh Dị Hỏa Hằng Cổ Xích! Hãy bước qua cổng Đông lên Cửu Tiêu Thương Khung quyết chiến Hồn Đế Hồn Thiên Đế!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_song_de_victory": {
+      "marker_when": { "has_flag": "ch11_beat_hon_thien_de", "missing_flag": "ch11_hon_thien_de_sealed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_hon_thien_de_sealed" },
+          "speaker": "CLIMAX PHASE 3 — Tự Thiêu Đế Thân, Dị Hỏa Quảng Trường Vĩnh Phong!",
+          "sfx": "breakthrough",
+          "shake": [28.0, 1.2],
+          "lines": [
+            "Trảm Đế Quỷ Huyết Đao vỡ vụn! Cùng đường mạt lộ, Hồn Thiên Đế tự thiêu Đấu Đế Chi Thân hóa thành Hắc Động Huyết Ma sắp nổ tung hủy diệt toàn bộ Đấu Khí Đại Lục!",
+            "Viêm Đế Tiêu Viêm thu lại Hằng Cổ Xích, ngoái đầu nhìn Huân Nhi, Thải Lân, Tiêu Tiêu, phụ thân Tiêu Chiến và sư tôn Dược Trần đang nghẹn ngào gọi tên chàng, nở nụ cười rạng rỡ ấm áp như nắng sớm Ô Thản Thành: 'Đừng khóc... Có mọi người bên cạnh đã là may mắn lớn nhất đời Tiêu Viêm rồi. Đợi ta — Ta nhất định sẽ trở về!'",
+            "23 CỘT LỬA VĨNH HẰNG BÙNG SÁNG HÓA THÀNH [DỊ HỎA QUẢNG TRƯỜNG] KHÓA CHẾT VÀ NUNG CHẢY HỒN THIÊN ĐẾ SUỐT VẠN NĂM!!",
+            "...Vài năm sau dưới sự canh giữ ngày đêm của Huân Nhi & Thải Lân, nhờ Đế Cảnh Linh Hồn bất diệt và 23 Dị Hỏa hộ thân, ngọn lửa tụ hội tái tạo chân thân Đấu Đế hoàn mỹ! Viêm Đế mỉm cười bước ra ôm trọn hai người phụ nữ trở về quê nhà Ô Thản Thành!"
+          ],
+          "choices": [
+            {
+              "label": "★ PHONG ẤN VẠN CỔ HỒN THIÊN ĐẾ — Tái Tạo Chân Thân & Trở Về Ô Thản Thành Đại Hôn!",
+              "action": "effect:eff_ch11_seal_hon_thien_de"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Dị Hỏa Quảng Trường (Cửu Tiêu Thương Khung)",
+          "lines": [
+            "Hồn Đế Hồn Thiên Đế đã vĩnh viễn bị phong ấn trong 23 Cột Lửa Vĩnh Hằng! Cổng Đông dẫn về Ô Thản Thành Tân Trang Đại Hôn đã rộng mở!"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_wedding_ceremony": {
+      "marker_when": { "missing_flag": "ch11_wedding_completed" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_wedding_completed" },
+          "speaker": "★ TRUE ENDING — SONG HẬU ĐẠI HÔN Ô THẢN THÀNH ★",
+          "sfx": "breakthrough",
+          "shake": [16.0, 0.70],
+          "lines": [
+            "Phủ Tiêu Gia Ô Thản Thành giăng đèn kết hoa đỏ rực từ đầu phố tới cuối thành! Tiếng pháo hoa vang rộn khắp Gia Mã Đế Quốc đón mừng Đại Lễ Thành Hôn của VIÊM ĐẾ TIÊU VIÊM cùng hai tân nương tuyệt sắc CỔ HUÂN NHI và THẢI LÂN!",
+            "Phụ thân Tiêu Chiến rưng rưng xúc động ngồi ghế chủ hôn bên cạnh sư tôn Dược Trần râu bạc cười vang mãn nguyện; bên dưới mâm cỗ đầy ắp cố nhân từ Chương 01 đến Chương 11: Hải Ba Đông, Pháp Mã, Gia Hình Thiên, Tiểu Y Tiên, Vân Vận, Tử Nghiên, Thanh Lân, bé Tiêu Tiêu đang tranh kẹo cùng Lão Long Hoàng Chúc Khôn...",
+            "Cổ Huân Nhi & Thải Lân (đỏ mặt dưới mũ phượng quan vàng rực, khẽ nắm chặt hai bàn tay Tiêu Viêm): 'Từ hôm nay trở đi, thiên hạ thái bình — chúng ta mãi mãi ở bên nhau!'"
+          ],
+          "choices": [
+            {
+              "label": "★ BÁI ĐƯỜNG THÀNH HÔN — Xem Phim True Ending Credits & Mở Cổng Đại Thiên Thế Giới!",
+              "action": "effect:eff_ch11_wedding_complete"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Hoàng Hậu Cổ Huân Nhi & Thải Lân (Phủ Tiêu Gia Ô Thản Thành)",
+          "lines": [
+            "Cổ Huân Nhi (mỉm cười dịu dàng): 'Tiêu Viêm ca ca muốn xem lại thước phim kỷ niệm Hành Trình 11 Chương & Đại Hôn Ô Thản Thành không?'"
+          ],
+          "choices": [
+            {
+              "label": "★ Xem Lại True Ending Credits & Post-Credits Đại Thiên Thế Giới",
+              "action": "open_ending_credits"
+            },
+            {
+              "label": "Nghỉ ngơi hồi phục 100% cùng gia đình",
+              "action": "heal_full"
+            }
+          ]
+        }
+      ]
+    },
+    "ch11_eq01_tieu_y_tien": {
+      "marker_when": { "missing_flag": "eq_11_01_tieu_y_tien_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "eq_11_01_tieu_y_tien_done" },
+          "speaker": "Hậu Truyện EQ_11_01 — Mái Nhà Nhỏ Của TIỂU Y TIÊN",
+          "sfx": "loot_rare",
+          "lines": [
+            "Sau đại chiến, Tiểu Y Tiên định quay về vách núi Thanh Sơn Trấn trồng thảo dược một mình... Nhưng Tiêu Viêm cùng Huân Nhi và Thải Lân đã đích thân tìm tới nắm lấy đôi tay gầy guộc của nàng!",
+            "Tiểu Y Tiên (mắt ngân ngấn lệ rồi mỉm cười trong trẻo hệt lần đầu gặp ở Chương 02): 'Thật sự... muội có thể ở lại Ô Thản Thành nấu thuốc cùng mọi người cả đời sao? Cảm ơn huynh, Tiêu Viêm!'"
+          ],
+          "choices": [
+            {
+              "label": "Đón Tiểu Y Tiên Về Sum Họp Gia Đình Ô Thản Thành (Hoàn Tất EQ_11_01!)",
+              "action": "effect:eff_ch11_eq01"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Tiểu Y Tiên (Hậu Hoa Viên Phủ Tiêu Gia)",
+          "lines": [
+            "Tiểu Y Tiên (cười nhẹ pha trà thảo dược): 'Ách Nan Độc Thể nay đã hoàn toàn hóa giải, muội đang trồng cả một vườn Sinh Linh Thảo cho cả nhà đây!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_eq02_van_van": {
+      "marker_when": { "missing_flag": "eq_11_02_van_van_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "eq_11_02_van_van_done" },
+          "speaker": "Hậu Truyện EQ_11_02 — Ngắm Biển Mây Nướng Cá Cùng VÂN VẬN",
+          "sfx": "loot_rare",
+          "lines": [
+            "Bên vách đá đầy hoa dại nơi cố hương Gia Mã, Tiêu Viêm nhóm bếp lửa nhỏ nướng hai con cá suối thảo mộc đưa cho Tông Chủ Hoa Tông VÂN VẬN — hệt như chàng thiếu niên 'Dược Nham' bên Bờ Suối Trăng Bạc thuở Chương 02!",
+            "Vân Vận (mỉm cười dịu dàng, nét u buồn bao năm tan biến hoàn toàn): 'Lần này không rắc nhầm lọ bột hồng của Dược Lão nữa chứ? Được rồi... Ta sẽ dời chi mạch Hoa Tông về Gia Mã bầu bạn cùng mọi người!'"
+          ],
+          "choices": [
+            {
+              "label": "Mời Vân Vận Về Bầu Bạn Tại Gia Mã (Hoàn Tất EQ_11_02!)",
+              "action": "effect:eff_ch11_eq02"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Vân Vận (Chi Mạch Hoa Tông — Gia Mã)",
+          "lines": [
+            "Vân Vận: 'Nạp Lan Yên Nhiên cũng gửi lời chúc phúc tới Viêm Đế! Ân oán Vân Lam Tông năm xưa nay đã hoàn toàn hóa gió mây rồi.'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_eq03_nha_phi": {
+      "marker_when": { "missing_flag": "eq_11_03_nha_phi_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "eq_11_03_nha_phi_done" },
+          "speaker": "Hậu Truyện EQ_11_03 — Chén Trà Hội Ngộ NHÃ PHI & HẢI BA ĐÔNG",
+          "sfx": "loot_rare",
+          "lines": [
+            "Nhã Phi (cười quyến rũ nhận viên Trú Nhan Thánh Đan lấp lánh ngũ sắc hương từ tay Viêm Đế): 'Không uổng công năm xưa ở Ô Thản Thành ta đặt trọn niềm tin vào Tam Thiếu Gia Tiêu Gia!'",
+            "Băng Hoàng Hải Ba Đông (vỗ đùi cười sảng khoái nâng chén rượu): 'Khà khà! Giao ước bảo tiêu 1 năm của lão phu ở Thạch Mạc Thành đúng là thương vụ lãi nhất lịch sử Đấu Khí Đại Lục — hôm nay lão phu thắng cả bàn cờ với Đấu Đế luôn nào!'"
+          ],
+          "choices": [
+            {
+              "label": "Tặng Trú Nhan Thánh Đan & Đấu Cờ Uống Rượu (Hoàn Tất EQ_11_03!)",
+              "action": "effect:eff_ch11_eq03"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Nhã Phi & Băng Hoàng Hải Ba Đông",
+          "lines": [
+            "Hải Ba Đông: 'Mễ Đặc Nhĩ nay là thương hội đệ nhất đại lục! Khi nào rảnh lại ghé uống trà nhé Viêm Đế!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_eq04_candy_party": {
+      "marker_when": { "missing_flag": "eq_11_04_candy_party_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "eq_11_04_candy_party_done" },
+          "speaker": "Hậu Truyện EQ_11_04 — Kho Kẹo Cửu Phẩm Cho Hai Công Chúa Nhỏ!",
+          "sfx": "breakthrough",
+          "lines": [
+            "Bạn cùng Thải Lân mở lò luyện hẳn một đỉnh [Cửu Phẩm Đường Đậu Thần Đan] tỏa hương thơm ngào ngạt khắp sân! Bé TIÊU TIÊU, Long Hoàng TỬ NGHIÊN và THANH LÂN reo hò chạy tới vây quanh...",
+            "Đến cả vị Cửu Tinh Đấu Thánh Đỉnh Phong Lão Long Hoàng CHÚC KHÔN cũng lén thò tay bốc liền hai viên khen nức nở: 'Khà khà, Đấu Đế luyện kẹo đúng là ngon tuyệt đỉnh! Toàn đội Đồng Hành hừng hực khí thế (+25% sức mạnh vĩnh viễn)!'"
+          ],
+          "choices": [
+            {
+              "label": "Khai Tiệc Kẹo Cửu Phẩm Cùng Gia Đình & Cổ Long (Hoàn Tất EQ_11_04!)",
+              "action": "effect:eff_ch11_eq04"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Hoàng Hậu Thải Lân & Bé Tiêu Tiêu",
+          "lines": [
+            "Thải Lân (mỉm cười dịu dàng): 'Tiêu Tiêu hôm nay vui lắm đó! Chàng nhớ mang hai mẹ con cùng ra Đại Thiên Thế Giới dạo chơi nhé!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_eq05_ancestor_oath": {
+      "marker_when": { "missing_flag": "eq_11_05_ancestor_oath_done" },
+      "branches": [
+        {
+          "when": { "missing_flag": "eq_11_05_ancestor_oath_done" },
+          "speaker": "Hậu Truyện EQ_11_05 — Lời Hứa Trước Bia Mộ Tổ Tiên TIÊU HUYỀN",
+          "sfx": "breakthrough",
+          "lines": [
+            "Bạn đưa phụ thân TIÊU CHIẾN bước thẳng vào Tầng 3 Thiên Mộ dâng hương trước bia mộ Tổ Tiên Tiêu Huyền: 'Tổ tiên ơi, hậu bối Tiêu Viêm đã không phụ máu xương của ngài — hôm nay Viêm Đế tái lập huyết mạch Đấu Đế rực rỡ cho Tiêu Gia vạn đời sau!'",
+            "Ánh kim quang Đấu Đế bùng lên ấm áp như nụ cười mãn nguyện của Tổ Tiên Tiêu Huyền! (Mở Thành Tựu Bạch Kim [ACH_11_02: Phụ Tử Tình Thâm] & +500 SOUL!)"
+          ],
+          "choices": [
+            {
+              "label": "Dâng Hương Bái Tế Tổ Tiên Tiêu Huyền Cùng Phụ Thân (Hoàn Tất EQ_11_05!)",
+              "action": "effect:eff_ch11_eq05"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "Phụ Thân Tiêu Chiến & Sư Tôn Dược Trần",
+          "lines": [
+            "Dược Trần (vuốt râu bạc cười tự hào): 'Hắc hắc tiểu tử, năm đó từ cậu bé Tam Đoạn trên vách đá Hậu Sơn nay đã thành Viêm Đế chấn động chư thiên — vi sư không còn gì hối tiếc nữa rồi!'"
+          ],
+          "action": "heal_full"
+        }
+      ]
+    },
+    "ch11_dai_thien_monolith": {
+      "marker_when": { "missing_flag": "ach_11_05_chua_te_dai_thien" },
+      "branches": [
+        {
+          "when": { "missing_flag": "ch11_completed" },
+          "speaker": "★ CỔNG ĐẠI THIÊN THẾ GIỚI — CHÀO MỪNG VIÊM ĐẾ TIÊU VIÊM ★",
+          "sfx": "breakthrough",
+          "shake": [24.0, 1.0],
+          "lines": [
+            "Viêm Đế Tiêu Viêm xé toạc bức tường vị diện dẫn Cổ Nguyên, Chúc Khôn, Huân Nhi & Thải Lân đặt chân lên Hành Lang Tinh Không của ĐẠI THIÊN THẾ GIỚI!",
+            "Từ phía xa chân trời tinh không, Võ Tổ LÂM ĐỘNG (Bát Đại Tổ Phù) và Đại Chúa Tể MỤC TRẦN (Nhất Khí Hóa Tam Thanh) mỉm cười chắp tay nghênh đón: 'Tại hạ Tiêu Viêm, đến từ Đấu Khí Đại Lục — Xin được chỉ giáo!'",
+            "(Chúc mừng hoàn tất 100% 11/11 CHƯƠNG ĐẤU PHÁ THƯƠNG KHUNG!! Từ Bia Cảm Ứng này bạn có thể chinh phục 17 Bí Cảnh Dị Hỏa [23/23], tỷ thí 2 Superboss hoặc khởi động Luân Hồi New Game+!)"
+          ],
+          "choices": [
+            {
+              "label": "★ Khắc Ghi Hoàn Tất 100% Chương 11 & Mở Khóa Toàn Bộ Post-Game Đại Thiên!",
+              "action": "effect:eff_ch11_complete_game"
+            }
+          ]
+        },
+        {
+          "default": true,
+          "speaker": "BIA CẢM ỨNG 23 DỊ HỎA & CỔNG LUÂN HỒI ĐẠI THIÊN",
+          "lines": [
+            "Chào mừng Viêm Đế tới Sảnh Post-Game Vô Tận! Đánh bại [Hộ Vệ 23 Dị Hỏa] để thu trọn 17 Bí Cảnh Dị Hỏa Ẩn (23/23), tỷ thí [Võ Tổ Lâm Động] & [Đại Chúa Tể Mục Trần] phía Đông để đoạt Cúp Bạch Kim 100%, hoặc bật Chế Độ Luân Hồi Chuyển Thế (New Game+)!"
+          ],
+          "choices": [
+            {
+              "label": "🔥 Khai Mở & Thu Trọn 17 Bí Cảnh Dị Hỏa Ẩn (Cần hạ Hộ Vệ 23 Dị Hỏa -> Đủ 23/23 Hỏa!)",
+              "when": { "has_flag": "ch11_beat_ho_ve_di_hoa", "missing_flag": "ch11_all_23_flames_hunted" },
+              "action": "effect:eff_ch11_claim_23_flames"
+            },
+            {
+              "label": "🏆 Nhận CÚP BẠCH KIM 100% [ACH_11_05: Chúa Tể Đại Thiên — Vạn Hỏa Độc Tôn]!",
+              "when": { "has_all_flags": ["ch11_all_23_flames_hunted", "ch11_beat_lam_dong", "ch11_beat_muc_tran"], "missing_flag": "ach_11_05_chua_te_dai_thien" },
+              "action": "effect:eff_ch11_platinum_cup"
+            },
+            {
+              "label": "☯ Khởi Động Chế Độ LUÂN HỒI CHUYỂN THẾ (New Game+ — Độ Khó Thương Khung Khốc Liệt!)",
+              "action": "start_new_game_plus"
+            },
+            {
+              "label": "🎬 Xem Lại Trường Đoạn True Ending Credits & Post-Credits",
+              "action": "open_ending_credits"
+            },
+            {
+              "label": "Hồi Phục 100% HP & Đấu Khí Chuẩn Bị Tỷ Thí Superboss!",
+              "action": "heal_full"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "effects": {
+    "eff_ch11_enter_duoc_dien": { "set_flag": "ch11_duoc_dien_entered", "heal_full": true },
+    "eff_ch11_escape_duoc_gioi": { "set_flag": "ch11_duoc_gioi_escaped", "heal_full": true },
+    "eff_ch11_awaken_de_canh": { "set_flag": "ch11_de_canh_soul_awakened", "heal_full": true },
+    "eff_ch11_save_tieu_chien": { "set_flag": "ch11_tieu_chien_saved", "heal_full": true },
+    "eff_ch11_ally_chuc_khon": { "set_flag": "ch11_chuc_khon_allied", "heal_full": true },
+    "eff_ch11_ascend_viem_de": { "set_flag": "ch11_viem_de_ascended", "heal_full": true },
+    "eff_ch11_seal_hon_thien_de": { "set_flag": "ch11_hon_thien_de_sealed", "heal_full": true },
+    "eff_ch11_wedding_complete": { "set_flag": "ch11_wedding_completed", "open_ending_credits": true, "heal_full": true },
+    "eff_ch11_eq01": { "set_flag": "eq_11_01_tieu_y_tien_done", "heal_full": true },
+    "eff_ch11_eq02": { "set_flag": "eq_11_02_van_van_done", "heal_full": true },
+    "eff_ch11_eq03": { "set_flag": "eq_11_03_nha_phi_done", "heal_full": true },
+    "eff_ch11_eq04": { "set_flag": "eq_11_04_candy_party_done", "heal_full": true },
+    "eff_ch11_eq05": { "set_flag": "eq_11_05_ancestor_oath_done", "heal_full": true },
+    "eff_ch11_complete_game": { "set_flag": "ch11_completed", "heal_full": true },
+    "eff_ch11_claim_23_flames": { "set_flag": "ch11_all_23_flames_hunted", "heal_full": true },
+    "eff_ch11_platinum_cup": { "set_flag": "ach_11_05_chua_te_dai_thien", "heal_full": true }
+  }
+}

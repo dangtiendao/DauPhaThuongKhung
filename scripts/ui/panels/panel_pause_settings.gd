@@ -72,9 +72,47 @@ func build_content(vbox: VBoxContainer) -> void:
 		hud._close_modal()
 		hud._sync_world_after_load()
 		hud._refresh_all()
-		hud._on_banter("ĐÃ BẬT CHẾ ĐỘ DEMO FULL (Ô 3)! Bấm [M] Dịch Chuyển Nhanh %d bản đồ (Ch01–Ch05), bấm [F] thử Phật Nộ Hỏa Liên 4 Hỏa!" % GameDatabase.maps_ordered.size())
+		hud._on_banter("ĐÃ BẬT CHẾ ĐỘ DEMO FULL (Ô 3)! Bấm [M] Dịch Chuyển Nhanh %d bản đồ (Ch.01–11 · VIÊM ĐẾ 23/23 Dị Hỏa), thử [F] Hằng Cổ Dị Hỏa Liên & [T] Viêm Đế Pháp Tướng!" % GameDatabase.maps_ordered.size())
 	)
 	top_btns.add_child(demo_b)
+
+	# Khung Đại Kết Cục Viêm Đế — True Ending Credits & Luân Hồi Chuyển Thế (New Game+)
+	var can_endgame: bool = PlayerData.has_flag("ch11_hon_thien_de_sealed") or PlayerData.has_flag("ch11_wedding_completed") or PlayerData.has_flag("ch11_completed") or PlayerData.is_demo_mode
+	var end_btns := HBoxContainer.new()
+	end_btns.add_theme_constant_override("separation", 10)
+	vbox.add_child(end_btns)
+
+	var credits_b := Button.new()
+	credits_b.text = "🎬 Xem True Ending Credits (Viêm Đế)"
+	credits_b.add_theme_font_size_override("font_size", 13)
+	credits_b.add_theme_color_override("font_color", Color("#FFD700") if can_endgame else Color("#868E96"))
+	credits_b.disabled = not can_endgame
+	credits_b.tooltip_text = "Xem hoạt cảnh Đại Kết Cục Viêm Đế & 5 Thành Tựu Bạch Kim Chương 11!" if can_endgame else "Hoàn tất Chương 11 (phong ấn Hồn Thiên Đế) hoặc bật Chế Độ DEMO để mở khóa!"
+	credits_b.pressed.connect(func() -> void:
+		hud._toggle_modal("ending_credits")
+	)
+	end_btns.add_child(credits_b)
+
+	var next_ng: int = EmperorRealmManager.get_ng_plus_cycle(PlayerData) + 1
+	var ng_b := Button.new()
+	ng_b.text = "☯ Luân Hồi Chuyển Thế (New Game+ Vòng %d)" % next_ng
+	ng_b.add_theme_font_size_override("font_size", 13)
+	ng_b.add_theme_color_override("font_color", Color("#72EFDD") if can_endgame else Color("#868E96"))
+	ng_b.disabled = not can_endgame
+	ng_b.tooltip_text = "Kế thừa trọn bộ 23 Dị Hỏa, 37 Đấu Kỹ, Trang Bị & Tiểu Y về Ô Thản Thành — Quái & Boss hóa Thương Khung Khốc Liệt (+200% HP, +50% ATK, +35% SPD)!" if can_endgame else "Cần đánh bại & phong ấn Hồn Thiên Đế (Chương 11) hoặc bật Chế Độ DEMO để mở Luân Hồi Chuyển Thế!"
+	ng_b.pressed.connect(func() -> void:
+		var ng_res: Dictionary = EmperorRealmManager.start_new_game_plus(PlayerData)
+		if bool(ng_res.get("ok", false)):
+			AudioManager.play_sfx("breakthrough")
+			hud._close_modal()
+			hud._sync_world_after_load()
+			hud._refresh_all()
+			hud._on_banter(str(ng_res.get("msg", "")))
+		else:
+			AudioManager.play_sfx("alchemy_fail")
+			hud.modal_status_lbl.text = str(ng_res.get("msg", ""))
+	)
+	end_btns.add_child(ng_b)
 
 	# Khung Tùy Chọn Tự Động Lưu & Tự Động Chơi Tiếp
 	var auto_card: PanelContainer = hud._make_styled_panel(Color(0.07, 0.11, 0.17, 0.94), Color("#2EC4B6"), 1, 9)

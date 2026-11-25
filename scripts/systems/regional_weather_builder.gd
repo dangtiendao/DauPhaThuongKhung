@@ -230,6 +230,106 @@ static func build_regional_weather(stage, m_def: Dictionary) -> void:
 		VfxAssets.configure_glow_particles(lflames, Color("#FFF1F2"), Color("#FDA4AF"), true)
 		map_overlay_root.add_child(lflames)
 		return
+	elif amb_weather == "pill_realm_ash":
+		# Dược Giới Vạn Dược Sơn (Ch.11): Dược phấn xanh ngọc xen tro tàn tím Hư Vô bay lững lờ!
+		var pash := CPUParticles2D.new()
+		pash.position = map_size * 0.5
+		pash.emitting = true
+		pash.preprocess = 2.0
+		pash.amount = 64
+		pash.lifetime = 4.8
+		pash.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		pash.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		pash.direction = Vector2(-0.35, -0.92).normalized()
+		pash.spread = 34.0
+		pash.gravity = Vector2(-6.0, -14.0)
+		pash.initial_velocity_min = 24.0
+		pash.initial_velocity_max = 62.0
+		pash.scale_amount_min = 0.24
+		pash.scale_amount_max = 0.52
+		VfxAssets.configure_glow_particles(pash, Color("#4ADE80"), Color("#A855F7"), false)
+		map_overlay_root.add_child(pash)
+		return
+	elif amb_weather == "blood_sky":
+		# Táng Thiên Sơn Mạch & Cửu Tiêu Thương Khung (Ch.11): Tàn huyết vụ & sét đỏ Song Đế Chi Chiến!
+		var bsky := CPUParticles2D.new()
+		bsky.position = map_size * 0.5
+		bsky.emitting = true
+		bsky.preprocess = 1.8
+		bsky.amount = 82
+		bsky.lifetime = 2.8
+		bsky.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		bsky.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		bsky.direction = Vector2(-0.45, -0.88).normalized()
+		bsky.spread = 38.0
+		bsky.gravity = Vector2(-14.0, -28.0)
+		bsky.initial_velocity_min = 48.0
+		bsky.initial_velocity_max = 128.0
+		bsky.scale_amount_min = 0.26
+		bsky.scale_amount_max = 0.58
+		VfxAssets.configure_glow_particles(bsky, Color("#FCA5A5"), Color("#DC2626"), true)
+		map_overlay_root.add_child(bsky)
+		return
+	elif amb_weather == "emperor_flames":
+		# Đà Xá Cổ Đế Động Phủ (Ch.11): Tàn lửa ngũ sắc 23 Dị Hỏa bốc lên rực rỡ quanh 22 cột đá!
+		var efl := CPUParticles2D.new()
+		efl.position = map_size * 0.5
+		efl.emitting = true
+		efl.preprocess = 2.0
+		efl.amount = 84
+		efl.lifetime = 3.8
+		efl.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		efl.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		efl.direction = Vector2(0.0, -1.0)
+		efl.spread = 32.0
+		efl.gravity = Vector2(0.0, -28.0)
+		efl.initial_velocity_min = 34.0
+		efl.initial_velocity_max = 94.0
+		efl.scale_amount_min = 0.26
+		efl.scale_amount_max = 0.62
+		VfxAssets.configure_glow_particles(efl, Color("#00F5D4"), Color("#FFD700"), true)
+		map_overlay_root.add_child(efl)
+		return
+	elif amb_weather == "wedding_petals":
+		# Ô Thản Thành Đại Hôn (Ch.11): Cánh hoa hồng đỏ & kim phấn tung bay ngập tràn hỷ khí!
+		var wpet := CPUParticles2D.new()
+		wpet.position = map_size * 0.5
+		wpet.emitting = true
+		wpet.preprocess = 2.4
+		wpet.amount = 70
+		wpet.lifetime = 6.0
+		wpet.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		wpet.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		wpet.direction = Vector2(0.45, 0.88).normalized()
+		wpet.spread = 34.0
+		wpet.gravity = Vector2(4.0, 9.0)
+		wpet.initial_velocity_min = 20.0
+		wpet.initial_velocity_max = 46.0
+		wpet.scale_amount_min = 0.28
+		wpet.scale_amount_max = 0.56
+		VfxAssets.configure_glow_particles(wpet, Color("#FB7185"), Color("#FDE047"), false)
+		map_overlay_root.add_child(wpet)
+		return
+	elif amb_weather == "cosmic_rift":
+		# Thương Khung Vị Diện Giao Giới (Ch.11 Post-Game): Tinh tú lam ngọc & ánh vàng Đại Thiên xoay bồng bềnh!
+		var crift := CPUParticles2D.new()
+		crift.position = map_size * 0.5
+		crift.emitting = true
+		crift.preprocess = 2.2
+		crift.amount = 76
+		crift.lifetime = 4.6
+		crift.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+		crift.emission_rect_extents = Vector2(map_size.x * 0.50, map_size.y * 0.48)
+		crift.direction = Vector2(0.24, -0.96).normalized()
+		crift.spread = 52.0
+		crift.gravity = Vector2(0.0, -14.0)
+		crift.initial_velocity_min = 22.0
+		crift.initial_velocity_max = 68.0
+		crift.scale_amount_min = 0.24
+		crift.scale_amount_max = 0.58
+		VfxAssets.configure_glow_particles(crift, Color("#38BDF8"), Color("#FFD700"), true)
+		map_overlay_root.add_child(crift)
+		return
 
 	if is_tower_arena:
 		# Thiên Phần Luyện Khí Tháp: Tàn lửa Vẫn Lạc Tâm Viêm (#FF4D6D / #FFD166) bốc cuộn dày đặc khắp đấu trường!

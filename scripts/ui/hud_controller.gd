@@ -16,10 +16,11 @@ const PanelAlchemyScript = preload("res://scripts/ui/panels/panel_alchemy.gd")
 const PanelAuctionScript = preload("res://scripts/ui/panels/panel_auction.gd")
 const PanelEquipmentScript = preload("res://scripts/ui/panels/panel_equipment.gd")
 const PanelSkillsCultivationScript = preload("res://scripts/ui/panels/panel_skills_cultivation.gd")
+const PanelEndingCreditsScript = preload("res://scripts/ui/panels/panel_ending_credits.gd")
 const HudMobaDock = preload("res://scripts/ui/panels/hud_moba_dock_helper.gd")
 const HudDialogueCtrl = preload("res://scripts/ui/panels/hud_dialogue_controller.gd")
 
-# 7 Panel UI mô-đun tách biệt (scripts/ui/panels/)
+# 8 Panel UI mô-đun tách biệt (scripts/ui/panels/)
 var panel_pause_settings: RefCounted
 var panel_world_map_bestiary: RefCounted
 var panel_tower_boss_rush: RefCounted
@@ -27,6 +28,7 @@ var panel_alchemy: RefCounted
 var panel_auction: RefCounted
 var panel_equipment: RefCounted
 var panel_skills_cultivation: RefCounted
+var panel_ending_credits: RefCounted
 
 # Khung trạng thái góc trái trên (lerp mượt)
 var hp_bar: ProgressBar
@@ -163,7 +165,7 @@ var autosave_toast_timer: float = 0.0
 
 
 func _exit_tree() -> void:
-	for p in [panel_pause_settings, panel_world_map_bestiary, panel_tower_boss_rush, panel_alchemy, panel_auction, panel_equipment, panel_skills_cultivation]:
+	for p in [panel_pause_settings, panel_world_map_bestiary, panel_tower_boss_rush, panel_alchemy, panel_auction, panel_equipment, panel_skills_cultivation, panel_ending_credits]:
 		if p != null:
 			p.hud = null
 	panel_pause_settings = null
@@ -173,6 +175,7 @@ func _exit_tree() -> void:
 	panel_auction = null
 	panel_equipment = null
 	panel_skills_cultivation = null
+	panel_ending_credits = null
 
 
 func _ready() -> void:
@@ -183,6 +186,7 @@ func _ready() -> void:
 	panel_auction = PanelAuctionScript.new(self)
 	panel_equipment = PanelEquipmentScript.new(self)
 	panel_skills_cultivation = PanelSkillsCultivationScript.new(self)
+	panel_ending_credits = PanelEndingCreditsScript.new(self)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build_hud_layout()
 	_refresh_all()
@@ -192,9 +196,7 @@ func _ready() -> void:
 	qi_bar.value = target_qi_val
 	exp_bar.value = target_exp_val
 
-	var init_m: Dictionary = GameDatabase.get_map_def(PlayerData.current_map_id)
-	if not init_m.is_empty():
-		map_banner_lbl.text = "%s — %s" % [str(init_m.get("chapter", "Chương 01")), str(init_m.get("name", ""))]
+	_refresh_current_map_banner()
 
 	EventBus.stats_changed.connect(_refresh_stats)
 	EventBus.qi_updated.connect(_on_qi_updated)
@@ -1137,8 +1139,8 @@ func _on_boss_status_updated(boss_name: String, realm_badge: String, cur_hp: flo
 		return
 	boss_title_lbl.text = "%s  <%s>" % [boss_name, realm_badge]
 	if not boss_p2_warning:
-		boss_phase_lbl.text = "GIAI ĐOẠN II — CUỒNG BẠO!" if phase >= 2 else "GIAI ĐOẠN I"
-		boss_phase_lbl.add_theme_color_override("font_color", Color("#FF2A5F") if phase >= 2 else Color("#FFD166"))
+		boss_phase_lbl.text = "★ GIAI ĐOẠN III — HỦY DIỆT!!" if phase >= 3 else ("GIAI ĐOẠN II — CUỒNG BẠO!" if phase >= 2 else "GIAI ĐOẠN I")
+		boss_phase_lbl.add_theme_color_override("font_color", Color("#FF0054") if phase >= 3 else (Color("#FF2A5F") if phase >= 2 else Color("#FFD166")))
 	boss_hp_bar.max_value = maxf(1.0, max_hp)
 	target_boss_hp = clampf(cur_hp, 0.0, max_hp)
 
@@ -1344,9 +1346,9 @@ func _refresh_quest_ui() -> void:
 	var q: Dictionary = PlayerData.get_current_quest()
 	if q.is_empty():
 		if PlayerData.is_demo_mode:
-			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA 100%% CHƯƠNG 01–10 ★\nBấm [M] Dịch Chuyển %d Map, Thiên Phủ Liên Minh, thử [F] Lục Sắc Hỏa Liên, [T] Bắc Vương & Tiểu Y Luyện Nhanh [L]!" % GameDatabase.maps_ordered.size()
+			quest_lbl.text = "★ CHẾ ĐỘ DEMO — MỞ KHÓA 100%% CHƯƠNG 01–11 (VIÊM ĐẾ 23/23 DỊ HỎA) ★\nBấm [M] Dịch Chuyển %d Map, thử [F] Hằng Cổ Dị Hỏa Liên, [T] Viêm Đế Pháp Tướng, Superboss Lâm Động–Mục Trần & [ESC] Credits/NG+!" % GameDatabase.maps_ordered.size()
 		else:
-			quest_lbl.text = "★ HOÀN TẤT 100% CHƯƠNG 10 (CH.01–10 · BỒ ĐỀ HÓA THÁNH & #3 TỊNH LIÊN YÊU HỎA) ★\nNâng 6 Công Trình Thiên Phủ Liên Minh [M], dùng Tiểu Y Luyện Nhanh [L] & chinh phục 20 Boss Cường Bảng!"
+			quest_lbl.text = "★ HOÀN TẤT 100% CHƯƠNG 11 (CH.01–11 · ĐẠI KẾT CỤC VIÊM ĐẾ v1.0.0) ★\nThu phục 23/23 Dị Hỏa, chinh phục Võ Tổ Lâm Động & Mục Trần, mở [ESC] True Ending Credits & Luân Hồi New Game+!"
 	else:
 		var goal: int = int(q.get("target_count", 1))
 		quest_lbl.text = "★ %s (%d/%d)\n%s" % [
@@ -1392,9 +1394,13 @@ func _format_map_banner(map_id: String, map_title: String) -> String:
 	var badges: Array[String] = []
 	if map_id == NineTurnManager.THIEN_MO_MAP_ID:
 		badges.append("[⏳ THIÊN MỘ · x5 EXP]")
-	var saint_badge: String = SaintRealmManager.get_hud_domain_badge(PlayerData)
-	if saint_badge != "":
-		badges.append("[%s]" % saint_badge)
+	var emp_badge: String = EmperorRealmManager.get_hud_emperor_badge(PlayerData)
+	if emp_badge != "":
+		badges.append("[%s]" % emp_badge)
+	else:
+		var saint_badge: String = SaintRealmManager.get_hud_domain_badge(PlayerData)
+		if saint_badge != "":
+			badges.append("[%s]" % saint_badge)
 	if badges.is_empty():
 		return map_title
 	return "%s   %s" % [map_title, "  ".join(badges)]
@@ -1494,6 +1500,8 @@ func _populate_modal() -> void:
 		_build_single_scroll_modal(_build_pause_menu_content)
 	elif current_modal == "tower_blessing":
 		_build_single_scroll_modal(_build_tower_blessing_content)
+	elif current_modal == "ending_credits":
+		_build_single_scroll_modal(_build_ending_credits_content)
 
 
 func _build_single_scroll_modal(builder_fn: Callable) -> void:
@@ -1565,3 +1573,7 @@ func _build_breakthrough_content(vbox: VBoxContainer) -> void:
 
 func _build_flames_content(vbox: VBoxContainer) -> void:
 	panel_skills_cultivation.build_flames_content(vbox)
+
+
+func _build_ending_credits_content(vbox: VBoxContainer) -> void:
+	panel_ending_credits.build_content(vbox)

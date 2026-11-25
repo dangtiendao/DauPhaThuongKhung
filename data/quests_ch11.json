@@ -1,0 +1,369 @@
+{
+  "version": "1.0",
+  "chapter_title": "Chương 11 — Cổ Đế Động Phủ, Song Đế Chi Chiến & Đại Kết Cục Viêm Đế (v1.0.0)",
+  "quests": [
+    {
+      "id": "q87_ch11_duoc_dien_huyen_dan",
+      "title": "87. [CHƯƠNG 11 · ĐẠI KẾT CỤC] Dược Giới Dược Điển — Cửu Phẩm Huyền Đan Đấu Hồn Hư Tử!",
+      "objective": "Bước qua Khe Nứt Cổ Đế sang Dược Giới — Vạn Dược Sơn, gặp Lão Tổ Dược Điển [V] dự Đại Hội Dược Điển và nghiền nát [BOSS] Hồn Hư Tử!",
+      "type": "story_flag",
+      "flag_name": "ch11_beat_hon_hu_tu",
+      "target_count": 1,
+      "reward_exp": 9500000,
+      "reward_gold": 3200000,
+      "reward_items": { "herb_sinh_linh_thao": 4, "pill_loi_kiep_huyen_dan": 1 },
+      "intro_log": "HUNG TIN CHẤN ĐỘNG VIỄN CỔ BÁT TỘC!! Linh Tộc và Thạch Tộc đã bị Hồn Tộc xóa sổ trong đêm! Mau tiến sang Dược Giới — Vạn Dược Sơn dự Dược Điển ngăn chặn âm mưu của Hồn Hư Tử!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch11_duoc_dien_entered" }, "kind": "npc", "target": "ch11_duoc_dien_lao_to", "map": "ch11_duoc_gioi_van_duoc_son" },
+        { "default": true, "kind": "boss", "target": "hon_hu_tu_boss", "map": "ch11_duoc_gioi_van_duoc_son" }
+      ]
+    },
+    {
+      "id": "q88_ch11_duoc_gioi_pha_vay",
+      "title": "88. Huyết Tế Dược Giới — Phá Vây #2 Hư Vô Thôn Viêm & Tiếp Nhận #5 Sinh Linh · #10 Cửu U!",
+      "objective": "Chống trả [BOSS] Bản Thể #2 Hư Vô Thôn Viêm trên bầu trời Vạn Dược Sơn, rồi trở lại gặp Lão Tổ Dược Điển [V] tiếp nhận #5 Sinh Linh Chi Diễm & #10 Cửu U Phong Viêm phá vây!",
+      "type": "story_flag",
+      "flag_name": "ch11_duoc_gioi_escaped",
+      "target_count": 1,
+      "reward_exp": 11500000,
+      "reward_gold": 3800000,
+      "reward_items": { "item_hu_vo_am_tinh": 4, "herb_sinh_linh_thao": 4 },
+      "intro_log": "Hồn Hư Tử bị đánh bại liền kích nổ nội ứng phá tan Hộ Tộc Đại Trận! Cái miệng đen khổng lồ của #2 Hư Vô Thôn Viêm đang nuốt chửng cả bầu trời Dược Giới!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch11_beat_hu_vo_thon_viem" }, "kind": "boss", "target": "hu_vo_thon_viem_boss", "map": "ch11_duoc_gioi_van_duoc_son" },
+        { "default": true, "kind": "npc", "target": "ch11_duoc_dien_lao_to", "map": "ch11_duoc_gioi_van_duoc_son" }
+      ]
+    },
+    {
+      "id": "q89_ch11_de_canh_tang_thien",
+      "title": "89. Táng Thiên Sơn Mạch — Đột Phá ĐẾ CẢNH LINH HỒN & Quét Sạch Tứ Ma Thánh!",
+      "objective": "Tới Táng Thiên Sơn Mạch gặp Tộc Trưởng Viêm Tẫn [V] đột phá ĐẾ CẢNH LINH HỒN (mở Đế Hồn Pháp Tướng), rồi đập tan [BOSS] Hồn Tộc Tứ Ma Thánh!",
+      "type": "story_flag",
+      "flag_name": "ch11_beat_tu_ma_thanh",
+      "target_count": 1,
+      "reward_exp": 14000000,
+      "reward_gold": 4400000,
+      "reward_items": { "item_hu_vo_am_tinh": 4, "pill_bo_de_cuu_pham_kim_dan": 1 },
+      "intro_log": "Lão tổ Dược Điển tự bạo mở đường máu đưa bạn thoát khỏi Dược Giới cùng #5 Sinh Linh Chi Diễm & #10 Cửu U Phong Viêm! Đại chiến Liên Minh Tam Tộc vs Hồn Tộc đang nổ ra tại Táng Thiên Sơn Mạch!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch11_de_canh_soul_awakened" }, "kind": "npc", "target": "ch11_viem_tan_alliance", "map": "ch11_tang_thien_son_mach" },
+        { "default": true, "kind": "boss", "target": "tu_ma_thanh_boss", "map": "ch11_tang_thien_son_mach" }
+      ]
+    },
+    {
+      "id": "q90_ch11_cuu_phu_than_tieu_chien",
+      "title": "90. Canh Bạc Tráo Đế Ngọc — Giải Cứu Phụ Thân TIÊU CHIẾN Sau 20 Năm!",
+      "objective": "Tiến lên phía Đông Táng Thiên Sơn Mạch gặp Phụ Thân Tiêu Chiến & Cổ Huân Nhi [V], dùng Đế Cảnh Linh Hồn tráo Đế Ngọc cứu cha đoàn viên!",
+      "type": "story_flag",
+      "flag_name": "ch11_tieu_chien_saved",
+      "target_count": 1,
+      "reward_exp": 15500000,
+      "reward_gold": 4800000,
+      "reward_items": { "item_co_de_thach_tam": 3, "pill_tru_nhan_thanh_dan": 2 },
+      "intro_log": "KHÔNG GIAN TÁCH ĐÔI!! Hồn Thiên Đế hiện thân mang theo Phụ Thân TIÊU CHIẾN ép đổi mảnh Đà Xá Cổ Đế Ngọc cuối cùng! Mau lao tới phía Đông cứu cha!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch11_tieu_chien_rescue", "map": "ch11_tang_thien_son_mach" }
+      ]
+    },
+    {
+      "id": "q91_ch11_day_thap_chuc_khon",
+      "title": "91. Đáy Tháp Già Nam — Cha Con Cổ Long Đoàn Tụ Lão Long Hoàng CHÚC KHÔN!",
+      "objective": "Truy vết Đế Ngọc quay về Vực Sâu Dung Nham Đáy Tháp Già Nam, cùng Tử Nghiên diện kiến Lão Long Hoàng Chúc Khôn [V] mở cánh cửa Cổ Đế Động Phủ!",
+      "type": "story_flag",
+      "flag_name": "ch11_chuc_khon_allied",
+      "target_count": 1,
+      "reward_exp": 17500000,
+      "reward_gold": 5200000,
+      "reward_items": { "item_co_de_thach_tam": 4, "core_de_viem_10": 1 },
+      "intro_log": "Phụ thân Tiêu Chiến đã được cứu an toàn, nhưng Hồn Thiên Đế đã gom đủ 8 mảnh Cổ Đế Ngọc! Thật bất ngờ: Tọa độ Đà Xá Cổ Đế Động Phủ nằm ngay dưới đáy Thiên Phần Luyện Khí Tháp — Học Viện Già Nam năm xưa!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch11_chuc_khon_reunion", "map": "ch11_day_thap_gia_nam" }
+      ]
+    },
+    {
+      "id": "q92_ch11_de_pham_so_dan",
+      "title": "92. Đà Xá Cổ Đế Động Phủ — Vây Bắt [BOSS BÁN ĐẾ] Đế Phẩm Sồ Đan!",
+      "objective": "Bước vào Quảng Trường 22 Cột Lửa Đà Xá Cổ Đế Động Phủ, hợp lực cùng Chúc Khôn & Cổ Nguyên đánh bại [BOSS] Đế Phẩm Sồ Đan!",
+      "type": "story_flag",
+      "flag_name": "ch11_beat_de_pham_so_dan",
+      "target_count": 1,
+      "reward_exp": 21000000,
+      "reward_gold": 6200000,
+      "reward_items": { "pill_de_pham_so_dan": 1, "item_de_pham_dan_tran": 4 },
+      "intro_log": "Lão Long Hoàng Chúc Khôn (Đồng Hành #12 [G]) đã đứng về phe Liên Minh! Cánh cửa đá vạn cổ của Đà Xá Cổ Đế Động Phủ đã mở toang!",
+      "waypoint": [
+        { "default": true, "kind": "boss", "target": "de_pham_so_dan_boss", "map": "ch11_co_de_dong_phu" }
+      ]
+    },
+    {
+      "id": "q93_ch11_van_hoa_trieu_tong",
+      "title": "93. VẠN HỎA TRIỀU TÔNG — Truyền Thừa Đà Xá Cổ Đế Chứng Đạo VIÊM ĐẾ (Cấp 12)!",
+      "objective": "Tiến tới Thạch Tượng Đà Xá Cổ Đế [V] phía Đông Động Phủ, tiếp nhận giọt Bản Nguyên #1 Đế Viêm, hiệu triệu 23 Dị Hỏa thiên địa bước lên ĐẤU ĐẾ — VIÊM ĐẾ!",
+      "type": "story_flag",
+      "flag_name": "ch11_viem_de_ascended",
+      "target_count": 1,
+      "reward_exp": 30000000,
+      "reward_gold": 8500000,
+      "reward_items": { "core_de_viem_10": 2, "pill_bo_de_cuu_pham_kim_dan": 2 },
+      "intro_log": "ĐẠI HẠO KIẾP!! Hồn Thiên Đế đã nuốt sống #2 Hư Vô Thôn Viêm & Đế Phẩm Sồ Đan, huyết tế toàn Hồn Tộc hóa thành HỒN ĐẾ! Chỉ còn 1 hy vọng duy nhất — bước vào Thạch Tượng Đà Xá Cổ Đế [V]!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch11_da_xa_co_de_statue", "map": "ch11_co_de_dong_phu" }
+      ]
+    },
+    {
+      "id": "q94_ch11_song_de_chi_chien",
+      "title": "94. [TRẬN CHIẾN CUỐI CÙNG] Cửu Tiêu Thương Khung — Song Đế Quyết Chiến HỒN THIÊN ĐẾ!",
+      "objective": "Đạp 23 sắc Dị Hỏa lên Cửu Tiêu Thương Khung, đánh bại [FINAL BOSS 3 PHASE] Hồn Đế Hồn Thiên Đế rồi kích hoạt 23 Cột Lửa Dị Hỏa Quảng Trường [V] phong ấn vạn cổ!",
+      "type": "story_flag",
+      "flag_name": "ch11_hon_thien_de_sealed",
+      "target_count": 1,
+      "reward_exp": 50000000,
+      "reward_gold": 12000000,
+      "reward_items": { "core_de_viem_10": 3, "item_de_pham_dan_tran": 6 },
+      "intro_log": "VẠN HỎA TRIỀU TÔNG — VIÊM ĐẾ TIÊU VIÊM GIÁNG LÂM (CẢNH GIỚI 12 · #1 ĐẾ VIÊM · DỊ HỎA HẰNG CỔ XÍCH)!! Hãy lên Cửu Tiêu Thương Khung thay ức vạn oan hồn Trung Châu tru sát Hồn Thiên Đế!",
+      "waypoint": [
+        { "when": { "missing_flag": "ch11_beat_hon_thien_de" }, "kind": "boss", "target": "hon_thien_de_boss", "map": "ch11_cuu_tieu_thuong_khung" },
+        { "default": true, "kind": "npc", "target": "ch11_song_de_victory", "map": "ch11_cuu_tieu_thuong_khung" }
+      ]
+    },
+    {
+      "id": "q95_ch11_o_than_dai_hon",
+      "title": "95. [TRUE ENDING] Trở Về Ô Thản Thành — Song Hậu Đại Hôn Huân Nhi & Thải Lân!",
+      "objective": "Bước qua cổng Đông trở về Phủ Tiêu Gia Ô Thản Thành Tân Trang, tới Lễ Đường [V] cử hành Song Hậu Đại Hôn cùng Cổ Huân Nhi & Thải Lân trước cha Tiêu Chiến & sư tôn Dược Trần!",
+      "type": "story_flag",
+      "flag_name": "ch11_wedding_completed",
+      "target_count": 1,
+      "reward_exp": 35000000,
+      "reward_gold": 15000000,
+      "reward_items": { "pill_tru_nhan_thanh_dan": 5, "pill_da_xa_de_pham_hoan_dan": 1 },
+      "intro_log": "HỒN ĐẾ HỒN THIÊN ĐẾ ĐÃ BỊ PHONG ẤN VẠN CỔ TRONG DỊ HỎA QUẢNG TRƯỜNG!! Đấu Khí Đại Lục hồi sinh — đã đến lúc Viêm Đế Tiêu Viêm trở về Ô Thản Thành thực hiện lời hứa Đại Hôn!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch11_wedding_ceremony", "map": "ch11_o_than_thanh_dai_hon" }
+      ]
+    },
+    {
+      "id": "q96_ch11_dai_thien_chi_mon",
+      "title": "96. [POST-GAME ENDGAME] Mở Cổng Đại Thiên Thế Giới — 23 Dị Hỏa, Lâm Động & Mục Trần!",
+      "objective": "Bước qua cổng Đông sang Thương Khung Vị Diện Giao Giới chạm Bia 23 Dị Hỏa [V] hoàn tất Hành Trình 11 Chương & mở khóa 17 Bí Cảnh Dị Hỏa, Võ Tổ Lâm Động, Mục Trần & New Game+!",
+      "type": "story_flag",
+      "flag_name": "ch11_completed",
+      "target_count": 1,
+      "reward_exp": 60000000,
+      "reward_gold": 20000000,
+      "reward_items": { "core_de_viem_10": 3, "item_hong_tran_de_tinh": 3, "pill_da_xa_de_pham_hoan_dan": 2 },
+      "intro_log": "ĐẠI HÔN Ô THẢN THÀNH VIÊN MÃN!! Trước khi tiến vào vùng trời mới, bạn có thể hoàn tất 5 Nhiệm Vụ Hậu Truyện Cố Nhân ngay tại Quảng Trường Đại Hôn, rồi mở Cổng sang Đại Thiên Thế Giới!",
+      "waypoint": [
+        { "default": true, "kind": "npc", "target": "ch11_dai_thien_monolith", "map": "ch11_dai_thien_giao_gioi" }
+      ]
+    }
+  ],
+  "enemy_kill_flags": {
+    "hon_hu_tu_boss": { "flag": "ch11_beat_hon_hu_tu" },
+    "hu_vo_thon_viem_boss": { "flag": "ch11_beat_hu_vo_thon_viem" },
+    "tu_ma_thanh_boss": { "flag": "ch11_beat_tu_ma_thanh" },
+    "de_pham_so_dan_boss": { "flag": "ch11_beat_de_pham_so_dan" },
+    "hon_thien_de_boss": { "flag": "ch11_beat_hon_thien_de" },
+    "ho_ve_di_hoa_boss": { "flag": "ch11_beat_ho_ve_di_hoa" },
+    "vo_to_lam_dong_boss": { "flag": "ch11_beat_lam_dong" },
+    "muc_ton_muc_tran_boss": { "flag": "ch11_beat_muc_tran" }
+  },
+  "flag_effects": {
+    "ch11_duoc_dien_entered": {
+      "relic": "Diện Kiến Lão Tổ Dược Điển Tại Đại Hội Vạn Dược Sơn!",
+      "give_soul": 180,
+      "sfx": "radar_ping",
+      "banter": "Hồn Hư Tử ngang nhiên khiêu khích cả Dược Tộc! Hãy đập tan hắn bằng Cửu Phẩm Huyền Đan & Lục Sắc Thánh Liên!"
+    },
+    "ch11_beat_hon_hu_tu": {
+      "relic": "Thành Tựu ACH_11_01: Đan Tháp Vô Thượng Tôn (Đánh Bại Hồn Hư Tử Tại Dược Điển!)",
+      "set_flags": ["ach_11_01_dan_thap_vo_thuong"],
+      "give_gear": [
+        { "template": "caul_duoc_de_bach_kim_dinh", "rarity": "de", "auto_equip": false }
+      ],
+      "give_soul": 280,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "CỬU PHẨM HUYỀN ĐAN ÁP BẸP HỒN HƯ TỬ — MỞ THÀNH TỰU [ĐAN THÁP VÔ THƯỢNG TÔN] & [DƯỢC ĐẾ BẠCH KIM ĐỈNH]!! Bầu trời nứt đen: #2 Hư Vô Thôn Viêm giáng lâm!"
+    },
+    "ch11_beat_hu_vo_thon_viem": {
+      "relic": "Cầm Chân Bản Thể #2 Hư Vô Thôn Viêm Giữa Biển Lửa Đen Dược Giới!",
+      "give_soul": 320,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.90],
+      "banter": "Đẩy lui mũi tiên phong #2 Hư Vô Thôn Viêm! Mau quay lại gặp Lão Tổ Dược Điển [V] nhận ký thác #5 Sinh Linh & #10 Cửu U phá vây!"
+    },
+    "ch11_duoc_gioi_escaped": {
+      "relic": "Huyết Lệ Dược Giới — Tiếp Nhận Ký Thác #5 Sinh Linh Chi Diễm & #10 Cửu U Phong Viêm!",
+      "set_flags": ["FLAG_DUOC_GIOI_FLAMES_INHERITED"],
+      "unlock_flame": { "id": "di_hoa_05_sinh_linh", "auto_equip": false },
+      "set_realm_min": { "realm": 11, "stage": 7 },
+      "give_soul": 400,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.90],
+      "banter": "Lão Tổ Dược Điển tự bạo mở đường máu — Thu nhận [#5 Sinh Linh Chi Diễm] & [#10 Cửu U Phong Viêm], đột phá THẤT TINH ĐẤU THÁNH!! Cổng Đông sang Táng Thiên Sơn Mạch đã mở!"
+    },
+    "ch11_de_canh_soul_awakened": {
+      "relic": "Cảnh Giới Linh Hồn Tối Thượng Vạn Cổ — ĐẾ CẢNH LINH HỒN (3.500+ SOUL · Mở Đế Hồn Pháp Tướng!)",
+      "set_flags": ["FLAG_DE_CANH_SOUL"],
+      "unlock_skill": { "id": "de_hon_phap_tuong", "slot": "Q" },
+      "give_soul": 1400,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [24.0, 1.0],
+      "banter": "HỒN HẢI PHÁ TAN GÔNG CÙM NGÀN NĂM — CHÍNH THỨC BƯỚC VÀO [ĐẾ CẢNH LINH HỒN] & MỞ [ĐẾ HỒN PHÁP TƯỚNG]!! Quét sạch Tứ Ma Thánh phía Đông!"
+    },
+    "ch11_beat_tu_ma_thanh": {
+      "relic": "Đế Hồn Pháp Tướng Vỗ Nát Tứ Ma Tuyệt Sát Trận Của Hồn Tộc!",
+      "give_soul": 360,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.90],
+      "banter": "HỒN TỘC TỨ MA THÁNH BẠI TRẬN!! Hồn Thiên Đế xuất hiện phía Đông cùng Phụ Thân TIÊU CHIẾN — mau lao tới [V] giải cứu cha!"
+    },
+    "ch11_tieu_chien_saved": {
+      "relic": "Phụ Tử Đoàn Viên Sau 20 Năm — Giải Cứu Phụ Thân Tiêu Chiến & Sự Hy Sinh Của Huân Nhi!",
+      "set_flags": ["FLAG_TIEU_CHIEN_SAVED"],
+      "affection": { "huan_nhi": 80 },
+      "set_realm_min": { "realm": 11, "stage": 8 },
+      "give_soul": 420,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [20.0, 0.85],
+      "banter": "CỨU THÀNH CÔNG PHỤ THÂN TIÊU CHIẾN!! Đạt BÁT TINH ĐẤU THÁNH — Cảm ứng Đế Ngọc chỉ thẳng về Vực Sâu Dung Nham Đáy Tháp HỌC VIỆN GIÀ NAM!"
+    },
+    "ch11_chuc_khon_allied": {
+      "relic": "Cha Con Cổ Long Đoàn Viên — Siêu Đồng Minh Lão Long Hoàng Chúc Khôn (#12 [G])!",
+      "set_flags": ["FLAG_CHUC_KHON_ALLIED"],
+      "unlock_companion": { "id": "chuc_khon_long_hoang", "auto_summon": true },
+      "give_soul": 380,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [22.0, 0.90],
+      "banter": "Tiếng gọi 'Phụ hoàng!' của Tử Nghiên khiến Lão Long Hoàng CHÚC KHÔN mở toang Cánh Cửa Đà Xá Cổ Đế Động Phủ & gia nhập [Đồng Hành #12 [G]]!"
+    },
+    "ch11_beat_de_pham_so_dan": {
+      "relic": "Phá Vỡ Nguyên Khí Đế Phẩm Sồ Đan Trong Đại Điện Cổ Đế Động Phủ!",
+      "set_realm_min": { "realm": 11, "stage": 9 },
+      "give_soul": 480,
+      "sfx": "breakthrough",
+      "shake": [24.0, 1.0],
+      "banter": "ĐẠT CỬU TINH ĐẤU THÁNH ĐỈNH PHONG!! Hồn Thiên Đế đã nuốt Hư Vô & Sồ Đan hóa Hồn Đế — mau bước vào Thạch Tượng Đà Xá Cổ Đế [V] phía Đông!"
+    },
+    "ch11_viem_de_ascended": {
+      "relic": "VẠN HỎA TRIỀU TÔNG — Chứng Đạo CẢNH GIỚI 12: VIÊM ĐẾ (ĐẤU ĐẾ) · #1 ĐẾ VIÊM & DỊ HỎA HẰNG CỔ XÍCH!",
+      "set_flags": ["FLAG_VIEM_DE_ASCENDED"],
+      "unlock_flame": { "id": "di_hoa_01_de_viem", "auto_equip": true },
+      "unlock_skill": { "id": "van_hoa_phan_thuong_khung", "slot": "E" },
+      "give_gear": [
+        { "template": "wpn_di_hoa_hang_co_xich", "rarity": "de", "auto_equip": true },
+        { "template": "ring_da_xa_co_de_gioi", "rarity": "de", "auto_equip": false },
+        { "template": "wing_van_hoa_thai_so_duc", "rarity": "de", "auto_equip": false }
+      ],
+      "set_realm_min": { "realm": 12, "stage": 1 },
+      "give_soul": 1500,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [28.0, 1.2],
+      "banter": "★ VẠN HỎA TRIỀU TÔNG — VIÊM ĐẾ TIÊU VIÊM GIÁNG LÂM (CẢNH GIỚI 12 · #1 ĐẾ VIÊM · #2 HƯ VÔ · DỊ HỎA HẰNG CỔ XÍCH)!! Tiến lên Cửu Tiêu Thương Khung quyết chiến Hồn Thiên Đế!"
+    },
+    "ch11_beat_hon_thien_de": {
+      "relic": "Chém Gãy Trảm Đế Quỷ Huyết Đao — Đánh Sập 3 Phase Hồn Đế Hồn Thiên Đế!",
+      "unlock_skill": { "id": "hang_co_xich_tram", "slot": "Q" },
+      "give_soul": 800,
+      "sfx": "breakthrough",
+      "shake": [28.0, 1.2],
+      "banter": "HỒN ĐẾ HỒN THIÊN ĐẾ CÙNG ĐƯỜNG TỰ BẠO HẮC ĐỘNG!! Mau tiến tới Đài Phong Ấn [V] phía Đông dựng 23 Cột Lửa Dị Hỏa Quảng Trường phong ấn vạn cổ!"
+    },
+    "ch11_hon_thien_de_sealed": {
+      "relic": "Thành Tựu ACH_11_03: Tam Thập Niên Hà Đông, Tam Thập Niên Hà Tây — Dị Hỏa Quảng Trường Vĩnh Phong Hồn Đế!",
+      "set_flags": ["ach_11_03_tam_thap_nien", "FLAG_SONG_DE_VICTORY"],
+      "unlock_skill": { "id": "di_hoa_quang_truong", "slot": "R" },
+      "give_gear": [
+        { "template": "arm_vinh_hang_viem_de_bao", "rarity": "de", "auto_equip": false }
+      ],
+      "give_soul": 1000,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [28.0, 1.2],
+      "banter": "★ DỊ HỎA QUẢNG TRƯỜNG PHONG ẤN VẠN CỔ HỒN THIÊN ĐẾ!! Viêm Đế tái tạo chân thân — Mở khóa [New Game+ Luân Hồi] & đường về Ô Thản Thành Đại Hôn!"
+    },
+    "ch11_wedding_completed": {
+      "relic": "TRUE ENDING: Song Hậu Đại Hôn Ô Thản Thành — Viêm Đế Tiêu Viêm · Cổ Huân Nhi · Thải Lân!",
+      "set_flags": ["FLAG_TRUE_ENDING_CREDITS"],
+      "unlock_skill": { "id": "hang_co_di_hoa_lien", "slot": "R" },
+      "affection": { "huan_nhi": 100, "my_do_toa": 100 },
+      "give_soul": 600,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [16.0, 0.70],
+      "banter": "★ ĐẠI HÔN Ô THẢN THÀNH VIÊN MÃN — MỞ [VIÊM ĐẾ HẰNG CỔ DỊ HỎA LIÊN] & CỔNG ĐẠI THIÊN THẾ GIỚI!! Đừng quên 5 Nhiệm Vụ Hậu Truyện Cố Nhân ngay tại Quảng Trường!"
+    },
+    "eq_11_01_tieu_y_tien_done": {
+      "relic": "Hậu Truyện EQ_11_01: Đón Tiểu Y Tiên Từ Thanh Sơn Trấn Về Sum Họp Ô Thản Thành!",
+      "affection": { "tieu_y_tien": 100 },
+      "give_soul": 200,
+      "sfx": "loot_rare",
+      "banter": "Tiểu Y Tiên mỉm cười rạng rỡ nắm tay Huân Nhi & Thải Lân về mái nhà chung tại Ô Thản Thành (+100 Hảo Cảm & +200 SOUL)!"
+    },
+    "eq_11_02_van_van_done": {
+      "relic": "Hậu Truyện EQ_11_02: Ngắm Biển Mây Nướng Cá Cùng Vân Vận Trên Đỉnh Vân Lam!",
+      "affection": { "van_chi": 100 },
+      "give_soul": 200,
+      "sfx": "loot_rare",
+      "banter": "Vân Vận mỉm cười nhớ lại thuở 'Dược Nham' bên Bờ Suối Trăng Bạc và đồng ý dời Hoa Tông chi mạch về bầu bạn tại Gia Mã (+100 Hảo Cảm)!"
+    },
+    "eq_11_03_nha_phi_done": {
+      "relic": "Hậu Truyện EQ_11_03: Chén Trà Hội Ngộ Nhã Phi (Trú Nhan Thánh Đan) & Băng Hoàng Hải Ba Đông!",
+      "give_gold": 500000,
+      "give_soul": 200,
+      "sfx": "loot_rare",
+      "banter": "Nhã Phi nhận viên Trú Nhan Thánh Đan cười duyên, Hải Ba Đông nâng chén chúc mừng đệ nhất cường giả từng ký giao ước năm xưa!"
+    },
+    "eq_11_04_candy_party_done": {
+      "relic": "Hậu Truyện EQ_11_04: Kho Kẹo Cửu Phẩm Của Tiêu Tiêu, Tử Nghiên, Thanh Lân & Chúc Khôn (+25% Toàn Đội Đồng Hành!)",
+      "affection": { "thanh_lan": 100 },
+      "give_soul": 250,
+      "sfx": "breakthrough",
+      "banter": "Bữa tiệc kẹo Cửu Phẩm khiến cả Lão Long Hoàng Chúc Khôn lẫn bé Tiêu Tiêu mê tít — Toàn bộ 12 Đồng Hành vĩnh viễn +25% sức mạnh!"
+    },
+    "eq_11_05_ancestor_oath_done": {
+      "relic": "Thành Tựu ACH_11_02: Phụ Tử Tình Thâm — Cùng Phụ Thân Tiêu Chiến Bái Tế Tổ Tiên Tiêu Huyền Hồi Sinh Huyết Mạch Đấu Đế!",
+      "set_flags": ["ach_11_02_phu_tu_tinh_tham"],
+      "give_soul": 500,
+      "sfx": "breakthrough",
+      "banter": "★ THÀNH TỰU [PHỤ TỬ TÌNH THÂM]!! Huyết mạch Đấu Đế Tiêu Gia vĩnh viễn hồi sinh rực rỡ (+500 SOUL)!"
+    },
+    "ch11_beat_ho_ve_di_hoa": {
+      "relic": "Chinh Phục Hộ Vệ Bản Nguyên 23 Dị Hỏa Tại Đại Thiên Thế Giới!",
+      "give_soul": 400,
+      "sfx": "breakthrough",
+      "banter": "Đánh bại Hộ Vệ Bản Nguyên 23 Dị Hỏa! Quay lại Bia Cảm Ứng [V] khắc ghi trọn bộ 17 Bí Cảnh Dị Hỏa Ẩn!"
+    },
+    "ch11_beat_lam_dong": {
+      "relic": "Tỷ Thí Hữu Nghị Thắng SUPERBOSS #1: VÕ TỔ LÂM ĐỘNG (Nhận Lôi Đế Tổ Phù Ấn!)",
+      "give_gear": [
+        { "template": "pend_loi_de_to_phu_an", "rarity": "de", "auto_equip": false }
+      ],
+      "give_soul": 600,
+      "sfx": "breakthrough",
+      "shake": [24.0, 1.0],
+      "banter": "VÕ TỔ LÂM ĐỘNG CƯỜI VANG CHẮP TAY KHÂM PHỤC — TRAO TẶNG [LÔI ĐẾ TỔ PHÙ ẤN (+15% TOÀN BỘ ĐẤU KỸ)]!!"
+    },
+    "ch11_beat_muc_tran": {
+      "relic": "Tỷ Thí Hữu Nghị Thắng SUPERBOSS #2: ĐẠI CHÚA TỂ MỤC TRẦN (Nhất Khí Hóa Tam Thanh!)",
+      "give_soul": 800,
+      "sfx": "breakthrough",
+      "shake": [26.0, 1.1],
+      "banter": "ĐẠI CHÚA TỂ MỤC TRẦN TÁN THƯỞNG VẠN HỎA VIÊM ĐẾ — CHẠM BIA ĐẠI THIÊN [V] NHẬN CÚP BẠCH KIM 100%!"
+    },
+    "ch11_completed": {
+      "relic": "HOÀN TẤT 100% ĐẤU PHÁ THƯƠNG KHUNG (11/11 CHƯƠNG · 4/4 QUYỂN · VIÊM ĐẾ VÔ TẬN HỎA VỰC)!",
+      "set_flags": ["FLAG_BOOK_04_COMPLETED", "FLAG_GAME_COMPLETED_100"],
+      "give_soul": 1000,
+      "heal_full": true,
+      "sfx": "breakthrough",
+      "shake": [24.0, 1.0],
+      "banter": "★ CHÚC MỪNG HOÀN TẤT 100% ĐẤU PHÁ THƯƠNG KHUNG (11/11 CHƯƠNG)! Tự do săn 23/23 Dị Hỏa, tỷ thí Lâm Động & Mục Trần hoặc khởi động New Game+!"
+    }
+  }
+}

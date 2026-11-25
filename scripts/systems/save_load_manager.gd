@@ -40,7 +40,8 @@ static func get_save_slot_summary(slot_idx: int) -> Dictionary:
 	var m_title: String = str(d.get("meta_map", str(d.get("current_map_id", "Tiêu Gia"))))
 	var mins: int = int(float(d.get("playtime_sec", 0.0)) / 60.0)
 	var saved_at: String = str(d.get("meta_saved_at", ""))
-	var demo_tag: String = "[DEMO] " if bool(d.get("is_demo_mode", false)) else ""
+	var ng_cyc: int = int(d.get("ng_plus_cycle", 0))
+	var demo_tag: String = "[DEMO] " if bool(d.get("is_demo_mode", false)) else ("[NG+%d] " % ng_cyc if ng_cyc > 0 else "")
 	return {
 		"exists": true,
 		"slot": slot_idx,
@@ -132,6 +133,7 @@ static func build_save_payload(pd: Node) -> Dictionary:
 		"realm_index": pd.realm_index,
 		"stage": pd.stage,
 		"nine_turn_level": int(pd.nine_turn_level) if ("nine_turn_level" in pd) else 0,
+		"ng_plus_cycle": int(pd.ng_plus_cycle) if ("ng_plus_cycle" in pd) else 0,
 		"current_exp": pd.current_exp,
 		"bonus_soul": pd.bonus_soul,
 		"gold": pd.gold,
@@ -188,6 +190,8 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 	pd.stage = int(d.get("stage", 3))
 	if "nine_turn_level" in pd:
 		pd.nine_turn_level = clampi(int(d.get("nine_turn_level", 0)), 0, 9)
+	if "ng_plus_cycle" in pd:
+		pd.ng_plus_cycle = maxi(0, int(d.get("ng_plus_cycle", 0)))
 	pd.current_exp = int(d.get("current_exp", 0))
 	pd.bonus_soul = int(d.get("bonus_soul", 0))
 	pd.gold = int(d.get("gold", 35))
@@ -255,6 +259,8 @@ static func apply_loaded_payload(pd: Node, d: Dictionary, persist_settings: bool
 		pd.is_kim_khoi_tran_active = false
 	if "is_tinh_lien_tran_active" in pd:
 		pd.is_tinh_lien_tran_active = false
+	if "is_de_hon_active" in pd:
+		pd.is_de_hon_active = false
 	if "huan_nhi_revive_used" in pd:
 		pd.huan_nhi_revive_used = false
 	if "immortal_revive_cd" in pd:

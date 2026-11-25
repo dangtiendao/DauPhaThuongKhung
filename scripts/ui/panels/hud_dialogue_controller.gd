@@ -129,6 +129,15 @@ static func execute_dialogue_action(hud, act: String) -> void:
 					var wsp_arr: Array = eff.get("warp_spawn", [])
 					var wsp: Vector2 = Vector2(float(wsp_arr[0]), float(wsp_arr[1])) if wsp_arr.size() >= 2 else Vector2.ZERO
 					w.load_map(warp_m, wsp, true)
+			if bool(res.get("open_ending_credits", false)):
+				hud._toggle_modal("ending_credits")
+			elif bool(res.get("start_new_game_plus", false)):
+				var ng_r: Dictionary = EmperorRealmManager.start_new_game_plus(PlayerData)
+				hud._on_banter(str(ng_r.get("msg", "")))
+				if bool(ng_r.get("ok", false)):
+					var w_ng: Node = hud._find_world()
+					if w_ng != null and w_ng.has_method("load_map"):
+						w_ng.load_map("ch01_tieu_gia", Vector2(460, 520), true)
 		return
 	elif act.begins_with("flag:"):
 		var flag_id: String = act.substr(5)
@@ -215,6 +224,22 @@ static func execute_dialogue_action(hud, act: String) -> void:
 			hud._toggle_modal("world_map")
 		else:
 			hud._populate_modal()
+	elif act == "choice:tu_hon_ng_plus_flex":
+		PlayerData.set_story_flag("tu_hon_done")
+		PlayerData.add_story_relic("☯ Kỷ Niệm NG+: 0,01% Uy Áp Đế Cảnh Làm Cát Diệp & Nạp Lan Rơi Chén Trà!")
+		PlayerData.add_affection("huan_nhi", 20)
+		EventBus.screen_shake_requested.emit(14.0, 0.35)
+		EventBus.audio_sfx_requested.emit("breakthrough")
+		hud._on_banter("☯ [NG+ EASTER EGG] Cát Diệp & Nạp Lan Yên Nhiên tái xanh đánh rơi vỡ chén trà ngơ ngác bỏ chạy! Tiêu Chiến & Huân Nhi che miệng cười rộ (+20 Hảo Cảm Huân Nhi)!")
+	elif act == "open_ending_credits":
+		hud._toggle_modal("ending_credits")
+	elif act == "start_new_game_plus":
+		var ng_res: Dictionary = EmperorRealmManager.start_new_game_plus(PlayerData)
+		hud._on_banter(str(ng_res.get("msg", "")))
+		if bool(ng_res.get("ok", false)):
+			var w2: Node = hud._find_world()
+			if w2 != null and w2.has_method("load_map"):
+				w2.load_map("ch01_tieu_gia", Vector2(460, 520), true)
 	elif act == "open_tower":
 		hud.world_map_tab = "tower"
 		if hud.current_modal != "world_map":

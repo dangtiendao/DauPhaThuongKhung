@@ -30,6 +30,7 @@ var allowed_rarities: Array = []
 var drop_table: Array = []
 
 var boss_phase: int = 1
+var is_three_phase_boss: bool = false
 var boss_bar_shown: bool = false
 var wave_aim_dir: Vector2 = Vector2.RIGHT
 var boss_special_cd: float = 2.4
@@ -247,22 +248,24 @@ func _load_from_db() -> void:
 	display_title = str(edef.get("name", enemy_id))
 	realm_idx = int(edef.get("realm_index", 1))
 	realm_badge = str(edef.get("realm_label", "Đấu Chi Khí"))
-	ai_mode = str(edef.get("ai_type", "chaser"))
-	max_hp = float(edef.get("max_hp", 100.0))
+	ai_mode = str(edef.get("ai_type", "boss_duelist" if bool(edef.get("is_boss", false)) else "chaser"))
+	var ng_m: Dictionary = EmperorRealmManager.get_ng_plus_enemy_multipliers(PlayerData)
+	max_hp = float(edef.get("max_hp", 100.0)) * float(ng_m.get("hp", 1.0))
 	cur_hp = max_hp
-	atk_stat = float(edef.get("atk", 8.0))
+	atk_stat = float(edef.get("atk", 8.0)) * float(ng_m.get("atk", 1.0))
 	def_stat = float(edef.get("def", 2.0))
-	move_spd = float(edef.get("move_speed", 120.0))
-	detect_radius = float(edef.get("detect_range", 300.0))
+	move_spd = float(edef.get("move_speed", edef.get("speed", 120.0))) * float(ng_m.get("spd", 1.0))
+	detect_radius = float(edef.get("detect_range", edef.get("aggro_range", 300.0)))
 	attack_radius = float(edef.get("attack_range", 48.0))
-	exp_reward = int(edef.get("exp_reward", 30))
+	exp_reward = int(round(float(edef.get("exp_reward", 30)) * float(ng_m.get("exp", 1.0))))
 	gold_reward = int(edef.get("gold_reward", 15))
 	gear_drop_chance = float(edef.get("gear_drop_chance", 0.30))
 	gear_pool = edef.get("gear_pool", [])
 	allowed_rarities = edef.get("allowed_rarities", [])
 	is_boss_unit = bool(edef.get("is_boss", false))
+	is_three_phase_boss = bool(edef.get("is_three_phase", false)) or enemy_id == "hon_thien_de_boss"
 	drop_table = edef.get("drops", [])
-	is_floating_unit = (enemy_id == "hai_ba_dong_boss" or enemy_id == "co_ha_boss" or enemy_id == "tieu_tu_tinh_su_boss" or enemy_id == "lieu_tich_boss" or enemy_id == "van_lac_tam_viem_boss" or enemy_id == "han_phong_boss" or enemy_id == "van_son_boss" or enemy_id == "vu_ho_phap_boss" or enemy_id == "nhan_lac_thien_boss" or enemy_id == "han_phong_dau_tong_boss" or enemy_id == "dia_ma_lao_quy_boss" or enemy_id == "phi_thien_boss" or enemy_id == "phuong_thanh_nhi_boss" or enemy_id == "bang_ha_thanh_hai_boss" or enemy_id == "cuu_long_loi_cuong_boss" or enemy_id == "mo_cot_lao_nhan_boss" or enemy_id == "tam_thien_diem_viem_boss")
+	is_floating_unit = (enemy_id in ["hai_ba_dong_boss", "co_ha_boss", "tieu_tu_tinh_su_boss", "lieu_tich_boss", "van_lac_tam_viem_boss", "han_phong_boss", "van_son_boss", "vu_ho_phap_boss", "nhan_lac_thien_boss", "han_phong_dau_tong_boss", "dia_ma_lao_quy_boss", "phi_thien_boss", "phuong_thanh_nhi_boss", "bang_ha_thanh_hai_boss", "cuu_long_loi_cuong_boss", "mo_cot_lao_nhan_boss", "tam_thien_diem_viem_boss", "hon_hu_tu_boss", "hu_vo_thon_viem_boss", "de_pham_so_dan_boss", "hon_thien_de_boss", "ho_ve_di_hoa_boss", "vo_to_lam_dong_boss", "muc_ton_muc_tran_boss"])
 	boss_special_cd = 2.2
 	boss_shield_hp = 0.0
 	boss_shield_timer = 0.0
@@ -712,7 +715,8 @@ func _spawn_enemy_vfx(mode: String, world_pos: Vector2, dir_vec: Vector2, rad: f
 
 
 func is_phase2_warning() -> bool:
-	return is_boss_unit and boss_phase == 1 and cur_hp > max_hp * 0.55 and cur_hp <= max_hp * 0.67
+	var thr: float = 0.65 if is_three_phase_boss else 0.55
+	return is_boss_unit and boss_phase == 1 and cur_hp > max_hp * thr and cur_hp <= max_hp * (thr + 0.12)
 
 
 func _check_phase2_warning() -> void:
@@ -757,6 +761,10 @@ func _request_restore_map_bgm() -> void:
 
 func _trigger_boss_phase_2() -> void:
 	BossSkillExec.trigger_boss_phase_2(self)
+
+
+func _trigger_boss_phase_3() -> void:
+	BossSkillExec.trigger_boss_phase_3(self)
 
 
 func _compute_ai_velocity(delta: float, player_node: Node2D) -> Vector2:
@@ -1259,8 +1267,11 @@ func receive_hit(raw_atk_dmg: float, kb_vec: Vector2, skill_realm_pen: float = 0
 		_check_phase2_warning()
 		if ai_mode == "bomber" and not is_priming_bomb and cur_hp <= max_hp * 0.28:
 			_start_bomb_priming()
-		if is_boss_unit and boss_phase == 1 and cur_hp <= max_hp * 0.55:
+		var p2_thr: float = 0.65 if is_three_phase_boss else 0.55
+		if is_boss_unit and boss_phase == 1 and cur_hp <= max_hp * p2_thr:
 			_trigger_boss_phase_2()
+		if is_boss_unit and is_three_phase_boss and boss_phase == 2 and cur_hp <= max_hp * 0.25:
+			_trigger_boss_phase_3()
 		if is_boss_unit and poise_stagger_timer <= 0.0 and poise_dmg > 0.0:
 			cur_poise = minf(max_poise, cur_poise + poise_dmg)
 			poise_decay_delay = 3.2
@@ -1294,8 +1305,11 @@ func _process_burn_dot(delta: float) -> void:
 			_check_phase2_warning()
 			if ai_mode == "bomber" and not is_priming_bomb and cur_hp <= max_hp * 0.28:
 				_start_bomb_priming()
-		if is_boss_unit and boss_phase == 1 and cur_hp > 0.0 and cur_hp <= max_hp * 0.55:
+		var p2_dot_thr: float = 0.65 if is_three_phase_boss else 0.55
+		if is_boss_unit and boss_phase == 1 and cur_hp > 0.0 and cur_hp <= max_hp * p2_dot_thr:
 			_trigger_boss_phase_2()
+		if is_boss_unit and is_three_phase_boss and boss_phase == 2 and cur_hp > 0.0 and cur_hp <= max_hp * 0.25:
+			_trigger_boss_phase_3()
 		if cur_hp <= 0.0:
 			_die()
 
@@ -1369,6 +1383,12 @@ func _die() -> void:
 						if drop_node.has_method("setup_item_drop"):
 							drop_node.setup_item_drop(str(entry.get("item_id", "")), 1)
 						get_parent().call_deferred("add_child", drop_node)
+			if is_boss_unit and EmperorRealmManager.is_ng_plus_active(PlayerData):
+				var ng_drop: Area2D = LOOT_SCENE.instantiate() as Area2D
+				ng_drop.global_position = global_position + Vector2(16, 0)
+				if ng_drop.has_method("setup_item_drop"):
+					ng_drop.setup_item_drop("item_hong_tran_de_tinh", 1)
+				get_parent().call_deferred("add_child", ng_drop)
 
 		EventBus.enemy_killed.emit(enemy_id, is_boss_unit)
 

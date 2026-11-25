@@ -1,0 +1,595 @@
+{
+  "version": "1.0",
+  "chapter": "Chương 11",
+  "map_order": [
+    "ch11_duoc_gioi_van_duoc_son",
+    "ch11_tang_thien_son_mach",
+    "ch11_day_thap_gia_nam",
+    "ch11_co_de_dong_phu",
+    "ch11_cuu_tieu_thuong_khung",
+    "ch11_o_than_thanh_dai_hon",
+    "ch11_dai_thien_giao_gioi"
+  ],
+  "maps": {
+    "ch11_duoc_gioi_van_duoc_son": {
+      "id": "ch11_duoc_gioi_van_duoc_son",
+      "chapter": "Chương 11",
+      "name": "Dược Giới — Vạn Dược Sơn",
+      "subtitle": "Hồi 11.1 — Đại Hội Dược Điển Đấu Hồn Hư Tử · Huyết Tế Dược Giới & #5 Sinh Linh · #10 Cửu U!",
+      "is_safe_zone": false,
+      "size": [2160, 1200],
+      "default_spawn": [190, 600],
+      "bgm": "bgm_bo_de",
+      "ambient_weather": "pill_realm_ash",
+      "ground_tile": "res://assets/sprites/tiles/duoc_gioi_herb_terrace.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [140, 540, 1880, 120],
+        [980, 220, 140, 760]
+      ],
+      "decor_type": "ancient_forest",
+      "signs": [
+        { "pos": [520, 490], "text": "QUẢNG TRƯỜNG VẠN DƯỢC SƠN — ĐẠI HỘI DƯỢC ĐIỂN", "color": "#4ADE80" },
+        { "pos": [1520, 320], "text": "BẦU TRỜI NỨT ĐEN: HỒN HƯ TỬ & BẢN THỂ #2 HƯ VÔ THÔN VIÊM!", "color": "#C084FC" }
+      ],
+      "chests": [
+        {
+          "id": "chest_ch11_duoc_gioi_1",
+          "pos": [760, 240],
+          "gold": 220000,
+          "stones": 26,
+          "items": { "herb_sinh_linh_thao": 4, "item_hu_vo_am_tinh": 2, "pill_tru_nhan_thanh_dan": 2 }
+        },
+        {
+          "id": "chest_ch11_duoc_gioi_2",
+          "pos": [1680, 960],
+          "gold": 260000,
+          "stones": 30,
+          "items": { "herb_sinh_linh_thao": 4, "pill_loi_kiep_huyen_dan": 1, "core_kim_loi_9": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch11_duoc_dien",
+          "name": "LÃO TỔ DƯỢC ĐIỂN & THẦN NÔNG (Bát Tinh Đấu Thánh · Dược Tộc)",
+          "title": "Hồi 11.1 — Tranh Đấu Cửu Phẩm Huyền Đan · Trao #5 Sinh Linh & #10 Cửu U Phá Vây!",
+          "sprite": "res://assets/sprites/npcs/npc_duoc_dien_lao_to.png",
+          "pos": [440, 500],
+          "role": "ch11_duoc_dien_lao_to",
+          "glow_hex": "#4ADE80",
+          "name_hex": "#BBF7D0",
+          "prompt_text": "[V] Bái Kiến Lão Tổ Dược Điển (Mở Đại Hội Dược Điển / Nhận Ký Thác #5 & #10 Phá Vây!)"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "hon_toc_huyet_ve", "pos": [860, 400], "respawn": 15.0 },
+        { "enemy_id": "hon_toc_huyet_ve", "pos": [860, 820], "respawn": 15.0 },
+        { "enemy_id": "hu_vo_tu_hoa_clone", "pos": [1260, 620], "respawn": 16.0 },
+        { "enemy_id": "hon_hu_tu_boss", "pos": [1460, 380], "respawn": 48.0 },
+        { "enemy_id": "hu_vo_thon_viem_boss", "pos": [1740, 760], "respawn": 52.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_yeu_hoa_from_duoc_gioi",
+          "label": "Không Gian Môn Tây -> Quay Về Yêu Hỏa Không Gian (Ch.10)",
+          "pos": [108, 600],
+          "target_map": "ch10_yeu_hoa_khong_gian",
+          "target_spawn": [2040, 620],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch11_tang_thien_son_mach",
+          "label": "Khe Nứt Dược Điển Đông -> TÁNG THIÊN SƠN MẠCH (Đế Cảnh Linh Hồn & Cứu Phụ Thân!)",
+          "pos": [2052, 600],
+          "target_map": "ch11_tang_thien_son_mach",
+          "target_spawn": [190, 600],
+          "require_flag": "ch11_duoc_gioi_escaped",
+          "locked_hint": "Hãy đánh bại Hồn Hư Tử & Bản Thể #2 Hư Vô Thôn Viêm rồi gặp Lão Tổ Dược Điển [V] nhận #5 Sinh Linh & #10 Cửu U phá vây khỏi Dược Giới!"
+        }
+      ]
+    },
+    "ch11_tang_thien_son_mach": {
+      "id": "ch11_tang_thien_son_mach",
+      "chapter": "Chương 11",
+      "name": "Táng Thiên Sơn Mạch (Chiến Tuyến Liên Minh)",
+      "subtitle": "Hồi 11.2 — Đột Phá Đế Cảnh Linh Hồn · Trảm Tứ Ma Thánh · Tráo Đế Ngọc Cứu Phụ Thân Tiêu Chiến!",
+      "is_safe_zone": false,
+      "size": [2200, 1200],
+      "default_spawn": [190, 600],
+      "bgm": "bgm_nhan_dien",
+      "ambient_weather": "blood_sky",
+      "ground_tile": "res://assets/sprites/tiles/tang_thien_shattered_ridge.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [140, 540, 1920, 120],
+        [1020, 220, 150, 760]
+      ],
+      "decor_type": "ruins",
+      "signs": [
+        { "pos": [500, 480], "text": "DOANH TRẠI LIÊN MINH TAM TỘC (CỔ · VIÊM · LÔI · THIÊN PHỦ)", "color": "#FBBF24" },
+        { "pos": [1560, 460], "text": "CHIẾN TUYẾN TỨ MA THÁNH & ĐIỂM TRAO ĐỔI ĐẾ NGỌC!", "color": "#F87171" }
+      ],
+      "chests": [
+        {
+          "id": "chest_ch11_tang_thien_1",
+          "pos": [780, 240],
+          "gold": 280000,
+          "stones": 30,
+          "items": { "item_hu_vo_am_tinh": 3, "pill_loi_kiep_huyen_dan": 1 }
+        },
+        {
+          "id": "chest_ch11_tang_thien_2",
+          "pos": [1740, 960],
+          "gold": 320000,
+          "stones": 34,
+          "items": { "item_co_de_thach_tam": 2, "core_kim_loi_9": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch11_viem_tan",
+          "name": "TỘC TRƯỞNG VIÊM TẪN & LÔI DOANH (Liên Minh Tam Tộc)",
+          "title": "Hồi 11.2 — Hộ Pháp Bế Quan Đột Phá ĐẾ CẢNH LINH HỒN (Mở Đế Hồn Pháp Tướng!)",
+          "sprite": "res://assets/sprites/npcs/npc_viem_tan_loi_doanh.png",
+          "pos": [440, 500],
+          "role": "ch11_viem_tan_alliance",
+          "glow_hex": "#FB923C",
+          "name_hex": "#FED7AA",
+          "prompt_text": "[V] Hội Ý Viêm Tẫn & Lôi Doanh — Đột Phá ĐẾ CẢNH LINH HỒN!"
+        },
+        {
+          "id": "npc_ch11_tieu_chien_rescue",
+          "name": "PHỤ THÂN TIÊU CHIẾN & CỔ HUÂN NHI (Đoàn Viên Sinh Tử!)",
+          "title": "Hồi 11.2 — Tráo Đế Ngọc Cứu Phụ Thân Sau 20 Năm Chia Cách!",
+          "sprite": "res://assets/sprites/npcs/npc_tieu_chien_reunion.png",
+          "pos": [1820, 520],
+          "role": "ch11_tieu_chien_rescue",
+          "require_flag": "ch11_beat_tu_ma_thanh",
+          "glow_hex": "#FBBF24",
+          "name_hex": "#FEF08A",
+          "prompt_text": "[V] Lao Tới Tráo Đế Ngọc Giải Cứu Phụ Thân TIÊU CHIẾN!"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "hon_toc_huyet_ve", "pos": [860, 420], "respawn": 15.0 },
+        { "enemy_id": "hu_vo_tu_hoa_clone", "pos": [1080, 790], "respawn": 16.0 },
+        { "enemy_id": "hu_vo_tu_hoa_clone", "pos": [1320, 390], "respawn": 16.0 },
+        { "enemy_id": "tu_ma_thanh_boss", "pos": [1480, 600], "respawn": 50.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_duoc_gioi_from_tang_thien",
+          "label": "Trùng Động Tây -> Quay Về Dược Giới Vạn Dược Sơn",
+          "pos": [108, 600],
+          "target_map": "ch11_duoc_gioi_van_duoc_son",
+          "target_spawn": [1900, 600],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch11_day_thap_gia_nam",
+          "label": "Truy Vết Đế Ngọc Đông -> VỰC SÂU DUNG NHAM HỌC VIỆN GIÀ NAM!",
+          "pos": [2092, 600],
+          "target_map": "ch11_day_thap_gia_nam",
+          "target_spawn": [190, 580],
+          "require_flag": "ch11_tieu_chien_saved",
+          "locked_hint": "Hãy đột phá Đế Cảnh Linh Hồn, diệt Tứ Ma Thánh và giải cứu Phụ Thân Tiêu Chiến [V] trước khi truy vết tọa độ Cổ Đế Động Phủ!"
+        }
+      ]
+    },
+    "ch11_day_thap_gia_nam": {
+      "id": "ch11_day_thap_gia_nam",
+      "chapter": "Chương 11",
+      "name": "Vực Sâu Dung Nham — Đáy Thiên Phần Tháp Già Nam",
+      "subtitle": "Hồi 11.3 — Chân Tướng Nơi Khởi Nguồn · Hội Ngộ Lão Long Hoàng Chúc Khôn & Mở Cổ Đế Động Phủ!",
+      "is_safe_zone": true,
+      "size": [2040, 1160],
+      "default_spawn": [190, 580],
+      "bgm": "bgm_lava",
+      "ambient_weather": "lava_embers",
+      "ground_tile": "res://assets/sprites/tiles/gia_nam_deep_magma.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [140, 520, 1760, 120]
+      ],
+      "decor_type": "lava",
+      "signs": [
+        { "pos": [640, 460], "text": "VỰC THẲM ĐÁY THÁP HỌC VIỆN GIÀ NAM — TỌA ĐỘ CỔ ĐẾ ĐỘNG PHỦ!", "color": "#FB923C" },
+        { "pos": [1340, 460], "text": "CỬA ĐÁ VẠN CỔ: LÃO LONG HOÀNG CHÚC KHÔN (CỬU TINH ĐẤU THÁNH ĐỈNH)", "color": "#C084FC" }
+      ],
+      "chests": [
+        {
+          "id": "chest_ch11_gia_nam_deep_1",
+          "pos": [980, 260],
+          "gold": 340000,
+          "stones": 36,
+          "items": { "item_co_de_thach_tam": 3, "pill_bo_de_cuu_pham_kim_dan": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch11_chuc_khon",
+          "name": "LÃO LONG HOÀNG CHÚC KHÔN (Phụ Hoàng Tử Nghiên · Cửu Tinh Đỉnh)",
+          "title": "Hồi 11.3 — Cha Con Cổ Long Đoàn Viên · Gia Nhập Đồng Hành #12 [G] & Mở Cửa Động Phủ!",
+          "sprite": "res://assets/sprites/npcs/npc_chuc_khon_long_hoang.png",
+          "pos": [1260, 540],
+          "role": "ch11_chuc_khon_reunion",
+          "glow_hex": "#C084FC",
+          "name_hex": "#E9D5FF",
+          "prompt_text": "[V] Gọi Long Hoàng Tử Nghiên Bước Ra Hội Ngộ Phụ Hoàng CHÚC KHÔN!"
+        },
+        {
+          "id": "npc_ch11_tu_nghien_deep",
+          "name": "THÁI HƯ CỔ LONG HOÀNG TỬ NGHIÊN",
+          "title": "Cùng Tiêu Viêm Giải Khúc Mắc Ngàn Năm Của Phụ Hoàng Chúc Khôn!",
+          "sprite": "res://assets/sprites/npcs/npc_tu_nghien_long_hoang.png",
+          "pos": [860, 640],
+          "role": "ch11_tu_nghien_father",
+          "glow_hex": "#E879F9",
+          "name_hex": "#F5D0FE",
+          "prompt_text": "[V] Trò Chuyện Cùng Long Hoàng Tử Nghiên (Hồi Phục 100%)"
+        }
+      ],
+      "spawns": [],
+      "portals": [
+        {
+          "id": "back_tang_thien_from_deep",
+          "label": "Lối Lên Tây -> Quay Về Táng Thiên Sơn Mạch",
+          "pos": [108, 580],
+          "target_map": "ch11_tang_thien_son_mach",
+          "target_spawn": [1940, 600],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch11_co_de_dong_phu",
+          "label": "Cánh Cửa Đá Vạn Cổ Đông -> ĐÀ XÁ CỔ ĐẾ ĐỘNG PHỦ (22 Cột Dị Hỏa!)",
+          "pos": [1932, 580],
+          "target_map": "ch11_co_de_dong_phu",
+          "target_spawn": [190, 600],
+          "require_flag": "ch11_chuc_khon_allied",
+          "locked_hint": "Hãy gọi Tử Nghiên gặp Lão Long Hoàng Chúc Khôn [V] hóa giải hiểu lầm và mở cánh cửa Đà Xá Cổ Đế Động Phủ!"
+        }
+      ]
+    },
+    "ch11_co_de_dong_phu": {
+      "id": "ch11_co_de_dong_phu",
+      "chapter": "Chương 11",
+      "name": "Đà Xá Cổ Đế Động Phủ — Quảng Trường 22 Cột Lửa",
+      "subtitle": "Hồi 11.4–11.5 — Đế Phẩm Sồ Đan · VẠN HỎA TRIỀU TÔNG Chứng Đạo VIÊM ĐẾ (23 Dị Hỏa #1 Đế Viêm)!",
+      "is_safe_zone": false,
+      "size": [2280, 1240],
+      "default_spawn": [190, 600],
+      "bgm": "bgm_co_de_dong_phu",
+      "ambient_weather": "emperor_flames",
+      "ground_tile": "res://assets/sprites/tiles/co_de_palace_floor.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [140, 540, 2000, 140],
+        [1140, 220, 160, 800]
+      ],
+      "decor_type": "palace",
+      "signs": [
+        { "pos": [620, 480], "text": "DỊ HỎA QUẢNG TRƯỜNG — 22 CỘT LỬA CÚI CHÀO TRUYỀN NHÂN PHẦN QUYẾT!", "color": "#FDE047" },
+        { "pos": [1720, 440], "text": "THẠCH TƯỢNG ĐÀ XÁ CỔ ĐẾ — VẠN HỎA TRIỀU TÔNG HÓA VIÊM ĐẾ!", "color": "#00F5D4" }
+      ],
+      "chests": [
+        {
+          "id": "chest_ch11_co_de_1",
+          "pos": [760, 220],
+          "gold": 420000,
+          "stones": 42,
+          "items": { "item_co_de_thach_tam": 4, "item_de_pham_dan_tran": 3, "core_de_viem_10": 1 }
+        },
+        {
+          "id": "chest_ch11_co_de_2",
+          "pos": [1680, 1000],
+          "gold": 480000,
+          "stones": 48,
+          "items": { "pill_bo_de_cuu_pham_kim_dan": 2, "item_de_pham_dan_tran": 4 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch11_da_xa_co_de",
+          "name": "THẠCH TƯỢNG ĐÀ XÁ CỔ ĐẾ (Bản Nguyên #1 Đế Viêm Vạn Cổ)",
+          "title": "Hồi 11.5 — Vạn Hỏa Triều Tông 23 Dị Hỏa · Chứng Đạo CẢNH GIỚI 12: VIÊM ĐẾ!",
+          "sprite": "res://assets/sprites/npcs/npc_da_xa_co_de_statue.png",
+          "pos": [1920, 600],
+          "role": "ch11_da_xa_co_de_statue",
+          "require_flag": "ch11_beat_de_pham_so_dan",
+          "glow_hex": "#00F5D4",
+          "name_hex": "#CCFBF1",
+          "prompt_text": "[V] Bước Vào Thạch Tượng Đà Xá Cổ Đế — VẠN HỎA TRIỀU TÔNG HÓA VIÊM ĐẾ!"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "co_de_thach_ve", "pos": [780, 420], "respawn": 16.0 },
+        { "enemy_id": "co_de_thach_ve", "pos": [780, 820], "respawn": 16.0 },
+        { "enemy_id": "co_de_thach_ve", "pos": [1120, 620], "respawn": 17.0 },
+        { "enemy_id": "de_pham_so_dan_boss", "pos": [1500, 600], "respawn": 52.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_gia_nam_deep_from_co_de",
+          "label": "Cửa Đá Tây -> Quay Về Vực Sâu Dung Nham Già Nam",
+          "pos": [108, 600],
+          "target_map": "ch11_day_thap_gia_nam",
+          "target_spawn": [1780, 580],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch11_cuu_tieu_thuong_khung",
+          "label": "Xé Trời Vạn Hỏa Đông -> CỬU TIÊU THƯƠNG KHUNG (SONG ĐẾ CHI CHIẾN HỒN THIÊN ĐẾ!)",
+          "pos": [2172, 600],
+          "target_map": "ch11_cuu_tieu_thuong_khung",
+          "target_spawn": [200, 620],
+          "require_flag": "ch11_viem_de_ascended",
+          "locked_hint": "Hãy đánh bại Đế Phẩm Sồ Đan rồi bước vào Thạch Tượng Đà Xá Cổ Đế [V] kích hoạt Vạn Hỏa Triều Tông chứng đạo VIÊM ĐẾ trước khi đối đầu Hồn Đế!"
+        }
+      ]
+    },
+    "ch11_cuu_tieu_thuong_khung": {
+      "id": "ch11_cuu_tieu_thuong_khung",
+      "chapter": "Chương 11",
+      "name": "Cửu Tiêu Thương Khung — Song Đế Chi Chiến",
+      "subtitle": "Hồi 11.6 — FINAL BOSS 3 PHASE: VIÊM ĐẾ TIÊU VIÊM vs HỒN ĐẾ HỒN THIÊN ĐẾ!",
+      "is_safe_zone": false,
+      "size": [2320, 1280],
+      "default_spawn": [200, 620],
+      "bgm": "bgm_song_de_chi_chien",
+      "ambient_weather": "blood_sky",
+      "ground_tile": "res://assets/sprites/tiles/cuu_tieu_blood_clouds.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [160, 560, 2000, 140],
+        [1160, 220, 180, 840]
+      ],
+      "decor_type": "ancient_arena",
+      "signs": [
+        { "pos": [600, 480], "text": "CỬU TIÊU THƯƠNG KHUNG — TRẢM ĐẾ HUYẾT TRẬN vs 23 SẮC DỊ HỎA!", "color": "#F43F5E" },
+        { "pos": [1560, 400], "text": "★ FINAL BOSS 3 PHASE: HỒN ĐẾ HỒN THIÊN ĐẾ (TRẢM ĐẾ QUỶ HUYẾT ĐAO)!", "color": "#FBBF24" }
+      ],
+      "chests": [
+        {
+          "id": "chest_ch11_cuu_tieu_1",
+          "pos": [820, 220],
+          "gold": 600000,
+          "stones": 60,
+          "items": { "item_de_pham_dan_tran": 4, "pill_bo_de_cuu_pham_kim_dan": 2, "core_de_viem_10": 1 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch11_huan_nhi_sky",
+          "name": "CỔ HUÂN NHI & DỊ HỎA QUẢNG TRƯỜNG (Tái Tạo Chân Thân Đấu Đế)",
+          "title": "Hồi 11.6–11.7 — Phong Ấn Vạn Cổ Hồn Thiên Đế & Trở Về Ô Thản Thành Đại Hôn!",
+          "sprite": "res://assets/sprites/npcs/npc_huan_nhi_dau_thanh.png",
+          "pos": [1960, 620],
+          "role": "ch11_song_de_victory",
+          "require_flag": "ch11_beat_hon_thien_de",
+          "glow_hex": "#00F5D4",
+          "name_hex": "#FEF08A",
+          "prompt_text": "[V] Kích Hoạt 23 Cột Lửa Dị Hỏa Quảng Trường Vĩnh Phong Hồn Thiên Đế -> Tái Tạo Chân Thân!"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "huyet_hai_ma_linh", "pos": [860, 420], "respawn": 16.0 },
+        { "enemy_id": "huyet_hai_ma_linh", "pos": [860, 840], "respawn": 16.0 },
+        { "enemy_id": "hon_thien_de_boss", "pos": [1520, 620], "respawn": 60.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_co_de_from_sky",
+          "label": "Giáng Lâm Tây -> Quay Về Đà Xá Cổ Đế Động Phủ",
+          "pos": [108, 620],
+          "target_map": "ch11_co_de_dong_phu",
+          "target_spawn": [1980, 600],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch11_o_than_thanh_dai_hon",
+          "label": "Về Quê Hương Đông -> Ô THẢN THÀNH ĐẠI HÔN VIÊM ĐẾ (TRUE ENDING!)",
+          "pos": [2212, 620],
+          "target_map": "ch11_o_than_thanh_dai_hon",
+          "target_spawn": [200, 600],
+          "require_flag": "ch11_hon_thien_de_sealed",
+          "locked_hint": "Hãy đánh bại Hồn Đế Hồn Thiên Đế (3 Phase) và kích hoạt 23 Cột Lửa Dị Hỏa Quảng Trường [V] phong ấn vạn cổ!"
+        }
+      ]
+    },
+    "ch11_o_than_thanh_dai_hon": {
+      "id": "ch11_o_than_thanh_dai_hon",
+      "chapter": "Chương 11",
+      "name": "Ô Thản Thành — Phủ Tiêu Gia Tân Trang Đại Hôn",
+      "subtitle": "Hồi 11.7 — Song Hậu Đại Hôn Huân Nhi & Thải Lân · True Ending Credits · 5 Nhiệm Vụ Hậu Truyện!",
+      "is_safe_zone": true,
+      "size": [2280, 1240],
+      "default_spawn": [200, 600],
+      "bgm": "bgm_o_than_dai_hon",
+      "ambient_weather": "wedding_petals",
+      "ground_tile": "res://assets/sprites/tiles/o_than_wedding_plaza.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [140, 540, 2000, 120],
+        [1060, 240, 160, 760]
+      ],
+      "decor_type": "town",
+      "signs": [
+        { "pos": [620, 480], "text": "★ SONG HẬU ĐẠI HÔN — VIÊM ĐẾ TIÊU VIÊM · CỔ HUÂN NHI · THẢI LÂN ★", "color": "#F43F5E" },
+        { "pos": [1520, 480], "text": "HẬU TRUYỆN SONG ĐẾ CHI HẬU (EQ_11_01 -> EQ_11_05) & CỔNG ĐẠI THIÊN!", "color": "#FBBF24" }
+      ],
+      "chests": [
+        {
+          "id": "chest_ch11_wedding_gift",
+          "pos": [1140, 210],
+          "gold": 1000000,
+          "stones": 80,
+          "items": { "pill_tru_nhan_thanh_dan": 4, "pill_bo_de_cuu_pham_kim_dan": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch11_wedding_ceremony",
+          "name": "TÂN NƯƠNG CỔ HUÂN NHI & THẢI LÂN (Lễ Đường Đại Hôn Viêm Đế)",
+          "title": "Hồi 11.7 — Cử Hành Đại Hôn Ô Thản Thành & Chiếu Phim True Ending Credits!",
+          "sprite": "res://assets/sprites/npcs/npc_huan_nhi_bride.png",
+          "pos": [1080, 520],
+          "role": "ch11_wedding_ceremony",
+          "glow_hex": "#FB7185",
+          "name_hex": "#FFE4E6",
+          "prompt_text": "[V] Cử Hành SONG HẬU ĐẠI HÔN Cùng Huân Nhi & Thải Lân (Xem True Ending Credits!)"
+        },
+        {
+          "id": "npc_ch11_thai_lan_bride",
+          "name": "HOÀNG HẬU THẢI LÂN & BÉ TIÊU TIÊU (Tân Nương Hỷ Phục)",
+          "title": "Hậu Truyện EQ_11_04 — Luyện Cửu Phẩm Kẹo Đan Cho Tiêu Tiêu, Tử Nghiên, Thanh Lân & Chúc Khôn!",
+          "sprite": "res://assets/sprites/npcs/npc_thai_lan_bride.png",
+          "pos": [1220, 520],
+          "role": "ch11_eq04_candy_party",
+          "glow_hex": "#FBBF24",
+          "name_hex": "#FEF08A",
+          "prompt_text": "[V] [Hậu Truyện EQ_11_04] Tiệc Kẹo Cửu Phẩm Cùng Thải Lân, Tiêu Tiêu & Tử Nghiên!"
+        },
+        {
+          "id": "npc_ch11_tieu_chien_patriarch",
+          "name": "PHỤ THÂN TIÊU CHIẾN & SƯ TÔN DƯỢC TRẦN (Chủ Hôn Đại Lễ)",
+          "title": "Hậu Truyện EQ_11_05 — Bái Tế Tổ Tiên Tiêu Huyền Hồi Sinh Huyết Mạch Đấu Đế Tiêu Gia!",
+          "sprite": "res://assets/sprites/npcs/npc_tieu_chien_reunion.png",
+          "pos": [1150, 360],
+          "role": "ch11_eq05_ancestor_oath",
+          "glow_hex": "#F59E0B",
+          "name_hex": "#FDE68A",
+          "prompt_text": "[V] [Hậu Truyện EQ_11_05] Cùng Phụ Thân Tiêu Chiến Bái Tế Tổ Tiên Tiêu Huyền!"
+        },
+        {
+          "id": "npc_ch11_eq01_tieu_y_tien",
+          "name": "TIỂU Y TIÊN (Đoàn Tụ Thanh Sơn Trấn -> Ô Thản Thành)",
+          "title": "Hậu Truyện EQ_11_01 — Đón Tiểu Y Tiên Về Mái Nhà Chung Ô Thản Thành!",
+          "sprite": "res://assets/sprites/npcs/npc_thien_doc_nu.png",
+          "pos": [620, 820],
+          "role": "ch11_eq01_tieu_y_tien",
+          "glow_hex": "#E0AAFF",
+          "name_hex": "#F3E8FF",
+          "prompt_text": "[V] [Hậu Truyện EQ_11_01] Nắm Tay Đón Tiểu Y Tiên Về Sum Họp Ô Thản Thành!"
+        },
+        {
+          "id": "npc_ch11_eq02_van_van",
+          "name": "VÂN VẬN (Hoa Tông Tông Chủ — Tái Ngộ Biển Mây)",
+          "title": "Hậu Truyện EQ_11_02 — Ngồi Nướng Cá Như Thuở 'Dược Nham' & Mời Về Gia Mã!",
+          "sprite": "res://assets/sprites/npcs/npc_van_van_hoa_tong.png",
+          "pos": [1080, 860],
+          "role": "ch11_eq02_van_van",
+          "glow_hex": "#72EFDD",
+          "name_hex": "#CCFBF1",
+          "prompt_text": "[V] [Hậu Truyện EQ_11_02] Ngắm Biển Mây Nướng Cá Cùng Vân Vận!"
+        },
+        {
+          "id": "npc_ch11_eq03_nha_phi",
+          "name": "NHÃ PHI & BĂNG HOÀNG HẢI BA ĐÔNG (Tiệc Trà Mễ Đặc Nhĩ)",
+          "title": "Hậu Truyện EQ_11_03 — Tặng Trú Nhan Thánh Đan & Đấu Cờ Uống Rượu!",
+          "sprite": "res://assets/sprites/npcs/npc_nha_phi.png",
+          "pos": [1560, 820],
+          "role": "ch11_eq03_nha_phi",
+          "glow_hex": "#F472B6",
+          "name_hex": "#FCE7F3",
+          "prompt_text": "[V] [Hậu Truyện EQ_11_03] Chén Trà Hội Ngộ Nhã Phi & Hải Ba Đông!"
+        }
+      ],
+      "spawns": [],
+      "portals": [
+        {
+          "id": "back_sky_from_wedding",
+          "label": "Thăng Thiên Tây -> Quay Lại Cửu Tiêu Thương Khung",
+          "pos": [108, 600],
+          "target_map": "ch11_cuu_tieu_thuong_khung",
+          "target_spawn": [2020, 620],
+          "require_flag": ""
+        },
+        {
+          "id": "shortcut_tieu_gia_ch01_from_wedding",
+          "label": "Đường Làng Nam -> Thăm Lại Quảng Trường Tiêu Gia Thuở Thiếu Niên (Ch.01)",
+          "pos": [1140, 1170],
+          "target_map": "ch01_tieu_gia",
+          "target_spawn": [640, 520],
+          "require_flag": ""
+        },
+        {
+          "id": "to_ch11_dai_thien_giao_gioi",
+          "label": "Xé Vị Diện Đông -> THƯƠNG KHUNG VỊ DIỆN GIAO GIỚI (ĐẠI THIÊN THẾ GIỚI · POST-GAME!)",
+          "pos": [2172, 600],
+          "target_map": "ch11_dai_thien_giao_gioi",
+          "target_spawn": [200, 620],
+          "require_flag": "ch11_wedding_completed",
+          "locked_hint": "Hãy tới Lễ Đường [V] cử hành Song Hậu Đại Hôn cùng Huân Nhi & Thải Lân trước khi mở Cổng Đại Thiên Thế Giới!"
+        }
+      ]
+    },
+    "ch11_dai_thien_giao_gioi": {
+      "id": "ch11_dai_thien_giao_gioi",
+      "chapter": "Chương 11 · Post-Game",
+      "name": "Thương Khung Vị Diện Giao Giới (Đại Thiên Thế Giới)",
+      "subtitle": "Post-Game Vô Tận — 17 Bí Cảnh Dị Hỏa Ẩn (23/23) · Superboss Võ Tổ Lâm Động & Mục Tôn Mục Trần · New Game+!",
+      "is_safe_zone": false,
+      "size": [2360, 1320],
+      "default_spawn": [200, 620],
+      "bgm": "bgm_dai_thien_the_gioi",
+      "ambient_weather": "cosmic_rift",
+      "ground_tile": "res://assets/sprites/tiles/dai_thien_cosmic_bridge.png",
+      "path_tile": "res://assets/sprites/tiles/stepping_path.png",
+      "path_rects": [
+        [140, 560, 2080, 140],
+        [1180, 200, 180, 920]
+      ],
+      "decor_type": "starfield",
+      "signs": [
+        { "pos": [540, 480], "text": "ĐÀI CẢM ỨNG 23 DỊ HỎA & CỔNG LUÂN HỒI NEW GAME+", "color": "#00F5D4" },
+        { "pos": [1680, 320], "text": "★ VÕ ĐÀI ĐẠI THIÊN: VÕ TỔ LÂM ĐỘNG & ĐẠI CHÚA TỂ MỤC TRẦN!", "color": "#FDE047" }
+      ],
+      "chests": [
+        {
+          "id": "chest_ch11_dai_thien_1",
+          "pos": [760, 200],
+          "gold": 1200000,
+          "stones": 99,
+          "items": { "core_de_viem_10": 2, "item_de_pham_dan_tran": 5, "item_hong_tran_de_tinh": 2 }
+        },
+        {
+          "id": "chest_ch11_dai_thien_2",
+          "pos": [1880, 1080],
+          "gold": 1500000,
+          "stones": 99,
+          "items": { "pill_da_xa_de_pham_hoan_dan": 1, "core_de_viem_10": 2 }
+        }
+      ],
+      "npcs": [
+        {
+          "id": "npc_ch11_flame_sanctum_monolith",
+          "name": "BIA CẢM ỨNG 23 DỊ HỎA & CỔNG ĐẠI THIÊN (17 Bí Cảnh · NG+)",
+          "title": "Săn Trọn 17 Bí Cảnh Dị Hỏa (23/23) · Nhận Cúp Bạch Kim 100% · Khởi Động Luân Hồi NG+!",
+          "sprite": "res://assets/sprites/npcs/npc_dai_thien_portal.png",
+          "pos": [500, 520],
+          "role": "ch11_dai_thien_monolith",
+          "glow_hex": "#00F5D4",
+          "name_hex": "#A5F3FC",
+          "prompt_text": "[V] Chạm Bia 23 Dị Hỏa & Cổng Đại Thiên (Mở 17 Bí Cảnh / Hoàn Tất 100% / Bật New Game+!)"
+        }
+      ],
+      "spawns": [
+        { "enemy_id": "vuc_ngoai_ma_de", "pos": [860, 440], "respawn": 16.0 },
+        { "enemy_id": "vuc_ngoai_ma_de", "pos": [860, 860], "respawn": 16.0 },
+        { "enemy_id": "ho_ve_di_hoa_boss", "pos": [1260, 620], "respawn": 46.0 },
+        { "enemy_id": "vo_to_lam_dong_boss", "pos": [1740, 340], "respawn": 58.0 },
+        { "enemy_id": "muc_ton_muc_tran_boss", "pos": [1820, 920], "respawn": 60.0 }
+      ],
+      "portals": [
+        {
+          "id": "back_wedding_from_dai_thien",
+          "label": "Hồi Quy Tây -> Quay Về Ô Thản Thành Đại Hôn",
+          "pos": [108, 620],
+          "target_map": "ch11_o_than_thanh_dai_hon",
+          "target_spawn": [2000, 600],
+          "require_flag": ""
+        }
+      ]
+    }
+  }
+}

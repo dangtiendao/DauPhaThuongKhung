@@ -72,10 +72,25 @@ static func refresh_moba_dock(hud) -> void:
 				mi.get("color", Color("#FFD166")) as Color
 			)
 
-	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa / Địa Yêu Khôi / Chuẩn Thiên Yêu Khôi
+	# 3. Ô Trợ Chiến [T] Cốt Linh Phụ Thể / Mỹ Đỗ Toa / Địa Yêu Khôi / Chuẩn Thiên Yêu Khôi / Bắc Vương / Hợp Bích / VIÊM ĐẾ PHÁP TƯỚNG
 	var btn_t: MobaSlotButton = hud.skill_slots["T"]
 	var t_mode: String = PlayerData.get_assist_mode()
-	if t_mode == "tinh_lien_hop_bich":
+	if t_mode == "viem_de_phap_tuong":
+		btn_t.set_slot_visual(
+			hud._get_cached_tex("res://assets/sprites/icons/skill_de_hon_phap_tuong.png"),
+			"VIÊM ĐẾ",
+			false,
+			PlayerData.is_duoc_lao_active or PlayerData.is_de_hon_active,
+			false,
+			Color("#FFD700")
+		)
+		btn_t.set_tooltip_info(
+			"[T] VIÊM ĐẾ PHÁP TƯỚNG — Vạn Hỏa Triều Tông (#1 Đế Viêm)",
+			"Hồi 45s · Duy trì 12s · ATK x5.00 · SPD +78% · Khiên 75% HP · +100% SOUL Chuẩn · Choáng 5s · Tự Nhặt Đồ",
+			"Đỉnh cao Đấu Đế & Đế Cảnh Linh Hồn: Triệu hồi 23 Dị Hỏa càn quét 520px, nghiền nát mọi khiên Boss, trừ 60% giáp & tự động hút sạch chiến lợi phẩm!",
+			Color("#FFD700")
+		)
+	elif t_mode == "tinh_lien_hop_bich":
 		btn_t.set_slot_visual(
 			hud._get_cached_tex("res://assets/sprites/npcs/npc_tieu_y.png"),
 			"HỢP BÍCH",
@@ -197,15 +212,16 @@ static func refresh_moba_dock(hud) -> void:
 			Color("#70D6FF") if t_unl else Color("#ADB5BD")
 		)
 
-	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Đấu Tôn Xé Rách Không Gian / Đấu Tông Đạp Hư Không / Đấu Khí Hóa Dực / Tam Thiên Lôi Động / Tử Vân Dực!)
+	# 4. Ô Lướt [Space] (Tự nâng cấp hiển thị Viêm Đế Bước / Đấu Thánh Không Gian / Đấu Tôn Xé Không / Đấu Tông / Đấu Vương / Lôi Động / Tử Vân Dực!)
+	var has_emperor_step: bool = EmperorRealmManager.is_viem_de_emperor(PlayerData)
 	var has_saint_dom: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
 	var has_spatial_blink: bool = PlayerData.has_dau_ton_spatial_blink()
 	var has_void_step: bool = PlayerData.has_dau_tong_void_step()
 	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
 	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
-	var dash_sub: String = "Thánh Vực" if has_saint_dom else ("Xé Không" if has_spatial_blink else ("Hư Không" if has_void_step else ("Lôi·Dực" if (has_dw_wings and has_thunder) else ("Hóa Dực" if has_dw_wings else ("Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt"))))))
-	var dash_col: Color = Color("#FFD700") if has_saint_dom else (Color("#72EFDD") if has_spatial_blink else (Color("#C77DFF") if has_void_step else (Color("#00F5D4") if has_dw_wings else (Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF"))))))
+	var dash_sub: String = "Đế Bước" if has_emperor_step else ("Thánh Vực" if has_saint_dom else ("Xé Không" if has_spatial_blink else ("Hư Không" if has_void_step else ("Lôi·Dực" if (has_dw_wings and has_thunder) else ("Hóa Dực" if has_dw_wings else ("Lôi Động" if has_thunder else ("Tử Vân" if has_wings else "Lướt")))))))
+	var dash_col: Color = Color("#FFF3B0") if has_emperor_step else (Color("#FFD700") if has_saint_dom else (Color("#72EFDD") if has_spatial_blink else (Color("#C77DFF") if has_void_step else (Color("#00F5D4") if has_dw_wings else (Color("#72EFDD") if has_thunder else (Color("#E0AAFF") if has_wings else Color("#70D6FF")))))))
 	var dash_tex: Texture2D = hud._get_cached_tex("res://assets/sprites/icons/skill_tam_thien_loi_dong.png") if has_thunder else (
 		hud._get_cached_tex("res://assets/sprites/icons/skill_tu_van_duc.png") if has_wings else hud._get_cached_tex("res://assets/sprites/icons/skill_dash.png")
 	)
@@ -213,11 +229,18 @@ static func refresh_moba_dock(hud) -> void:
 		dash_tex,
 		dash_sub,
 		false,
-		has_wings or has_thunder or has_void_step or has_spatial_blink or has_saint_dom,
+		has_wings or has_thunder or has_void_step or has_spatial_blink or has_saint_dom or has_emperor_step,
 		false,
 		dash_col
 	)
-	if has_saint_dom:
+	if has_emperor_step:
+		hud.slot_dash.set_tooltip_info(
+			"[Space] VIÊM ĐẾ — ĐẾ BƯỚC HƯ KHÔNG (1.280 px/s)!",
+			"Hồi 1.10s · Tốc độ 1.280px/s · Bất tử I-frame 0.85s · Đánh thường phóng 5 Đạo Kiếm Khí 23 Sắc!",
+			"Quyền năng Đấu Đế Chương 11: Bước qua không gian bất chấp trọng lực, +45% Đế Uy trước mọi kẻ địch dưới bậc Đấu Đế!",
+			Color("#FFF3B0")
+		)
+	elif has_saint_dom:
 		hud.slot_dash.set_tooltip_info(
 			"[Space] ĐẤU THÁNH KHÔNG GIAN — Xé Không Cực Hạn!",
 			"Hồi 0.38s · Tốc độ 1.120px/s · Bất tử I-frame 0.70s · Đánh thường tự phóng 3 Kiếm Khí Xé Không!",
@@ -331,6 +354,10 @@ static func refresh_moba_dock(hud) -> void:
 		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_tieu_tieu.png")
 		c_sub = "Tiêu Tiêu"
 		c_col = Color("#FBCFE8")
+	elif cur_c == "chuc_khon_long_hoang":
+		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_chuc_khon_long_hoang.png")
+		c_sub = "Chúc Khôn"
+		c_col = Color("#FFE66D")
 	elif cur_c == "duoc_lao_phantom":
 		var is_bt_ic: bool = PlayerData.has_flag("ch09_duoc_tran_revived")
 		c_tex = hud._get_cached_tex("res://assets/sprites/npcs/npc_duoc_tran_ban_thanh.png" if is_bt_ic else "res://assets/sprites/npcs/npc_duoc_lao.png")
@@ -346,12 +373,12 @@ static func refresh_moba_dock(hud) -> void:
 	)
 	hud.slot_companion.set_tooltip_info(
 		"[G] Đồng Hành Trợ Chiến — " + (PlayerData.get_companion_display_name(cur_c) if has_comp else "Chưa mở"),
-		"Bấm để triệu hồi hoặc chuyển đổi Đồng Hành (%d/11 + Khí Linh Tiểu Y)" % PlayerData.unlocked_companions.size() if has_comp else "Mở khóa 11 Đồng Hành từ Ch.01 -> Ch.10 (Dược Trần, Thiên Độc Nữ, Thải Lân & Tiêu Tiêu, Huân Nhi Đấu Thánh, Long Hoàng Tử Nghiên, Bắc Vương...)",
-		"Đủ 11 Đồng Hành AI (gồm Bắc Vương Thất Tinh Đấu Thánh & Thải Lân–Tiêu Tiêu) kết hợp Khí Linh Tiểu Y (#3) bay hộ vệ thường trực!",
+		"Bấm để triệu hồi hoặc chuyển đổi Đồng Hành (%d/12 + Khí Linh Tiểu Y)" % PlayerData.unlocked_companions.size() if has_comp else "Mở khóa 12 Đồng Hành từ Ch.01 -> Ch.11 (Dược Trần, Thiên Độc Nữ, Thải Lân & Tiêu Tiêu, Huân Nhi, Tử Nghiên, Bắc Vương, Long Hoàng Chúc Khôn...)",
+		"Đủ 12 Đồng Hành AI (gồm Long Hoàng Chúc Khôn Cửu Tinh Đấu Thánh Đỉnh Phong & Bắc Vương) kết hợp Khí Linh Tiểu Y (#3) bay hộ vệ thường trực!",
 		c_col
 	)
 
-	# 7. 3 Ô Đan Dược Bấm Uống Ngay [1] [2] [3] (hỗ trợ đầy đủ đan Ch.01–Ch.10!)
+	# 7. 3 Ô Đan Dược Bấm Uống Ngay [1] [2] [3] (hỗ trợ đầy đủ đan Ch.01–Ch.11!)
 	var pill_visual_meta: Dictionary = {
 		"pill_ngung_huyet_tan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Hồi ngay +%d HP", "col": Color("#EF476F") },
 		"pill_bang_tam_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Tứ Phẩm · Hồi ngay +%d HP!", "col": Color("#70D6FF") },
@@ -363,6 +390,7 @@ static func refresh_moba_dock(hud) -> void:
 		"pill_kim_cuong_bat_hoai": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Bát Phẩm · Hồi +%d HP!", "col": Color("#FFD166") },
 		"pill_duong_dau_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Đường Đậu Đan · Hồi +%d HP!", "col": Color("#F9A8D4") },
 		"pill_cuu_duong_hoan_cot": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Bát Phẩm Cao · Hồi +%d HP!", "col": Color("#FB923C") },
+		"pill_tru_nhan_thanh_dan": { "icon": "res://assets/sprites/icons/pill_hp_red.png", "sub": "Cửu Phẩm · Hồi +%d HP!", "col": Color("#FFD700") },
 		"pill_hoi_khi_dan": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Hồi ngay +%d Đấu Khí (QI)", "col": Color("#38BDF8") },
 		"pill_thanh_lien_tu": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Kỳ Bảo · Hồi ngay +%d Đấu Khí!", "col": Color("#2EC4B6") },
 		"pill_dan_hoan_ngot": { "icon": "res://assets/sprites/icons/pill_qi_blue.png", "sub": "Kẹo Đan Tử Nghiên · Hồi +%d QI!", "col": Color("#E0AAFF") },
@@ -405,7 +433,7 @@ static func refresh_moba_dock(hud) -> void:
 		"B": { "icon": "res://assets/sprites/icons/icon_stone.png", "sub": "Đột!" if PlayerData.is_at_bottleneck() else "Cảnh", "locked": false, "glow": PlayerData.is_at_bottleneck(), "t": "[B] Cảnh Giới & Đột Phá", "d": "Xem tiến độ 12 Đại Cảnh Giới, Linh Hồn Lực và bấm Đột Phá khi đạt 9 Đoạn/Tinh Đỉnh Phong!" },
 		"L": { "icon": "res://assets/sprites/icons/icon_cauldron.png", "sub": "Đan", "locked": not PlayerData.is_alchemy_unlocked(), "glow": false, "t": "[L] Lò Luyện Đan Tương Tác", "d": "Khai lò luyện đan qua Mini-game Khống Hỏa [Space] & Chắn Đan Lôi [E]!" },
 		"H": { "icon": "res://assets/sprites/icons/skill_hoa_lien.png", "sub": "Hỏa", "locked": not PlayerData.is_flames_unlocked(), "glow": false, "t": "[H] Dị Hỏa Bảng & Phần Quyết", "d": "Xem và vận chuyển các Thú Hỏa / Dị Hỏa đã thu phục theo đúng cốt truyện." },
-		"M": { "icon": "res://assets/sprites/icons/icon_pendant.png", "sub": "Map", "locked": false, "glow": false, "t": "[M] Thế Giới · Hồng Nhan · Thiên Phủ · Tâm Ma · Tháp & Đồ Giám", "d": "Xem %d bản đồ (Ch.01–10), Quản Trị Thiên Phủ Liên Minh (6 Công Trình · 20 Boss Cường Bảng), Buff Hồng Nhan, Tâm Ma Luyện Cảnh (56 Boss), Thiên Phần Tháp & Đồ Giám Vạn Thú!" % GameDatabase.maps_ordered.size() },
+		"M": { "icon": "res://assets/sprites/icons/icon_pendant.png", "sub": "Map", "locked": false, "glow": false, "t": "[M] Thế Giới · Hồng Nhan · Thiên Phủ · Tâm Ma · Tháp & Đồ Giám", "d": "Xem %d bản đồ (Ch.01–11), Quản Trị Thiên Phủ Liên Minh (6 Công Trình · 25 Boss Cường Bảng), Buff Hồng Nhan, Tâm Ma Luyện Cảnh (64 Boss), Thiên Phần Tháp & Đồ Giám Vạn Thú!" % GameDatabase.maps_ordered.size() },
 		"F5": { "icon": "res://assets/sprites/icons/icon_ring.png", "sub": "Lưu", "locked": false, "glow": false, "t": "[F5] Lưu Nhanh Vào Ô %d" % PlayerData.active_save_slot, "d": "Lưu tức thì toàn bộ tiến độ tu luyện, bản đồ & trang bị vào ô hiện tại." },
 		"ESC": { "icon": "res://assets/sprites/icons/icon_necklace.png", "sub": "Menu", "locked": false, "glow": false, "t": "[ESC] Menu Tạm Dừng & Hiển Thị", "d": "Lưu/Tải 3 Ô Nạp Giới, chỉnh Fullscreen/VSync/FPS/Rung màn hình & Âm lượng BGM/SFX." }
 	}

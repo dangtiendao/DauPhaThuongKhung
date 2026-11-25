@@ -198,8 +198,34 @@ func _draw_vignette() -> void:
 		var c_yh := Color(0.99, 0.64, 0.69, 0.13 * yh_p)
 		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 24.0), c_yh)
 		vignette_ctrl.draw_rect(Rect2(0, sz.y - 24.0, sz.x, 24.0), c_yh)
+	elif PlayerData.current_map_id == "ch11_cuu_tieu_thuong_khung" or PlayerData.current_map_id == "ch11_tang_thien_son_mach":
+		# 5. Huyết Thiên Cửu Tiêu (Ch.11 Song Đế Chi Chiến): Viền đỏ huyết & ánh vàng Đế Uy
+		var bk_p: float = 0.72 + 0.28 * sin(_t_sec * 3.4)
+		var c_bk := Color(0.78, 0.08, 0.18, 0.16 * bk_p)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 28.0), c_bk)
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 28.0, sz.x, 28.0), c_bk)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 5.0), Color(1.0, 0.80, 0.25, 0.24 * bk_p))
+	elif PlayerData.current_map_id == "ch11_o_than_thanh_dai_hon":
+		# 6. Song Hậu Đại Hôn Ô Thản Thành: Ánh hồng-kim ấm áp lễ cưới
+		var wd_p: float = 0.78 + 0.22 * sin(_t_sec * 2.0)
+		var c_wd := Color(0.96, 0.32, 0.44, 0.11 * wd_p)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 20.0), c_wd)
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 20.0, sz.x, 20.0), c_wd)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 4.0), Color(1.0, 0.86, 0.38, 0.30 * wd_p))
+	elif PlayerData.current_map_id == "ch11_dai_thien_giao_gioi":
+		# 7. Thương Khung Vị Diện Giao Giới (Đại Thiên Thế Giới): Viền lam tinh vân & kim quang
+		var dt_p: float = 0.74 + 0.26 * sin(_t_sec * 2.5)
+		var c_dt := Color(0.18, 0.54, 0.96, 0.13 * dt_p)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 22.0), c_dt)
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 22.0, sz.x, 22.0), c_dt)
+	elif EmperorRealmManager.is_viem_de_emperor(PlayerData):
+		# 8. Viền Thất Sắc 23 Dị Hỏa nhẹ khi đã chứng đạo VIÊM ĐẾ (Cảnh Giới 12)!
+		var hue_t: float = fmod(_t_sec * 0.18, 1.0)
+		var c_emp: Color = Color.from_hsv(hue_t, 0.65, 1.0, 0.10)
+		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 12.0), c_emp)
+		vignette_ctrl.draw_rect(Rect2(0, sz.y - 12.0, sz.x, 12.0), c_emp)
 	elif SaintRealmManager.has_dau_thanh_domain(PlayerData):
-		# 5. Viền Hoàng Kim Thánh Uy nhẹ khi đã bước vào Đấu Thánh Không Gian
+		# 9. Viền Hoàng Kim Thánh Uy nhẹ khi đã bước vào Đấu Thánh Không Gian
 		var st_p: float = 0.70 + 0.30 * sin(_t_sec * 2.2)
 		var c_st := Color(1.0, 0.78, 0.22, 0.08 * st_p)
 		vignette_ctrl.draw_rect(Rect2(0, 0, sz.x, 14.0), c_st)

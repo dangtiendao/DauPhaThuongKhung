@@ -1,17 +1,19 @@
 extends Node
 ## Hệ thống Âm Thanh, Nhạc Nền Cổ Phong Tiên Hiệp (Procedural AudioStreamWAV) & Cài Đặt Hiển Thị:
 ## - Không phụ thuộc file MP3 ngoài -> tổng hợp trực tiếp chuẩn Ngũ Cung & Địa Vực (Cổ Tranh / Sáo Trúc / Tỳ Bà / Biên Chung / Trống Chiến).
-## - 18 Bản nhạc nền tự động chuyển mượt theo bản đồ & Boss:
+## - 22 Bản nhạc nền tự động chuyển mượt theo bản đồ & Boss:
 ##   bgm_peaceful, bgm_wild, bgm_boss, bgm_desert, bgm_lava, bgm_capital, bgm_yunlan,
 ##   bgm_hac_giac, bgm_gia_nam, bgm_poison, bgm_zhongzhou,
 ##   bgm_tinh_van, bgm_vong_hon, bgm_thien_mo,
-##   bgm_bo_de, bgm_thien_phu, bgm_nhan_dien, bgm_yeu_hoa.
+##   bgm_bo_de, bgm_thien_phu, bgm_nhan_dien, bgm_yeu_hoa,
+##   bgm_co_de_dong_phu, bgm_song_de_chi_chien, bgm_o_than_dai_hon, bgm_dai_thien_the_gioi.
 ## - 24 Hiệu ứng SFX chiến đấu (gồm Phá Thế poise_break, Đột Phá breakthrough & Choáng skill_stun hòa âm giàu sắc thái).
 ## - Lưu & gộp sạch cài đặt Âm Thanh + Hiển Thị (Fullscreen / VSync / FPS / Screen Shake) trong user://dptk_settings.json.
 
 const BgmCh0508 = preload("res://scripts/systems/audio_bgm_ch05_08.gd")
 const BgmCh09 = preload("res://scripts/systems/audio_bgm_ch09.gd")
 const BgmCh10 = preload("res://scripts/systems/audio_bgm_ch10.gd")
+const BgmCh11 = preload("res://scripts/systems/audio_bgm_ch11.gd")
 const SETTINGS_PATH: String = "user://dptk_settings.json"
 const SAMPLE_RATE: int = 22050
 
@@ -361,6 +363,11 @@ func _build_all_bgm() -> void:
 	var ch10_tracks: Dictionary = BgmCh10.build_tracks(SAMPLE_RATE)
 	for tk10 in ch10_tracks.keys():
 		bgm_tracks[str(tk10)] = ch10_tracks[tk10]
+
+	# 19–22. Bộ 4 nhạc nền Đại Kết Cục Chương 11 (Cổ Đế Động Phủ, Song Đế Chi Chiến, Ô Thản Đại Hôn, Đại Thiên Thế Giới)
+	var ch11_tracks: Dictionary = BgmCh11.build_tracks(SAMPLE_RATE)
+	for tk11 in ch11_tracks.keys():
+		bgm_tracks[str(tk11)] = ch11_tracks[tk11]
 
 
 func _synth_pentatonic_loop(notes: Array, step_sec: float, drone_freq: float, with_drums: bool) -> AudioStreamWAV:

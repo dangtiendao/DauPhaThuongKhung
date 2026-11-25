@@ -44,7 +44,7 @@ func build_content(vbox: VBoxContainer) -> void:
 	p_flow.add_theme_constant_override("h_separation", 6)
 	p_flow.add_theme_constant_override("v_separation", 5)
 	pv.add_child(p_flow)
-	for c_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich", "pill_duong_dau_dan", "pill_cuu_duong_hoan_cot", "pill_thanh_linh_phuc_nguyen"]:
+	for c_id in ["pill_ngung_huyet_tan", "pill_bang_tam_dan", "pill_hoi_khi_dan", "pill_thanh_lien_tu", "pill_truc_co_linh_dich", "pill_duong_dau_dan", "pill_cuu_duong_hoan_cot", "pill_thanh_linh_phuc_nguyen", "pill_tru_nhan_thanh_dan", "pill_loi_kiep_huyen_dan", "pill_da_xa_de_pham_hoan_dan"]:
 		var cid_s: String = str(c_id)
 		var owned_p: int = PlayerData.get_item_count(cid_s)
 		var cdef: Dictionary = GameDatabase.get_item_def(cid_s)

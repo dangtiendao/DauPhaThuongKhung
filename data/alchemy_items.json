@@ -600,6 +600,99 @@
       "heal_hp": 16000,
       "color_hex": "#F472B6",
       "description": "Bảo đan Chuẩn Cửu Phẩm độ HẮC KIM ĐAN LÔI — hồi tức thì 80% HP & QI (+16.000 HP / +4.200 QI) giữa chiến trận Đấu Thánh!"
+    },
+    "herb_sinh_linh_thao": {
+      "id": "herb_sinh_linh_thao",
+      "name": "Sinh Linh Cổ Thảo (Vạn Dược Sơn · Dược Giới)",
+      "type": "herb",
+      "tier": 9,
+      "color_hex": "#4ADE80",
+      "description": "Thánh dược ngàn năm đẫm Sinh Linh Chi Diễm của Dược Tộc — dùng luyện Trú Nhan Thánh Đan & Cửu Phẩm Huyền Đan!"
+    },
+    "item_hu_vo_am_tinh": {
+      "id": "item_hu_vo_am_tinh",
+      "name": "Hư Vô Ám Tinh (Tử Hỏa Hư Vô #2)",
+      "type": "herb",
+      "tier": 9,
+      "color_hex": "#6B21A8",
+      "description": "Tinh thể hắc ám rơi từ phân thân Hư Vô Thôn Viêm & Tứ Ma Thánh — dẫn Hắc Ma Lôi Kiếp luyện Cửu Phẩm Huyền Đan!"
+    },
+    "item_co_de_thach_tam": {
+      "id": "item_co_de_thach_tam",
+      "name": "Cổ Đế Thạch Tâm (Đà Xá Động Phủ)",
+      "type": "herb",
+      "tier": 9,
+      "color_hex": "#FBBF24",
+      "description": "Lõi đá mang Nguyên Khí Đấu Đế của Cổ Đế Thạch Vệ — nguyên liệu luyện Bồ Đề Cửu Phẩm Kim Đan!"
+    },
+    "item_de_pham_dan_tran": {
+      "id": "item_de_pham_dan_tran",
+      "name": "Đế Phẩm Đan Trần (Nguyên Khí Đấu Đế)",
+      "type": "herb",
+      "tier": 10,
+      "color_hex": "#F43F5E",
+      "description": "Bụi tiên ngưng tụ từ Đế Phẩm Sồ Đan & Huyết Hải Ma Linh — nguyên liệu tối mật luyện Đà Xá Đế Phẩm Hoàn Đan!"
+    },
+    "item_hong_tran_de_tinh": {
+      "id": "item_hong_tran_de_tinh",
+      "name": "Hồng Trần Đế Tinh (Vật Phẩm Độc Quyền NG+)",
+      "type": "herb",
+      "tier": 10,
+      "color_hex": "#38BDF8",
+      "description": "Tinh thể rơi độc quyền trong Chế Độ Luân Hồi Chuyển Thế (New Game+) — chứng nhân của Đế Giả Trọng Tu!"
+    },
+    "core_de_viem_10": {
+      "id": "core_de_viem_10",
+      "name": "Đế Viêm Bản Nguyên Hạch Cấp 10 (Đế Hạch)",
+      "type": "monster_core",
+      "tier": 10,
+      "color_hex": "#00F5D4",
+      "description": "Tinh hạch cấp Đấu Đế chứa 23 sắc Dị Hỏa — khảm lên Dị Hỏa Hằng Cổ Xích (+1.200 ATK, +12.000 HP, +800 SOUL, +120% Dị Hỏa, +30% Crit)!"
+    },
+    "pill_de_pham_so_dan": {
+      "id": "pill_de_pham_so_dan",
+      "name": "Đế Phẩm Sồ Đan (Bản Nguyên Đà Xá Cổ Đế)",
+      "type": "breakthrough",
+      "tier": 10,
+      "color_hex": "#F59E0B",
+      "description": "Viên đan mang trọn tia Nguyên Khí Đấu Đế cuối cùng của Đấu Khí Đại Lục — chìa khóa đột phá từ Cửu Tinh Đấu Thánh lên VIÊM ĐẾ (Đấu Đế)!"
+    },
+    "pill_tru_nhan_thanh_dan": {
+      "id": "pill_tru_nhan_thanh_dan",
+      "name": "Trú Nhan Thánh Đan (Bát Phẩm Đỉnh · Ngũ Sắc Hương)",
+      "type": "consumable_hp",
+      "tier": 8,
+      "heal_hp": 25000,
+      "color_hex": "#F472B6",
+      "description": "Thánh đan giữ mãi thanh xuân tuyệt sắc dành tặng Hồng Nhan trong Hậu Truyện Song Đế Chi Hậu — hoặc uống hồi +25.000 HP!"
+    },
+    "pill_loi_kiep_huyen_dan": {
+      "id": "pill_loi_kiep_huyen_dan",
+      "name": "Cửu Phẩm Lôi Kiếp Huyền Đan (Hắc Ma Lôi Hóa Thú)",
+      "type": "consumable_exp",
+      "tier": 9,
+      "exp_gain": 6500000,
+      "color_hex": "#34D399",
+      "description": "Đan dược Cửu Phẩm Huyền Đan dẫn Hắc Ma Lôi nhập đan đánh bại Hồn Hư Tử — uống nhận ngay +6.500.000 EXP & +150 SOUL!"
+    },
+    "pill_bo_de_cuu_pham_kim_dan": {
+      "id": "pill_bo_de_cuu_pham_kim_dan",
+      "name": "Bồ Đề Cửu Phẩm Kim Đan (Thiên Địa Triều Bái)",
+      "type": "consumable_qi",
+      "tier": 9,
+      "restore_qi": 18000,
+      "heal_hp": 45000,
+      "color_hex": "#FDE047",
+      "description": "Cửu Phẩm Kim Đan vạn cổ vô lôi — hồi tức thì +45.000 HP & +18.000 Đấu Khí và cường hóa toàn bộ Đồng Hành!"
+    },
+    "pill_da_xa_de_pham_hoan_dan": {
+      "id": "pill_da_xa_de_pham_hoan_dan",
+      "name": "Đà Xá Đế Phẩm Hoàn Đan (ĐẾ PHẨM ĐAN DƯỢC)",
+      "type": "consumable_exp",
+      "tier": 10,
+      "exp_gain": 25000000,
+      "color_hex": "#00F5D4",
+      "description": "Đan dược Đế Phẩm tối thượng (cần Đế Cảnh Linh Hồn 3.500+ SOUL) — lần uống đầu kích hoạt vĩnh viễn +25% TOÀN BỘ CHỈ SỐ để đối đầu Lâm Động & Mục Trần!"
     }
   },
   "recipes": [
@@ -922,6 +1015,46 @@
       "base_success_rate": 0.46,
       "soul_exp_gain": 620,
       "ingredients": { "item_yeu_hoa_tinh_chung": 2, "core_nang_luong_9": 1 }
+    },
+    {
+      "id": "recipe_tru_nhan_thanh_dan",
+      "output_item": "pill_tru_nhan_thanh_dan",
+      "output_count": 2,
+      "tier": 8,
+      "req_soul": 1500,
+      "base_success_rate": 0.72,
+      "soul_exp_gain": 380,
+      "ingredients": { "herb_sinh_linh_thao": 2, "item_that_thai_bao_ngoc": 1 }
+    },
+    {
+      "id": "recipe_loi_kiep_huyen_dan",
+      "output_item": "pill_loi_kiep_huyen_dan",
+      "output_count": 1,
+      "tier": 9,
+      "req_soul": 2200,
+      "base_success_rate": 0.48,
+      "soul_exp_gain": 780,
+      "ingredients": { "herb_sinh_linh_thao": 3, "item_hu_vo_am_tinh": 2 }
+    },
+    {
+      "id": "recipe_bo_de_cuu_pham_kim_dan",
+      "output_item": "pill_bo_de_cuu_pham_kim_dan",
+      "output_count": 1,
+      "tier": 9,
+      "req_soul": 3000,
+      "base_success_rate": 0.42,
+      "soul_exp_gain": 980,
+      "ingredients": { "item_co_de_thach_tam": 2, "herb_sinh_linh_thao": 2, "item_bo_de_tu": 1 }
+    },
+    {
+      "id": "recipe_da_xa_de_pham_hoan_dan",
+      "output_item": "pill_da_xa_de_pham_hoan_dan",
+      "output_count": 1,
+      "tier": 10,
+      "req_soul": 3500,
+      "base_success_rate": 0.35,
+      "soul_exp_gain": 1600,
+      "ingredients": { "item_de_pham_dan_tran": 3, "item_co_de_thach_tam": 2, "core_de_viem_10": 1 }
     }
   ]
 }

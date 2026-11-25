@@ -97,7 +97,7 @@ func build_skills_codex_content(vbox: VBoxContainer) -> void:
 
 	var bonus_pct: int = max(0, PlayerData.lotus_fusion_flames.size() - 1) * 28
 	var max_lotus_f: int = PlayerData.get_lotus_max_flames()
-	var five_tag: String = " · ★ Đã Mở LỤC SẮC THÁNH LIÊN (100%% Xuyên Giáp)!" if max_lotus_f >= 6 else (" · ★ Đã Mở NGŨ SẮC BĂNG PHONG 3s!" if max_lotus_f >= 5 else "")
+	var five_tag: String = " · 👑 Đã Mở HẰNG CỔ DỊ HỎA LIÊN (7–23 Hỏa · Dừng Thời Gian 5s)!" if max_lotus_f >= 7 else (" · ★ Đã Mở LỤC SẮC THÁNH LIÊN (100% Xuyên Giáp)!" if max_lotus_f >= 6 else (" · ★ Đã Mở NGŨ SẮC BĂNG PHONG 3s!" if max_lotus_f >= 5 else ""))
 	lv.add_child(hud._make_label("XƯỞNG DUNG HỢP PHẬT NỘ HỎA LIÊN (%d/%d Hỏa đã ghép — Uy lực +%d%%%s)" % [PlayerData.lotus_fusion_flames.size(), max_lotus_f, bonus_pct, five_tag], 14, Color("#E0AAFF")))
 	if PlayerData.unlocked_flames.is_empty():
 		lv.add_child(hud._make_label("Chưa thu phục ngọn Hỏa nào! Hãy bái sư Dược Lão (Phàm Hỏa) -> Hạ Mục Xà (Tử Hỏa) -> Sa Mạc Chương 03 (Thanh Liên Địa Tâm Hỏa).", 12, Color("#ADB5BD")))
@@ -230,6 +230,34 @@ func build_breakthrough_content(vbox: VBoxContainer) -> void:
 	var st_lbl: Label = hud._make_label("\n".join(st_lines), 12, Color("#FFE5EC") if domain_on else Color("#CED4DA"))
 	st_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	st_v.add_child(st_lbl)
+
+	# Hệ thống Cảnh Giới 12: VIÊM ĐẾ (ĐẤU ĐẾ), Đế Cảnh Linh Hồn, 23 Dị Hỏa & New Game+ (Chương 11 — v1.0.0)
+	var emp_card: PanelContainer = hud._make_styled_panel(Color(0.12, 0.08, 0.04, 0.96), Color("#FFD700"), 2, 10)
+	vbox.add_child(emp_card)
+	var emp_v := VBoxContainer.new()
+	emp_v.add_theme_constant_override("separation", 5)
+	emp_card.add_child(emp_v)
+	var has_de_soul: bool = EmperorRealmManager.has_de_canh_soul(PlayerData)
+	var is_viem_de: bool = EmperorRealmManager.is_viem_de_emperor(PlayerData)
+	var hf_cnt: int = EmperorRealmManager.get_heavenly_flame_count(PlayerData)
+	var ep_cnt: int = EmperorRealmManager.get_epilogue_done_count(PlayerData)
+	var plat_cnt: int = 0
+	for pf in ["ach_11_01_dan_thap_vo_thuong", "ach_11_02_phu_tu_tinh_tham", "ach_11_03_tam_thap_nien", "ach_11_04_song_hau_dong_quy", "ach_11_05_chua_te_dai_thien"]:
+		if PlayerData.has_flag(pf):
+			plat_cnt += 1
+	var ng_cyc: int = EmperorRealmManager.get_ng_plus_cycle(PlayerData)
+	emp_v.add_child(hud._make_label("👑 ĐẾ CẢNH LINH HỒN · VIÊM ĐẾ (23 DỊ HỎA) · ĐẠI THIÊN & NEW GAME+", 14, Color("#FFD700")))
+	var emp_lines: Array[String] = [
+		"• Đế Cảnh Linh Hồn (3.500+ SOUL): %s" % ("★ ĐÃ ĐẠT (Luyện Đan Phẩm 10 Đế Phẩm · Đế Hồn Pháp Tướng +100% SOUL Sát Thương Chuẩn)" if has_de_soul else "Chưa đạt (Ngưng tụ Bản Nguyên Chi Khí tại Cổ Đế Động Phủ — Ch.11)"),
+		"• Cảnh Giới 12 — VIÊM ĐẾ: %s" % ("★ VẠN HỎA TRIỀU TÔNG (%d/23 Dị Hỏa · Đế Bước 1.280px/s · 5 Đạo Kiếm Khí 23 Sắc · +45%% Đế Uy)" % hf_cnt if is_viem_de else "Chưa chứng Đế (Kế thừa Đà Xá Cổ Đế & dung hợp #1 Đế Viêm — Ch.11)"),
+		"• Đà Xá Đế Phẩm Hoàn Đan (Phẩm 10): %s" % ("★ ĐÃ PHỤC DỤNG (+25% Toàn Bộ Chỉ Số Vĩnh Viễn!)" if PlayerData.has_flag("ch11_da_xa_pill_eaten") else "Chưa phục dụng (Luyện chế tại [L] bằng Đế Phẩm Sồ Đan + Bản Nguyên Đế Viêm)"),
+		"• Hậu Truyện & Thành Tựu Bạch Kim Ch.11: %d/5 Hậu Truyện Ô Thản Thành · %d/5 Cúp Bạch Kim · Luân Hồi NG+: %s" % [
+			ep_cnt, plat_cnt, ("VÒNG %d (Thương Khung Khốc Liệt)" % ng_cyc) if ng_cyc > 0 else "Chưa kích hoạt (Mở trong [ESC])"
+		]
+	]
+	var emp_lbl: Label = hud._make_label("\n".join(emp_lines), 12, Color("#FFF3B0") if is_viem_de else Color("#CED4DA"))
+	emp_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	emp_v.add_child(emp_lbl)
 
 
 func build_flames_content(vbox: VBoxContainer) -> void:

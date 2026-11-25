@@ -75,6 +75,7 @@ var tinh_lien_tran_timer: float = 0.0
 var tinh_lien_tran_tick: float = 0.0
 var tinh_lien_tran_dmg: float = 0.0
 var tinh_lien_tran_rad: float = 390.0
+var de_hon_timer: float = 0.0
 var tieu_y_sprite: Sprite2D = null
 
 # Hỏa Liên Phân Thân (3 quả cầu Dị Hỏa xoay quanh thân)
@@ -525,8 +526,9 @@ func _physics_process(delta: float) -> void:
 	var move_input: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var desired_vel: Vector2 = Vector2.ZERO
 	if dash_timer > 0.0:
+		var has_emp_step: bool = EmperorRealmManager.is_viem_de_emperor(PlayerData)
 		var has_dt_dom: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
-		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (SaintRealmManager.SAINT_DASH_SPEED if has_dt_dom else (980.0 if PlayerData.has_dau_ton_spatial_blink() else (860.0 if PlayerData.has_dau_tong_void_step() else (780.0 if PlayerData.has_dau_vuong_wings() else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0)))))
+		var d_spd: float = dash_speed_override if dash_speed_override > 0.0 else (EmperorRealmManager.EMPEROR_DASH_SPEED if has_emp_step else (SaintRealmManager.SAINT_DASH_SPEED if has_dt_dom else (980.0 if PlayerData.has_dau_ton_spatial_blink() else (860.0 if PlayerData.has_dau_tong_void_step() else (780.0 if PlayerData.has_dau_vuong_wings() else (695.0 if PlayerData.has_tu_van_duc_equipped() else 560.0))))))
 		desired_vel = dash_dir * d_spd
 		velocity = desired_vel
 		if int(floor(dash_timer * 46.0)) != int(floor((dash_timer - delta) * 46.0)):
@@ -780,6 +782,14 @@ func _tick_timers(delta: float) -> void:
 			_refresh_flame_shader()
 			EventBus.stats_changed.emit()
 			EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Hết Tộc Văn Tiêu Tộc", Color("#ADB5BD"))
+
+	if PlayerData.is_de_hon_active:
+		de_hon_timer -= delta
+		if de_hon_timer <= 0.0:
+			PlayerData.is_de_hon_active = false
+			_refresh_flame_shader()
+			EventBus.stats_changed.emit()
+			EventBus.floating_text_requested.emit(global_position + Vector2(0, -72), "Thu Hồi Đế Hồn Pháp Tướng", Color("#FFD700"))
 
 	# Nội tại #9 Tam Thiên Diễm Viêm Hỏa (Bất Tử Chi Thân): hồi 3.5% Max HP/giây khi HP < 45%!
 	if PlayerData.immortal_revive_cd > 0.0:
@@ -1053,18 +1063,19 @@ func _perform_dash() -> void:
 		body_sprite.flip_h = dash_dir.x < 0.0
 
 	var start_p: Vector2 = global_position
+	var has_emp_step: bool = EmperorRealmManager.is_viem_de_emperor(PlayerData)
 	var has_saint_dom: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
-	var has_spatial: bool = PlayerData.has_dau_ton_spatial_blink() or has_saint_dom
+	var has_spatial: bool = PlayerData.has_dau_ton_spatial_blink() or has_saint_dom or has_emp_step
 	var has_dw_wings: bool = PlayerData.has_dau_vuong_wings()
 	var has_wings: bool = PlayerData.has_tu_van_duc_equipped() or has_dw_wings
 	var has_thunder: bool = PlayerData.is_skill_unlocked("tam_thien_loi_dong")
 	var van_van_dash_mult: float = 0.75 if PlayerData.active_companion_id == "van_van_hoa_tong" else 1.0
-	dash_duration_cur = 0.30 if has_saint_dom else (0.29 if has_spatial else (0.27 if has_dw_wings else (0.24 if has_wings else 0.18)))
+	dash_duration_cur = 0.32 if has_emp_step else (0.30 if has_saint_dom else (0.29 if has_spatial else (0.27 if has_dw_wings else (0.24 if has_wings else 0.18))))
 	dash_timer = dash_duration_cur
 	dash_speed_override = 0.0
-	dash_cooldown_total = (0.38 if has_saint_dom else (0.48 if has_spatial else (0.56 if has_dw_wings else (0.64 if has_wings else 0.72)))) * PlayerData.get_cooldown_multiplier() * van_van_dash_mult
+	dash_cooldown_total = (EmperorRealmManager.EMPEROR_DASH_COOLDOWN if has_emp_step else (0.38 if has_saint_dom else (0.48 if has_spatial else (0.56 if has_dw_wings else (0.64 if has_wings else 0.72))))) * PlayerData.get_cooldown_multiplier() * van_van_dash_mult
 	dash_cooldown = dash_cooldown_total
-	invuln_timer = maxf(invuln_timer, SaintRealmManager.SAINT_DASH_IFRAME if has_saint_dom else (0.60 if has_spatial else (0.48 if has_dw_wings else (0.42 if has_thunder else (0.34 if has_wings else 0.28)))))
+	invuln_timer = maxf(invuln_timer, EmperorRealmManager.EMPEROR_DASH_IFRAME if has_emp_step else (SaintRealmManager.SAINT_DASH_IFRAME if has_saint_dom else (0.60 if has_spatial else (0.48 if has_dw_wings else (0.42 if has_thunder else (0.34 if has_wings else 0.28))))))
 	EventBus.skill_cooldown_updated.emit("SPACE", dash_cooldown, dash_cooldown_total)
 	EventBus.audio_sfx_requested.emit("portal_warp" if has_spatial else ("thunder_blink" if has_thunder else "dash_whoosh"))
 	_spawn_dash_afterimage()
@@ -1274,8 +1285,9 @@ func _execute_melee_strike_impact() -> void:
 			if combo_step == 3 or dot_val >= 0.12:
 				if enemy_node.has_method("receive_hit"):
 					var er_melee: int = int(enemy_node.get("realm_index")) if ("realm_index" in enemy_node) else 1
-					var saint_m: float = SaintRealmManager.get_saint_supremacy_mult(PlayerData, er_melee)
-					enemy_node.receive_hit(dmg * saint_m, attack_aim_dir * kb, 0.0, burn_val, 0.0, 1.0, poise_val)
+					var saint_m: float = SaintRealmManager.get_saint_supremacy_mult(PlayerData, er_melee) * EmperorRealmManager.get_emperor_supremacy_mult(PlayerData, er_melee)
+					var de_hon_true: float = EmperorRealmManager.get_de_hon_true_damage_bonus(PlayerData)
+					enemy_node.receive_hit(dmg * saint_m + de_hon_true, attack_aim_dir * kb, 1.0 if de_hon_true > 0.0 else 0.0, burn_val, 0.35 if EmperorRealmManager.has_hang_co_xich(PlayerData) else 0.0, 1.0, poise_val)
 					_try_trigger_inner_heart_ignition(enemy_node)
 					_spawn_hit_sparks(enemy_node.global_position + Vector2(0, -24), spark_col, attack_aim_dir, 14 if combo_step == 3 else 10)
 					hit_any = true
@@ -1283,12 +1295,13 @@ func _execute_melee_strike_impact() -> void:
 	if hit_any:
 		EventBus.trigger_hitstop(0.032 if combo_step == 3 else 0.018, 0.10)
 
-	# ĐẤU THÁNH KHÔNG GIAN (realm >= 11) hoặc ĐẠI ĐẤU SƯ / THIÊN HỎA NHỊ BIẾN: tự động phóng sóng kiếm khí xé không gian!
-	var has_dt_wave: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData)
+	# ĐẤU ĐẾ DỊ HỎA HẰNG CỔ XÍCH hoặc ĐẤU THÁNH KHÔNG GIAN (realm >= 11): phóng sóng kiếm khí 23 sắc / xé không gian!
+	var has_emp_wave: bool = EmperorRealmManager.has_hang_co_xich(PlayerData) or EmperorRealmManager.is_viem_de_emperor(PlayerData)
+	var has_dt_wave: bool = SaintRealmManager.has_dau_thanh_domain(PlayerData) or has_emp_wave
 	if (has_dt_wave or (PlayerData.realm_index >= 4 and has_wpn and PlayerData.current_qi > PlayerData.get_max_qi() * 0.40) or PlayerData.is_nhi_bien_active) and get_parent() != null:
-		var use_fl: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("di_hoa_03_tinh_lien" if has_dt_wave else "di_hoa_14_van_lac")
-		var wave_angles: Array = [-0.24, 0.0, 0.24] if (has_dt_wave or PlayerData.is_tam_bien_active) else ([-0.14, 0.14] if PlayerData.is_nhi_bien_active else [0.0])
-		var wave_dmg_m: float = 0.96 if has_dt_wave else (0.78 if PlayerData.is_tam_bien_active else (0.68 if PlayerData.is_nhi_bien_active else 0.58))
+		var use_fl: Dictionary = f_def if not f_def.is_empty() else GameDatabase.get_flame_def("di_hoa_01_de_viem" if has_emp_wave else ("di_hoa_03_tinh_lien" if has_dt_wave else "di_hoa_14_van_lac"))
+		var wave_angles: Array = [-0.30, -0.15, 0.0, 0.15, 0.30] if has_emp_wave else ([-0.24, 0.0, 0.24] if (has_dt_wave or PlayerData.is_tam_bien_active) else ([-0.14, 0.14] if PlayerData.is_nhi_bien_active else [0.0]))
+		var wave_dmg_m: float = 1.25 if has_emp_wave else (0.96 if has_dt_wave else (0.78 if PlayerData.is_tam_bien_active else (0.68 if PlayerData.is_nhi_bien_active else 0.58)))
 		for w_ang in wave_angles:
 			var w_dir: Vector2 = attack_aim_dir.rotated(float(w_ang))
 			var wave_proj: Area2D = SKILL_SCENE.instantiate() as Area2D
@@ -1588,6 +1601,12 @@ func _draw() -> void:
 		var tl_p: float = 0.78 + 0.22 * sin(t_sec * 5.0)
 		draw_arc(Vector2(0, -20), 64.0, t_sec * 1.4, t_sec * 1.4 + TAU * 0.94, 48, Color(1.0, 0.69, 0.80, 0.72 * tl_p), 3.4)
 		draw_arc(Vector2(0, -20), 54.0, -t_sec * 2.0, -t_sec * 2.0 + TAU * 0.86, 40, Color(1.0, 0.96, 0.98, 0.64 * tl_p), 2.2)
+	if EmperorRealmManager.is_viem_de_emperor(PlayerData) or PlayerData.is_de_hon_active:
+		# Vầng hào quang 23 sắc Dị Hỏa Viêm Đế / Đế Hồn Pháp Tướng xoay quanh chân!
+		for ri in range(6):
+			var ra: float = t_sec * 1.8 + float(ri) * (TAU / 6.0)
+			var rc23: Color = Color.from_hsv(fmod(t_sec * 0.28 + float(ri) / 6.0, 1.0), 0.82, 1.0, 0.82)
+			draw_arc(Vector2(0, -22), 58.0, ra, ra + 0.78, 12, rc23, 3.6)
 	if PlayerData.player_slow_timer > 0.0:
 		draw_arc(Vector2(0, 10), 30.0, 0.0, TAU, 28, Color(0.44, 0.84, 1.0, 0.80), 3.0)
 

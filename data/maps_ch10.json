@@ -543,13 +543,13 @@
           "require_flag": ""
         },
         {
-          "id": "to_ch11_co_de_dong_phu_future",
-          "label": "Khe Nứt Cổ Đế Đông -> [CHƯƠNG 11 · ĐẠI KẾT CỤC] Cổ Đế Động Phủ & Song Đế Chi Chiến!",
+          "id": "to_ch11_duoc_gioi_van_duoc_son",
+          "label": "Khe Nứt Cổ Đế Đông -> [CHƯƠNG 11 · ĐẠI KẾT CỤC] Dược Giới Vạn Dược Sơn!",
           "pos": [2212, 620],
-          "target_map": "ch10_yeu_hoa_khong_gian",
-          "target_spawn": [2040, 620],
-          "require_flag": "ch11_unlocked_future",
-          "locked_hint": "CHÚC MỪNG HOÀN TẤT CHƯƠNG 10 (BỒ ĐỀ HÓA THÁNH & TỊNH LIÊN YÊU HỎA #3)!! Chương 11 Đại Kết Cục — Cổ Đế Động Phủ, #1 Đế Viêm & Song Đế Chi Chiến Hồn Thiên Đế sẽ mở ở bản phát hành v1.0.0!"
+          "target_map": "ch11_duoc_gioi_van_duoc_son",
+          "target_spawn": [190, 600],
+          "require_flag": "ch10_completed",
+          "locked_hint": "Hãy hoàn tất Song Luyện #3 Tịnh Liên Yêu Hỏa, đánh bại Điện Chủ Hồn Điện Hồn Diệt Sinh và hoàn thành Chương 10 tại Đài Sen [V] trước khi bước vào Chương 11!"
         }
       ]
     }
